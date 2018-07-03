@@ -1,0 +1,15 @@
+{% extends "webapp/base.html" %}
+{% block content %}
+{%load static from staticfiles%}
+
+{%for m in mobiles%}
+    <p>{{m.id}}</p>
+{%endfor%}
+<script>
+
+    var s =localStorage.getItem('data');
+    $(document).ready(function () {
+        console.log(s);
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,124 @@
+{% extends "webapp/base.html" %}
+{%csrf_token%}
+{% block content %}
+{% load static from staticfiles%} 
+
+<div class="container latest-product-section"> 
+    
+       
+<form action="" method="POST">
+ {% csrf_token %}
+<table style="width:50%" class="my_table">
+    <tbody> 
+    <tr>
+                <td><p>Price Range</p></td>
+                <td>  <select id="first-choice">
+                        <option selected value=""> blank</option>
+                        <option  value=10000>10000</option>
+                        <option value=15000>15000</option> 
+              
+                        <option value=20000>20000</option> 
+                      </select>
+                      <input type="hidden" value="" id="first_choice_value" name="first_choice_value"/>
+               </td>
+               <td> 
+                    <select id="first-choice2">
+                    <option selected value=""> blank</option>
+                    <option  value=35000>35000</option>
+                    <option  value=50000>50000</option>
+                    <option value=80000>80000</option> 
+                    </select>
+                  <input type="hidden" value="" id="first_choice2_value" name="first_choice2_value"/>
+                </td>
+               
+        </tr>
+        <tr>
+                <td><p>Colors</p></td>
+                <td> <select id="second-choice">
+                        <option selected value=""> blank</option>
+                        {% for c in colors %}
+                            <option  value="{{c}}">{{c}}</option>
+                        {% endfor %}
+                    </select>
+                    <input type="hidden" value="" id="second_choice_value" name="second_choice_value"/>
+                </td>
+               
+        </tr>
+        <tr>
+                <td><p>OS</p></td>
+                <td> <select id="third-choice">
+                        <option selected value=""> blank</option>
+                        {% for o in os %}
+                            
+                            <option  value="{{o}}">{{o}}</option>
+                        {% endfor %}
+                    </select>
+                    <input type="hidden" value="" id="third_choice_value" name="third_choice_value"/>
+                </td>
+               
+        </tr>
+        <tr>
+                <td><p>Size</p></td>
+                <td> <select id="fourth-choice">
+                        <option selected value=""> blank</option>
+                        {% for s in size %}
+                            
+                            <option  value="{{s}}">{{s}}</option>
+                        {% endfor %}
+                    </select>
+                    <input type="hidden" value="" id="fourth_choice_value" name="fourth_choice_value"/>
+                </td>
+                <td> <select id="fourth-choice2">
+                        <option selected value=""> blank</option>
+                        {% for s in size %}
+                            
+                            <option  value="{{s}}">{{s}}</option>
+                        {% endfor %}
+                    </select>
+                    <input type="hidden" value="" id="fourth_choice2_value" name="fourth_choice2_value"/>
+                </td>
+               
+        </tr>
+    </tbody>
+</table>
+ 
+    <br>
+    <input type="submit" name="submit" value="look up" />
+  </form>
+</div>
+    <script>
+    $("#first-choice").change(function() {
+        var selected_id =$("#first-choice").val();
+      console.log(('#first_choice_value').val(selected_id));
+        $('#first_choice_value').val(selected_id);
+        //alert(selected_id);
+    });
+    $("#first-choice2").change(function() {
+        var selected_id =$("#first-choice2").val();
+        $('#first_choice2_value').val(selected_id);
+        //alert(selected_id);
+    });
+    $("#second-choice").change(function() {
+        var selected_id =$("#second-choice").val();
+        
+        $('#second_choice_value').val(selected_id);
+        //alert(selected_id);
+    });
+    $("#third-choice").change(function() {
+        var selected_id =$("#third-choice").val();
+        $('#third_choice_value').val(selected_id);
+        //alert(selected_id);
+    });
+    $("#fourth-choice").change(function() {
+        var selected_id =$("#fourth-choice").val();
+        $('#fourth_choice_value').val(selected_id);
+        //alert(selected_id);
+    });
+    $("#fourth-choice2").change(function() {
+        var selected_id =$("#fourth-choice2").val();
+        $('#fourth_choice2_value').val(selected_id);
+        //alert(selected_id);
+    });
+    </script>
+    
+{% endblock  %}
