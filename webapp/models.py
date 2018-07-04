@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+import datetime
 
 # Create your models here.
 class User(AbstractUser):
@@ -83,11 +84,27 @@ class sort_feature(models.Model):
     def __str__(self):
         return self.feature
     class Meta:
-        verbose_name_plural="sort feature"
+        verbose_name_plural="Sort Feature"
 class feature(models.Model):
     feature=models.CharField(max_length=200,null=True)
     def __str__(self):
         return self.feature
     class Meta:
-        verbose_name_plural="sort feature"
+        verbose_name_plural="feature"
 
+class userscoreRecord (models.Model):
+    column_id=models.IntegerField(null=True)
+    element_id=models.IntegerField(null=True)
+    feat_priority=models.IntegerField(null=True)
+    feat_name=models.CharField(max_length=200,null=True)
+    mobile_id=models.IntegerField(null=True)
+    user_id=models.IntegerField(null=True)
+    date_created= models.DateField(("Date"), default=datetime.date.today)
+    date_modified = models.DateField(("Date"), default=datetime.date.today)
+    def __str__(self):
+        return self.feat_name
+    class Meta:
+        verbose_name_plural="User Score Record"
+
+
+    

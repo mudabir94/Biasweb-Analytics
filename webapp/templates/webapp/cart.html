@@ -53,7 +53,7 @@
 	}
 	.text-left
 	{
-		background-color: red;
+		background-color: white;
 	}
 
   .row.equal {
@@ -98,12 +98,12 @@
 									<header>
 											<div class="container" >
 													<div class="row">
-															<div class="col-sm-12" style="background: brown"> 
+															<!-- <div class="col-sm-12" style="background: brown"> 
 															     main div
-															</div> 
+															</div>  -->
 													</div>
 											</div> 
-<!-- 										
+									
 													<h2>Compare Models</h2>	
 													<button class="btn btn-success" onclick="showScore(this)" >Show Score </button>
 													<div class="actions">
@@ -111,7 +111,7 @@
 														<a href="#0" class="filter">Filter</a>
 													</div>
 												
-											</div> -->
+											
 										
 								
 								
@@ -426,21 +426,21 @@ function showScore(){
 
 
 
-	// $.ajax({
-    //                 type: 'POST',
-    //                 dataType: "json",
+	 $.ajax({
+                   type: 'POST',
+                   dataType: "json",
                    
-    //                 'data': {
-    //                 'd': JSON.stringify(models),
-    //                 'csrfmiddlewaretoken': '{{ csrf_token }}',
-    //                 },
-    //                 url: "{% url 'showscore' %}",
-    //                 success: function(response){
-    //                     console.log(response);
+                    'data': {
+                     'd': JSON.stringify(models),
+                  'csrfmiddlewaretoken': '{{ csrf_token }}',
+                   },
+                  url: "{% url 'showscore' %}",
+                   success: function(response){
+                       console.log(response);
                     
-	// 				}
+	 				}
                     
-    //                 });
+            }); 
 }
 	function highchartShow(){
 	Highcharts.chart('container', {

@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserChangeForm
 from .models import User
-from .models import signup_table,blog,mobile_phone,phone,samsung_phone,sort_feature
+from .models import signup_table,blog,mobile_phone,phone,samsung_phone,sort_feature,userscoreRecord
 
 
 class MyUserChangeForm(UserChangeForm):
@@ -21,3 +21,4 @@ admin.site.register(mobile_phone)
 admin.site.register(phone)
 admin.site.register(samsung_phone)
 admin.site.register(sort_feature)
+admin.site.register(userscoreRecord)

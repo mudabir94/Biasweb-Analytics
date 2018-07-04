@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic import TemplateView
 from .forms import blogForm,SignUpForm,mobile_phone_form,filterform,sort_filter_form
-from .models import blog,mobile_phone,phone,samsung_phone,sort_feature
+from .models import blog,mobile_phone,phone,samsung_phone,sort_feature,userscoreRecord
 from django.http import HttpResponse
 from django.contrib.auth import login as auth_login, authenticate
 from django.contrib.auth.forms import UserCreationForm
@@ -10,21 +10,47 @@ from django.shortcuts import render, redirect
 from django.db import connection
 from django.db.models import Q
 import json
+from django.utils import timezone
+
 role=1   #global variable used in adminsetup and globalFunc function. 
 mobiles=samsung_phone.objects.raw('SELECT * FROM webapp_samsung_phone WHERE id=1 or id=2') # making mobiles object global.
 sizeofmob=0 # global variable assigned in filter class.
 def showScore(request):
+    mobileid=0
+    featname=""
+    elementid=0
+    featpriority=0 
+    userid=0
+    columnId=0
+
     if request.method=="POST":
         if request.is_ajax:
             d = request.POST.get('d')
             b = json.loads(d)
              
-            print(b)
-            dic=b[0]
-            for k in dic:
-                print(dic[k]) # values of the a model
-                
+            print("lenght",len(b))
+           
+            for dic in b: # getting single index of the models dictionary  that is passed through ajax.
+                for k in dic:
+                    print(k,dic[k]) # name and value of that specific instance. 
+                    if (k=="mid"):
+                        mobileid=dic[k]
+                    elif (k=="mfeat"):
+                        featname=dic[k]
+                    elif (k=="userid"):
+                        userid=dic[k]
+                    elif(k=="elementid"):
+                        elementid=dic[k]
+                    elif(k=="columnId"):
+                        columnId=dic[k]
+                    elif(k=="featprior"):
+                        featpriority=dic[k]
+                print(featname,featpriority,mobileid,userid,elementid,columnId)
+                # p = userscoreRecord(column_id=columnId,element_id=elementid,feat_priority=featpriority,feat_name=featname,mobile_id=mobileid,user_id=userid,date_created=timezone.now(), date_modified=timezone.now())
+                # print("p",p)
+                # p.save()
 
+    
         #Get all values of each index of the dictionary then store the info into the table. 
         # Fetch info for the current user. Get the info and make calculations and generate a score.
         # Send all the score  through ajax to the page. 
@@ -32,6 +58,7 @@ def showScore(request):
             print("jk",request.user.id)
             print("jk",request.user.username)
             dict = {'mobiles':'mobile info'}
+            
     return HttpResponse(json.dumps(dict), content_type='application/json')
 
 def showMob(request):
