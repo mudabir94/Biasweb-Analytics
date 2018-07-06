@@ -12,6 +12,7 @@ urlpatterns = [
     
     
     url(r'^admin_setup/',views.adminSetup, name='admin_setup'),
+    url(r'^add_feature/',views.addFeature, name="add_feature"),
     url(r'^$', views.signUp, name='signup'), 
     
     url(r'^blog/', views.blogview.as_view(), name='blog'), 

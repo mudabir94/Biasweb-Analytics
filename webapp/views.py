@@ -45,10 +45,12 @@ def showScore(request):
                         columnId=dic[k]
                     elif(k=="featprior"):
                         featpriority=dic[k]
+                    else:
+                        print("do nothing")
                 print(featname,featpriority,mobileid,userid,elementid,columnId)
-                # p = userscoreRecord(column_id=columnId,element_id=elementid,feat_priority=featpriority,feat_name=featname,mobile_id=mobileid,user_id=userid,date_created=timezone.now(), date_modified=timezone.now())
+                p = userscoreRecord(column_id=columnId,element_id=elementid,feat_priority=featpriority,feat_name=featname,mobile_id=mobileid,user_id=userid,date_created=timezone.now(), date_modified=timezone.now())
                 # print("p",p)
-                # p.save()
+                p.save()
 
     
         #Get all values of each index of the dictionary then store the info into the table. 
@@ -60,6 +62,7 @@ def showScore(request):
             dict = {'mobiles':'mobile info'}
             
     return HttpResponse(json.dumps(dict), content_type='application/json')
+
 
 def showMob(request):
     if request.method=="POST":
@@ -258,7 +261,10 @@ def adminSetup(request):
 
     return render(request, 'webapp/admin_setup.html',{'feat':feat,'colors':colors,'size':size,'ft':ft})
     '''
-    
+def addFeature(request): 
+     feat=samsung_phone.objects.all()
+
+     return render(request,'webapp/add_feature.html',{'feat':feat})  
    
 
 # Create your views here.
@@ -394,6 +400,7 @@ class filter(TemplateView):
                  'Size': {'1':fourth_choice,'2':fourth_choice2},
                  'price':{'1':first_choice,'2':first_choice2},
                  'Cpu'  : fifth_choice,
+                 'back_camera':six_choice,
                  'battery' : seven_choice}
             print(filter)
             query_array = []
