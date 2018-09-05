@@ -2,11 +2,7 @@ from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic import TemplateView
 from .forms import blogForm,SignUpForm,mobile_phone_form,filterform,sort_filter_form
-<<<<<<< HEAD
 from .models import blog,mobile_phone,phone,samsung_phone,sort_feature,userscoreRecord
-=======
-from .models import blog,mobile_phone,phone,samsung_phone,sort_feature
->>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
 from django.http import HttpResponse
 from django.contrib.auth import login as auth_login, authenticate
 from django.contrib.auth.forms import UserCreationForm
@@ -14,16 +10,12 @@ from django.shortcuts import render, redirect
 from django.db import connection
 from django.db.models import Q
 import json
-<<<<<<< HEAD
 from django.utils import timezone
 
-=======
->>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
 role=1   #global variable used in adminsetup and globalFunc function. 
 mobiles=samsung_phone.objects.raw('SELECT * FROM webapp_samsung_phone WHERE id=1 or id=2') # making mobiles object global.
 sizeofmob=0 # global variable assigned in filter class.
 def showScore(request):
-<<<<<<< HEAD
     mobileid=0
     featname=""
     elementid=0
@@ -31,14 +23,11 @@ def showScore(request):
     userid=0
     columnId=0
 
-=======
->>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
     if request.method=="POST":
         if request.is_ajax:
             d = request.POST.get('d')
             b = json.loads(d)
              
-<<<<<<< HEAD
             print("lenght",len(b))
            
             for dic in b: # getting single index of the models dictionary  that is passed through ajax.
@@ -64,12 +53,6 @@ def showScore(request):
                 p.save()
 
     
-=======
-            print(b)
-            dic=b[0]
-            for k in dic:
-                print(dic[k]) # values of the a model
->>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
         #Get all values of each index of the dictionary then store the info into the table. 
         # Fetch info for the current user. Get the info and make calculations and generate a score.
         # Send all the score  through ajax to the page. 
@@ -77,15 +60,10 @@ def showScore(request):
             print("jk",request.user.id)
             print("jk",request.user.username)
             dict = {'mobiles':'mobile info'}
-<<<<<<< HEAD
             
     return HttpResponse(json.dumps(dict), content_type='application/json')
 
 
-=======
-    return HttpResponse(json.dumps(dict), content_type='application/json')
-
->>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
 def showMob(request):
     if request.method=="POST":
         if request.is_ajax:
@@ -283,12 +261,6 @@ def adminSetup(request):
 
     return render(request, 'webapp/admin_setup.html',{'feat':feat,'colors':colors,'size':size,'ft':ft})
     '''
-<<<<<<< HEAD
-
-=======
-    
-   
->>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
 
 # Create your views here.
 def signUp(request):
@@ -354,7 +326,6 @@ class filter(TemplateView):
             'os':os,'size':size,'feat':feat,'cpu':cpu,'back_cm':back_cm,'battery':battery})
         '''
         if request.user.is_authenticated:
-<<<<<<< HEAD
             
             colors=['black','white','gold']
             os=['android v8.0 oreo','android v7.1.1 (nougat)','android v4.4 (kitkat)','android v6.0 (marshmallow)',
@@ -368,42 +339,19 @@ class filter(TemplateView):
             resolution=['720 x 1280','540 x 960','480 x 800','1440 x 2960','1080 x 2220','1080 x 1920']      
             weight=['163','195','173','174','155','191','157','172','132','0','181','169','179','135','160','170','143','159','146','156','138','131','122','126','153']  
             dimensions=['147.6 x 68.7 x 8.4 mm','162.5 x 74.6 x 8.5 mm','159.5 x 73.4 x 8.1 mm','151.3 x 82.4 x 8.3 mm','148.9 x 68.1 x 8 mm','159.9 x 75.7 x 8.3 mm','150.9 x 72.6 x 7.7 mm','149.2 x 70.6 x 8.4 mm','143.4 x 70.8 x 6.9 mm','142.1 x 70.1 x 7 mm','153.2 x 76.1 x 7.6 mm','156.8 x 77.6 x 7.9 mm','146.1 x 71.4 x 7.9 mm','152.4 x 74.7 x 7.9 mm','146.8 x 75.3 x 8.9 mm','146.8 x 75.3 x 8.9 mm','156.7 x 78.8 x 8.1 mm','135.4 x 66.2 x 7.9 mm']
-=======
-                    
->>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
             if request.user.is_student:
                 global  role
                 role=1
                 feat=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role).order_by('position')
                 ft=sort_feature.objects.filter(Q(sh_hd = 0),roles=role).order_by('position')
-<<<<<<< HEAD
                 
-=======
-                colors=['black','white','gold']
-                os=['android v8.0 oreo','android v7.1.1 (nougat)','android v4.4 (kitkat)','android v6.0 (marshmallow)',
-                    'android v5.0.2 (lollipop)','android v5.1 (lollipop)','android v4.3 (jelly bean)']
-                size=['0','1','3','4','4.1','4.2','4.3','4.4','4.5','4.6','4.7','4.8','4.9','5','5.1','5.2','5.3','5.4','5.5','5.6','5.7','5.8','5.9','6','6.1','6.2','6.3','6.4','6.5','6.6','6.7','6.8','6.9','7']
-                cpu=['octa-core','quad-core']
-                back_cm=['16 MP','13 MP','8 MP','5.0 MP','3.7 MP','2 MP','1.9 MP','VGA']
-                battery=['3600 mAh','3300 mAh','3000 mAh','2600 mAh','2400 mAh','2350']
->>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
 
             
             elif request.user.is_prof:
                 role=2
                 feat=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role).order_by('position')
                 ft=sort_feature.objects.filter(Q(sh_hd = 0),roles=role).order_by('position')
-<<<<<<< HEAD
                
-=======
-                colors=['black','white','gold']
-                os=['android v8.0 oreo','android v7.1.1 (nougat)','android v4.4 (kitkat)','android v6.0 (marshmallow)',
-                    'android v5.0.2 (lollipop)','android v5.1 (lollipop)','android v4.3 (jelly bean)']
-                size=['0','1','3','4','4.1','4.2','4.3','4.4','4.5','4.6','4.7','4.8','4.9','5','5.1','5.2','5.3','5.4','5.5','5.6','5.7','5.8','5.9','6','6.1','6.2','6.3','6.4','6.5','6.6','6.7','6.8','6.9','7']
-                cpu=['octa-core','quad-core']
-                back_cm=['16 MP','13 MP','8 MP','5.0 MP','3.7 MP','2 MP','1.9 MP','VGA']
-                battery=['3600 mAh','3300 mAh','3000 mAh','2600 mAh','2400 mAh','2350']
->>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
                 #return redirect('/admin')
             else:
                 print("in mobile redirect")
@@ -415,11 +363,7 @@ class filter(TemplateView):
 
 
         return render(request,'webapp/filter_test.html',{'colors':colors,
-<<<<<<< HEAD
             'os':os,'size':size,'feat':feat,'ft':ft,'cpu':cpu,'back_cm':back_cm,'battery':battery,'mobilecompany':mobilecompany,'chip':chip,'resolution':resolution,'weight':weight,'dimensions':dimensions})
-=======
-            'os':os,'size':size,'feat':feat,'ft':ft,'cpu':cpu,'back_cm':back_cm,'battery':battery})
->>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
     
     def post(self,request):
         # print("ssss",(request.POST['first_choice_value']))
@@ -445,7 +389,6 @@ class filter(TemplateView):
             print("sixc",six_choice)
             seven_choice=request.POST['seven_choice_value']
             print("sevc",seven_choice)
-<<<<<<< HEAD
             eight_choice=request.POST['eight_choice_value']
         
             nine_choice=request.POST['nine_choice_value']
@@ -456,15 +399,11 @@ class filter(TemplateView):
             print("ele",eleven_choice)
             twelve_choice=request.POST['twelve_choice_value']
             
-=======
-
->>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
             filter = {'Colors' : second_choice,
                  'OS' : third_choice,
                  'Size': {'1':fourth_choice,'2':fourth_choice2},
                  'price':{'1':first_choice,'2':first_choice2},
                  'Cpu'  : fifth_choice,
-<<<<<<< HEAD
                  'back_camera':six_choice,
                  'battery' : seven_choice,
                  'Mobile_Companny':eight_choice,
@@ -473,9 +412,6 @@ class filter(TemplateView):
                  'Weight':eleven_choice,
                  'Dimensions':twelve_choice
                  }
-=======
-                 'battery' : seven_choice}
->>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
             print(filter)
             query_array = []
             temparray=[]
