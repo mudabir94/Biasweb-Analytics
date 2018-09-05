@@ -47,10 +47,7 @@
                 <form action="" method="POST">
                     {%csrf_token%}
                     <ul id="sortable">
-<<<<<<< HEAD
                       
-=======
->>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
                     {%for f in feat %}
                         <li id="{{f.feature}}-{{f.position}}">
                             {%if 'price' in f.feature%}
@@ -192,7 +189,6 @@
                                         </div>
                                         
                                 </div>
-<<<<<<< HEAD
                                 {% elif 'mobilecompany' in f.feature %}   
                                 <div class="row">
                                         <div class="col-md-1" >
@@ -283,8 +279,6 @@
                                         </div>
                                         
                                 </div>
-=======
->>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
                             {%endif%}
                             </li>
                         {%endfor%}
@@ -299,7 +293,6 @@
                                         <input type="hidden" value="" id="fifth_choice_value" name="fifth_choice_value"/>
                                         <input type="hidden" value="" id="six_choice_value" name="six_choice_value"/>
                                         <input type="hidden" value="" id="seven_choice_value" name="seven_choice_value"/>
-<<<<<<< HEAD
                                         <input type="hidden" value="" id="eight_choice_value" name="eight_choice_value"/>
                                         <input type="hidden" value="" id="nine_choice_value" name="nine_choice_value"/>
                                         <input type="hidden" value="" id="ten_choice_value" name="ten_choice_value"/>
@@ -307,9 +300,6 @@
                                         <input type="hidden" value="" id="twelve_choice_value" name="twelve_choice_value"/>
 
                                         <!--create input field through java script-->
-=======
-  
->>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
                                     <input type="submit" name="submit" value="look up" />               
                                 </div>     
                         </div>
@@ -393,7 +383,6 @@
         $('#seven_choice_value').val(selected_id);
         //alert(selected_id);
     });
-<<<<<<< HEAD
     $("#eight-choice").change(function() {
         var selected_id =$("#eight-choice").val();
         $('#eight_choice_value').val(selected_id);
@@ -419,8 +408,6 @@
         $('#twelve_choice_value').val(selected_id);
         //alert(selected_id);
     });
-=======
->>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
     </script>
     
 {% endblock  %}

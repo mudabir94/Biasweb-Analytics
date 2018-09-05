@@ -50,18 +50,11 @@
 	.sidenav 
 	{
 		background-color:white;
-<<<<<<< HEAD
 		height:50pc;
 	}
 	.text-left
 	{
 		background-color: white;
-=======
-	}
-	.text-left
-	{
-		background-color: red;
->>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
 	}
 
   .row.equal {
@@ -72,7 +65,6 @@
 </head>
 <body>
 
-<<<<<<< HEAD
 		<nav class="navbar navbar-inverse">
 				<div class="container-fluid">
 				  <div class="navbar-header">
@@ -133,60 +125,6 @@
 
 									 
 			</header>
-=======
-<nav class="navbar navbar-inverse">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>                        
-      </button>
-      <a class="navbar-brand" href="#">Logo</a>
-    </div>
-    <div class="collapse navbar-collapse" id="myNavbar">
-      <ul class="nav navbar-nav">
-        <li class="active"><a href="#">Home</a></li>
-        <li><a href="#">About</a></li>
-        <li><a href="#">Projects</a></li>
-        <li><a href="#">Contact</a></li>
-      </ul>
-      <ul class="nav navbar-nav navbar-right">
-        <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-      </ul>
-    </div>
-  </div>
-</nav>
-  
-<div class="container-fluid text-center" >    
-  <div class="row content  equal">
-    <div class="col-sm-8 text-left "> 
-			<div class="container-fluid text-center" >    
-				<div class="row content  equal">
-					<div class="col-sm-12 text-left ">
-							<section class="cd-products-comparison-table">
-									<header>
-											<div class="container" >
-													<div class="row">
-															<div class="col-sm-12" style="background: brown"> 
-															     main div
-															</div> 
-													</div>
-											</div> 
-<!-- 										
-													<h2>Compare Models</h2>	
-													<button class="btn btn-success" onclick="showScore(this)" >Show Score </button>
-													<div class="actions">
-														<a href="#0" class="reset">Reset</a>
-														<a href="#0" class="filter">Filter</a>
-													</div>
-												
-											</div> -->
-										
-								
-								
-									</header>
->>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
 									
 										<div class="cd-products-table">
 											<div class="features">
@@ -276,7 +214,6 @@
 										</div> <!-- .cd-products-table -->
 									</section> <!-- .cd-products-comparison-table-->
 					</div>
-<<<<<<< HEAD
 
 
 					<div class="col-sm-3 sidenav " id="highchart" >  </div>
@@ -289,13 +226,6 @@
 		</div>
  
  
-=======
-				</div>
-			</div>	 
-				
-    </div>
-    <div class="col-sm-4 sidenav " id="highchart" >
->>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
 			
 
 <script src="{%static 'webapp/js/jquery-2.1.4.js'%}"></script>
@@ -334,11 +264,7 @@ $(document).ready(function () {
 		console.log(p+i,priceinput.toLocaleString('en-IN'));
 		
 	}
-<<<<<<< HEAD
 	$('#highchart').append("<div id='container'style='min-width: 210px; height: 240px; margin: 0 auto;position:fixed;'></div>");
-=======
-	$('#highchart').append("<div id='container'style='min-width: 210px; height: 240px; margin: 0 auto'></div>");
->>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
 	highchartShow();
 });
 
@@ -516,7 +442,6 @@ function showScore(){
 
 
 
-<<<<<<< HEAD
 
 }
 function submitScore(){
@@ -598,23 +523,6 @@ function submitScore(){
 	 				}
                     
             }); 
-=======
-	// $.ajax({
-    //                 type: 'POST',
-    //                 dataType: "json",
-                   
-    //                 'data': {
-    //                 'd': JSON.stringify(models),
-    //                 'csrfmiddlewaretoken': '{{ csrf_token }}',
-    //                 },
-    //                 url: "{% url 'showscore' %}",
-    //                 success: function(response){
-    //                     console.log(response);
-                    
-	// 				}
-                    
-    //                 });
->>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
 }
 	function highchartShow(){
 	Highcharts.chart('container', {
