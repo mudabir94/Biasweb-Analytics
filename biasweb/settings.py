@@ -24,7 +24,7 @@ SECRET_KEY = '#nve)401#b-vm9+g$06zvc%ozu6^a78za+6+b9g$(%@-_4en^u'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
+## public ip 03.4.94.106
 ALLOWED_HOSTS = ['172.16.22.79']
 
 
