@@ -83,8 +83,13 @@
                                     <input type="checkbox" value={{mob.id}} id={{mob.id}} name={{mob.id}}-{{mob.Mobile_Name}}  onchange="toggleCheckbox(this)"> 
                                     <img class="img-responsive" src="{% static mob.imagepath1 %}"  alt="Latest Products Image"  title=""/>
                                         </div>
+<<<<<<< HEAD
                                 <h4> <span class="text-uppercase margin-l-20">{{mob.Mobile_Name}}</span></h4>
                           <!--
+=======
+                               <!-- <h4> <span class="text-uppercase margin-l-20">{{mob.Mobile_Name}}</span></h4>
+                          
+>>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
                                     <h4><a href="{% url 'mobileinfo' id=mob.id %}">{{mob.Mobile_Companny}}</a> <span class="text-uppercase margin-l-20">{{mob.Mobile_Name}}</span></h4>
                                     <h4><a href = "{% url 'mobileinfo' id=mob.id %}"> Price </a><span class="text-uppercase margin-l-20">{{mob.price}}</span></h4>
                                     <h4>{{mob.os}}</h4>

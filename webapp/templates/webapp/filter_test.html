@@ -47,6 +47,10 @@
                 <form action="" method="POST">
                     {%csrf_token%}
                     <ul id="sortable">
+<<<<<<< HEAD
+                      
+=======
+>>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
                     {%for f in feat %}
                         <li id="{{f.feature}}-{{f.position}}">
                             {%if 'price' in f.feature%}
@@ -188,6 +192,99 @@
                                         </div>
                                         
                                 </div>
+<<<<<<< HEAD
+                                {% elif 'mobilecompany' in f.feature %}   
+                                <div class="row">
+                                        <div class="col-md-1" >
+                                          <p>Mobile Company</p>               
+                                        </div>
+                                        <div class="col-md-4" >
+                                            <div class="form-group"  >
+                                                <select id="eight-choice" class="form-control" >
+                                                        <option selected value=""> blank</option>
+                                                        {% for mc in mobilecompany %}
+                                                            <option  value="{{mc}}">{{mc}}</option>
+                                                        {% endfor %} 
+                                                        
+                                                    </select>
+                                            </div>
+                                        </div>
+                                        
+                                </div>
+                                {% elif 'chip' in f.feature %}   
+                                <div class="row">
+                                        <div class="col-md-1" >
+                                          <p>Chip</p>               
+                                        </div>
+                                        <div class="col-md-4" >
+                                            <div class="form-group"  >
+                                                <select id="nine-choice" class="form-control" >
+                                                        <option selected value=""> blank</option>
+                                                        {% for ch in chip %}
+                                                            <option  value="{{ch}}">{{ch}}</option>
+                                                        {% endfor %} 
+                                                        
+                                                    </select>
+                                            </div>
+                                        </div>
+                                        
+                                </div>
+                                {% elif 'Resolution' in f.feature %}   
+                                <div class="row">
+                                        <div class="col-md-1" >
+                                          <p>Resolution</p>               
+                                        </div>
+                                        <div class="col-md-4" >
+                                            <div class="form-group"  >
+                                                <select id="ten-choice" class="form-control" >
+                                                        <option selected value=""> blank</option>
+                                                        {% for res in resolution %}
+                                                            <option  value="{{res}}">{{res}}</option>
+                                                        {% endfor %}
+                                                        
+                                                    </select>
+                                            </div>
+                                        </div>
+                                        
+                                </div>
+                                {% elif 'weight' in f.feature %}   
+                                <div class="row">
+                                        <div class="col-md-1" >
+                                          <p>Weight</p>               
+                                        </div>
+                                        <div class="col-md-4" >
+                                            <div class="form-group"  >
+                                                <select id="eleven-choice" class="form-control" >
+                                                        <option selected value=""> blank</option>
+                                                        {% for wt in weight %}
+                                                            <option  value="{{wt}}">{{wt}}</option>
+                                                        {% endfor %}
+                                                        
+                                                    </select>
+                                            </div>
+                                        </div>
+                                        
+                                </div>
+                                {% elif 'dimensions' in f.feature %}   
+                                <div class="row">
+                                        <div class="col-md-1" >
+                                          <p>Dimensions</p>               
+                                        </div>
+                                        <div class="col-md-4" >
+                                            <div class="form-group"  >
+                                                <select id="twelve-choice" class="form-control" >
+                                                        <option selected value=""> blank</option>
+                                                        {% for dms in dimensions %}
+                                                            <option  value="{{dms}}">{{dms}}</option>
+                                                        {% endfor %}
+                                                        
+                                                    </select>
+                                            </div>
+                                        </div>
+                                        
+                                </div>
+=======
+>>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
                             {%endif%}
                             </li>
                         {%endfor%}
@@ -202,7 +299,17 @@
                                         <input type="hidden" value="" id="fifth_choice_value" name="fifth_choice_value"/>
                                         <input type="hidden" value="" id="six_choice_value" name="six_choice_value"/>
                                         <input type="hidden" value="" id="seven_choice_value" name="seven_choice_value"/>
+<<<<<<< HEAD
+                                        <input type="hidden" value="" id="eight_choice_value" name="eight_choice_value"/>
+                                        <input type="hidden" value="" id="nine_choice_value" name="nine_choice_value"/>
+                                        <input type="hidden" value="" id="ten_choice_value" name="ten_choice_value"/>
+                                        <input type="hidden" value="" id="eleven_choice_value" name="eleven_choice_value"/>
+                                        <input type="hidden" value="" id="twelve_choice_value" name="twelve_choice_value"/>
+
+                                        <!--create input field through java script-->
+=======
   
+>>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
                                     <input type="submit" name="submit" value="look up" />               
                                 </div>     
                         </div>
@@ -286,6 +393,34 @@
         $('#seven_choice_value').val(selected_id);
         //alert(selected_id);
     });
+<<<<<<< HEAD
+    $("#eight-choice").change(function() {
+        var selected_id =$("#eight-choice").val();
+        $('#eight_choice_value').val(selected_id);
+        //alert(selected_id);
+    });
+    $("#nine-choice").change(function() {
+        var selected_id =$("#nine-choice").val();
+        $('#nine_choice_value').val(selected_id);
+        //alert(selected_id);
+    });
+    $("#ten-choice").change(function() {
+        var selected_id =$("#ten-choice").val();
+        $('#ten_choice_value').val(selected_id);
+        //alert(selected_id);
+    });
+    $("#eleven-choice").change(function() {
+        var selected_id =$("#eleven-choice").val();
+        $('#eleven_choice_value').val(selected_id);
+        //alert(selected_id);
+    });
+    $("#twelve-choice").change(function() {
+        var selected_id =$("#twelve-choice").val();
+        $('#twelve_choice_value').val(selected_id);
+        //alert(selected_id);
+    });
+=======
+>>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
     </script>
     
 {% endblock  %}

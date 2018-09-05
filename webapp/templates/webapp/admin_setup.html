@@ -32,8 +32,12 @@
                 <ul class="nav nav-pills nav-stacked">
                        
                         <li ><a href="{%url 'admin_setup'%}">Advance Search Setup</a></li>
-                        <li><a href="{% url 'add_feature'%}">Add features</a></li>
+<<<<<<< HEAD
                         
+                        
+=======
+                        <li><a href="#section2">Manage Users</a></li>
+>>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
                 </ul><br>
           </div>
         <div class="col-sm-6 text-left"> 
@@ -59,7 +63,11 @@
                             {%if 'price' in f.feature%}
                                 <div class="row">
                                         <div class="col-md-1" >
+<<<<<<< HEAD
+                                        <!-- <p> {{f.feature}}</p>                -->
+=======
                                         <p> {{f.feature}}</p>               
+>>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
                                         </div>
                                         <div class="col-md-2">
                                               
@@ -71,7 +79,11 @@
                             {% elif 'color' in f.feature   %}
                                 <div class="row">
                                         <div class="col-md-1">
+<<<<<<< HEAD
+                                          <!-- <p> {{f.feature}}</p>                -->
+=======
                                           <p> {{f.feature}}</p>               
+>>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
                                         </div>
                                         <div class="col-md-4">
                                         <button class="btn btn-primary">Color</button>
@@ -83,7 +95,11 @@
                             {% elif 'os' in f.feature %}   
                                 <div class="row">
                                         <div class="col-md-1" >
+<<<<<<< HEAD
+                                          <!-- <p> {{f.feature}}</p>                -->
+=======
                                           <p> {{f.feature}}</p>               
+>>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
                                         </div>
                                         <div class="col-md-4" >
                                             <button class="btn btn-primary">Operating System</button> 
@@ -95,7 +111,11 @@
                             {% elif 'size' in f.feature %}   
                                 <div class="row">
                                         <div class="col-md-1">
+<<<<<<< HEAD
+                                          <!-- <p> {{f.feature}}</p>                -->
+=======
                                           <p> {{f.feature}}</p>               
+>>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
                                         </div>
                                         <div class="col-md-2">
                                             <button class="btn btn-primary">Size</button>
@@ -106,7 +126,11 @@
                             {% elif 'cpu' in f.feature %}   
                                 <div class="row">
                                         <div class="col-md-1">
+<<<<<<< HEAD
+                                          <!-- <p> {{f.feature}}</p>                -->
+=======
                                           <p> {{f.feature}}</p>               
+>>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
                                         </div>
                                         <div class="col-md-2">
                                             <button  class="btn btn-primary">CPU</button>
@@ -117,7 +141,11 @@
                             {% elif 'backcam' in f.feature %}   
                                 <div class="row">
                                         <div class="col-md-1">
+<<<<<<< HEAD
+                                          <!-- <p> {{f.feature}}</p>                -->
+=======
                                           <p> {{f.feature}}</p>               
+>>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
                                         </div>
                                         <div class="col-md-2">
                                             <button class="btn btn-primary">Back Camera</button>
@@ -128,7 +156,11 @@
                             {% elif 'battery' in f.feature %}   
                                 <div class="row">
                                         <div class="col-md-1">
+<<<<<<< HEAD
+                                          <!-- <p> {{f.feature}}</p>                -->
+=======
                                           <p> {{f.feature}}</p>               
+>>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
                                         </div>
                                         <div class="col-md-2">
                                             <button class="btn btn-primary">Battery</button>
@@ -137,6 +169,69 @@
 
                                         </div>
                                 </div>
+<<<<<<< HEAD
+                                {% elif 'mobilecompany' in f.feature %}   
+                                <div class="row">
+                                        <div class="col-md-1">
+                                          <!-- <p> {{f.feature}}</p>                -->
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button class="btn btn-primary">Mobile Company</button>
+                                            <button class='show_hide' onclick="myFunction($(this).parent().parent().parent().attr('id'))">Hide</button>
+
+
+                                        </div>
+                                </div>
+                                {% elif 'chip' in f.feature %}   
+                                <div class="row">
+                                        <div class="col-md-1">
+                                          <!-- <p> {{f.feature}}</p>                -->
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button class="btn btn-primary">Chip</button>
+                                            <button class='show_hide' onclick="myFunction($(this).parent().parent().parent().attr('id'))">Hide</button>
+
+
+                                        </div>
+                                </div>
+                                {% elif 'Resolution' in f.feature %}   
+                                <div class="row">
+                                        <div class="col-md-1">
+                                          <!-- <p> {{f.feature}}</p>                -->
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button class="btn btn-primary">Resolution</button>
+                                            <button class='show_hide' onclick="myFunction($(this).parent().parent().parent().attr('id'))">Hide</button>
+
+
+                                        </div>
+                                </div>    
+                                {% elif 'weight' in f.feature %}   
+                                <div class="row">
+                                        <div class="col-md-1">
+                                          <!-- <p> {{f.feature}}</p>                -->
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button class="btn btn-primary">Weight</button>
+                                            <button class='show_hide' onclick="myFunction($(this).parent().parent().parent().attr('id'))">Hide</button>
+
+
+                                        </div>
+                                </div>    
+                                {% elif 'dimensions' in f.feature %}   
+                                <div class="row">
+                                        <div class="col-md-1">
+                                          <!-- <p> {{f.feature}}</p>                -->
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button class="btn btn-primary">Dimensions</button>
+                                            <button class='show_hide' onclick="myFunction($(this).parent().parent().parent().attr('id'))">Hide</button>
+
+
+                                        </div>
+                                </div>    
+=======
+>>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
                             {%endif%}
                             </li>
                         {%endfor%}
@@ -162,7 +257,11 @@
                                 {%if 'price' in fi.feature%}
                                         <div class="row">
                                                 <div class="col-md-1" >
+<<<<<<< HEAD
+                                                <!-- <p> {{fi.feature}}</p>                -->
+=======
                                                 <p> {{fi.feature}}</p>               
+>>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
                                                 </div>
                                                 <div class="col-md-2">
                                                         
@@ -175,7 +274,11 @@
                                 {% elif 'color' in fi.feature %}
                                         <div class="row">
                                                 <div class="col-md-1">
+<<<<<<< HEAD
+                                                  <!-- <p> {{fi.feature}}</p>                -->
+=======
                                                   <p> {{fi.feature}}</p>               
+>>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
                                                 </div>
                                                 <div class="col-md-4">
                                                   <button class="btn btn-primary">Color</button>
@@ -187,7 +290,11 @@
                                 {% elif 'os' in fi.feature %}   
                                         <div class="row">
                                                 <div class="col-md-1" >
+<<<<<<< HEAD
+                                                  <!-- <p> {{fi.feature}}</p>                -->
+=======
                                                   <p> {{fi.feature}}</p>               
+>>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
                                                 </div>
                                                 <div class="col-md-4" >
                                                     <button class="btn btn-primary">Operating System</button> 
@@ -199,7 +306,11 @@
                                 {% elif 'size' in fi.feature %}   
                                         <div class="row">
                                                 <div class="col-md-1">
+<<<<<<< HEAD
+                                                  <!-- <p> {{fi.feature}}</p>                -->
+=======
                                                   <p> {{fi.feature}}</p>               
+>>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
                                                 </div>
                                                 <div class="col-md-2">
                                                     <button class="btn btn-primary">Size</button>
@@ -211,7 +322,11 @@
                                 {% elif 'cpu' in fi.feature %}   
                                         <div class="row">
                                                 <div class="col-md-1">
+<<<<<<< HEAD
+                                                  <!-- <p> {{fi.feature}}</p>                -->
+=======
                                                   <p> {{fi.feature}}</p>               
+>>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
                                                 </div>
                                                 <div class="col-md-4">
                                                     <button  class="btn btn-primary">CPU</button>
@@ -221,7 +336,11 @@
                                 {% elif 'backcam' in fi.feature%}   
                                         <div class="row">
                                                 <div class="col-md-1">
+<<<<<<< HEAD
+                                                  <!-- <p> {{fi.feature}}</p>                -->
+=======
                                                   <p> {{fi.feature}}</p>               
+>>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
                                                 </div>
                                                 <div class="col-md-4">
                                                     <button class="btn btn-primary">Back Camera</button>
@@ -231,7 +350,11 @@
                                 {% elif 'battery' in fi.feature%}   
                                         <div class="row">
                                                 <div class="col-md-1">
+<<<<<<< HEAD
+                                                  <!-- <p> {{fi.feature}}</p>                -->
+=======
                                                   <p> {{fi.feature}}</p>               
+>>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
                                                 </div>
                                                 <div class="col-md-4">
                                                     <button class="btn btn-primary">Battery</button>
@@ -239,9 +362,70 @@
 <button width="200px" class="show_hide" onclick="myFun($(this).parent().parent().attr('id'))">Show</button>
 
                                         </div>
+<<<<<<< HEAD
+                                {% elif 'mobilecompany' in fi.feature%}   
+                                        <div class="row">
+                                                <div class="col-md-1">
+                                                  <!-- <p> {{fi.feature}}</p>                -->
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <button class="btn btn-primary">Mobile Company</button>
+                                                </div>
+<button width="200px" class="show_hide" onclick="myFun($(this).parent().parent().attr('id'))">Show</button>
+
+                                        </div>
+                                {% elif 'chip' in fi.feature%}   
+                                        <div class="row">
+                                                <div class="col-md-1">
+                                                  <!-- <p> {{fi.feature}}</p>                -->
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <button class="btn btn-primary">Chip</button>
+                                                </div>
+<button width="200px" class="show_hide" onclick="myFun($(this).parent().parent().attr('id'))">Show</button>
+
+                                        </div>
+                                {% elif 'Resolution' in fi.feature%}   
+                                        <div class="row">
+                                                <div class="col-md-1">
+                                                  <!-- <p> {{fi.feature}}</p>                -->
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <button class="btn btn-primary">Resolution</button>
+                                                </div>
+<button width="200px" class="show_hide" onclick="myFun($(this).parent().parent().attr('id'))">Show</button>
+
+                                        </div>
+                                {% elif 'weight' in fi.feature%}   
+                                        <div class="row">
+                                                <div class="col-md-1">
+                                                  <!-- <p> {{fi.feature}}</p>                -->
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <button class="btn btn-primary">weight</button>
+                                                </div>
+<button width="200px" class="show_hide" onclick="myFun($(this).parent().parent().attr('id'))">Show</button>
+
+                                        </div>
+                                {% elif 'dimensions' in fi.feature%}   
+                                        <div class="row">
+                                                <div class="col-md-1">
+                                                  <!-- <p> {{fi.feature}}</p>                -->
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <button class="btn btn-primary">dimensions</button>
+                                                </div>
+<button width="200px" class="show_hide" onclick="myFun($(this).parent().parent().attr('id'))">Show</button>
+
+                                        </div>
+                                {%endif%}
+                                        
+                            
+=======
                                 
                                 {%endif%}
                                         
+>>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
                          </li>
                 {%endfor%} 
                 </ul>
