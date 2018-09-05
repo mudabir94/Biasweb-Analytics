@@ -92,7 +92,7 @@ class feature(models.Model):
     def __str__(self):
         return self.feature
     class Meta:
-<<<<<<< HEAD
+
         verbose_name_plural="feature"
 
 class userscoreRecord (models.Model):
