@@ -1,9 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-<<<<<<< HEAD
+
 import datetime
-=======
->>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
 
 # Create your models here.
 class User(AbstractUser):
