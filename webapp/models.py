@@ -85,11 +85,8 @@ class sort_feature(models.Model):
     def __str__(self):
         return self.feature
     class Meta:
-<<<<<<< HEAD
         verbose_name_plural="Sort Feature"
-=======
-        verbose_name_plural="sort feature"
->>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
+
 class feature(models.Model):
     feature=models.CharField(max_length=200,null=True)
     def __str__(self):
@@ -114,7 +111,3 @@ class userscoreRecord (models.Model):
 
 
     
-=======
-        verbose_name_plural="sort feature"
-
->>>>>>> 65e64f29cb305c7a26d9e7e55d0aacdd8cf9adf4
