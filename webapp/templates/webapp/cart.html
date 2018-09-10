@@ -132,7 +132,7 @@
 												<input type="hidden" id="mobsize" value="{{s}}" />
 												<ul class="cd-features-list">
 												
-													<li>Price {{s}}</li>
+													<li>Price in PKR</li>
 													<li>Resolution</li>
 													<li>Display Size</li>
 													<li>Color</li>
@@ -157,7 +157,10 @@
 														</div> <!-- .top-info -->
 														<ul class="cd-features-list">
 															<li id="price-{{m.id}}">
-															<div id="price{{ forloop.counter }}"><p id="pricepara{{forloop.counter}}"></p> </div>
+															<div id="price{{ forloop.counter }}">
+																<p id="pricepara{{forloop.counter}}"></p> 
+															</div>
+															
 															<input type="hidden" id="priceinput-{{ forloop.counter }}" value="{{m.price}}" />
 															
 															<div class="slidecontainer">
