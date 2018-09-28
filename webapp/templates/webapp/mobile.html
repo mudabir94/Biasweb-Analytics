@@ -19,7 +19,8 @@
               <li><a href="#" >About</a></li>
               {% if  user.is_authenticated %}
               <li><p id="username">{{ user.get_username }}</p></li>
-              <li><a href="{% url 'logout'%}">Logout</a></li>   
+              <li><a href="{% url 'logout'%}">Logout</a></li> 
+              <li><a href="{% url 'test_main'%}">Python Script</a></li>   
               {% else %}
               <li><a href="{% url 'login'%}?next={{request.path}}">Login</a></li>   
               {% endif %}  
