@@ -135,3 +135,12 @@ LOGIN_REDIRECT_URL = 'mobileview'
 
 LOGOUT_REDIRECT_URL = '/accounts/login'
 
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'mudabirahmad1994@gmail.com'
+EMAIL_HOST_PASSWORD = 'Fccgrad2'
+EMAIL_USE_TLS = True
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
+DEFAULT_FROM_EMAIL = 'mudabirahmad1994@gmail.com' # email id
+EMAIL_USE_LOCALTIME=True
