@@ -8,6 +8,8 @@ class User(AbstractUser):
     is_student = models.BooleanField(default=False)
     is_prof = models.BooleanField(default=False)
     is_ra= models.BooleanField(default=False)
+    platform_admin= models.BooleanField(default=False)
+    experiment_admin=models.BooleanField(default=False)
 class signup_table(models.Model):
     username=models.CharField(max_length=200)
     email=models.CharField(max_length=300,null=True)

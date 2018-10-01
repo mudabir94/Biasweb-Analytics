@@ -11,7 +11,7 @@ class MyUserChangeForm(UserChangeForm):
 class MyUserAdmin(UserAdmin):
     form = MyUserChangeForm
     fieldsets = UserAdmin.fieldsets + (
-        (None, {'fields': ('is_student', 'is_prof','is_ra',)}),
+        (None, {'fields': ('is_student', 'is_prof','is_ra','platform_admin','experiment_admin',)}),
 
     )
 admin.site.register(User, MyUserAdmin)

@@ -21,7 +21,8 @@ urlpatterns = [
     url(r'^mobile/',views.mobile_phone_view.as_view(),name='mobileview'),
     path('mobile_info/<int:id>',views.mobile_phone_view.one_mobile_func, name='mobileinfo'),
     url(r'^filter/',views.filter.as_view(), name='filter'),
-    url(r'^showfilter/',views.showFilter.as_view(), name='showfilter'),
+    #this page is not used anywhere now.
+    #url(r'^showfilter/',views.showFilter.as_view(), name='showfilter'),
     
     url(r'^cart/',views.cart, name='cart'),
     url(r'^showmob/',views.showMob, name='sm'),
