@@ -44,6 +44,7 @@
                         
                         {% if  user.is_superuser %}
                         <li ><a href="{%url 'admin_setup'%}">Advance Search Setup</a></li>
+                        <li><a href="{%url 'admin:index'%}">Admin page</a></li>
                         {% else %}
                         <li>
                             <a href="{% url 'filter'  %}">ADVANCED SEARCH</a>
