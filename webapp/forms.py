@@ -27,3 +27,7 @@ class sort_filter_form(ModelForm):
     class Meta:
         model=sort_feature
         fields='__all__'
+
+class NameForm(forms.Form):
+     tablename= forms.CharField(label='Table Name', max_length=100)
+     csvfilepath=forms.CharField(label='Csvfile path',max_length=100)

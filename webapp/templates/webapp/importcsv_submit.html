@@ -56,6 +56,12 @@
                 </ul>
       </div>
     <div class="col-sm-9  col-md-9 col-lg-9 col-xs-9 text-left" > 
+        <form action="{%url 'importcsv_submit'%}" method="post">
+          {% csrf_token %}
+          {{ form }}
+          <input type="submit" value="Submit" />
+      </form>
+
     </div>
       <div class="col-sm-1 sidenav">
         <div class=""   id="lc" style="position: fixed">

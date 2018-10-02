@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic import TemplateView
-from .forms import blogForm,SignUpForm,mobile_phone_form,filterform,sort_filter_form
+from .forms import blogForm,SignUpForm,mobile_phone_form,filterform,sort_filter_form,NameForm
 from .models import blog,mobile_phone,phone,samsung_phone,sort_feature,userscoreRecord
 from django.http import HttpResponse
 from django.contrib.auth import login as auth_login, authenticate
@@ -11,7 +11,8 @@ from django.db import connection
 from django.db.models import Q
 import json
 from django.utils import timezone
-
+from biasweb.pythonscripts.getdata import get
+from biasweb.pythonscripts.insertcsvfiletotable import populate_Table
 role=1   #global variable used in adminsetup and globalFunc function. 
 mobiles=samsung_phone.objects.raw('SELECT * FROM webapp_samsung_phone WHERE id=1 or id=2') # making mobiles object global.
 sizeofmob=0 # global variable assigned in filter class.
@@ -532,8 +533,28 @@ class mobile_phone_view(TemplateView):
         return render(request,'webapp/one_mobile_info.html',{'singlemob':singlemob})
         
    
-def ImportCsv(request):
-    return render(request,'webapp/importcsv.html')
+def ImportCsv_submit(request):
+    if request.method == 'POST':
+        form = NameForm(request.POST)
+        if form.is_valid():
+            #data=[]
+            tablename=form.cleaned_data.get('tablename')
+            csvfilepath=form.cleaned_data.get('csvfilepath')
+            print(type(csvfilepath))
+            #data.extend((tablename,csvfilepath))
+            
+            status=populate_Table(tablename,csvfilepath)
+        
+            return render (request, 'webapp/importcsv_form_display.html',{'status':status})
+    else :
+        form = NameForm()
+        return render(request,'webapp/importcsv_submit.html',{'form': form})
+   
+       
+
+
+    
+
     
 
         

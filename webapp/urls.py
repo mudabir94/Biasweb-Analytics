@@ -29,6 +29,6 @@ urlpatterns = [
     url(r'^showScore/',views.showScore, name='showscore'),
 
 
-    url(r'^importcsv/',views.ImportCsv, name='importcsv'),
+    url(r'^importcsv_submit/',views.ImportCsv_submit, name='importcsv_submit'),
 
 ]
