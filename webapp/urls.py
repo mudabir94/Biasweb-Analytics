@@ -28,11 +28,4 @@ urlpatterns = [
     url(r'^showmob/',views.showMob, name='sm'),
     url(r'^showScore/',views.showScore, name='showscore'),
 
-    url(r'^testmain/',views.testMain, name='test_main'),
-
-
-
-
-
-   
 ]

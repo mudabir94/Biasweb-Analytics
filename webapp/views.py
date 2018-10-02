@@ -11,14 +11,11 @@ from django.db import connection
 from django.db.models import Q
 import json
 from django.utils import timezone
-from biasweb.pythonscripts.test_main import main 
 
 role=1   #global variable used in adminsetup and globalFunc function. 
 mobiles=samsung_phone.objects.raw('SELECT * FROM webapp_samsung_phone WHERE id=1 or id=2') # making mobiles object global.
 sizeofmob=0 # global variable assigned in filter class.
-def testMain(request):
-    main()
-    return render(request, 'webapp/mobile.html')
+
 
 
 def showScore(request):
@@ -533,6 +530,8 @@ class mobile_phone_view(TemplateView):
         singlemob=samsung_phone.objects.filter(id=id1)
         print(singlemob)
         return render(request,'webapp/one_mobile_info.html',{'singlemob':singlemob})
+        
+   
 
     
 
