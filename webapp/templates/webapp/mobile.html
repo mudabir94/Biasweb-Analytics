@@ -44,8 +44,8 @@
                         
                         {% if  user.is_superuser %}
                         <li ><a href="{%url 'admin_setup'%}">Advance Search Setup</a></li>
-                        <li><a href="{%url 'admin:index'%}">Directentry</a></li>
-                     
+                        <li><a href="{%url 'admin:index'%}">Direct Entry</a></li>
+                        <li><a href="{%url 'importcsv'%}">Insert Csv file to tables</a></li>
                         {% else %}
                         <li>
                             <a href="{% url 'filter'  %}">ADVANCED SEARCH</a>

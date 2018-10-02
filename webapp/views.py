@@ -532,7 +532,8 @@ class mobile_phone_view(TemplateView):
         return render(request,'webapp/one_mobile_info.html',{'singlemob':singlemob})
         
    
-
+def ImportCsv(request):
+    return render(request,'webapp/importcsv.html')
     
 
         

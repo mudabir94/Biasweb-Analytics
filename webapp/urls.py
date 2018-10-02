@@ -28,4 +28,7 @@ urlpatterns = [
     url(r'^showmob/',views.showMob, name='sm'),
     url(r'^showScore/',views.showScore, name='showscore'),
 
+
+    url(r'^importcsv/',views.ImportCsv, name='importcsv'),
+
 ]
