@@ -16,7 +16,11 @@
             <ul class="nav navbar-nav">
              
               <li><a href="{%url 'mobileview'%}">Home </a></li>
-              <li><a href="#" >About</a></li>
+              
+              <li><a href="#" >Aboutt</a></li>
+             
+             
+              
               {% if  user.is_authenticated %}
               <li><p id="username">{{ user.get_username }}</p></li>
               <li><a href="{% url 'logout'%}">Logout</a></li> 
@@ -46,12 +50,24 @@
                         <li ><a href="{%url 'admin_setup'%}">Advance Search Setup</a></li>
                         <li><a href="{%url 'admin:index'%}">Direct Entry</a></li>
                         <li><a href="{%url 'importcsv_submit'%}">Insert Csv file to tables</a></li>
-                        {% else %}
-                        <li>
-                            <a href="{% url 'filter'  %}">ADVANCED SEARCH</a>
-                        </li>
-                        {%endif%}
-                        
+                        {%else%}
+                                {% if request.user.experiment_admin%}
+                                <li ><a href="{%url 'admin_setup'%}">Advance Search Setup</a></li>
+                                
+                                
+                                {% elif request.user.platform_admin%}
+                                
+                                <li ><a href="{%url 'admin_setup'%}">Advance Search Setup</a></li>
+                                <li><a href="{%url 'admin:index'%}">Direct Entry</a></li>
+                               
+                                {%else%}
+                                <p>asdasd</p>
+                                {%endif%}
+                         <li>
+                                <a href="{% url 'filter'  %}">Advance Search</a>
+                         </li>
+                        {%endif%}  
+                       
                        
                         <li>
                             <a href="#">SAMSUNG</a>

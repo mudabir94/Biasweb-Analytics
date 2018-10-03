@@ -58,7 +58,7 @@ class phone(models.Model):
     back_camera=models.CharField(max_length=400,null=True)
     
     def __str__(self):
-        return self.Mobile_Companny
+        return self.Mobile_Name
     class Meta:
         verbose_name_plural="phone"
 class samsung_phone(models.Model):

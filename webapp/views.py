@@ -511,6 +511,7 @@ class mobile_phone_view(TemplateView):
         page = request.GET.get('page')
         mobiles = paginator.get_page(page)
         print(mobiles)
+       
         return render(request,self.template_name,{'mobiles':mobiles})
   
     def post(self,request):
