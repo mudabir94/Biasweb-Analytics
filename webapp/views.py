@@ -551,8 +551,12 @@ def ImportCsv_submit(request):
         form = NameForm()
         return render(request,'webapp/importcsv_submit.html',{'form': form})
    
-       
 
+
+def  BiasTestFeature(request):
+    return render(request,'webapp/biasfeaturetest.html')
+def ManageShortList(request):
+    return render(request,'webapp/mangeshortlist.html')
 
     
 
