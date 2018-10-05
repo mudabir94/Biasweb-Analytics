@@ -101,7 +101,7 @@ class sort_feature(models.Model):
 class feature(models.Model):
     feature=models.CharField(max_length=200,null=True)
     def __str__(self):
-        return self.feature
+        return self.id
     class Meta:
 
         verbose_name_plural="feature"
@@ -119,6 +119,13 @@ class userscoreRecord (models.Model):
         return self.feat_name
     class Meta:
         verbose_name_plural="User Score Record"
-
+class prunedmobilephones(models.Model):
+     u_id=models.IntegerField(null=True)
+     m_id=models.IntegerField(null=True)
+     roles=models.IntegerField(null=True)
+     def __str__(self):
+        return self.u_id
+     class Meta:
+        verbose_name_plural="Pruned Mobile Phones"
 
     

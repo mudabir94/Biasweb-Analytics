@@ -1,0 +1,39 @@
+Roles and their description.
+Super User by default : has access to every thing.
+Rest roles will be created by superuser.
+1st layer roles::
+1st layer roles means that these roles partly share super admin functions. 
+
+Platform admin:-
+    The users having platform admin role will have some of the superuser/admin access. 
+    Manage Phones, Users... 
+        - add
+        - delete
+        - edit
+    Scrape Websites 
+Experiment admin: 
+    The users having Experiment admin roles are the ones who help in conducting experiments. 
+    All privileges will be given to them that are neccesory for the experiments. 
+    1. Creating, Viewing, deleting experiments.
+        - Setting different criterias for the experiments. 
+        1.1 Assigning "Subjects" Batches and Blocks.
+        1.2 Setting permissions for the Role "Subjects'
+Experiment Staff:
+    This role would help the experiment_admin in conducting the experiment. 
+    It will have limited access when compared to experiment_admin.
+    1. Export/ Get Experiment list. 
+    2. Export/ Subjects lists
+    etc..
+
+2nd layer roles::
+
+Subject:- 
+      The users having the role of "Subjects" would be the ones, on whom the experiments would be conducted. 
+      The will only have access to those things which the experiment_admin has set for them. 
+      E.g
+      If the experiment admin wants the Subject of specific user id to be a part of interactivity research only then 
+      that user will only have access to those pages that involve interactivity.
+      
+
+
+ 

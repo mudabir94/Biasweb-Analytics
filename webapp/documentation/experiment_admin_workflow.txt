@@ -1,0 +1,47 @@
+Experiment_admin has one major task, To create an experiment structure which can be divided in parts.
+The Experiment structure is comprised of following things. 
+1. Select Biasing Features to test
+    Biasing Features are comprised of 
+    1.1 Interactivty
+    1.2 Revisiability
+    1.3 AHP 
+    1.4 Sequence
+2. Define Subject Groups. 
+    - First the Subjects are enrolled for the Specific Experiment. 
+    - How Subjects are enrolled. 
+        - Each experiment can have multiple batches.
+            -Batch means a group that has multiple subjects in it. 
+            -Batch Table 
+            * id  Experiment_id  Subject_id 
+            * 
+            *
+        - Each Batch can have multiple blocks.
+        - Each Subject is assigned to the Batches.  
+        - How are the batches created(Number of batches)??? 
+            - A block contains persmissions that are assigned to the subjects.
+                -Permission are basically a set of features that are allowed for the subjects.
+                - Example
+                 * blockid   interactivity   Revisiability  AHP  Sequence       
+                 *   1           0              0           1      1
+                 *   2           1              1           0      0 
+                 *  ...
+                - This table is created on the bases of the number of features an 
+                  experiment admin wants to conduct an experiment on. 
+                    - If The Experiment_admin selects 2 features for testing then a 2 by 2 
+                      matrix is created. This matrix will contain total of four different combination. 
+                - After Creation of the block it is up to the Experiment_admin to decide of 
+                  how he wants to assign each permission/row/id/combination/blockid/blockNumber 
+                  to the subject. 
+                  - He can randomly assign the blocks to the subjects. 
+                  - It is upto him.    
+            - Each Subject can have only one block permission/row/id/combination/blockid/blockNumber
+              but different subjects can have same
+              block permission/row/id/combination/blockid/blockNumber.
+            - So each Subject is assigned a permission/row/id/combination/blockid/blockNumber
+            - A final table of Experiment is created having the following items.
+            *  id   Experiment_id  Batch_id  Block_id  Subject_id 
+            *  
+            *
+            *
+            *
+3. On the Basis of the final table the experiment would be conducted. 

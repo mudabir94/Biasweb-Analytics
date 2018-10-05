@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic import TemplateView
 from .forms import blogForm,SignUpForm,mobile_phone_form,filterform,sort_filter_form,NameForm
-from .models import blog,mobile_phone,phone,samsung_phone,sort_feature,userscoreRecord
+from .models import blog,mobile_phone,phone,samsung_phone,sort_feature,userscoreRecord,prunedmobilephones
 from django.http import HttpResponse
 from django.contrib.auth import login as auth_login, authenticate
 from django.contrib.auth.forms import UserCreationForm
@@ -14,6 +14,7 @@ from django.utils import timezone
 from biasweb.pythonscripts.getdata import get
 from biasweb.pythonscripts.insertcsvfiletotable import populate_Table
 role=1   #global variable used in adminsetup and globalFunc function. 
+
 mobiles=samsung_phone.objects.raw('SELECT * FROM webapp_samsung_phone WHERE id=1 or id=2') # making mobiles object global.
 sizeofmob=0 # global variable assigned in filter class.
 
@@ -209,8 +210,7 @@ def globalFunc(request):
         print(type(a))
         global  role
         role=a
-        
-       
+
         
 
         # UPDATE [Table] SET [Position] = $i WHERE [EntityId] = $value 
@@ -505,14 +505,40 @@ class mobile_phone_view(TemplateView):
     template_name='webapp/mobile.html'
     def get(self,request):
         #form=mobile_phone_form(request.POST)
+        querry_array=[]
+        querry=''
+        if not request.user.is_superuser:
+            if request.user.is_student:
+                
+                obj=prunedmobilephones.objects.filter(roles=1)
+                for m in obj:
+                    querry_array.append(' ' + 'id='+str(m.m_id)+ ' ' )
+                    
 
-        mobiles= samsung_phone.objects.all()
-        paginator = Paginator(mobiles,9)
-        page = request.GET.get('page')
-        mobiles = paginator.get_page(page)
-        print(mobiles)
-       
-        return render(request,self.template_name,{'mobiles':mobiles})
+                querry='SELECT * FROM webapp_samsung_phone WHERE '+ 'or'.join(querry_array)
+                print(querry)
+                mobiles=samsung_phone.objects.raw(querry)
+                return render(request,'webapp/cart.html',{'mobiles':mobiles})
+            if request.user.is_prof:
+                obj=prunedmobilephones.objects.filter(roles=2)
+                print("in here")
+                for m in obj:
+                    querry_array.append(' ' + 'id='+str(m.m_id)+ ' ' )
+                    
+
+                querry='SELECT * FROM webapp_samsung_phone WHERE '+ 'or'.join(querry_array)
+                print(querry)
+                mobiles=samsung_phone.objects.raw(querry)
+                return render(request,'webapp/cart.html',{'mobiles':mobiles})
+            
+        else:
+            mobiles= samsung_phone.objects.all()
+            paginator = Paginator(mobiles,9)
+            page = request.GET.get('page')
+            mobiles = paginator.get_page(page)
+            print(mobiles)
+        
+            return render(request,self.template_name,{'mobiles':mobiles})
   
     def post(self,request):
         if request.method=="POST":
@@ -554,9 +580,33 @@ def ImportCsv_submit(request):
 
 
 def  BiasTestFeature(request):
+     
     return render(request,'webapp/biasfeaturetest.html')
-def ManageShortList(request):
-    return render(request,'webapp/mangeshortlist.html')
+class ManageShortList(TemplateView):
+
+    def get(self,request):
+        mobiles= samsung_phone.objects.all()
+        paginator = Paginator(mobiles,9)
+        page = request.GET.get('page')
+        mobiles = paginator.get_page(page)
+        print(mobiles)
+        return render(request,'webapp/mangeshortlist.html',{'mobiles':mobiles})
+
+    def post(self,request):
+        if request.is_ajax:
+        # print("ajax",request.POST.get('data'))
+            ####print("PST",request.POST.get('d')) 
+            d = request.POST.get('data[0]')
+            d=json.loads(d)
+            
+            arrr = request.POST.get('data[1]')
+            arr=json.dumps(arrr)
+            
+            print(arr)
+            print(d)
+           
+            
+        return render(request,'webapp/mangeshortlist.html',{'mobiles':mobiles})
 
     
 

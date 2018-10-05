@@ -9,7 +9,9 @@ urlpatterns = [
     url(r'^test/',views.test, name='test'),                
     url(r'^ind/',views.ind, name='ind'),                   
     url(r'^on/',views.on, name='on'),                       
-    url(r'^globalFunc/',views.globalFunc,name='gf'),       
+    url(r'^globalFunc/',views.globalFunc,name='gf'),      
+    
+ 
                                                            
     
     
@@ -33,6 +35,6 @@ urlpatterns = [
     
 
     url(r'^biastestfeatures/',views.BiasTestFeature, name='select_biasfeature'),
-    url(r'^manageshortlist/',views.ManageShortList, name='manage_shortlisting'),
+    url(r'^manageshortlist/',views.ManageShortList.as_view(), name='manage_shortlisting'),
 
 ]
