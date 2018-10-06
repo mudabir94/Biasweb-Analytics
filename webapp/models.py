@@ -4,12 +4,18 @@ from django.contrib.auth.models import AbstractUser
 import datetime
 
 # Create your models here.
+
+class Role(models.Model):
+    
+    role_name=models.CharField(max_length=45)
 class User(AbstractUser):
     is_student = models.BooleanField(default=False)
     is_prof = models.BooleanField(default=False)
     is_ra= models.BooleanField(default=False)
     platform_admin= models.BooleanField(default=False)
     experiment_admin=models.BooleanField(default=False)
+    role_id = models.ForeignKey(Role, on_delete=models.CASCADE,default=None)
+    custom_id=models.IntegerField(unique=True,default=None)
 class signup_table(models.Model):
     username=models.CharField(max_length=200)
     email=models.CharField(max_length=300,null=True)
