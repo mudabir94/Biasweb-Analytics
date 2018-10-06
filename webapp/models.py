@@ -8,14 +8,28 @@ import datetime
 class Role(models.Model):
     
     role_name=models.CharField(max_length=45)
+    def __str__(self):
+        return self.role_name
+    class Meta:
+        verbose_name_plural="Role"
+
 class User(AbstractUser):
     is_student = models.BooleanField(default=False)
     is_prof = models.BooleanField(default=False)
     is_ra= models.BooleanField(default=False)
     platform_admin= models.BooleanField(default=False)
     experiment_admin=models.BooleanField(default=False)
-    role_id = models.ForeignKey(Role, on_delete=models.CASCADE,default=None)
-    custom_id=models.IntegerField(unique=True,default=None)
+    role_id = models.ForeignKey(Role, on_delete=models.CASCADE,default=None,null=True)
+    custom_id=models.IntegerField(unique=True,default=None,null=True,blank=True)
+
+class platform_feature(models.Model):
+    feature_name=models.CharField(max_length=100,null=True,blank=True)
+    def __str__(self):
+        return self.feature_name
+    class Meta:
+        verbose_name_plural="platform_feature"
+
+
 class signup_table(models.Model):
     username=models.CharField(max_length=200)
     email=models.CharField(max_length=300,null=True)
@@ -134,4 +148,3 @@ class prunedmobilephones(models.Model):
      class Meta:
         verbose_name_plural="Pruned Mobile Phones"
 
-    

@@ -2,7 +2,8 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserChangeForm
 from .models import User
-from .models import signup_table,blog,mobile_phone,phone,samsung_phone,sort_feature,userscoreRecord,Role
+from .models import signup_table,blog,mobile_phone,phone
+from .models import samsung_phone,sort_feature,userscoreRecord,Role,platform_feature
 
 
 class MyUserChangeForm(UserChangeForm):
@@ -31,4 +32,4 @@ admin.site.register(samsung_phone)
 admin.site.register(sort_feature)
 admin.site.register(userscoreRecord)
 admin.site.register(Role)
-
+admin.site.register(platform_feature)
