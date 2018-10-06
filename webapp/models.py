@@ -12,6 +12,7 @@ class Role(models.Model):
         return self.role_name
     class Meta:
         verbose_name_plural="Role"
+        ordering=['pk']
 
 class User(AbstractUser):
     is_student = models.BooleanField(default=False)
@@ -28,7 +29,14 @@ class platform_feature(models.Model):
         return self.feature_name
     class Meta:
         verbose_name_plural="platform_feature"
-
+        ordering = ['pk']
+class  experiment(models.Model):
+    experiment_name=models.CharField(max_length=100)
+    def __str__(self):
+        return self.experiment_name
+    class Meta:
+        verbose_name_plural="experiment"
+        ordering = ['pk']
 
 class signup_table(models.Model):
     username=models.CharField(max_length=200)
@@ -81,6 +89,8 @@ class phone(models.Model):
         return self.Mobile_Name
     class Meta:
         verbose_name_plural="phone"
+        
+
 class samsung_phone(models.Model):
     Mobile_Companny= models.CharField(max_length=200, null= True)
     Mobile_Name= models.CharField(max_length=300, null= True)

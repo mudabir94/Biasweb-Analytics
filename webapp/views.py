@@ -584,13 +584,13 @@ class  BiasTestFeature(TemplateView):
     def get(self,request): 
         epadmin_obj=Experiment_Admin(request.user.last_name,request.user.id)
         experiment_admin_data=epadmin_obj.getExperiment_AdminInfo()
-        print(experiment_admin_data)
+        #print(experiment_admin_data)
         #check permissions of the user...
         #if experiment_admin or superuser confirmed
             ## call all functions... 
         # if experiment_Staff 
            ## call view function
-        return render(request,'webapp/biasfeaturetest.html')
+        return render(request,'webapp/biasfeaturetest.html',{'role_id':2})
     def post(self,request):
         return render(request,'webapp/biasfeaturetest.html')
 

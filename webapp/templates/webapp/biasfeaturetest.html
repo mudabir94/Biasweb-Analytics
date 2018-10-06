@@ -74,26 +74,24 @@
                     </ul>
           </div>
         <div class="col-sm-9  col-md-9 col-lg-9 col-xs-9 text-left" > 
+                <div class=""   id="lc" style="position: fixed">
+                            <div class="experimentadmin">
+                            <center><h1>Welcome Experiment_admin </h1></center>
+                            </div>
                             
+                            <div class="experimentstaff">
+                            <center><h1>Welcome experiment_Staff!</h1></center>
+                            </div>
+                            
+                            <div class="superadmin">
+                            <center><h1>Welcome super admin!</h1></center>
+                            </div>
+                            
+                           
+                    </div>     
           </div>
           <div class="col-sm-1 sidenav">
-            <div class=""   id="lc" style="position: fixed">
-                <div class="anonymous">
-                    <center><h1>Welcome Anonymous User!</h1></center>
-                    </div>
-                    
-                    <div class="end_user">
-                    <center><h1>Welcome End-User!</h1></center>
-                    </div>
-                    
-                    <div class="agent">
-                    <center><h1>Welcome Agent!</h1></center>
-                    </div>
-                    
-                    <div class="manager">
-                    <center><h1>Welcome Manager!</h1></center>
-                    </div>
-            </div>
+          
           </div>
         </div>
       </div>
@@ -103,27 +101,26 @@
        
       </footer>
 
-<script>
+<script  >
     // Show div html based on role
 $(document).ready(function() { 
 // in future we will get the role id and on the basis of role id we will decide what we want. 
+var a="{{role_id}}";
 
-console.log("asd",HelpCenter.user.role)
-if (HelpCenter.user.role=="anonymous"){
- $("div.anonymous").show();
+if (a==1){
+    console.log(a);
+ $("div.experimentadmin").show();
 }
 
-if (HelpCenter.user.role=="super_user"){
- $("div.end_user").show();
+if (a==2){
+    console.log(a);
+ $("div.experimentstaff").show();
+}
+if (a==3){
+    console.log(a);
+ $("div.superadmin").show();
 }
 
-if (HelpCenter.user.role=="agent"){
- $("div.agent").show();
-}
-
-if (HelpCenter.user.role=="manager"){
- $("div.manager").show();
-}
 });
 </script>
 {%endblock%}
