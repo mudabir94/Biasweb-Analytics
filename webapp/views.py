@@ -13,6 +13,7 @@ import json
 from django.utils import timezone
 from biasweb.pythonscripts.getdata import get
 from biasweb.pythonscripts.insertcsvfiletotable import populate_Table
+from biasweb.pythonscripts.experiment_admin import Experiment_Admin
 role=1   #global variable used in adminsetup and globalFunc function. 
 
 mobiles=samsung_phone.objects.raw('SELECT * FROM webapp_samsung_phone WHERE id=1 or id=2') # making mobiles object global.
@@ -576,12 +577,23 @@ def ImportCsv_submit(request):
     else :
         form = NameForm()
         return render(request,'webapp/importcsv_submit.html',{'form': form})
-   
 
 
-def  BiasTestFeature(request):
-     
-    return render(request,'webapp/biasfeaturetest.html')
+
+class  BiasTestFeature(TemplateView):
+    def get(self,request): 
+        epadmin_obj=Experiment_Admin(request.user.last_name,request.user.id)
+        experiment_admin_data=epadmin_obj.getExperiment_AdminInfo()
+        print(experiment_admin_data)
+        #check permissions of the user...
+        #if experiment_admin or superuser confirmed
+            ## call all functions... 
+        # if experiment_Staff 
+           ## call view function
+        return render(request,'webapp/biasfeaturetest.html')
+    def post(self,request):
+        return render(request,'webapp/biasfeaturetest.html')
+
 class ManageShortList(TemplateView):
 
     def get(self,request):

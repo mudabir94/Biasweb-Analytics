@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>Mobile Analytics</title>
+	<meta charset="utf-8" >
+	<meta name="viewport" content = "width=device-width, initial-scale=1.0">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+	{% load staticfiles %}
+	<link rel="stylesheet" href="{% static 'webapp/css/bootstrap.min.css' %}" type = "text/css"/>
+	<link rel="stylesheet" href="{% static 'webapp/css/style.css' %}" type = "text/css"/>
+	<link rel="stylesheet" href="{% static 'webapp/css/formoid-solid-green.css' %}" type="text/css" />
+	<link rel="stylesheet" href="{% static 'webapp/css/webix.css' %}" type="text/css" />
+	<link rel="stylesheet" href="{% static 'webapp/css/newstyle.css' %}" type="text/css" />
+	<link rel="stylesheet" href="{% static 'webapp/css/sidestyle.css' %}" type="text/css" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script type="text/javascript" src="{% static 'webapp/js/jquery-ui.js' %}" charset="utf-8" ></script>
+	<script type="text/javascript" src="{% static 'webapp/js/jquery.js' %}" charset="utf-8" ></script>
+    <link rel="stylesheet" href="{% static 'webapp/css/jquery-ui.css' %}" type="text/css" />
+	<link rel="stylesheet" href="{% static 'webapp/css/jquery-ui.structure.css' %}" type="text/css" />
+	<link rel="stylesheet" href="{% static 'webapp/css/jquery-ui.theme.css' %}" type="text/css" />
+	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="{% static 'webapp/css/one_mobile.css' %}" type = "text/css"/>
+	<script type="text/javascript" src="{% static 'webapp/js/one_mobile.js' %}" charset="utf-8"></script>
+	
+
+
+
+	
+	<style>
+        div.anonymous, div.end_user, div.agent, div.manager {
+        display: none;
+        }
+
+		/* Set height of the grid so .sidenav can be 100% (adjust if needed) */
+		.row.content {height: 1500px}
+		.button {
+			display: inline-block;
+			padding: 3px 5px;
+			border: 1px solid #000;
+			background: #eee;
+			text-align: center;
+			width: 19%;
+			font-size: 24px;
+			/* text-decoration: underline; */
+	}
+		/* Set gray background color and 100% height */
+		.sidenav {
+			background-color: #f1f1f1;
+			height: 100%;
+		}
+		
+		/* Set black background color, white text and some padding */
+		footer {
+			background-color: #555;
+			color: white;
+			padding: 15px;
+		}
+		.navbar{
+					margin-bottom: 0 !important;
+					}
+		
+		/* On small screens, set height to 'auto' for sidenav and grid */
+		@media screen and (max-width: 767px) {
+			.sidenav {
+			height: auto;
+			padding: 15px;
+			}
+			.row.content {height: auto;} 
+		}
+		
+		
+		
+
+		</style>
+
+</head>
+
+<body class="body" style="">
+	
+    {% block content %}
+	{% endblock %}	
+  
+
+
+	
+</body>
+<footer>
+		
+		<div class="container-fluid" style='margin-left:15px'>
+			<p><a href="#" target="blank">Contact</a> | <a href="#" target="blank">LinkedIn1</a> | <a href="#" target="blank">Twitter</a> | <a href="#" target="blank">Google+</a></p>
+		</div>
+</footer>	
+</html>

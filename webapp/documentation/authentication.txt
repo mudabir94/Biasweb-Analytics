@@ -1,3 +1,3 @@
 1.authentication is done on user table. 
-	-user can only be those who are part of the 		 research. They are differentiated through 		 roles.
-	-Subjects are the user on whom the 		  experiment is conducted. 
+	-user can only be those who are part of the research. They are differentiated through 		 roles.
+	-Subjects are the user on whom the  experiment is conducted. 

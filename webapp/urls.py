@@ -34,7 +34,7 @@ urlpatterns = [
     url(r'^importcsv_submit/',views.ImportCsv_submit, name='importcsv_submit'),
     
 
-    url(r'^biastestfeatures/',views.BiasTestFeature, name='select_biasfeature'),
+    url(r'^biastestfeatures/',views.BiasTestFeature.as_view(), name='select_biasfeature'),
     url(r'^manageshortlist/',views.ManageShortList.as_view(), name='manage_shortlisting'),
 
 ]
