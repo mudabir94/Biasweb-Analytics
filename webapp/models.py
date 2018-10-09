@@ -8,6 +8,7 @@ import datetime
 class Role(models.Model):
     
     role_name=models.CharField(max_length=45)
+ 
     def __str__(self):
         return self.role_name
     class Meta:
@@ -22,7 +23,29 @@ class User(AbstractUser):
     experiment_admin=models.BooleanField(default=False)
     role_id = models.ForeignKey(Role, on_delete=models.CASCADE,default=None,null=True)
     custom_id=models.IntegerField(unique=True,default=None,null=True,blank=True)
-
+class templates(models.Model):
+    template_name=models.CharField(max_length=100,null=True)
+    created_at = models.DateTimeField(auto_now_add=True, blank=True)
+    update_at = models.DateTimeField(auto_now_add=True, blank=True)
+    def __str__(self):
+        return self.template_name
+    class Meta:
+        verbose_name_plural="Templates"
+    
+class template_roles(models.Model):
+    role_id = models.ForeignKey(Role, on_delete=models.CASCADE,default=None,null=True)
+    template_id = models.ForeignKey(templates, on_delete=models.CASCADE,default=None,null=True)
+    can_add=models.BooleanField(default=True)
+    can_view=models.BooleanField(default=True)
+    can_edit=models.BooleanField(default=True)
+    can_del=models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True, blank=True)
+    update_at = models.DateTimeField(auto_now_add=True, blank=True)
+    def __str__(self):
+        return str(self.id)
+    class Meta:
+        verbose_name_plural="Template Roles"
+        
 class platform_feature(models.Model):
     feature_name=models.CharField(max_length=100,null=True,blank=True)
     def __str__(self):
@@ -30,6 +53,7 @@ class platform_feature(models.Model):
     class Meta:
         verbose_name_plural="platform_feature"
         ordering = ['pk']
+
 class  experiment(models.Model):
     experiment_name=models.CharField(max_length=100)
     def __str__(self):

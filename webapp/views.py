@@ -14,11 +14,13 @@ from django.utils import timezone
 from biasweb.pythonscripts.getdata import get
 from biasweb.pythonscripts.insertcsvfiletotable import populate_Table
 from biasweb.pythonscripts.experiment_admin import Experiment_Admin
+
+#-------------------------------------------------------------------------------------------------
 role=1   #global variable used in adminsetup and globalFunc function. 
 
 mobiles=samsung_phone.objects.raw('SELECT * FROM webapp_samsung_phone WHERE id=1 or id=2') # making mobiles object global.
 sizeofmob=0 # global variable assigned in filter class.
-
+#-------------------------------------------------------------------------------------------------
 
 
 def showScore(request):
@@ -551,7 +553,7 @@ class mobile_phone_view(TemplateView):
         else:
             print("in blog else")
             form=mobile_phone_form()
-            return render(request,'webapp/mobile.html',{'form':form})
+            return render(request,self.template_name,{'form':form})
 
     def one_mobile_func(request,id):
         id1=id
@@ -582,6 +584,7 @@ def ImportCsv_submit(request):
 
 class  BiasTestFeature(TemplateView):
     def get(self,request): 
+
         epadmin_obj=Experiment_Admin(request.user.last_name,request.user.id)
         experiment_admin_data=epadmin_obj.getExperiment_AdminInfo()
         #print(experiment_admin_data)
@@ -590,6 +593,8 @@ class  BiasTestFeature(TemplateView):
             ## call all functions... 
         # if experiment_Staff 
            ## call view function
+     
+
         return render(request,'webapp/biasfeaturetest.html',{'role_id':2})
     def post(self,request):
         return render(request,'webapp/biasfeaturetest.html')

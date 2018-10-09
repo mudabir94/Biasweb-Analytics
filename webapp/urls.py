@@ -1,6 +1,6 @@
 from django.conf.urls import url, include
 from django.urls import path
-from . import views
+from . import views 
 urlpatterns = [
     # These urls doesn't have templates. These functions are
     # called  through ajax. They are either used to retrieve  
@@ -12,8 +12,21 @@ urlpatterns = [
 #----------------------------------------------------------------------------------------------------------    
     # Basic Landing Pages
     # Default page / Home page. 
-    url(r'^$', views.Home.as_view(), name='homepage'), 
     
+    url(r'^$', views.signUp, name='signup'), 
+
+
+
+
+
+
+
+
+
+
+
+
+#----------------------------------------------------------------------------------------------------------
     url(r'^admin_setup/',views.adminSetup, name='admin_setup'),
     url(r'^mobile/',views.mobile_phone_view.as_view(),name='mobileview'),
     path('mobile_info/<int:id>',views.mobile_phone_view.one_mobile_func, name='mobileinfo'),
@@ -34,7 +47,7 @@ urlpatterns = [
     ## Pages that are not currently used. 
     #url(r'^blog/', views.blogview.as_view(), name='blog'), 
     #url(r'^showfilter/',views.showFilter.as_view(), name='showfilter'),
-    #url(r'^$', views.signup, name='signup'), 
+    #url(r'^$', views.signUp, name='signup'), 
 
 #---------------------------------------------------------------------------------------------
 ]

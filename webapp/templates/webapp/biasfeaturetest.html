@@ -74,19 +74,8 @@
                     </ul>
           </div>
         <div class="col-sm-9  col-md-9 col-lg-9 col-xs-9 text-left" > 
-                <div class=""   id="lc" style="position: fixed">
-                            <div class="experimentadmin">
-                            <center><h1>Welcome Experiment_admin </h1></center>
-                            </div>
-                            
-                            <div class="experimentstaff">
-                            <center><h1>Welcome experiment_Staff!</h1></center>
-                            </div>
-                            
-                            <div class="superadmin">
-                            <center><h1>Welcome super admin!</h1></center>
-                            </div>
-                            
+                <div class="myexpclass"   id="myexpid" style="position: fixed">
+                          
                            
                     </div>     
           </div>
@@ -109,12 +98,30 @@ var a="{{role_id}}";
 
 if (a==1){
     console.log(a);
- $("div.experimentadmin").show();
+    var div = document.createElement("div");
+    div.style.width = "100px";
+    div.style.height = "100px";
+    div.style.background = "red";
+    div.style.color = "white";
+    div.innerHTML = "Hello";
+ 
 }
 
 if (a==2){
     console.log(a);
- $("div.experimentstaff").show();
+    var div = document.createElement("div");
+    div.style.width = "100px";
+    div.style.height = "100px";
+    div.style.background = "red";
+    div.style.color = "white";
+    div.innerHTML = "Hello experiment class";
+    a = document.createElement('a');
+    b = document.createElement('a');
+    c = document.createElement('a');
+    d = document.createElement('a');
+    a.href =  "{% url '' %}"; // Insted of calling setAttribute 
+
+    document.getElementById("myexpid").appendChild(div);
 }
 if (a==3){
     console.log(a);

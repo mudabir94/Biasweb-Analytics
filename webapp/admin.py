@@ -4,7 +4,7 @@ from django.contrib.auth.forms import UserChangeForm
 from .models import User
 from .models import signup_table,blog,mobile_phone,phone,experiment
 from .models import samsung_phone,sort_feature,userscoreRecord,Role,platform_feature
-
+from .models import template_roles,templates
 
 class MyUserChangeForm(UserChangeForm):
     class Meta(UserChangeForm.Meta):
@@ -25,7 +25,13 @@ class MyUserAdmin(UserAdmin):
              )}),
 
     )
-    
+class templateAdmin(admin.ModelAdmin):
+    list_display=('id','template_name')    
+class templateRoleAdmin(admin.ModelAdmin):
+    list_display=('id','role_id','template_id',\
+    'can_add','can_view','can_del',\
+    'created_at','update_at',)    
+
 class PlatformFeatureAdmin(admin.ModelAdmin):
     list_display= ('id', 'feature_name')
 class ExperimentAdmin(admin.ModelAdmin):
@@ -42,3 +48,5 @@ admin.site.register(userscoreRecord)
 admin.site.register(Role,RoleAdmin)
 admin.site.register(platform_feature,PlatformFeatureAdmin)
 admin.site.register(experiment,ExperimentAdmin)
+admin.site.register(templates,templateAdmin)
+admin.site.register(template_roles,templateRoleAdmin)
