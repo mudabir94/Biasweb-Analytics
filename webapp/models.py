@@ -148,3 +148,10 @@ class prunedmobilephones(models.Model):
      class Meta:
         verbose_name_plural="Pruned Mobile Phones"
 
+## Experiment Table/model
+class Experiment(models.Model):
+    exp_admin_id = models.IntegerField(null=True)
+    F_I=models.IntegerField(null=True)
+    F_A1=models.IntegerField(null=True)
+    F_A2=models.IntegerField(null=True)
+
