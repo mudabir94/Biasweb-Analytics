@@ -2,11 +2,14 @@ from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic import TemplateView
 from .forms import blogForm,SignUpForm,mobile_phone_form,filterform,sort_filter_form,NameForm
-from .models import blog,mobile_phone,phone,samsung_phone,sort_feature,userscoreRecord,prunedmobilephones
-from .models import User
+#-----------------------------------------------------------------
+from .models import blog,mobile_phone,phone,samsung_phone,sort_feature
+from .models import User,userscoreRecord,prunedmobilephones
 from.models import template_roles as tr 
-from .models import Role 
+from .models import Role ,platform_feature
 from. models import templates as tpl
+
+#---------------------------------------------------------------
 from django.http import HttpResponse
 from django.contrib.auth import login as auth_login, authenticate
 from django.contrib.auth.forms import UserCreationForm
@@ -618,8 +621,8 @@ def ImportCsv_submit(request):
     else :
         form = NameForm()
         return render(request,'webapp/importcsv_submit.html',{'form': form})
-
-
+#--------------------------------------------------------------------------------------------------
+# Experiment admin related views.
 
 class  BiasTestFeature(TemplateView):
     template_name='webapp/biasfeaturetest.html'
@@ -640,16 +643,32 @@ class  BiasTestFeature(TemplateView):
         print("user object",userobj.role_id_id)
         role=userobj.role_id_id
         if role==7:
+              
+            roleobj=Role.objects.get(pk=role)
+            role_name=roleobj.role_name
+            print(role_name)
             template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
         elif role==8:
+              
+            roleobj=Role.objects.get(pk=role)
+            role_name=roleobj.role_name
+            print(role_name)
             template_sidebar='webapp/sidebartemplates/sidebartemp_pltfadm.html'
         elif role==9:
+              
+            roleobj=Role.objects.get(pk=role)
+            role_name=roleobj.role_name
+            print(role_name)
             template_sidebar='webapp/sidebartemplates/sidebartemp_expadm.html'
+            expadm_maincontent_temp='webapp/main_content_temps/biaswebfeature/main_cont_temp_expadmin.html'
         #*****************************************************
         
      
 
-        return render(request,self.template_name,{'template_sidebar':template_sidebar})
+        return render(request,self.template_name,{'template_sidebar':template_sidebar,
+                                                    'role_name':role_name,
+                                                    'expadm_maincontent_temp':expadm_maincontent_temp
+                                                    })
     def post(self,request):
         return render(request,'webapp/biasfeaturetest.html')
 
@@ -679,8 +698,20 @@ class ManageShortList(TemplateView):
             
         return render(request,'webapp/mangeshortlist.html',{'mobiles':mobiles})
 
+class createExperiment(TemplateView):  
+    def get(self,request):
+        platformfeatobj=platform_feature.objects.all()
+        return render(request,'webapp/crudexperiment/create_experiment.html',
+                                        {'platformfeatobj':platformfeatobj})
+
+    def post(self,request):
+       
+        return render(request,'webapp/crudexperiment/create_experiment.html')
     
 
-    
+class datadefined(TemplateView):
+    def get(self,request):
+        return render(request,'webapp/crudexperiment/datadefined.html')
 
-        
+    def post(self,request):  
+        return render(request,'webapp/crudexperiment/datadefined.html')     

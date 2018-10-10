@@ -1,0 +1,25 @@
+{% extends "webapp/crudexperiment/base_experiment.html" %}
+{% block content %}
+{%load static from staticfiles%}
+
+<div class="container-fluid text-center">    
+        <div class="row content">
+          <div class="col-sm-2 sidenav">
+
+         
+          </div>
+        <div class="col-sm-9  col-md-9 col-lg-9 col-xs-9 text-left" > 
+                <li><a href="{%url 'importcsv_submit'%}">Insert Csv file to tables</a></li>
+          </div>
+          <div class="col-sm-1 sidenav">
+          
+          </div>
+        </div>
+      </div>
+      <footer>
+		
+            <div class="container-fluid" style='margin-left:15px'>
+                <p><a href="#" target="blank">Contact</a> | <a href="#" target="blank">LinkedIn1</a> | <a href="#" target="blank">Twitter</a> | <a href="#" target="blank">Google+</a></p>
+            </div>
+    </footer>	
+{%endblock%}

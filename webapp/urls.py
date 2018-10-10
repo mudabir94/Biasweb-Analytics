@@ -39,9 +39,13 @@ urlpatterns = [
 
     url(r'^importcsv_submit/',views.ImportCsv_submit, name='importcsv_submit'),
     
-
+#-----------------------------------------------------------------------------------------------------
+# Experiment admin related links/urls
     url(r'^biastestfeatures/',views.BiasTestFeature.as_view(), name='select_biasfeature'),
     url(r'^manageshortlist/',views.ManageShortList.as_view(), name='manage_shortlisting'),
+    url(r'^createexp/',views.createExperiment.as_view(), name='createexp'),
+    url(r'^datadefinded/',views.datadefined.as_view(), name='datadefined'),
+
 #---------------------------------------------------------------------------------------------   
     ## Pages that are not currently used. 
     #url(r'^blog/', views.blogview.as_view(), name='blog'), 

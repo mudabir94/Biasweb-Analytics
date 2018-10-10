@@ -18,12 +18,13 @@
               <li><a href="{%url 'homepage'%}">Home </a></li>
               
               <li><a href="#" >About</a></li>
-             
+              
              
               
               {% if  user.is_authenticated %}
               <li><p id="username">{{ user.get_username }}</p></li>
               <li><p id="username">{{ role_name }}</p></li>
+            
 
               <li><a href="{% url 'logout'%}">Logout</a></li> 
               
@@ -48,6 +49,10 @@
           </div>
         <div class="col-sm-9  col-md-9 col-lg-9 col-xs-9 text-left" > 
               <h1>BiastestFeature</h1>
+              
+                {% with template_side=expadm_maincontent_temp %}
+                {% include template_side %}
+                {% endwith %}
           </div>
           <div class="col-sm-1 sidenav">
           
