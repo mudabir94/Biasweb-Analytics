@@ -4,6 +4,9 @@ from django.views.generic import TemplateView
 from .forms import blogForm,SignUpForm,mobile_phone_form,filterform,sort_filter_form,NameForm
 from .models import blog,mobile_phone,phone,samsung_phone,sort_feature,userscoreRecord,prunedmobilephones
 from .models import User
+from.models import template_roles as tr 
+from .models import Role 
+from. models import templates as tpl
 from django.http import HttpResponse
 from django.contrib.auth import login as auth_login, authenticate
 from django.contrib.auth.forms import UserCreationForm
@@ -25,9 +28,35 @@ class Home(TemplateView):
     template_name='webapp/home.html'
     def get(self,request):
         #userobj= User.objects.values_list('role_id_id',flat=True).filter(id=request.user.id)
+        
+        #**************************************************
+        # This code gets the user id, then on bases of role we will assign the templates.
+       
+        print(request.user.id)
         userobj=User.objects.get(pk=request.user.id)
-        print("user obje",userobj.role_id_id)
-        return render(request,self.template_name,{'role_id':userobj.role_id_id})
+        print("user object",userobj.role_id_id)
+        role=userobj.role_id_id
+        if role==7:
+            
+            roleobj=Role.objects.get(pk=role)
+            role_name=roleobj.role_name
+            print(role_name)
+            template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
+        elif role==8:
+            roleobj=Role.objects.get(pk=role)
+            role_name=roleobj.role_name
+            print(role_name)
+            template_sidebar='webapp/sidebartemplates/sidebartemp_pltfadm.html'
+        elif role==9:
+            roleobj=Role.objects.get(pk=role)
+            role_name=roleobj.role_name
+            print(role_name)
+            template_sidebar='webapp/sidebartemplates/sidebartemp_expadm.html'
+
+        #*****************************************************
+
+
+        return render(request,self.template_name,{'role_id':userobj.role_id_id,'template_sidebar':template_sidebar})
     def post(self,request):
 
         return render(request,self.template_name)
@@ -593,6 +622,7 @@ def ImportCsv_submit(request):
 
 
 class  BiasTestFeature(TemplateView):
+    template_name='webapp/biasfeaturetest.html'
     def get(self,request): 
 
         epadmin_obj=Experiment_Admin(request.user.last_name,request.user.id)
@@ -603,9 +633,23 @@ class  BiasTestFeature(TemplateView):
             ## call all functions... 
         # if experiment_Staff 
            ## call view function
+         #**************************************************
+        # This code gets the user id, then on bases of role we will assign the templates.
+        print(request.user.id)
+        userobj=User.objects.get(pk=request.user.id)
+        print("user object",userobj.role_id_id)
+        role=userobj.role_id_id
+        if role==7:
+            template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
+        elif role==8:
+            template_sidebar='webapp/sidebartemplates/sidebartemp_pltfadm.html'
+        elif role==9:
+            template_sidebar='webapp/sidebartemplates/sidebartemp_expadm.html'
+        #*****************************************************
+        
      
 
-        return render(request,'webapp/biasfeaturetest.html',{'role_id':2})
+        return render(request,self.template_name,{'template_sidebar':template_sidebar})
     def post(self,request):
         return render(request,'webapp/biasfeaturetest.html')
 
