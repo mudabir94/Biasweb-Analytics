@@ -11,10 +11,9 @@ urlpatterns = [
     url(r'^globalFunc/',views.globalFunc,name='gf'),      
 #----------------------------------------------------------------------------------------------------------    
     # Basic Landing Pages
-    # Default page / Home page. 
-    
-    url(r'^$', views.signUp, name='signup'), 
-
+    # Home Page. base template is base.html
+    url(r'^$',views.Home.as_view(),name='homepage'),
+    # About Page. base template is base.html
 
 
 

@@ -19,8 +19,10 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 urlpatterns = [
     path('',include('webapp.urls')),
+    # doesn't need this. 
+    #url(r'^mobileanl/', include('webapp.urls')),
+    
     url(r'^admin/', admin.site.urls),
-    url(r'^mobileanl/', include('webapp.urls')),
     path('accounts/', include('django.contrib.auth.urls'))
 
 ]

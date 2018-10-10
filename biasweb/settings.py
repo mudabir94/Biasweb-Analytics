@@ -136,7 +136,7 @@ STATIC_URL = '/static/'
 # telling django to use the extend user model webappuser
 AUTH_USER_MODEL = 'webapp.User'
 # After successfull login the user will be redirected to the homepage.
-LOGIN_REDIRECT_URL = 'mobileview'
+LOGIN_REDIRECT_URL = 'homepage'
 # After the user will logout he will be redirected back to the login page. 
 LOGOUT_REDIRECT_URL = '/accounts/login/'
 #-------------------------------------------------------------------------

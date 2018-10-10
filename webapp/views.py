@@ -3,6 +3,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic import TemplateView
 from .forms import blogForm,SignUpForm,mobile_phone_form,filterform,sort_filter_form,NameForm
 from .models import blog,mobile_phone,phone,samsung_phone,sort_feature,userscoreRecord,prunedmobilephones
+from .models import User
 from django.http import HttpResponse
 from django.contrib.auth import login as auth_login, authenticate
 from django.contrib.auth.forms import UserCreationForm
@@ -17,11 +18,19 @@ from biasweb.pythonscripts.experiment_admin import Experiment_Admin
 
 #-------------------------------------------------------------------------------------------------
 role=1   #global variable used in adminsetup and globalFunc function. 
-
 mobiles=samsung_phone.objects.raw('SELECT * FROM webapp_samsung_phone WHERE id=1 or id=2') # making mobiles object global.
 sizeofmob=0 # global variable assigned in filter class.
 #-------------------------------------------------------------------------------------------------
+class Home(TemplateView):
+    template_name='webapp/home.html'
+    def get(self,request):
+        #userobj= User.objects.values_list('role_id_id',flat=True).filter(id=request.user.id)
+        userobj=User.objects.get(pk=request.user.id)
+        print("user obje",userobj.role_id_id)
+        return render(request,self.template_name,{'role_id':userobj.role_id_id})
+    def post(self,request):
 
+        return render(request,self.template_name)
 
 def showScore(request):
     mobileid=0
@@ -276,6 +285,7 @@ def signUp(request):
      num_visits=request.session.get('num_visits', 0)
      request.session['num_visits'] = num_visits+1
      if request.method=="POST":
+        print("in post")
         form = UserCreationForm(request.POST)
         if form.is_valid():
             form.save()
