@@ -711,7 +711,7 @@ class createExperiment(TemplateView):
                                         {'platformfeatobj':platformfeatobj})
 
     def post(self,request):
-       
+        
         return render(request,'webapp/crudexperiment/create_experiment.html')
     
 
@@ -720,4 +720,8 @@ class datadefined(TemplateView):
         return render(request,'webapp/crudexperiment/datadefined.html')
 
     def post(self,request):  
+        #ajax would return a 2 strings
+        # 1. is the exp_id (which is combo of admin id + serial no of exp) 
+        # 2. newFset= e.g. [w,a,c]
+
         return render(request,'webapp/crudexperiment/datadefined.html')     

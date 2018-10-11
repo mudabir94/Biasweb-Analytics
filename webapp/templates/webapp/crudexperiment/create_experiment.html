@@ -8,14 +8,15 @@
          
           </div>
         <div class="col-sm-9  col-md-9 col-lg-9 col-xs-9 text-left" > 
-            <h1>Create Experiment</h1>
+            <h1>Create Experiment</h1> <!-- Show Experiment Id here e.g. ses-007 (admin id) + experiment no. (5 digits)-->
             <form action="{%url 'createexp'%}">
-            No of Experiments:<br>  
-            <input type="text" value="1" id="nofexp" name="Experiments"/>
+            <!--No of Experiments:<br> --> 
+            <input type="hidden" value="1" id="nofexp" name="Experiments"/>
             No of subjects capicity:<br>  
             <input type="text" value="50" id="nofsc" name="subjects"/>
+
             {% for feature in platformfeatobj%}
-                {{feature.feature_name}}<input type="checkbox"  id="{{feature.feature_name}}" name="{{feature.feature_name}}" value="{{feature.feature_name}}"/><br>
+            <input type="checkbox"  id="{{feature.feature_name}}" name="{{feature.feature_name}}" value="{{feature.feature_name}}"/><br>&nbsp;{{feature.feature_name}}
             {%endfor%}
             <input type="submit" value="Generate Blocks">
             </form>

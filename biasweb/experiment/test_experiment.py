@@ -1,5 +1,5 @@
 
-from biasweb.experiment.experiment import ExperimentController
+from biasweb.experiment.controller import ExperimentController
 from biasweb.utils.Assigner import Assigner
 import itertools
 import numpy as np
