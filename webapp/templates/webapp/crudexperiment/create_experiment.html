@@ -16,7 +16,9 @@
             <input type="text" value="50" id="nofsc" name="subjects"/>
 
             {% for feature in platformfeatobj%}
-            <input type="checkbox"  id="" name="" value=""/>{{feature.feature_name}}<br>
+            <input type="checkbox"  id="" name="" value="{{feature.feature_name}}" onclick="checkbox($(this).attr('value'))">{{feature.feature_name}}<div id='divsample'>
+                <input type='checkbox'> ON <input type='checkbox'> OFF
+              </div></input><br>
             
             {%endfor%}
             <input type="submit" value="Generate Blocks">
@@ -36,5 +38,25 @@
                 <p><a href="#" target="blank">Contact</a> | <a href="#" target="blank">LinkedIn1</a> | <a href="#" target="blank">Twitter</a> | <a href="#" target="blank">Google+</a></p>
             </div>
     </footer>	
+    <script>
+      function checkbox(val) {
+        console.log("checkbox")
+        console.log(val)
+        $.ajax({
+       type: 'POST',
+       dataType: "json",
+       'data': {
+       'd': JSON.stringify(val),
+       'csrfmiddlewaretoken': '{{ csrf_token }}',
+      },
+       url: "{% url 'createexp' %}",
+       success: function(data){
+       console.log("success");
+        
+       }
+
+   }); 
+      }
+      </script>
 
 {%endblock%}

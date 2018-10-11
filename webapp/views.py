@@ -711,8 +711,20 @@ class createExperiment(TemplateView):
                                         {'platformfeatobj':platformfeatobj})
 
     def post(self,request):
-        
-        return render(request,'webapp/crudexperiment/create_experiment.html')
+        if request.is_ajax:
+        # print("ajax",request.POST.get('data'))
+            ####print("PST",request.POST.get('d')) 
+            d = request.POST.get('d')
+        ### print('JSONLOADS',eval(d))
+
+            b = json.loads(d)
+            print(b)
+           
+            
+        return HttpResponse(json.dumps(dict), content_type='application/json')
+      
+
+        return render(request,'webapp/crudexperiment/create_experiment.html',{'data':"data"})
     
 
 class datadefined(TemplateView):
