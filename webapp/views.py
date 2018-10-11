@@ -648,6 +648,8 @@ class  BiasTestFeature(TemplateView):
             role_name=roleobj.role_name
             print(role_name)
             template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
+            expadm_maincontent_temp='webapp/main_content_temps/biaswebfeature/main_cont_temp_expadmin.html'
+
         elif role==8:
               
             roleobj=Role.objects.get(pk=role)
