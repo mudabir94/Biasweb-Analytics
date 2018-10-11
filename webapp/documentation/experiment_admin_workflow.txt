@@ -16,6 +16,7 @@ The Experiment structure is comprised of following things.
             * 
             *
         - Each Batch can have multiple blocks.
+        - All batches will have the same blocks.
         - Each Subject is assigned to the Batches.  
         - How are the batches created(Number of batches)??? 
             - A block contains persmissions that are assigned to the subjects.

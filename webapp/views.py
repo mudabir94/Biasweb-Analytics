@@ -577,7 +577,7 @@ class mobile_phone_view(TemplateView):
                 return render(request,'webapp/cart.html',{'mobiles':mobiles})
             
         else:
-            mobiles= samsung_phone.objects.all()
+            mobiles= samsung_phone.objects.all() 
             paginator = Paginator(mobiles,9)
             page = request.GET.get('page')
             mobiles = paginator.get_page(page)
@@ -628,8 +628,12 @@ class  BiasTestFeature(TemplateView):
     template_name='webapp/biasfeaturetest.html'
     def get(self,request): 
 
-        epadmin_obj=Experiment_Admin(request.user.last_name,request.user.id)
-        experiment_admin_data=epadmin_obj.getExperiment_AdminInfo()
+        
+       
+       
+        #epadmin_obj=Experiment_Admin(request.user.last_name,request.user.id)
+        #experiment_admin_data=epadmin_obj.getExperiment_AdminInfo()
+
         #print(experiment_admin_data)
         #check permissions of the user...
         #if experiment_admin or superuser confirmed
