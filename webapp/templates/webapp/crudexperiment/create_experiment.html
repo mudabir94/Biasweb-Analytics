@@ -16,7 +16,8 @@
             <input type="text" value="50" id="nofsc" name="subjects"/>
 
             {% for feature in platformfeatobj%}
-            <input type="checkbox"  id="{{feature.feature_name}}" name="{{feature.feature_name}}" value="{{feature.feature_name}}"/><br>&nbsp;{{feature.feature_name}}
+            <input type="checkbox"  id="" name="" value=""/>{{feature.feature_name}}<br>
+            
             {%endfor%}
             <input type="submit" value="Generate Blocks">
             </form>

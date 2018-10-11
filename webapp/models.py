@@ -183,5 +183,6 @@ class prunedmobilephones(models.Model):
      class Meta:
         verbose_name_plural="Pruned Mobile Phones"
 
-
+class userroles(models.Model):
+    userrole=models.CharField(max_length=200,null=True)
 
