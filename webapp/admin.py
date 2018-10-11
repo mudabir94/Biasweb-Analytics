@@ -2,13 +2,15 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserChangeForm
 from .models import User
-from .models import signup_table,blog,mobile_phone,phone
+from .models import signup_table,blog,mobile_phone,phone,experiment
 from .models import samsung_phone,sort_feature,userscoreRecord,Role,platform_feature
-
+from .models import template_roles,templates
 
 class MyUserChangeForm(UserChangeForm):
     class Meta(UserChangeForm.Meta):
         model = User
+class RoleAdmin(admin.ModelAdmin):
+    list_display= ('id', 'role_name')
 class MyUserAdmin(UserAdmin):
     form = MyUserChangeForm
     fieldsets = UserAdmin.fieldsets + (
@@ -23,6 +25,18 @@ class MyUserAdmin(UserAdmin):
              )}),
 
     )
+class templateAdmin(admin.ModelAdmin):
+    list_display=('id','template_name')    
+class templateRoleAdmin(admin.ModelAdmin):
+    list_display=('id','role_id','template_id',\
+    'can_add','can_view','can_del',\
+    'created_at','update_at',)    
+
+class PlatformFeatureAdmin(admin.ModelAdmin):
+    list_display= ('id', 'feature_name')
+class ExperimentAdmin(admin.ModelAdmin):
+    list_display= ('id', 'experiment_name')
+    
 admin.site.register(User, MyUserAdmin)
 admin.site.register(signup_table)
 admin.site.register(blog)
@@ -31,5 +45,8 @@ admin.site.register(phone)
 admin.site.register(samsung_phone)
 admin.site.register(sort_feature)
 admin.site.register(userscoreRecord)
-admin.site.register(Role)
-admin.site.register(platform_feature)
+admin.site.register(Role,RoleAdmin)
+admin.site.register(platform_feature,PlatformFeatureAdmin)
+admin.site.register(experiment,ExperimentAdmin)
+admin.site.register(templates,templateAdmin)
+admin.site.register(template_roles,templateRoleAdmin)

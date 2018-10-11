@@ -128,19 +128,28 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
+#
+#Static url is to add url to the static files location. 
+# This will render like this: https://static/example.js
+
 STATIC_URL = '/static/'
+# telling django to use the extend user model webappuser
 AUTH_USER_MODEL = 'webapp.User'
+# After successfull login the user will be redirected to the homepage.
+LOGIN_REDIRECT_URL = 'homepage'
+# After the user will logout he will be redirected back to the login page. 
+LOGOUT_REDIRECT_URL = '/accounts/login/'
+#-------------------------------------------------------------------------
+# All these settings are done for the password resset purpose. 
+# According to these settings the email will be send to the user who forgot his password. 
 
-LOGIN_REDIRECT_URL = 'mobileview'
-
-LOGOUT_REDIRECT_URL = '/accounts/login'
-
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'mudabirahmad1994@gmail.com'
-EMAIL_HOST_PASSWORD = 'Fccgrad2'
-EMAIL_USE_TLS = True
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails")
+EMAIL_HOST = 'smtp.gmail.com'   # We are telling to use smtp host of google 
+EMAIL_PORT = 587                # if we are using TLSthen we require 587 port number
+EMAIL_HOST_USER = 'mudabirahmad1994@gmail.com'  # This will be the email address of the user 
+                                                #from whome the email will be sent to others
+EMAIL_HOST_PASSWORD = 'Fccgrad2'                # host password
+EMAIL_USE_TLS = True            
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend" # we are telling django to use smtp 
+EMAIL_FILE_PATH = os.path.join(BASE_DIR, "sent_emails") # This is the path where all emails sent to different users will be saved.
 DEFAULT_FROM_EMAIL = 'mudabirahmad1994@gmail.com' # email id
-EMAIL_USE_LOCALTIME=True
+EMAIL_USE_LOCALTIME=True                         # 

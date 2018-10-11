@@ -2,7 +2,14 @@ from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic import TemplateView
 from .forms import blogForm,SignUpForm,mobile_phone_form,filterform,sort_filter_form,NameForm
-from .models import blog,mobile_phone,phone,samsung_phone,sort_feature,userscoreRecord,prunedmobilephones
+#-----------------------------------------------------------------
+from .models import blog,mobile_phone,phone,samsung_phone,sort_feature
+from .models import User,userscoreRecord,prunedmobilephones
+from.models import template_roles as tr 
+from .models import Role ,platform_feature
+from. models import templates as tpl
+
+#---------------------------------------------------------------
 from django.http import HttpResponse
 from django.contrib.auth import login as auth_login, authenticate
 from django.contrib.auth.forms import UserCreationForm
@@ -14,12 +21,48 @@ from django.utils import timezone
 from biasweb.pythonscripts.getdata import get
 from biasweb.pythonscripts.insertcsvfiletotable import populate_Table
 from biasweb.pythonscripts.experiment_admin import Experiment_Admin
-role=1   #global variable used in adminsetup and globalFunc function. 
 
+#-------------------------------------------------------------------------------------------------
+role=1   #global variable used in adminsetup and globalFunc function. 
 mobiles=samsung_phone.objects.raw('SELECT * FROM webapp_samsung_phone WHERE id=1 or id=2') # making mobiles object global.
 sizeofmob=0 # global variable assigned in filter class.
+#-------------------------------------------------------------------------------------------------
+class Home(TemplateView):
+    template_name='webapp/home.html'
+    def get(self,request):
+        #userobj= User.objects.values_list('role_id_id',flat=True).filter(id=request.user.id)
+        
+        #**************************************************
+        # This code gets the user id, then on bases of role we will assign the templates.
+       
+        print(request.user.id)
+        userobj=User.objects.get(pk=request.user.id)
+        print("user object",userobj.role_id_id)
+        role=userobj.role_id_id
+        if role==7:
+            
+            roleobj=Role.objects.get(pk=role)
+            role_name=roleobj.role_name
+            print(role_name)
+            template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
+        elif role==8:
+            roleobj=Role.objects.get(pk=role)
+            role_name=roleobj.role_name
+            print(role_name)
+            template_sidebar='webapp/sidebartemplates/sidebartemp_pltfadm.html'
+        elif role==9:
+            roleobj=Role.objects.get(pk=role)
+            role_name=roleobj.role_name
+            print(role_name)
+            template_sidebar='webapp/sidebartemplates/sidebartemp_expadm.html'
+
+        #*****************************************************
 
 
+        return render(request,self.template_name,{'role_id':userobj.role_id_id,'template_sidebar':template_sidebar})
+    def post(self,request):
+
+        return render(request,self.template_name)
 
 def showScore(request):
     mobileid=0
@@ -274,6 +317,7 @@ def signUp(request):
      num_visits=request.session.get('num_visits', 0)
      request.session['num_visits'] = num_visits+1
      if request.method=="POST":
+        print("in post")
         form = UserCreationForm(request.POST)
         if form.is_valid():
             form.save()
@@ -551,7 +595,7 @@ class mobile_phone_view(TemplateView):
         else:
             print("in blog else")
             form=mobile_phone_form()
-            return render(request,'webapp/mobile.html',{'form':form})
+            return render(request,self.template_name,{'form':form})
 
     def one_mobile_func(request,id):
         id1=id
@@ -577,23 +621,60 @@ def ImportCsv_submit(request):
     else :
         form = NameForm()
         return render(request,'webapp/importcsv_submit.html',{'form': form})
-
-
+#--------------------------------------------------------------------------------------------------
+# Experiment admin related views.
 
 class  BiasTestFeature(TemplateView):
+    template_name='webapp/biasfeaturetest.html'
     def get(self,request): 
+
         
        
        
         #epadmin_obj=Experiment_Admin(request.user.last_name,request.user.id)
         #experiment_admin_data=epadmin_obj.getExperiment_AdminInfo()
+
         #print(experiment_admin_data)
         #check permissions of the user...
         #if experiment_admin or superuser confirmed
             ## call all functions... 
         # if experiment_Staff 
            ## call view function
-        return render(request,'webapp/biasfeaturetest.html')
+         #**************************************************
+        # This code gets the user id, then on bases of role we will assign the templates.
+        print(request.user.id)
+        userobj=User.objects.get(pk=request.user.id)
+        print("user object",userobj.role_id_id)
+        role=userobj.role_id_id
+        if role==7:
+              
+            roleobj=Role.objects.get(pk=role)
+            role_name=roleobj.role_name
+            print(role_name)
+            template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
+            expadm_maincontent_temp='webapp/main_content_temps/biaswebfeature/main_cont_temp_expadmin.html'
+
+        elif role==8:
+              
+            roleobj=Role.objects.get(pk=role)
+            role_name=roleobj.role_name
+            print(role_name)
+            template_sidebar='webapp/sidebartemplates/sidebartemp_pltfadm.html'
+        elif role==9:
+              
+            roleobj=Role.objects.get(pk=role)
+            role_name=roleobj.role_name
+            print(role_name)
+            template_sidebar='webapp/sidebartemplates/sidebartemp_expadm.html'
+            expadm_maincontent_temp='webapp/main_content_temps/biaswebfeature/main_cont_temp_expadmin.html'
+        #*****************************************************
+        
+     
+
+        return render(request,self.template_name,{'template_sidebar':template_sidebar,
+                                                    'role_name':role_name,
+                                                    'expadm_maincontent_temp':expadm_maincontent_temp
+                                                    })
     def post(self,request):
         return render(request,'webapp/biasfeaturetest.html')
 
@@ -623,8 +704,20 @@ class ManageShortList(TemplateView):
             
         return render(request,'webapp/mangeshortlist.html',{'mobiles':mobiles})
 
+class createExperiment(TemplateView):  
+    def get(self,request):
+        platformfeatobj=platform_feature.objects.all()
+        return render(request,'webapp/crudexperiment/create_experiment.html',
+                                        {'platformfeatobj':platformfeatobj})
+
+    def post(self,request):
+       
+        return render(request,'webapp/crudexperiment/create_experiment.html')
     
 
-    
+class datadefined(TemplateView):
+    def get(self,request):
+        return render(request,'webapp/crudexperiment/datadefined.html')
 
-        
+    def post(self,request):  
+        return render(request,'webapp/crudexperiment/datadefined.html')     
