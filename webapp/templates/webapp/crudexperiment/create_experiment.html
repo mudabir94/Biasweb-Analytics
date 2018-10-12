@@ -14,16 +14,26 @@
             <input type="hidden" value="1" id="nofexp" name="Experiments"/>
             No of subjects capicity:<br>  
             <input type="text" value="50" id="nofsc" name="subjects"/>
-
+              <!-- Fetching feature names from platform_feature model.  
+              Then Creating check boxes for selection. If Check box is clicked then An ajax call
+              would be made inorder to fetch further details of that feature. After which more 
+              checkbox options will be shown based on the further details. e.g pruned/full.
+              -->
             {% for feature in platformfeatobj%}
-            <input type="checkbox"  id="" name="" value="{{feature.feature_name}}" onclick="checkbox($(this).attr('value'))">{{feature.feature_name}}<div id='divsample'>
-                <input type='checkbox'> ON <input type='checkbox'> OFF
-              </div></input><br>
+            
+            <input type="checkbox"  id='{{feature.id}}' 
+            value="{{feature.feature_name}}"
+            onclick="outerCheckBox($(this).attr('value'),$(this).attr('id'))">{{feature.feature_name}} 
+            <div id='{{feature.id}}-innercheckboxdiv' class='innerchecksboxdivs' title='"{{feature.feature_name}}"'>
+              
+            </div>
+            </input>
+            <br>
             
             {%endfor%}
             <input type="submit" value="Generate Blocks">
             </form>
-
+            
             <li><a href='{% url "datadefined" %}'>data defined Batches</a></li>
             <li><a href=#>admin defined  </a></li>
           </div>
@@ -39,23 +49,97 @@
             </div>
     </footer>	
     <script>
-      function checkbox(val) {
+      // When the page will this will be the first javascript function that will be called. 
+       $(document).ready(function () {
+         // This Will hide all the divs with class=innerchecksboxdivs
+        $('.innerchecksboxdivs').hide();
+
+         
+        });
+      // Outercheckbox function 
+      // This function gets 2 arguments when called val and id attribute of input type=checkbox
+      // having id based on the feature.id.
+      // It is called through onclick function. 
+      function outerCheckBox(outercheckval,outercheckid) {
         console.log("checkbox")
-        console.log(val)
-        $.ajax({
+        console.log(outercheckval)
+        console.log(outercheckid)
+      // Ajax call is made to send the outercheckboxid to the controller. 
+      // The controller will fetch the sub-details of that feature from model and return back in
+      // in success function. 
+      // Success funtion will first check if the outercheckbox is checked or unchecked. 
+      // If unchecked it'll simply hide the innercheckboxdiv or do nothing as by default its hidden.
+      // else will populate data in that div and show to user.  
+       $.ajax({
        type: 'POST',
        dataType: "json",
        'data': {
-       'd': JSON.stringify(val),
+       'd': JSON.stringify(outercheckid),
        'csrfmiddlewaretoken': '{{ csrf_token }}',
       },
+      // the ajax call is sent to createxp url name in the post function.  
        url: "{% url 'createexp' %}",
        success: function(data){
        console.log("success");
-        
+       var outerckbox = $('#'+outercheckid);
+       console.log(outerckbox);
+        // checking if the user has checked or not. 
+        if (outerckbox.is(':checked')) {
+            alert('You have Checked it');
+            //  data from controller in an object form. 
+            //  fetching it through loop.
+            // not using anywhere just printing to console. 
+            for (var o in data){
+                console.log(data[o]);
+            }
+            // calling innercheckboxdivs. 
+            // these divs basically come after outercheckbox that contain innerchecks.
+            // outercheck id and the data is sent to this function.
+            // This function shows the innerChecksdivs after including and populating data in 
+            // innerchecks.
+            // todo: change the name of innercheckboxdivs name as it seems like it is refering to
+            // div inside inner checks...
+            showInnerCheckBoxDivs(outercheckid,data);
+        } else {
+            alert('You Un-Checked it');
+            // For now its purpose is simply to hide the innercheckdivs.  
+            hideInnerCheckBoxDivs(outercheckid);
+            
+        }
        }
-
-   }); 
+       }); 
+      }
+      function showInnerCheckBoxDivs(outercheckid,data){
+        console.log('#'+outercheckid+'-innercheckboxdiv')
+        // Creating inner checks and populating them with data. 
+        for (var o in data){
+          var $ctrl =  $(document.createElement("input")).attr({
+                    id:  o,
+                    name:  '',
+                    value: data[o],
+                    text :'',
+                    type:  'checkbox',
+                    checked:false,
+                    onclick:"innerCheckBox($(this).attr('value'),$(this).attr('id'),\
+                    $(this).parent().attr('title')\
+                    )"
+            })
+            
+        
+        $('#'+outercheckid+'-innercheckboxdiv').append($ctrl);
+        $('#'+outercheckid+'-innercheckboxdiv').append(data[o]);
+        $('#'+outercheckid+'-innercheckboxdiv').show();
+        }
+       
+      }
+      
+      function hideInnerCheckBoxDivs(outercheckid){
+        $('#'+outercheckid+'-innercheckboxdiv').hide();
+      }
+      // once the onclick function=>(innercheckbox) of inner checks are called it 
+      // shows three things. innercheck value , id and outer check value/title.
+      function innerCheckBox(innercheckval,innercheckid,outercheckdivtitle){
+        console.log(innercheckval,innercheckid,outercheckdivtitle);
       }
       </script>
 

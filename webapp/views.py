@@ -719,9 +719,12 @@ class createExperiment(TemplateView):
 
             b = json.loads(d)
             print(b)
+            b=int(b)
+            if b==1:
+                arrlist=['direct','AHP']
            
             
-        return HttpResponse(json.dumps(dict), content_type='application/json')
+        return HttpResponse(json.dumps(arrlist), content_type='application/json')
       
 
         return render(request,'webapp/crudexperiment/create_experiment.html',{'data':"data"})
