@@ -1,0 +1,123 @@
+{% extends "webapp/base.html" %}
+{%csrf_token%}
+{% block content %}
+{% load static from staticfiles%} 
+
+<!------ Include the above in your HEAD tag ---------->
+
+   <div id="wrapper">
+
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav">
+                <li class="sidebar-brand">
+                    <a href="#">
+                        Mobile Phones
+                      
+                    </a>
+                </li>
+                {% if  user.is_authenticated %}
+                <li>User: {{ user.get_username }}</li>
+                <li><a href="{% url 'logout'%}?next={{request.path}}">Logout</a></li>   
+                {% else %}
+                <li><a href="{% url 'login'%}?next={{request.path}}">Login</a></li>   
+                {% endif %}  
+                <li>
+                    <a href="{% url 'filter'  %}">ADVANCED SEARCH</a>
+                </li>
+                <li>
+                    <a href="#">SAMSUNG</a>
+                </li>
+                <li>
+                    <a href="#">QMOBILE</a>
+                </li>
+                <li>
+                    <a href="#">OPPO</a>
+                </li>
+                <li>
+                    <a href="#">HUAWEI</a>
+                </li>
+                <li>
+                    <a href="#">IPHONE</a>
+                </li>
+               
+                
+            </ul>
+        </div>
+        <!-- /#sidebar-wrapper -->
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+                    <a href="#menu-toggle" class="btn btn-default" id="menu-toggle"> Menu</a> 
+                    <div class="row text-center margin-b-40">
+                            <div class="col-sm-6 col-sm-offset-3">
+                                <h2>Samsung Products</h2>
+                                <p>Lorem ipsum dolor sit amet consectetur adipiscing elit sed tempor incididunt ut laboret dolore magna aliqua enim minim veniam exercitation</p>
+                            </div>
+                    </div>
+                        
+                
+            </div>
+        </div>
+        <!-- /#page-content-wrapper -->
+        
+<div class="container latest-product-section"> 
+        
+    {%  for mob in mobiles  %}
+   
+        {% if forloop.counter0|divisibleby:3 %} 
+        <div class="row text-center"> {%  endif %}
+               
+                <div class="col-md-4 sm-margin-b-50 pull-left">
+                        <div class="margin-b-20" >
+                        <img class="img-responsive" src="{% static mob.imagepath1 %}" alt="Latest Products Image" />
+                            </div>
+                        <h4><a href="{% url 'mobileinfo' id=mob.id %}">{{mob.Mobile_Companny}}</a> <span class="text-uppercase margin-l-20">{{mob.Mobile_Name}}</span></h4>
+                        <h1><a href = "{% url 'mobileinfo' id=mob.id %}"> {{mob.price}} </a></h1>
+                        <p>{{mob.OS}}</p>
+                        <a class="link" href="{% url 'mobileinfo' id=mob.id %}">Read More</a>
+                </div>
+    {%  if forloop.counter|divisibleby:3 or forloop.last %}
+        </div><!-- row closing --><hr>
+        {%  endif %}
+    {%  endfor %}
+   
+    
+        <div class="pagination">
+        <span class="step-links">
+            {% if mobiles.has_previous %}
+                <a href="?page=1">&laquo; first</a>
+                <a href="?page={{ mobiles.previous_page_number }}">previous</a>
+            {% endif %}
+            
+            <span class="current">
+                Page {{ mobiles.number }} of {{ mobiles.paginator.num_pages }}.
+            </span>
+        
+            {% if mobiles.has_next %}
+                <a href="?page={{ mobiles.next_page_number }}">next</a>
+                <a href="?page={{ mobiles.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+    
+ </div>
+
+        
+   
+
+       
+    
+    <!-- /#wrapper -->
+     <!-- Menu Toggle Script -->
+    <script>
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+    </script>
+
+{% endblock  %}
+
+

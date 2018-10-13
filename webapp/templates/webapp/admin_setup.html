@@ -1,0 +1,567 @@
+{% extends "webapp/base.html" %}
+{% block content %}
+{%load static from staticfiles%}
+
+<nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>                        
+            </button>
+            <a class="navbar-brand" href="#">Mobile Analytics</a>
+          </div>
+          <div class="collapse navbar-collapse" id="myNavbar">
+            <ul class="nav navbar-nav">
+             
+              <li ><a href="{%url 'mobileview'%}">Home</a></li>
+              <li><a href="#" >About</a></li>
+              
+            </ul>
+            <!--<ul class="nav navbar-nav navbar-right">
+              <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+            </ul>-->
+          </div>
+        </div>
+      </nav>
+        
+      <div class="container-fluid text-center">    
+        <div class="row content">
+          <div class="col-sm-2 sidenav">
+                <ul class="nav nav-pills nav-stacked">
+                       
+                       <!-- <li ><a href="{%url 'admin_setup'%}">Advance Search Setup</a></li>
+                       -->  
+                        
+                </ul><br>
+          </div>
+        <div class="col-sm-6 text-left"> 
+                <select id="roles" >
+                        <option >Please Select</option>
+                        <option  value=1>STUDENT</option>
+                        <option  value=2>PROFESSOR</option>
+                        <option  value=3>RA</option>
+                </select>
+                <input type="hidden" value="" id="role_value" name="role_value"/>
+              
+            <div class="container latest-product-section"> 
+                <form action="" method="POST">
+                    {%csrf_token%}
+                    {%for n in role_name %}
+                   
+                    <p>Role :  {{n}} </p>   
+                    
+                    {%endfor%}
+                    <ul id="sortable">
+                    {%for f in feat %}
+                        <li id="{{f.feature}}_{{f.position}}">
+                            {%if 'price' in f.feature%}
+                                <div class="row">
+                                        <div class="col-md-1" >
+                                        <!-- <p> {{f.feature}}</p>-->
+                                        </div>
+                                        <div class="col-md-2">
+                                              
+                                            <button class="btn btn-primary">price</button>
+                                            <button class='show_hide' onclick="myFunction($(this).parent().parent().parent().attr('id'))">Hide</button>
+
+                                        </div>
+                                </div>
+                            {% elif 'color' in f.feature   %}
+                                <div class="row">
+                                        <div class="col-md-1">
+                                          <!-- <p> {{f.feature}}</p>                -->
+                                        </div>
+                                        <div class="col-md-4">
+                                        <button class="btn btn-primary">Color</button>
+                                        <button class='show_hide' onclick="myFunction($(this).parent().parent().parent().attr('id'))">Hide</button>
+
+                                        </div>
+                                        
+                                </div>
+                            {% elif 'os' in f.feature %}   
+                                <div class="row">
+                                        <div class="col-md-1" >
+                                          <!-- <p> {{f.feature}}</p>                -->
+                                        </div>
+                                        <div class="col-md-4" >
+                                            <button class="btn btn-primary">Operating System</button> 
+                                            <button class='show_hide' onclick="myFunction($(this).parent().parent().parent().attr('id'))">Hide</button>
+
+                                        </div>
+                                        
+                                </div>
+                            {% elif 'size' in f.feature %}   
+                                <div class="row">
+                                        <div class="col-md-1">
+                                          <!-- <p> {{f.feature}}</p>                -->
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button class="btn btn-primary">Size</button>
+                                            <button class='show_hide' onclick="myFunction($(this).parent().parent().parent().attr('id'))">Hide</button>
+
+                                        </div>
+                                </div>
+                            {% elif 'cpu' in f.feature %}   
+                                <div class="row">
+                                        <div class="col-md-1">
+                                          <!-- <p> {{f.feature}}</p>                -->
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button  class="btn btn-primary">CPU</button>
+                                            <button class='show_hide' onclick="myFunction($(this).parent().parent().parent().attr('id'))">Hide</button>
+
+                                        </div>
+                                </div>
+                            {% elif 'backcam' in f.feature %}   
+                                <div class="row">
+                                        <div class="col-md-1">
+                                          <!-- <p> {{f.feature}}</p>                -->
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button class="btn btn-primary">Back Camera</button>
+                                            <button class='show_hide' onclick="myFunction($(this).parent().parent().parent().attr('id'))">Hide</button>
+
+                                        </div>
+                                </div>
+                            {% elif 'battery' in f.feature %}   
+                                <div class="row">
+                                        <div class="col-md-1">
+                                          <!-- <p> {{f.feature}}</p>                -->
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button class="btn btn-primary">Battery</button>
+                                            <button class='show_hide' onclick="myFunction($(this).parent().parent().parent().attr('id'))">Hide</button>
+
+
+                                        </div>
+                                </div>
+                                {% elif 'mobilecompany' in f.feature %}   
+                                <div class="row">
+                                        <div class="col-md-1">
+                                          <!-- <p> {{f.feature}}</p>                -->
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button class="btn btn-primary">Mobile Company</button>
+                                            <button class='show_hide' onclick="myFunction($(this).parent().parent().parent().attr('id'))">Hide</button>
+
+
+                                        </div>
+                                </div>
+                                {% elif 'chip' in f.feature %}   
+                                <div class="row">
+                                        <div class="col-md-1">
+                                          <!-- <p> {{f.feature}}</p>                -->
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button class="btn btn-primary">Chip</button>
+                                            <button class='show_hide' onclick="myFunction($(this).parent().parent().parent().attr('id'))">Hide</button>
+
+
+                                        </div>
+                                </div>
+                                {% elif 'Resolution' in f.feature %}   
+                                <div class="row">
+                                        <div class="col-md-1">
+                                          <!-- <p> {{f.feature}}</p>                -->
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button class="btn btn-primary">Resolution</button>
+                                            <button class='show_hide' onclick="myFunction($(this).parent().parent().parent().attr('id'))">Hide</button>
+
+
+                                        </div>
+                                </div>    
+                                {% elif 'weight' in f.feature %}   
+                                <div class="row">
+                                        <div class="col-md-1">
+                                          <!-- <p> {{f.feature}}</p>                -->
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button class="btn btn-primary">Weight</button>
+                                            <button class='show_hide' onclick="myFunction($(this).parent().parent().parent().attr('id'))">Hide</button>
+
+
+                                        </div>
+                                </div>    
+                                {% elif 'dimensions' in f.feature %}   
+                                <div class="row">
+                                        <div class="col-md-1">
+                                          <!-- <p> {{f.feature}}</p>                -->
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button class="btn btn-primary">Dimensions</button>
+                                            <button class='show_hide' onclick="myFunction($(this).parent().parent().parent().attr('id'))">Hide</button>
+
+
+                                        </div>
+                                </div>    
+                            {%endif%}
+                            </li>
+                        {%endfor%}
+                       
+                    </ul>
+                    <div class="row">
+                                <div class="col-md-8" >
+                                        <a href="{%url 'filter'%}" class="button">Look up</a>     
+                                </div>     
+                        </div>
+                </form>
+            </div>                 
+                            
+               
+          </div>
+          <div class="col-sm-4 sidenav">
+            <div class="well">
+
+                <h2>Hidden Features</h2>
+                <ul id="myList1">
+                {%for fi in ft%}
+                        <li id="{{fi.feature}}_{{fi.position}}">
+                                {%if 'price' in fi.feature%}
+                                        <div class="row">
+                                                <div class="col-md-1" >
+                                                <!-- <p> {{fi.feature}}</p>                -->
+                                                </div>
+                                                <div class="col-md-2">
+                                                        
+                                                <button class="btn btn-primary">price</button>
+                                                </div>
+<button width="200px" class="show_hide" onclick="myFun($(this).parent().parent().attr('id'))">Show</button>
+
+                                        </div>
+
+                                {% elif 'color' in fi.feature %}
+                                        <div class="row">
+                                                <div class="col-md-1">
+                                                  <!-- <p> {{fi.feature}}</p>                -->
+                                                </div>
+                                                <div class="col-md-4">
+                                                  <button class="btn btn-primary">Color</button>
+
+                                                </div>
+ <button width="200px" class="show_hide" onclick="myFun($(this).parent().parent().attr('id'))">Show</button>
+
+                                        </div>
+                                {% elif 'os' in fi.feature %}   
+                                        <div class="row">
+                                                <div class="col-md-1" >
+                                                  <!-- <p> {{fi.feature}}</p>                -->
+                                                </div>
+                                                <div class="col-md-4" >
+                                                    <button class="btn btn-primary">Operating System</button> 
+
+                                                </div>
+ <button width="200px" class="show_hide" onclick="myFun($(this).parent().parent().attr('id'))">Show</button>
+
+                                        </div>
+                                {% elif 'size' in fi.feature %}   
+                                        <div class="row">
+                                                <div class="col-md-1">
+                                                  <!-- <p> {{fi.feature}}</p>                -->
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <button class="btn btn-primary">Size</button>
+
+                                                </div>
+<button width="200px" class="show_hide" onclick="myFun($(this).parent().parent().attr('id'))">Show</button>
+
+                                        </div>
+                                {% elif 'cpu' in fi.feature %}   
+                                        <div class="row">
+                                                <div class="col-md-1">
+                                                  <!-- <p> {{fi.feature}}</p>                -->
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <button  class="btn btn-primary">CPU</button>
+                                                </div>
+<button width="200px" class="show_hide" onclick="myFun($(this).parent().parent().attr('id'))">Show</button>
+                                        </div>
+                                {% elif 'backcam' in fi.feature%}   
+                                        <div class="row">
+                                                <div class="col-md-1">
+                                                  <!-- <p> {{fi.feature}}</p>                -->
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <button class="btn btn-primary">Back Camera</button>
+                                                </div>
+<button width="200px" class="show_hide" onclick="myFun($(this).parent().parent().attr('id'))">Show</button>
+                                        </div>
+                                {% elif 'battery' in fi.feature%}   
+                                        <div class="row">
+                                                <div class="col-md-1">
+                                                  <!-- <p> {{fi.feature}}</p>                -->
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <button class="btn btn-primary">Battery</button>
+                                                </div>
+<button width="200px" class="show_hide" onclick="myFun($(this).parent().parent().attr('id'))">Show</button>
+
+                                        </div>
+                                {% elif 'mobilecompany' in fi.feature%}   
+                                        <div class="row">
+                                                <div class="col-md-1">
+                                                  <!-- <p> {{fi.feature}}</p>                -->
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <button class="btn btn-primary">Mobile Company</button>
+                                                </div>
+<button width="200px" class="show_hide" onclick="myFun($(this).parent().parent().attr('id'))">Show</button>
+
+                                        </div>
+                                {% elif 'chip' in fi.feature%}   
+                                        <div class="row">
+                                                <div class="col-md-1">
+                                                  <!-- <p> {{fi.feature}}</p>                -->
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <button class="btn btn-primary">Chip</button>
+                                                </div>
+<button width="200px" class="show_hide" onclick="myFun($(this).parent().parent().attr('id'))">Show</button>
+
+                                        </div>
+                                {% elif 'Resolution' in fi.feature%}   
+                                        <div class="row">
+                                                <div class="col-md-1">
+                                                  <!-- <p> {{fi.feature}}</p>                -->
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <button class="btn btn-primary">Resolution</button>
+                                                </div>
+<button width="200px" class="show_hide" onclick="myFun($(this).parent().parent().attr('id'))">Show</button>
+
+                                        </div>
+                                {% elif 'weight' in fi.feature%}   
+                                        <div class="row">
+                                                <div class="col-md-1">
+                                                  <!-- <p> {{fi.feature}}</p>                -->
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <button class="btn btn-primary">weight</button>
+                                                </div>
+<button width="200px" class="show_hide" onclick="myFun($(this).parent().parent().attr('id'))">Show</button>
+
+                                        </div>
+                                {% elif 'dimensions' in fi.feature%}   
+                                        <div class="row">
+                                                <div class="col-md-1">
+                                                  <!-- <p> {{fi.feature}}</p>                -->
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <button class="btn btn-primary">dimensions</button>
+                                                </div>
+<button width="200px" class="show_hide" onclick="myFun($(this).parent().parent().attr('id'))">Show</button>
+
+                                        </div>
+                                {%endif%}
+                                        
+                            
+                         </li>
+                {%endfor%} 
+                </ul>
+            </div>
+           
+            <div class="well">
+                        <h2>Recent Hidden Features</h2>
+                        <ul id="myList">
+
+                        </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer class="container-fluid text-center">
+        <p>Footer Text</p>
+      </footer>
+
+<script >
+
+$("#roles").change(function() {
+role_data=$('#roles option:selected').val()
+console.log(typeof role_data ); 
+a =JSON.stringify(role_data);
+
+$.ajax({
+       type: 'POST',
+       dataType: "json",
+       'data': {
+       'd': a,
+       'csrfmiddlewaretoken': '{{ csrf_token }}',
+        },
+       url: "{% url 'gf' %}",
+       success: function(response){
+           console.log("success");
+       }
+   });
+      location.reload().delay(800);
+ 
+ });
+function myFunction(id) {
+   var item = $('#'+id);
+   var temp = item;
+   item.find(".show_hide").remove();
+   var btn = $('<button>Show</button>').attr('width','200px').addClass('show_hide').attr('onclick', '(myFunc('+id+'))');
+   var data = id.split("_");  
+   var arr=[];
+   for (var key in data)
+            {   
+                console.log("key",key);
+                arr.push(data[key]);
+                break;
+            }
+   temp.append(btn);
+   item.remove();
+  
+   console.log(arr);
+   console.log("jason st",JSON.stringify(arr));
+   $("#myList").append(temp);
+   $.ajax({
+       type: 'POST',
+       dataType: "json",
+       'data': {
+       'd': JSON.stringify(arr),
+       'csrfmiddlewaretoken': '{{ csrf_token }}',
+      },
+       url: "{% url 'test' %}",
+       success: function(response){
+       console.log("success");
+       }
+   });
+ }
+
+function myFunc(id) {
+   
+    var item = $(id);
+    var temp = item;
+
+         item.find(".show_hide").remove();
+         var btn = $('<button>Hide</button>').attr('width', '200px').addClass('show_hide').attr('onclick', '(myFunction($(this).parent().attr("id")))');
+         var data =item.attr('id');
+         var d=data.split("_");
+        
+         var arr=[]; 
+         for (var key in d)
+              {   
+                  console.log("key",key);
+                  arr.push(d[key]);
+                  break;
+              }
+     
+        temp.append(btn);
+        item.remove();
+       // console.log(arr);
+       // console.log("jason st",JSON.stringify(arr));
+        $("#sortable").append(temp);
+        $.ajax({
+        type: 'POST',
+        dataType: "json",
+        'data': {
+        'd': JSON.stringify(arr),
+        'csrfmiddlewaretoken': '{{ csrf_token }}',
+        },
+        url: "{% url 'on' %}",
+        success: function(response){
+        console.log("success");
+         }
+        });
+        
+        
+        
+ }
+ function myFun(id) {
+         
+        var item = $('#'+id);
+        var temp = item;
+         
+        item.find(".show_hide").remove();
+        var btn = $('<button>Hide</button>').attr('width', '200px').addClass('show_hide').attr('onclick', '(myFunction($(this).parent().attr("id")))');
+        var data = id.split("_");
+        var arr=[];
+        for (var key in data)
+              {   
+                  console.log("key",key);
+                  arr.push(data[key]);
+                  break;
+              }
+        temp.append(btn);
+        item.remove();
+        
+        console.log(arr);
+        console.log("jason st",JSON.stringify(arr));
+        $("#sortable").append(temp);
+        $.ajax({
+       type: 'POST',
+       dataType: "json",
+       'data': {
+       'd': JSON.stringify(arr),
+       'csrfmiddlewaretoken': '{{ csrf_token }}',
+      },
+       url: "{% url 'on' %}",
+       success: function(response){
+       console.log("success");
+       }
+       });
+
+        
+        
+      }
+     
+       $(document).ready(function () {
+           
+           role_data=$('#roles option:selected').val()
+           console.log(typeof role_data ); 
+           JSON.stringify(role_data)
+           $.ajax({
+            type: 'POST',
+            dataType: "json",
+            'data': {
+            'd': JSON.stringify(role_data),
+            'csrfmiddlewaretoken': '{{ csrf_token }}',
+            },
+            url: "{% url 'gf' %}",
+            success: function(response){
+                
+            console.log("success");
+            }
+        });
+      
+       $('ul').sortable({
+        axis: 'y',
+        stop: function (event, ui) {
+	        var data = $(this).sortable('serialize').split("&");
+            console.log(data);
+            var arr=[];
+            console.log("data",data)
+            for (var key in data)
+            {   
+                console.log("key",key)
+                arr.push(data[key].split("=")[0].replace('[]',''));
+
+            }
+             console.log("arr",arr)
+             console.log("jason string",JSON.stringify(arr))
+            $('span').text(data);
+           $.ajax({
+       
+                type: 'POST',
+                dataType: "json",
+                'data': {
+                'd': JSON.stringify(arr),
+
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+               },
+               
+                url: "{% url 'ind' %}",
+                success: function(response){
+                console.log("success");
+                    }
+            });
+	}
+    });
+});
+
+
+     </script>
+{%endblock%}

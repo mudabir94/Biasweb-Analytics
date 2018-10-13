@@ -1,0 +1,413 @@
+{% extends "webapp/base.html" %}
+{% block content %}
+{% load static from staticfiles%}
+
+
+<nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>                        
+            </button>
+            <a class="navbar-brand" href="#">Mobile Analytics</a>
+          </div>
+          <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+             
+                        <li><a href="{%url 'mobileview'%}">Home</a></li>
+                        <li><a href="#" >About</a></li>
+                        {% if  user.is_authenticated %}
+                        <li><p id="username">{{ user.get_username }}</p></li>
+                        <li><a href="{% url 'logout'%}">Logout</a></li>   
+                        {% else %}
+                        <li><a href="{% url 'login'%}?next={{request.path}}">Login</a></li>   
+                        {% endif %}  
+                </ul>
+            <!--<ul class="nav navbar-nav navbar-right">
+              <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+            </ul>
+             -->
+          </div>
+        </div>
+      </nav>
+        
+      <div class="container-fluid text-center">    
+        <div class="row content">
+          <div class="col-sm-2 sidenav">
+                <ul class="nav nav-pills nav-stacked">
+                      
+                        <li><a href="#section2">User Profile</a></li>
+                </ul><br>
+          </div>
+        <div class="col-sm-8 text-left"> 
+            
+            <div class="container latest-product-section"> 
+                <form action="" method="POST">
+                    {%csrf_token%}
+                    <ul id="sortable">
+                      
+                    {%for f in feat %}
+                        <li id="{{f.feature}}-{{f.position}}">
+                            {%if 'price' in f.feature%}
+                                <div class="row">
+                                        <div class="col-md-1" >
+                                        <p> Price</p>               
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <select id="first-choice" class="form-control">
+                                                        <option selected value=""> blank</option>
+                                                        <option  value=10000>10000</option>
+                                                        <option value=15000>15000</option> 
+                                                        <option value=20000>20000</option> 
+                                                </select>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <select id="first-choice2" class="form-control">
+                                                        <option selected value=""> blank</option>
+                                                        <option  value=35000>35000</option>
+                                                        <option  value=50000>50000</option>
+                                                        <option value=80000>80000</option> 
+                                                </select>
+                                              
+                                            </div>    
+                                        </div>
+                                </div>
+                            {% elif 'color' in f.feature   %}
+                                <div class="row">
+                                        <div class="col-md-1">
+                                          <p> Color</p>               
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <select id="second-choice" class="form-control">
+                                                        <option selected value=""> blank</option>
+                                                        {% for c in colors %}
+                                                            <option  value="{{c}}">{{c}}</option>
+                                                        {% endfor %}
+                                                </select>
+                                            </div>   
+                                        </div>
+                                        
+                                </div>
+                            {% elif 'os' in f.feature %}   
+                                <div class="row">
+                                        <div class="col-md-1" >
+                                          <p> OS</p>               
+                                        </div>
+                                        <div class="col-md-4" >
+                                            <div class="form-group">
+                                                <select id="third-choice" class="form-control" >
+                                                        <option selected value=""> blank</option>
+                                                        {% for o in os %}
+                                                            <option  value="{{o}}">{{o}}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                            </div>
+                                        </div>
+                                        
+                                </div>
+                            {% elif 'size' in f.feature %}   
+                                <div class="row">
+                                        <div class="col-md-1">
+                                          <p> Size</p>               
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="form-group">
+                                                <select id="fourth-choice" class="form-control">
+                                                        <option selected value=""> blank</option>
+                                                        {% for s in size %}
+                                                            <option  value="{{s}}">{{s}}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                            </div>        
+                                        </div>
+                                        <div class="col-md-2" >
+                                            <div class="form-group">
+                                                <select id="fourth-choice2"  class="form-control">
+                                                        <option selected value=""> blank</option>
+                                                        {% for s in size %}
+                                                            <option  value="{{s}}">{{s}}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                            </div>        
+                                        </div>
+                                </div>
+                                {% elif 'cpu' in f.feature %}   
+                                <div class="row">
+                                        <div class="col-md-1" >
+                                          <p> CPU</p>               
+                                        </div>
+                                        <div class="col-md-4" >
+                                            <div class="form-group">
+                                                <select id="fifth-choice" class="form-control">
+                                                        <option selected value=""> blank</option>
+                                                        {% for p in cpu %}
+                                                            <option  value="{{p}}">{{p}}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                            </div>        
+                                        </div>
+                                        
+                                </div>
+                                {% elif 'backcam' in f.feature %}   
+                                <div class="row">
+                                        <div class="col-md-1" >
+                                          <p> Back Camera</p>               
+                                        </div>
+                                        <div class="col-md-4" >
+                                            <div class="form-group">
+                                                <select id="six-choice" class="form-control" >
+                                                        <option selected value=""> blank</option>
+                                                        {% for bcm in back_cm %}
+                                                            <option  value="{{bcm}}">{{bcm}}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                            </div>        
+                                        </div>
+                                        
+                                </div>
+                                {% elif 'battery' in f.feature %}   
+                                <div class="row">
+                                        <div class="col-md-1" >
+                                          <p>Battery</p>               
+                                        </div>
+                                        <div class="col-md-4" >
+                                            <div class="form-group"  >
+                                                <select id="seven-choice" class="form-control" >
+                                                        <option selected value=""> blank</option>
+                                                        {% for b in battery %}
+                                                            <option  value="{{b}}">{{b}}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                            </div>
+                                        </div>
+                                        
+                                </div>
+                                {% elif 'mobilecompany' in f.feature %}   
+                                <div class="row">
+                                        <div class="col-md-1" >
+                                          <p>Mobile Company</p>               
+                                        </div>
+                                        <div class="col-md-4" >
+                                            <div class="form-group"  >
+                                                <select id="eight-choice" class="form-control" >
+                                                        <option selected value=""> blank</option>
+                                                        {% for mc in mobilecompany %}
+                                                            <option  value="{{mc}}">{{mc}}</option>
+                                                        {% endfor %} 
+                                                        
+                                                    </select>
+                                            </div>
+                                        </div>
+                                        
+                                </div>
+                                {% elif 'chip' in f.feature %}   
+                                <div class="row">
+                                        <div class="col-md-1" >
+                                          <p>Chip</p>               
+                                        </div>
+                                        <div class="col-md-4" >
+                                            <div class="form-group"  >
+                                                <select id="nine-choice" class="form-control" >
+                                                        <option selected value=""> blank</option>
+                                                        {% for ch in chip %}
+                                                            <option  value="{{ch}}">{{ch}}</option>
+                                                        {% endfor %} 
+                                                        
+                                                    </select>
+                                            </div>
+                                        </div>
+                                        
+                                </div>
+                                {% elif 'Resolution' in f.feature %}   
+                                <div class="row">
+                                        <div class="col-md-1" >
+                                          <p>Resolution</p>               
+                                        </div>
+                                        <div class="col-md-4" >
+                                            <div class="form-group"  >
+                                                <select id="ten-choice" class="form-control" >
+                                                        <option selected value=""> blank</option>
+                                                        {% for res in resolution %}
+                                                            <option  value="{{res}}">{{res}}</option>
+                                                        {% endfor %}
+                                                        
+                                                    </select>
+                                            </div>
+                                        </div>
+                                        
+                                </div>
+                                {% elif 'weight' in f.feature %}   
+                                <div class="row">
+                                        <div class="col-md-1" >
+                                          <p>Weight</p>               
+                                        </div>
+                                        <div class="col-md-4" >
+                                            <div class="form-group"  >
+                                                <select id="eleven-choice" class="form-control" >
+                                                        <option selected value=""> blank</option>
+                                                        {% for wt in weight %}
+                                                            <option  value="{{wt}}">{{wt}}</option>
+                                                        {% endfor %}
+                                                        
+                                                    </select>
+                                            </div>
+                                        </div>
+                                        
+                                </div>
+                                {% elif 'dimensions' in f.feature %}   
+                                <div class="row">
+                                        <div class="col-md-1" >
+                                          <p>Dimensions</p>               
+                                        </div>
+                                        <div class="col-md-4" >
+                                            <div class="form-group"  >
+                                                <select id="twelve-choice" class="form-control" >
+                                                        <option selected value=""> blank</option>
+                                                        {% for dms in dimensions %}
+                                                            <option  value="{{dms}}">{{dms}}</option>
+                                                        {% endfor %}
+                                                        
+                                                    </select>
+                                            </div>
+                                        </div>
+                                        
+                                </div>
+                            {%endif%}
+                            </li>
+                        {%endfor%}
+                        <div class="row">
+                                <div class="col-md-1" >
+                                        <input type="hidden" value="" id="first_choice_value" name="first_choice_value"/>
+                                        <input type="hidden" value="" id="first_choice2_value" name="first_choice2_value"/>
+                                        <input type="hidden" value="" id="second_choice_value" name="second_choice_value"/>
+                                        <input type="hidden" value="" id="third_choice_value" name="third_choice_value"/>
+                                        <input type="hidden" value="" id="fourth_choice_value" name="fourth_choice_value"/>
+                                        <input type="hidden" value="" id="fourth_choice2_value" name="fourth_choice2_value"/>
+                                        <input type="hidden" value="" id="fifth_choice_value" name="fifth_choice_value"/>
+                                        <input type="hidden" value="" id="six_choice_value" name="six_choice_value"/>
+                                        <input type="hidden" value="" id="seven_choice_value" name="seven_choice_value"/>
+                                        <input type="hidden" value="" id="eight_choice_value" name="eight_choice_value"/>
+                                        <input type="hidden" value="" id="nine_choice_value" name="nine_choice_value"/>
+                                        <input type="hidden" value="" id="ten_choice_value" name="ten_choice_value"/>
+                                        <input type="hidden" value="" id="eleven_choice_value" name="eleven_choice_value"/>
+                                        <input type="hidden" value="" id="twelve_choice_value" name="twelve_choice_value"/>
+
+                                        <!--create input field through java script-->
+                                    <input type="submit" name="submit" value="look up" />               
+                                </div>     
+                        </div>
+                        
+                  
+                    </ul>
+                </form>
+            </div>                 
+                            
+               
+          </div>
+          <div class="col-sm-2 sidenav">
+            <div class="well">
+          
+            </div>
+            <div class="well">
+            
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer class="container-fluid text-center">
+        <p>Footer Text</p>
+      </footer>
+ 
+           
+
+    <script>
+      window.addEventListener( "pageshow", function ( event ) {
+        var historyTraversal = event.persisted || 
+        ( typeof window.performance != "undefined" && 
+        window.performance.navigation.type === 2 );
+                if ( historyTraversal ) {
+                window.location.reload();
+            }
+        });
+    $("#first-choice").change(function() {
+        var selected_id =$("#first-choice").val();
+        console.log("first choice",selected_id)
+        $('#first_choice_value').val(selected_id);
+        //alert(selected_id);
+    });
+    $("#first-choice2").change(function() {
+        var selected_id =$("#first-choice2").val();
+        $('#first_choice2_value').val(selected_id);
+        //alert(selected_id);
+    });
+    $("#second-choice").change(function() {
+        var selected_id =$("#second-choice").val();
+        $('#second_choice_value').val(selected_id);
+        //alert(selected_id);
+    });
+    $("#third-choice").change(function() {
+        var selected_id =$("#third-choice").val();
+        $('#third_choice_value').val(selected_id);
+        //alert(selected_id);
+    });
+    $("#fourth-choice").change(function() {
+        var selected_id =$("#fourth-choice").val();
+        $('#fourth_choice_value').val(selected_id);
+        //alert(selected_id);
+    });
+    $("#fourth-choice2").change(function() {
+        var selected_id =$("#fourth-choice2").val();
+        $('#fourth_choice2_value').val(selected_id);
+        //alert(selected_id);
+    });
+    $("#fifth-choice").change(function() {
+        var selected_id =$("#fifth-choice").val();
+        $('#fifth_choice_value').val(selected_id);
+        //alert(selected_id);
+    });
+    $("#six-choice").change(function() {
+        var selected_id =$("#six-choice").val();
+        $('#six_choice_value').val(selected_id);
+        //alert(selected_id);
+    });
+    $("#seven-choice").change(function() {
+        var selected_id =$("#seven-choice").val();
+        $('#seven_choice_value').val(selected_id);
+        //alert(selected_id);
+    });
+    $("#eight-choice").change(function() {
+        var selected_id =$("#eight-choice").val();
+        $('#eight_choice_value').val(selected_id);
+        //alert(selected_id);
+    });
+    $("#nine-choice").change(function() {
+        var selected_id =$("#nine-choice").val();
+        $('#nine_choice_value').val(selected_id);
+        //alert(selected_id);
+    });
+    $("#ten-choice").change(function() {
+        var selected_id =$("#ten-choice").val();
+        $('#ten_choice_value').val(selected_id);
+        //alert(selected_id);
+    });
+    $("#eleven-choice").change(function() {
+        var selected_id =$("#eleven-choice").val();
+        $('#eleven_choice_value').val(selected_id);
+        //alert(selected_id);
+    });
+    $("#twelve-choice").change(function() {
+        var selected_id =$("#twelve-choice").val();
+        $('#twelve_choice_value').val(selected_id);
+        //alert(selected_id);
+    });
+    </script>
+    
+{% endblock  %}
