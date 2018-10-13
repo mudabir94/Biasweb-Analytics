@@ -1,5 +1,0 @@
-*.DS_Store
-*.pyc
-__pycache__
-biasweb-loacl.code-workspace
-django4bias/*
