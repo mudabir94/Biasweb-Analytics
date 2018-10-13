@@ -1,3 +1,7 @@
+*.DS_Store
+*.pyc
+__pycache__
+biasweb-loacl.code-workspace
 django4bias/Lib/site-packages/pytz-2018.5.dist-info/RECORD
 django4bias/LICENSE_PYTHON.txt
 django4bias/DLLs/_asyncio.pyd

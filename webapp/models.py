@@ -175,18 +175,20 @@ class userscoreRecord (models.Model):
     class Meta:
         verbose_name_plural="User Score Record"
 class prunedmobilephones(models.Model):
-     u_id=models.IntegerField(null=True)
-     m_id=models.IntegerField(null=True)
-     roles=models.IntegerField(null=True)
-     def __str__(self):
+    u_id=models.IntegerField(null=True)
+    m_id=models.IntegerField(null=True)
+    roles=models.IntegerField(null=True)
+    def __str__(self):
         return self.u_id
-     class Meta:
+    class Meta:
         verbose_name_plural="Pruned Mobile Phones"
 
+"""This was preventing the server from starting up
+#There is already an experiment class above causing conflict
 ## Experiment Table/model
 class Experiment(models.Model):
     exp_admin_id = models.IntegerField(null=True)
     F_I=models.IntegerField(null=True)
     F_A1=models.IntegerField(null=True)
     F_A2=models.IntegerField(null=True)
-
+"""
