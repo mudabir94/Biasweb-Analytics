@@ -597,7 +597,7 @@ class mobile_phone_view(TemplateView):
             form=mobile_phone_form()
             return render(request,self.template_name,{'form':form})
 
-    def one_mobile_func(request,id):
+    def one_mobile_func(self, request,id):
         id1=id
         print(id1)
         singlemob=samsung_phone.objects.filter(id=id1)

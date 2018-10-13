@@ -9,11 +9,12 @@ Created on Mon Oct  8 15:57:03 2018
 import itertools
 
 class ExperimentController:
-    def __init__(self, id, a_id, fSet = [], cap = 50):
-        self.exp_id = id            #Will actually be set by retrieving index from database
+    def __init__(self, exp_id, a_id, fSet = [], cap = 50):
+        self.exp_id = exp_id            #Will actually be set by retrieving index from database
         self.cap = cap              #Capacity to budget for experiment
         self.admin_id = a_id
         self.fLevels = {}
+        self.blocks = []
         if len(fSet) > 0:
             self.fSet = fSet
         else:
@@ -73,8 +74,6 @@ class ExperimentController:
                 *self.fLevels.values()
             )
         )
-        """ print("List of blocks is as follows:")
-        for i,b in enumerate(self.blocks):
-            print(i,":", b) """
-
-  
+        #print("List of blocks is as follows:")
+        #for i,b in enumerate(self.blocks):
+        #   print(i,":", b)

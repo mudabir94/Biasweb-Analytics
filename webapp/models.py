@@ -56,6 +56,7 @@ class platform_feature(models.Model):
         ordering = ['pk']
 
 class  experiment(models.Model):
+    exp_id = models.CharField(max_length=15)
     experiment_name=models.CharField(max_length=100)
     def __str__(self):
         return self.experiment_name
