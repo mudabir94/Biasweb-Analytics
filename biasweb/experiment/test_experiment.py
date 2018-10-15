@@ -24,7 +24,7 @@ print(t_exp.fLevels)
 #Test block generation
 #list(itertools.product(*t_exp.fLevels.values()))
 t_exp.generateBlocks()
-
+print(t_exp.blocks)
 #Test batch assignment
 assigner = Assigner(pd.DataFrame())
 
