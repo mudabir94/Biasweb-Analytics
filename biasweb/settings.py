@@ -26,7 +26,7 @@ SECRET_KEY = '#nve)401#b-vm9+g$06zvc%ozu6^a78za+6+b9g$(%@-_4en^u'
 DEBUG = True
 
 
-ALLOWED_HOSTS = [] #['172.16.22.79']
+ALLOWED_HOSTS = [] #['172.16.22.79'] TEsting ignore of git
 
 
 # Application definition
