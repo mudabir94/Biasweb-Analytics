@@ -28,11 +28,15 @@ class Assigner:
     #%%return assignment as a groupedby object
     # 
     def splitInBins(self, k, binName):
-        self.df[binName] = assign(self,k)
+        self.df[binName] = self.assign(k)
         groups = self.df.groupby(binName)
         print(groups.size())
         return groups
     
+    def splitByField(self, fieldName):
+        groups = self.df.groupby(fieldName)
+        print(groups.size())
+        return groups
             
     #%%
     def assignAutoTest(self):
@@ -48,7 +52,7 @@ class Assigner:
 
 
     #%% NOW TESTING ON A FILE
-    def getLocalDToAssign():
+    def getLocalDToAssign(self):
         #from tkinter.filedialog import asksaveasfilename
 
         # Read in a file and evaluate its format [Excel or CSV]
@@ -56,7 +60,7 @@ class Assigner:
         print(fToUpload)
         qMoreInput = False
         qMoreInput, dToAssign, xlSheets = \
-            extractData(fToUpload)
+            self.extractData(fToUpload)
         if qMoreInput:
             #qMoreInput True means it is an XL file AND has more sheets
             print("The XL file has the following sheets:")
@@ -65,14 +69,15 @@ class Assigner:
             xlShNo = eval(input("Enter the sheet number required: "))
             print("Running extractData again, with xlShNo =",xlShNo)
             qMoreInput, dToAssign, xlSheets = \
-                    extractData(fToUpload, xlShNo)
-        return dToAssign
+                    self.extractData(fToUpload, xlShNo)
+        self.df = dToAssign
+        #return dToAssign
         
     #%%
     # Extracts a pandas DataFrame from a given CVS or XLS file
     # returns: needShNo = whether we need selection of sheet number
-    def extractData(self, shNo = 0):
-        f = self.df #This funciton assumes self was initialized with df as path to the df file
+    def extractData(self, fName, shNo = 0):
+        f = fName #This funciton assumes self was initialized with df as path to the df file
         needShNo = False
         sheets = []
         dta = pd.DataFrame()
