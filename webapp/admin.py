@@ -33,7 +33,7 @@ class templateRoleAdmin(admin.ModelAdmin):
     'created_at','update_at',)    
 
 class PlatformFeatureAdmin(admin.ModelAdmin):
-    list_display= ('id', 'feature_name')
+    list_display= ('id', 'feature_name','subdetails')
 class ExperimentAdmin(admin.ModelAdmin):
     list_display= ('id', 'experiment_name')
     

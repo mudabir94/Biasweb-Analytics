@@ -1,5 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django_mysql.models import ListCharField
+
 
 import datetime
 
@@ -48,6 +50,13 @@ class template_roles(models.Model):
         
 class platform_feature(models.Model):
     feature_name=models.CharField(max_length=100,null=True,blank=True)
+    subdetails = ListCharField(
+        base_field=models.CharField(max_length=10),
+        size=6,
+        max_length=(6 * 11), # 6 * 10 character nominals, plus commas
+        null=True,
+        blank=True
+    )
     #feature_levels=models
     def __str__(self):
         return self.feature_name
