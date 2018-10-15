@@ -40,7 +40,6 @@ class Home(TemplateView):
         print("user object",userobj.role_id_id)
         role=userobj.role_id_id
         if role==7:
-            
             roleobj=Role.objects.get(pk=role)
             role_name=roleobj.role_name
             print(role_name)
