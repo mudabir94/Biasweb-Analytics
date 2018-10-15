@@ -711,7 +711,9 @@ class createExperiment(TemplateView):
                                         {'platformfeatobj':platformfeatobj})
 
     def post(self,request):
+        
         if request.is_ajax:
+            arrlist=[]
         # print("ajax",request.POST.get('data'))
             ####print("PST",request.POST.get('d')) 
             d = request.POST.get('d')
@@ -719,10 +721,11 @@ class createExperiment(TemplateView):
 
             b = json.loads(d)
             print(b)
-            b=int(b)
-            if b==1:
-                arrlist=['direct','AHP']
-           
+            pltfobj=platform_feature.objects.get(feature_name=b)
+            arrlist=pltfobj.subdetails
+            print(type(arrlist))    
+            print(arrlist)
+                     
             
         return HttpResponse(json.dumps(arrlist), content_type='application/json')
       

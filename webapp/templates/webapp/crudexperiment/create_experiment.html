@@ -74,7 +74,7 @@
        type: 'POST',
        dataType: "json",
        'data': {
-       'd': JSON.stringify(outercheckid),
+       'd': JSON.stringify(outercheckval),
        'csrfmiddlewaretoken': '{{ csrf_token }}',
       },
       // the ajax call is sent to createxp url name in the post function.  
@@ -112,7 +112,9 @@
       function showInnerCheckBoxDivs(outercheckid,data){
         console.log('#'+outercheckid+'-innercheckboxdiv')
         // Creating inner checks and populating them with data. 
+        
         for (var o in data){
+          console.log('A',o);
           var $ctrl =  $(document.createElement("input")).attr({
                     id:  o,
                     name:  '',
@@ -135,6 +137,8 @@
       // function that hides the divs containing innercheckbox
       function hideInnerCheckBoxDivs(outercheckid){
         $('#'+outercheckid+'-innercheckboxdiv').hide();
+        $('#'+outercheckid+'-innercheckboxdiv').empty();
+
       }
       // once the onclick function=>(innercheckbox) of inner checks are called it 
       // shows three things. innercheck value , id and outer check value/title.

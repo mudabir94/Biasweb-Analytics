@@ -51,9 +51,9 @@ class template_roles(models.Model):
 class platform_feature(models.Model):
     feature_name=models.CharField(max_length=100,null=True,blank=True)
     subdetails = ListCharField(
-        base_field=models.CharField(max_length=10),
+        base_field=models.CharField(max_length=20),
         size=6,
-        max_length=(6 * 11), # 6 * 10 character nominals, plus commas
+        max_length=(6 * 21), # 6 * 10 character nominals, plus commas
         null=True,
         blank=True
     )
