@@ -1,4 +1,3 @@
-
 import itertools
 import numpy as np
 import pandas as pd
@@ -31,7 +30,7 @@ assigner = Assigner(pd.DataFrame())
 #assigner.getLocalDToAssign()
 
 assigner.getLocalDToAssign()
-dSubBatches = assigner.splitInBins(2, )
+dSubBatches = assigner.splitInBins(2, "Batches")
 for d in dSubBatches:
     print(head(d))
 #Test block assignment
