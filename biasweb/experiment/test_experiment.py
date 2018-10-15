@@ -1,9 +1,9 @@
 
-from biasweb.experiment.controller import ExperimentController
-from biasweb.utils.Assigner import Assigner
 import itertools
 import numpy as np
 import pandas as pd
+from biasweb.experiment.controller import ExperimentController
+from biasweb.utils.Assigner import Assigner
 
 #print("As-Salaam Alaikum")
 admin_id = "ses-007"
@@ -27,5 +27,11 @@ t_exp.generateBlocks()
 print(t_exp.blocks)
 #Test batch assignment
 assigner = Assigner(pd.DataFrame())
+#TODO: On view, implement a subject files import method
+#assigner.getLocalDToAssign()
 
+assigner.getLocalDToAssign()
+dSubBatches = assigner.splitInBins(2, )
+for d in dSubBatches:
+    print(head(d))
 #Test block assignment
