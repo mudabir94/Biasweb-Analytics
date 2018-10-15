@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models import CharField, Model
+from django_mysql.models import ListCharField
 from django.contrib.auth.models import AbstractUser
 
 import datetime
@@ -57,6 +59,11 @@ class platform_feature(models.Model):
 
 class  experiment(models.Model):
     experiment_name=models.CharField(max_length=100)
+    feature_set=ListCharField(
+        base_field=CharField(max_length=10),
+        size=6,
+        max_length=(6*11)  #10 + 1 to include the commas
+    )
     def __str__(self):
         return self.experiment_name
     class Meta:
