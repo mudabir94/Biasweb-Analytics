@@ -2,4 +2,3 @@
 *.pyc
 __pycache__
 *.code-workspace
-biasweb/settings.py

@@ -52,7 +52,7 @@ class template_roles(models.Model):
         
 class platform_feature(models.Model):
     feature_name=models.CharField(max_length=100,null=True,blank=True)
-    subdetails = ListCharField(
+    feature_levels = ListCharField(
         base_field=models.CharField(max_length=20),
         size=6,
         max_length=(6 * 21), # 6 * 10 character nominals, plus commas
@@ -74,6 +74,7 @@ class  experiment(models.Model):
         max_length=(6*11),  #10 + 1 to include the commas,
         null=True
     )
+    custom_exp_id=models.CharField(max_length=100,null=True,blank=True,unique=True)
     def __str__(self):
         return self.experiment_name
     class Meta:
