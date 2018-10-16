@@ -762,7 +762,7 @@ class createExperiment(TemplateView):
                
 
             t_exp = ExperimentController(self.exp_id, self.admin_id)
-            
+            experiment.object.create(feature_set=b)
             #t_exp.setfeaturelist(feature_dictionary)
             t_exp.setFeatureLevels()
             t_exp.generateBlocks()

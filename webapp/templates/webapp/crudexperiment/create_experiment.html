@@ -134,8 +134,9 @@
                     type:  'checkbox',
                     checked:true,
                     onclick:"innerCheckBox($(this).attr('value'),$(this).attr('id'),\
-                    $(this).parent().attr('title')\
+                    $(this).parent().attr('title'),\
                     )"
+                    
             })
         // adding input attributes to a div
         $('#'+outercheckid+'-innercheckboxdiv').append($ctrl);
@@ -154,11 +155,13 @@
       function innerCheckBox(innercheckval,innercheckid,outercheckdivtitle){
         //console.log(innercheckval,innercheckid,outercheckdivtitle);
         var innercheckboxid = $('#'+innercheckid);
+        var innercheckboxid_elem = document.getElementById(innercheckboxid);
+
+        //console.log("outerchekboxid-",outercheckid );
         console.log("innercheckbox-",innercheckboxid );
         // checking if the user has checked or not. 
         
-        
-        if (innercheckboxid.is(':checked')) {
+        if (innercheckboxid.checked==true) {
             if (dict[outercheckdivtitle] == null) {
                    dict[outercheckdivtitle]=[]
                }   
@@ -169,7 +172,8 @@
             arr_feature_levels.push(innercheckval);
             dict[outercheckdivtitle]=arr_feature_levels;
             console.log('arr',arr_feature_levels);
-            console.log('All dict in checked condition.',dict)
+            console.log('All dict in checked condition.',dict);
+
             
         } else {
 
@@ -185,11 +189,11 @@
               }
 
             console.log('del arr',arr_feature_levels);
-            if (arr_feature_levels==null){
+            if (arr_feature_levels.length==0){
               delete  dict[outercheckdivtitle];
               console.log('condition check');
               console.log('deleted dic',dict);
-
+              
 
             }
             else{ 
@@ -197,7 +201,8 @@
               console.log('dict',dict);
                
             }
-           
+            
+
         }
       }
 
