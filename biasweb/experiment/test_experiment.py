@@ -13,7 +13,7 @@ t_exp = ExperimentController(exp_id, admin_id)
 print(t_exp.exp_id,"--> The following features will be enabled:")
 print(t_exp.fSet)
 #Set a different set of features
-newFSet = ['W','A','C']
+newFSet = ['I','W','A','C']
 t_exp.setFeatures(newFSet)
 print(t_exp.fSet)
 
@@ -29,6 +29,7 @@ print(t_exp.blocks)
 assigner = Assigner(pd.DataFrame())
 #TODO: On view, implement a subject files import method
 #assigner.getLocalDToAssign()
+
 
 assigner.getLocalDToAssign()
 dSubBatches = assigner.splitInBins(3,'batch' )

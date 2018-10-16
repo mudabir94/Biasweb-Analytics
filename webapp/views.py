@@ -23,6 +23,15 @@ from biasweb.pythonscripts.insertcsvfiletotable import populate_Table
 from biasweb.pythonscripts.experiment_admin import Experiment_Admin
 
 #-------------------------------------------------------------------------------------------------
+#test_experiment imports. 
+import itertools
+import numpy as np
+import pandas as pd
+from biasweb.experiment.controller import ExperimentController
+from biasweb.utils.Assigner import Assigner
+
+
+
 role=1   #global variable used in adminsetup and globalFunc function. 
 mobiles=samsung_phone.objects.raw('SELECT * FROM webapp_samsung_phone WHERE id=1 or id=2') # making mobiles object global.
 sizeofmob=0 # global variable assigned in filter class.
@@ -703,16 +712,8 @@ class ManageShortList(TemplateView):
            
             
         return render(request,'webapp/mangeshortlist.html',{'mobiles':mobiles})
-
-class createExperiment(TemplateView):  
-    def get(self,request):
-        platformfeatobj=platform_feature.objects.all()
-        return render(request,'webapp/crudexperiment/create_experiment.html',
-                                        {'platformfeatobj':platformfeatobj})
-
-    def post(self,request):
-        
-        if request.is_ajax:
+def subDetails(request):
+    if request.is_ajax:
             arrlist=[]
         # print("ajax",request.POST.get('data'))
             ####print("PST",request.POST.get('d')) 
@@ -725,9 +726,31 @@ class createExperiment(TemplateView):
             arrlist=pltfobj.subdetails
             print(type(arrlist))    
             print(arrlist)
-                     
-            
-        return HttpResponse(json.dumps(arrlist), content_type='application/json')
+    return HttpResponse(json.dumps(arrlist), content_type='application/json')
+
+    
+class createExperiment(TemplateView): 
+
+    admin_id='ses-007'
+    exp_id=admin_id + "-1"
+    t_exp=''
+    def get(self,request):
+        ##test experimemt functions. 
+        t_exp = ExperimentController(self.exp_id, self.admin_id)
+        
+       
+       
+       
+        platformfeatobj=platform_feature.objects.all()
+        return render(request,'webapp/crudexperiment/create_experiment.html',
+                                        {'platformfeatobj':platformfeatobj})
+                                        
+
+    def post(self,request):
+        if request.method=="POST":
+            print('asd',request.POST['Experiments'])
+        
+       
       
 
         return render(request,'webapp/crudexperiment/create_experiment.html',{'data':"data"})
