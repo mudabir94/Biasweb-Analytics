@@ -24,9 +24,9 @@
             {% for feature in platformfeatobj%}
             
             <input type="checkbox"  id='{{feature.id}}' action='{%url "createexp"%}' method="post" 
-            value="{{feature.feature_name}}" 
+            value="{{feature.feature_symbol}}" 
             onclick="outerCheckBox($(this).attr('value'),$(this).attr('id'))">{{feature.feature_name}} 
-            <div id='{{feature.id}}-innercheckboxdiv' class='innerchecksboxdivs' title='{{feature.feature_name}}'>
+            <div id='{{feature.id}}-innercheckboxdiv' class='innerchecksboxdivs' title='{{feature.feature_symbol}}'>
               
             </div>
             </input>
@@ -34,7 +34,7 @@
             
             {%endfor%}
            
-            
+            <button onclick='sendDictionary()'> Send Dictionary </button>
             <li><a href='{% url "datadefined" %}'>data defined Batches</a></li>
             <li><a href=#>admin defined  </a></li>
           </div>
@@ -52,7 +52,7 @@
 <script>
       //Global Variable
       var dict = {};
-      var arr_subdetails=[];
+      var arr_feature_levels=[];
       // When the page will this will be the first javascript function that will be called. 
        $(document).ready(function () {
          // This Will hide all the divs with class=innerchecksboxdivs
@@ -85,12 +85,14 @@
        console.log("success");
        var outerckbox = $('#'+outercheckid);
        console.log(outerckbox);
+       dict[outercheckval]=data
+       console.log(dict[outercheckval]);
         // checking if the user has checked or not. 
         if (outerckbox.is(':checked')) {
            alert('You Checked');
            console.log('asdasd',outercheckval);
            console.log(data)
-           //dict[outercheckval]=data
+           dict[outercheckval]=data
            if (data==null){
              dict[outercheckval]=[0,1]
            }
@@ -130,7 +132,7 @@
                     value: data[o],
                     text :'',
                     type:  'checkbox',
-                    checked:false,
+                    checked:true,
                     onclick:"innerCheckBox($(this).attr('value'),$(this).attr('id'),\
                     $(this).parent().attr('title')\
                     )"
@@ -161,29 +163,29 @@
                    dict[outercheckdivtitle]=[]
                }   
             alert('You have Checked innercheckbox');
-            arr_subdetails=dict[outercheckdivtitle];
+            arr_feature_levels=dict[outercheckdivtitle];
             console.log('Specific dict in Checked',dict[outercheckdivtitle]);
-            console.log('insert',arr_subdetails);
-            arr_subdetails.push(innercheckval);
-            dict[outercheckdivtitle]=arr_subdetails;
-            console.log('arr',arr_subdetails);
+            console.log('insert',arr_feature_levels);
+            arr_feature_levels.push(innercheckval);
+            dict[outercheckdivtitle]=arr_feature_levels;
+            console.log('arr',arr_feature_levels);
             console.log('All dict in checked condition.',dict)
             
         } else {
 
             alert('You UNNNChecked innercheckbox');
-            arr_subdetails=dict[outercheckdivtitle];
+            arr_feature_levels=dict[outercheckdivtitle];
             console.log('Specific dict in UnChecked',dict[outercheckdivtitle]);
-            console.log('arr',arr_subdetails);
+            console.log('arr',arr_feature_levels);
             console.log(innercheckval);
-            var index = $.inArray(innercheckval, arr_subdetails);
+            var index = $.inArray(innercheckval, arr_feature_levels);
               if (index != -1) {
-                  var removedvalue=arr_subdetails.splice(index, 1);
+                  var removedvalue=arr_feature_levels.splice(index, 1);
                   console.log('removedvalue',removedvalue);
               }
 
-            console.log('del arr',arr_subdetails);
-            if (arr_subdetails.length==0){
+            console.log('del arr',arr_feature_levels);
+            if (arr_feature_levels==null){
               delete  dict[outercheckdivtitle];
               console.log('condition check');
               console.log('deleted dic',dict);
@@ -191,12 +193,27 @@
 
             }
             else{ 
-              dict[outercheckdivtitle]=arr_subdetails;
+              dict[outercheckdivtitle]=arr_feature_levels;
               console.log('dict',dict);
                
             }
            
         }
+      }
+
+      function sendDictionary(){
+        $.ajax({
+       type: 'POST',
+       dataType: "json",
+       'data': {
+       'dict': JSON.stringify(dict),
+       'csrfmiddlewaretoken': '{{ csrf_token }}',
+      },
+      // the ajax call is sent to subdetails url name in the post function.  
+       url: "{% url 'createexp' %}",
+       success: function(data){}
+       
+       }); 
       }
 </script>
 {%endblock%}

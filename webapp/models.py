@@ -52,6 +52,7 @@ class template_roles(models.Model):
         
 class platform_feature(models.Model):
     feature_name=models.CharField(max_length=100,null=True,blank=True)
+    feature_symbol=models.CharField(max_length=3,null=True)
     feature_levels = ListCharField(
         base_field=models.CharField(max_length=20),
         size=6,
@@ -59,6 +60,7 @@ class platform_feature(models.Model):
         null=True,
         blank=True
     )
+
     #feature_levels=models
     def __str__(self):
         return self.feature_name

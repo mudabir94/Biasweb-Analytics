@@ -6,7 +6,7 @@ from biasweb.utils.Assigner import Assigner
 
 #print("As-Salaam Alaikum")
 admin_id = "ses-007"
-exp_id = admin_id + "-123"
+exp_id = admin_id + "-1234"
 
 t_exp = ExperimentController(exp_id, admin_id)
 print(t_exp.exp_id,"--> The following features will be enabled:")

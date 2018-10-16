@@ -20,7 +20,8 @@ class Assigner:
         buckets = pd.qcut(
                       np.arange(self.df.shape[0]), #a vector of the indices of the dataframe  
                       q=k,
-                      labels=range(k)
+                      labels=range(k) #NEEDS TO BE CUSTOMISED SO USER CAN GIVE LABELS
+                                        #DEFAULT SHOULD START WITH 1 NOT 0
                     ).get_values()
         buckets = buckets[np.random.permutation(self.df.shape[0])]
         return pd.Series( buckets, index=self.df.index)
