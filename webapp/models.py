@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models import CharField, Model
+from django_mysql.models import ListCharField
 from django.contrib.auth.models import AbstractUser
 from django_mysql.models import ListCharField
 
@@ -66,6 +68,12 @@ class platform_feature(models.Model):
 
 class  experiment(models.Model):
     experiment_name=models.CharField(max_length=100)
+    feature_set=ListCharField(
+        base_field=CharField(max_length=10),
+        size=6,
+        max_length=(6*11),  #10 + 1 to include the commas,
+        null=True
+    )
     def __str__(self):
         return self.experiment_name
     class Meta:
@@ -184,13 +192,13 @@ class userscoreRecord (models.Model):
     class Meta:
         verbose_name_plural="User Score Record"
 class prunedmobilephones(models.Model):
-     u_id=models.IntegerField(null=True)
-     m_id=models.IntegerField(null=True)
-     roles=models.IntegerField(null=True)
-     def __str__(self):
+    u_id=models.IntegerField(null=True)
+    m_id=models.IntegerField(null=True)
+    roles=models.IntegerField(null=True)
+    def __str__(self):
         return self.u_id
-     class Meta:
-        verbose_name_plural="Pruned Mobile Phones"
+    class Meta:
+       verbose_name_plural="Pruned Mobile Phones"
 
 class userroles(models.Model):
     userrole=models.CharField(max_length=200,null=True)
