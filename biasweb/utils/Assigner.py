@@ -44,7 +44,7 @@ class Assigner:
                    'group': np.random.choice(['a','b','c'], size=10000)})
         proportions = {'a':[.5,.5],'b':[.4,.6], 'c':[.2,.8]}
         self.df.head()
-        self.df['batch'] = self.assign(self,3) #allocate df rows into three batches
+        self.df['batch'] = self.assign(3) #allocate df rows into three batches
 
         (self.df.groupby(['group','batch'])
             .size()
