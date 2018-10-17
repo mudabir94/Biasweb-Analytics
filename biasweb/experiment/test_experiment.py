@@ -31,6 +31,10 @@ assigner = Assigner(pd.DataFrame())
 
 
 assigner.getLocalDToAssign()
-dSubBatches = assigner.splitInBins(3,'batch' )
-dSubBatches.get_group(0)
+labels=['A','B','C']
+no_batches=len(labels)
+print(no_batches)
+dSubBatches = assigner.splitInBins(no_batches,'batch', labels )
+dSubBatches.get_group('A')
+
 #Test block assignment

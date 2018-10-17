@@ -8,7 +8,7 @@ from .models import User,userscoreRecord,prunedmobilephones
 from.models import template_roles as tr 
 from .models import Role ,platform_feature
 from. models import templates as tpl
-
+from .models import experiment as exp
 #---------------------------------------------------------------
 from django.http import HttpResponse
 from django.contrib.auth import login as auth_login, authenticate
@@ -29,6 +29,7 @@ import numpy as np
 import pandas as pd
 from biasweb.experiment.controller import ExperimentController
 from biasweb.utils.Assigner import Assigner
+import csv
 
 
 
@@ -612,7 +613,7 @@ class mobile_phone_view(TemplateView):
         print(singlemob)
         return render(request,'webapp/one_mobile_info.html',{'singlemob':singlemob})
         
-   
+
 def ImportCsv_submit(request):
     if request.method == 'POST':
         form = NameForm(request.POST)
@@ -620,12 +621,12 @@ def ImportCsv_submit(request):
             #data=[]
             tablename=form.cleaned_data.get('tablename')
             csvfilepath=form.cleaned_data.get('csvfilepath')
-            print(type(csvfilepath))
-            #data.extend((tablename,csvfilepath))
+            #print(type(csvfilepath))
+            data.extend((tablename,csvfilepath))
             
             status=populate_Table(tablename,csvfilepath)
         
-            return render (request, 'webapp/importcsv_form_display.html',{'status':status})
+            return render (request, 'webapp/importcsv_form_display.html',{'status':filepath})
     else :
         form = NameForm()
         return render(request,'webapp/importcsv_submit.html',{'form': form})
@@ -727,47 +728,74 @@ def subDetails(request):
             print(arrlist)
     return HttpResponse(json.dumps(arrlist), content_type='application/json')
 
+#global var 
     
 class createExperiment(TemplateView): 
 
     admin_id='ses-007'
-    exp_id=admin_id + "-1"
+    exp_id=admin_id + "-2"
     t_exp=''
     def get(self,request):
         ##test experimemt functions. 
-        
        
         platformfeatobj=platform_feature.objects.all()
         return render(request,'webapp/crudexperiment/create_experiment.html',
-                                        {'platformfeatobj':platformfeatobj})
+                                        {'platformfeatobj':platformfeatobj,
+                                     
+                                        })
                                         
 
     def post(self,request):
         if request.method=="POST":
-            feature_dict={}
-            feature_dict={
-            'I': ["0", "1"], 
-            'R': ["0", "1"],
-            'W': ["Direct", "AHP"],
-            'A': ["all", "1by1", "2by2", "user"],
-            'C': ["Prune", "Full", "Self-extended"]}
-        
-       
-            print(feature_dict)
+            print("IN POSt")
+
             if request.is_ajax:
                 d = request.POST.get('dict')
-                print('d',d)
+                #print('d',d)
                 b = json.loads(d)
                 print('b',b)
-               
+                ## get csv file path. 
+                ## if extension is csv 
+                csvdataframe=pd.read_csv('C://biasweb//biasweb//utils//data//'+b)
+                print(csvdataframe)
+                ## Make batches according to sections in files. 
 
-            t_exp = ExperimentController(self.exp_id, self.admin_id)
-            experiment.object.create(feature_set=b)
-            #t_exp.setfeaturelist(feature_dictionary)
-            t_exp.setFeatureLevels()
-            t_exp.generateBlocks()
-            print(t_exp.blocks)
+                labels=csvdataframe.SECTION.unique()
+                print(labels)
+                labels=list(labels)
+                no_batches=len(labels)
 
+                # Make batches according to your given number. 
+
+                ## get all sections from the file. 
+                ## put them in a list... 
+                
+                
+                
+                ## elif extension is excel 
+                    # # Load spreadsheet
+                    # xl = pd.ExcelFile(file)
+                    # # Print the sheet names
+                    # print(xl.sheet_names)
+                    # # Load a sheet into a DataFrame by name: df1
+                    # df1 = xl.parse('Sheet1')
+
+
+                assigner = Assigner(csvdataframe)
+                dSubBatches=assigner.splitInBins(no_batches,'batch',labels )
+                dSubBatches.get_group('A')
+
+
+
+
+            # t_exp = ExperimentController(self.exp_id, self.admin_id)
+            # #t_exp.setfeaturelist(feature_dictionary)
+            # t_exp.setFeatureLevels(b)
+            # print(t_exp.fLevels)
+            # t_exp.generateBlocks()
+            # print(t_exp.blocks)
+            # e=exp(experiment_name='exp1',custom_exp_id=self.exp_id,feature_set=json.dumps(t_exp.blocks))
+            # e.save()
        
       
 

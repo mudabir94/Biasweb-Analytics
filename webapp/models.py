@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models import CharField, Model
 from django_mysql.models import ListCharField
 from django.contrib.auth.models import AbstractUser
-from django_mysql.models import ListCharField
+from django_mysql.models import ListCharField,ListTextField
 
 
 import datetime
@@ -70,11 +70,11 @@ class platform_feature(models.Model):
 
 class  experiment(models.Model):
     experiment_name=models.CharField(max_length=100)
-    feature_set=ListCharField(
-        base_field=CharField(max_length=10),
-        size=6,
-        max_length=(6*11),  #10 + 1 to include the commas,
-        null=True
+    feature_set= ListTextField(
+        base_field=models.CharField(max_length=100),
+        size=100,  # Maximum of 100 ids in list
+        null=True,
+        blank=True
     )
     custom_exp_id=models.CharField(max_length=100,null=True,blank=True,unique=True)
     def __str__(self):

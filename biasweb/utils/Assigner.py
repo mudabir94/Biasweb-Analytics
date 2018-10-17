@@ -16,20 +16,21 @@ class Assigner:
 
     #%%The function that assigns a DataFrame (gp) RANDOMLY into k groups
     # returns Series containing randomly permutated labels of k groups
-    def assign(self, k):
+    def assign(self, no_batches,labels):
         buckets = pd.qcut(
                       np.arange(self.df.shape[0]), #a vector of the indices of the dataframe  
-                      q=k,
-                      labels=range(k) #NEEDS TO BE CUSTOMISED SO USER CAN GIVE LABELS
-                                        #DEFAULT SHOULD START WITH 1 NOT 0
+                      q=no_batches,
+                      labels=labels #NEEDS TO BE CUSTOMISED SO USER CAN GIVE LABELS
+                                          #DEFAULT SHOULD START WITH 1 NOT 0
+                      #labels=['A','B','C']
                     ).get_values()
         buckets = buckets[np.random.permutation(self.df.shape[0])]
         return pd.Series( buckets, index=self.df.index)
             
     #%%return assignment as a groupedby object
     # 
-    def splitInBins(self, k, binName):
-        self.df[binName] = self.assign(k)
+    def splitInBins(self, no_batches, binName,labels):
+        self.df[binName] = self.assign(no_batches,labels)
         groups = self.df.groupby(binName)
         print(groups.size())
         return groups

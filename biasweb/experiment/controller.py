@@ -53,20 +53,22 @@ class ExperimentController:
 
                             
     def setFeatureLevels(self, fLevels):
-        self.fLevel = fLevels
+        print("asdasd",fLevels)
+        self.fLevels = fLevels
+        print('in feature levels')
 
-    def setFeatureLevels(self):
-        #enquiry = []
-        for f in self.fSet:
-            if f=='I' or f=='R' or f=='C':
-                self.fLevels[f] = [0,1]
-            if f=='W':
-                self.fLevels[f] = ["direct", "ahp"]
-            if f=='A':
-                self.fLevels[f] = ["all", "1by1", "2by2", "user"]
-                #enquiry.append(f)
-                #self.fLevels[f] = self.clarifyFeature(enquiry)
-                print(self.fLevels[f])
+    # def setFeatureLevels(self):
+    #     #enquiry = []
+    #     for f in self.fSet:
+    #         if f=='I' or f=='R' or f=='C':
+    #             self.fLevels[f] = [0,1]
+    #         if f=='W':
+    #             self.fLevels[f] = ["direct", "ahp"]
+    #         if f=='A':
+    #             self.fLevels[f] = ["all", "1by1", "2by2", "user"]
+    #             #enquiry.append(f)
+    #             #self.fLevels[f] = self.clarifyFeature(enquiry)
+    #             print(self.fLevels[f])
     
 
     def generateBlocks(self):
