@@ -52,7 +52,9 @@ class ExperimentController:
             return flevList
 
                             
-    
+    def setFeatureLevels(self, fLevels):
+        self.fLevel = fLevels
+
     def setFeatureLevels(self):
         #enquiry = []
         for f in self.fSet:

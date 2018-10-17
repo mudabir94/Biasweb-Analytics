@@ -26,7 +26,7 @@ urlpatterns = [
 
 
 #----------------------------------------------------------------------------------------------------------
-    url(r'^admin_setup/',views.adminSetup, name='admin_setup'),
+    url(r'^admin_setup/' , views.adminSetup , name='admin_setup') ,
     url(r'^mobile/',views.mobile_phone_view.as_view(),name='mobileview'),
     path('mobile_info/<int:id>',views.mobile_phone_view.one_mobile_func, name='mobileinfo'),
     url(r'^filter/',views.filter.as_view(), name='filter'),
@@ -44,6 +44,8 @@ urlpatterns = [
     url(r'^biastestfeatures/',views.BiasTestFeature.as_view(), name='select_biasfeature'),
     url(r'^manageshortlist/',views.ManageShortList.as_view(), name='manage_shortlisting'),
     url(r'^createexp/',views.createExperiment.as_view(), name='createexp'),
+    url(r'^subdetails/',views.subDetails, name='subdetails'),
+
     url(r'^datadefinded/',views.datadefined.as_view(), name='datadefined'),
 
 #---------------------------------------------------------------------------------------------   

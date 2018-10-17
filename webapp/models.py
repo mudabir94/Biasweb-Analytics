@@ -2,6 +2,8 @@ from django.db import models
 from django.db.models import CharField, Model
 from django_mysql.models import ListCharField
 from django.contrib.auth.models import AbstractUser
+from django_mysql.models import ListCharField
+
 
 import datetime
 
@@ -50,6 +52,15 @@ class template_roles(models.Model):
         
 class platform_feature(models.Model):
     feature_name=models.CharField(max_length=100,null=True,blank=True)
+    feature_symbol=models.CharField(max_length=3,null=True)
+    feature_levels = ListCharField(
+        base_field=models.CharField(max_length=20),
+        size=6,
+        max_length=(6 * 21), # 6 * 10 character nominals, plus commas
+        null=True,
+        blank=True
+    )
+
     #feature_levels=models
     def __str__(self):
         return self.feature_name
@@ -65,6 +76,7 @@ class  experiment(models.Model):
         max_length=(6*11),  #10 + 1 to include the commas,
         null=True
     )
+    custom_exp_id=models.CharField(max_length=100,null=True,blank=True,unique=True)
     def __str__(self):
         return self.experiment_name
     class Meta:

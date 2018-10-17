@@ -23,6 +23,15 @@ from biasweb.pythonscripts.insertcsvfiletotable import populate_Table
 from biasweb.pythonscripts.experiment_admin import Experiment_Admin
 
 #-------------------------------------------------------------------------------------------------
+#test_experiment imports. 
+import itertools
+import numpy as np
+import pandas as pd
+from biasweb.experiment.controller import ExperimentController
+from biasweb.utils.Assigner import Assigner
+
+
+
 role=1   #global variable used in adminsetup and globalFunc function. 
 mobiles=samsung_phone.objects.raw('SELECT * FROM webapp_samsung_phone WHERE id=1 or id=2') # making mobiles object global.
 sizeofmob=0 # global variable assigned in filter class.
@@ -702,15 +711,9 @@ class ManageShortList(TemplateView):
            
             
         return render(request,'webapp/mangeshortlist.html',{'mobiles':mobiles})
-
-class createExperiment(TemplateView):  
-    def get(self,request):
-        platformfeatobj=platform_feature.objects.all()
-        return render(request,'webapp/crudexperiment/create_experiment.html',
-                                        {'platformfeatobj':platformfeatobj})
-
-    def post(self,request):
-        if request.is_ajax:
+def subDetails(request):
+    if request.is_ajax:
+            arrlist=[]
         # print("ajax",request.POST.get('data'))
             ####print("PST",request.POST.get('d')) 
             d = request.POST.get('d')
@@ -718,12 +721,54 @@ class createExperiment(TemplateView):
 
             b = json.loads(d)
             print(b)
-            b=int(b)
-            if b==1:
-                arrlist=['direct','AHP']
-           
-            
-        return HttpResponse(json.dumps(arrlist), content_type='application/json')
+            pltfobj=platform_feature.objects.get(feature_symbol=b)
+            arrlist=pltfobj.feature_levels
+            print(type(arrlist))    
+            print(arrlist)
+    return HttpResponse(json.dumps(arrlist), content_type='application/json')
+
+    
+class createExperiment(TemplateView): 
+
+    admin_id='ses-007'
+    exp_id=admin_id + "-1"
+    t_exp=''
+    def get(self,request):
+        ##test experimemt functions. 
+        
+       
+        platformfeatobj=platform_feature.objects.all()
+        return render(request,'webapp/crudexperiment/create_experiment.html',
+                                        {'platformfeatobj':platformfeatobj})
+                                        
+
+    def post(self,request):
+        if request.method=="POST":
+            feature_dict={}
+            feature_dict={
+            'I': ["0", "1"], 
+            'R': ["0", "1"],
+            'W': ["Direct", "AHP"],
+            'A': ["all", "1by1", "2by2", "user"],
+            'C': ["Prune", "Full", "Self-extended"]}
+        
+       
+            print(feature_dict)
+            if request.is_ajax:
+                d = request.POST.get('dict')
+                print('d',d)
+                b = json.loads(d)
+                print('b',b)
+               
+
+            t_exp = ExperimentController(self.exp_id, self.admin_id)
+            experiment.object.create(feature_set=b)
+            #t_exp.setfeaturelist(feature_dictionary)
+            t_exp.setFeatureLevels()
+            t_exp.generateBlocks()
+            print(t_exp.blocks)
+
+       
       
 
         return render(request,'webapp/crudexperiment/create_experiment.html',{'data':"data"})
