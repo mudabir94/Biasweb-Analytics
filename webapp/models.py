@@ -77,6 +77,17 @@ class  experiment(models.Model):
         null=True
     )
     custom_exp_id=models.CharField(max_length=100,null=True,blank=True,unique=True)
+    
+    #There should be a check that at least two batches should be created if
+    #there are to be batches.  Also a default name of "Batch" should be set
+    #if no batch name is provided yet batch_set is defined
+    batch_name=models.CharField(max_length=100)
+    batch_set=ListCharField(
+        base_field=CharField(max_length=20),
+        size=10,
+        max_length=(10*21),
+        null=True
+    )    
     def __str__(self):
         return self.experiment_name
     class Meta:

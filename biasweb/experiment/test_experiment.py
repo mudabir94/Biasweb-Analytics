@@ -1,5 +1,5 @@
 # import itertools
-# import numpy as np
+import numpy as np
 import pandas as pd
 from biasweb.experiment.controller import ExperimentController
 from biasweb.utils.Assigner import Assigner
@@ -12,12 +12,12 @@ t_exp = ExperimentController(exp_id, admin_id)
 print(t_exp.exp_id,"--> The following features will be enabled:")
 print(t_exp.fSet)
 #Set a different set of features
-newFSet = ['I','W','A','C']
+newFSet = ['W','A','C']
 t_exp.setFeatures(newFSet)
 print(t_exp.fSet)
 
 #Edit feature levels
-t_exp.setFeatureLevels()
+t_exp.autoSetFLevels(True)
 print(t_exp.fLevels)
 
 #Test block generation
@@ -25,12 +25,17 @@ print(t_exp.fLevels)
 t_exp.generateBlocks()
 print(t_exp.blocks)
 #Test batch assignment
-assigner = Assigner(pd.DataFrame())
+assigner = Assigner()
 #TODO: On view, implement a subject files import method
-#assigner.getLocalDToAssign()
+#assigner.getLocalDToAssign() #Open file
+assigner.assignAutoTest()
+
+#dSubBatches = assigner.splitInBins(3,'batch' )
+#dSubBatches.get_group(0).head() #Batch 0 members summary/head
+dSub = assigner.df
+dSub.groupby('group').size()
 
 
-assigner.getLocalDToAssign()
-dSubBatches = assigner.splitInBins(3,'batch' )
-dSubBatches.get_group(0)
 #Test block assignment
+dPc = t_exp.assignToBlocks(df = dSub, batchField = 'group')
+dPc
