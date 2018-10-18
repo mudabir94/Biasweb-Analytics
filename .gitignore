@@ -4,3 +4,4 @@ __pycache__
 *.code-workspace
 biasweb/settings.py
 biasweb/utils/data/~$*.xlsx
+biasweb/__pycache__/*.*
