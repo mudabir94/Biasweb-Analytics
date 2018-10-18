@@ -37,5 +37,5 @@ dSub.groupby('group').size()
 
 
 #Test block assignment
-dPc = t_exp.assignToBlocks(df = dSub, batchField = 'group')
-dPc
+# dPc = t_exp.assignToBlocks(df = dSub, batchField = 'group')
+# dPc

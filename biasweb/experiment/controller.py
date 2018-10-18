@@ -81,27 +81,31 @@ class ExperimentController:
         for i,b in enumerate(self.blocks):
             print(i,":", b) """
 
-  #TODO: Work on Blocks to Students Assignment
-  #1. (?) use workaround OR implement blocks writing to Blocks model
-  #2. USE OTHER METHOD --> retrieve block list/block id for experiment
-  #3. check if batches have been assigned and which is the field
-  #4. DONE --> implement batches as part of experiment model
-  #5. Check proportions to be kept for batches (if existing)
-  #5.5 Ask if proportions are wanted based on any other field
-  #6. Assign to blocks in given proportions of batches
+    #def writeBlocks(self):
+        #1. get Experiment object from models
+        #2. write to correct blocks field
+        #3. 
 
-    def assignToBlocks(self, df, blockSet = None, batchField = None):
-        print('I was called with field:', batchField)
-        assigner = Assigner()
-        #GET batches for this experiment
-        if batchField:
-            #Calculate the proportions of each batch
-            #For now working with default
-            dfBatchCount = df.groupby(batchField).size().to_frame(name = 'split_edges')
-            dfBatchPc = dfBatchCount.apply(lambda x: x / x.sum())
-            dfBatchPc = dfBatchPc.reset_index()
-            #assigner.assignByPc(df, dfBatchPc)
-            #Need to use apply method on each Block so first a group by should run
-        
-            #Pass to assign funciton of Assigner APPLY SEPARATELY FOR EACH GROUP
-            
+
+
+    #TODO: Work on Blocks to Students Assignment
+    #1. (?) use workaround OR implement blocks writing to Blocks model
+    #2. USE OTHER METHOD --> retrieve block list/block id for experiment
+    #3. check if batches have been assigned and which is the field
+    #4. DONE --> implement batches as part of experiment model
+    #5. Check proportions to be kept for batches (if existing)
+    #5.5 Ask if proportions are wanted based on any other field
+    #6. Assign to blocks in given proportions of batches
+    # def assignToBlocks(self, df, blockSet = None, batchField = None):
+    #     print('I was called with field:', batchField)
+    #     assigner = Assigner()
+    #     #GET batches for this experiment
+    #     if batchField:
+    #         #Calculate the proportions of each batch
+    #         #For now working with default
+    #         dfBatchCount = df.groupby(batchField).size().to_frame(name = 'split_edges')
+    #         dfBatchPc = dfBatchCount.apply(lambda x: x / x.sum())
+    #         dfBatchPc = dfBatchPc.reset_index()
+    #         #assigner.assignByPc(df, dfBatchPc)
+    #         #Need to use apply method on each Block so first a group by should run
+   #         #Pass to assign funciton of Assigner APPLY SEPARATELY FOR EACH GROUP

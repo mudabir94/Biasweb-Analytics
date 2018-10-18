@@ -70,6 +70,7 @@ class platform_feature(models.Model):
 
 class  experiment(models.Model):
     experiment_name=models.CharField(max_length=100)
+    #TODO@SHAZIB: add experiment statuses
     feature_set=ListCharField(
         base_field=CharField(max_length=10),
         size=6,
@@ -77,21 +78,58 @@ class  experiment(models.Model):
         null=True
     )
     custom_exp_id=models.CharField(max_length=100,null=True,blank=True,unique=True)
-    
+    #TODO@shazib: Add block field after checking which django-mysql field is most appropriate
+    #TODO@shazib: Add batches identifier
+    #
     #There should be a check that at least two batches should be created if
     #there are to be batches.  Also a default name of "Batch" should be set
     #if no batch name is provided yet batch_set is defined
-    batch_name=models.CharField(max_length=100)
-    batch_set=ListCharField(
-        base_field=CharField(max_length=20),
-        size=10,
-        max_length=(10*21),
-        null=True
-    )    
+    # batch_name=models.CharField(max_length=100)
+    # batch_set=ListCharField(
+    #     base_field=CharField(max_length=20),
+    #     size=10,
+    #     max_length=(10*21),
+    #     null=True
+    # )    
     def __str__(self):
         return self.experiment_name
     class Meta:
         verbose_name_plural="experiment"
+        ordering = ['pk']
+
+class  experiment_feature(models.Model):
+    used_in = models.ForeignKey(experiment, on_delete=models.CASCADE)
+    feature_id = models.ForeignKey(platform_feature, on_delete=models.CASCADE)
+    chosen_levels = ListCharField(
+        base_field=models.CharField(max_length=20),
+        size=6,
+        max_length=(6 * 21) # 6 * 10 character nominals, plus commas
+    )
+    # def __str__(self):
+    #     return self.experiment_name
+    # class Meta:
+    #     verbose_name_plural="experiment"
+    #     ordering = ['pk']
+    def __str__(self):
+        fName = self.feature_id.feature_name
+        return fName
+    
+
+class block(models.Model):
+    #The Experiment Id where it is used
+    used_in = models.ForeignKey(experiment, on_delete=models.CASCADE)
+    #So if there are 16 blocks, the serial_no will be a number from 1-16
+    #This should help recompile a tuple list if needed later, to ensure order
+    serial_no = models.IntegerField()
+    levels_set = ListCharField(
+        base_field=CharField(max_length=20),
+        size=10,
+        max_length=(10*21)
+    )
+    def __str__(self):
+        return self.used_in.custom_exp_id
+    class Meta:
+        #verbose_name_plural="block"
         ordering = ['pk']
 
 class signup_table(models.Model):
