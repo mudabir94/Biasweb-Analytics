@@ -8,21 +8,22 @@
          
           </div>
         <div class="col-sm-9  col-md-9 col-lg-9 col-xs-9 text-left" > 
-            <h1>Create Experiment</h1> <!-- Show Experiment Id here e.g. ses-007 (admin id) + experiment no. (5 digits)-->
-            <form action="{%url 'createexp'%}">
+            <p1>Create Experiment</p1> <!-- Show Experiment Id here e.g. ses-007 (admin id) + experiment no. (5 digits)-->
+            <!-- <form action="{%url 'createexp'%}"> -->
             <!--No of Experiments:<br> --> 
-            <input type="hidden" value="1" id="nofexp" name="Experiments"/>
+            <!-- <input type="hidden" value="1" id="nofexp" name="Experiments"/>
             No of subjects capicity:<br>  
-            <input type="text" value="50" id="nofsc" name="subjects"/>
+            <input type="text" value="50" id="nofsc" name="subjects"/> -->
               <!-- Fetching feature names from platform_feature model.  
               Then Creating check boxes for selection. If Check box is clicked then An ajax call
               would be made inorder to fetch further details of that feature. After which more 
               checkbox options will be shown based on the further details. e.g pruned/full.
               -->
-              <input type="submit" value="Submit">
-            </form>
+              <!-- <input type="submit" value="Submit">
+            </form> -->
+            <br>
             {% for feature in platformfeatobj%}
-            
+          
             <input type="checkbox"  id='{{feature.id}}' action='{%url "createexp"%}' method="post" 
             value="{{feature.feature_symbol}}" 
             onclick="outerCheckBox($(this).attr('value'),$(this).attr('id'))">{{feature.feature_name}} 
@@ -33,13 +34,21 @@
             <br>
             
             {%endfor%}
-           
+             
+            
             <button onclick='sendDictionary()'> Send Dictionary </button>
-            <li><a href='{% url "datadefined" %}'>data defined Batches</a></li>
-            <li><a href=#>admin defined  </a></li>
+
+            <input type="file" name="myfile" id='filepath'>
+            <button onclick='sendFilePath("filepath")'> Upload File</button>
+
+            <!-- <li><a href='{% url "datadefined" %}'>data defined Batches</a></li>
+            <li><a href=#>admin defined  </a></li> -->
+            <br>
+            <br>
+            
           </div>
           <div class="col-sm-1 sidenav">
-          
+         
           </div>
         </div>
       </div>
@@ -160,7 +169,6 @@
         //console.log("outerchekboxid-",outercheckid );
         console.log("innercheckbox-",innercheckboxid );
         // checking if the user has checked or not. 
-        
         if (innercheckboxid.checked==true) {
             if (dict[outercheckdivtitle] == null) {
                    dict[outercheckdivtitle]=[]
@@ -219,6 +227,27 @@
        success: function(data){}
        
        }); 
+      }
+
+
+      function sendFilePath(id){
+        console.log(id);
+        console.log($('#'+id).val().replace(/C:\\fakepath\\/i, ''));
+        var filepath=$('#'+id).val().replace(/C:\\fakepath\\/i, '');
+        console.log(filepath);
+        $.ajax({
+        type: 'POST',
+        dataType: "json",
+        'data': {
+        'dict': JSON.stringify(filepath),
+        'csrfmiddlewaretoken': '{{ csrf_token }}',
+        },
+        // the ajax call is sent to subdetails url name in the post function.  
+        url: "{% url 'createexp' %}",
+        success: function(data){}
+        
+        }); 
+
       }
 </script>
 {%endblock%}

@@ -39,3 +39,11 @@ dSub.groupby('group').size()
 #Test block assignment
 # dPc = t_exp.assignToBlocks(df = dSub, batchField = 'group')
 # dPc
+assigner.getLocalDToAssign()
+labels=['A','B','C']
+no_batches=len(labels)
+print(no_batches)
+dSubBatches = assigner.splitInBins(no_batches,'batch', labels )
+dSubBatches.get_group('A')
+
+#Test block assignment

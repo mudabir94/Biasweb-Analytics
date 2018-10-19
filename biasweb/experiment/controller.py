@@ -55,7 +55,9 @@ class ExperimentController:
 
                             
     def setFeatureLevels(self, fLevels):
-        self.fLevel = fLevels
+        print("asdasd",fLevels)
+        self.fLevels = fLevels
+        print('in feature levels')
 
     def autoSetFLevels(self, byPrompt = False):
         if byPrompt: enquiry = []
