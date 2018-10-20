@@ -35,7 +35,7 @@ class templateRoleAdmin(admin.ModelAdmin):
 class PlatformFeatureAdmin(admin.ModelAdmin):
     list_display= ('id', 'feature_name','feature_symbol','feature_levels')
 class ExperimentAdmin(admin.ModelAdmin):
-    list_display= ('id', 'experiment_name','feature_set','custom_exp_id')
+    list_display= ('id','custom_exp_id')
     
 admin.site.register(User, MyUserAdmin)
 admin.site.register(signup_table)

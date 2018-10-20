@@ -6,16 +6,19 @@ from biasweb.utils.Assigner import Assigner
 
 #print("As-Salaam Alaikum")
 admin_id = "ses-007"
-exp_id = admin_id + "-1234"
+#exp_id = admin_id + "-1234"
+#^^^No longer needed as now controller will retrieve from database and compose
 
-t_exp = ExperimentController(exp_id, admin_id)
-print(t_exp.exp_id,"--> The following features will be enabled:")
+
+t_exp = ExperimentController(admin_id)
+print("Exp Custom Id:",t_exp.exp.custom_exp_id)
+print("--> The following features will be enabled:")
 print(t_exp.fSet)
 #Set a different set of features
 newFSet = ['W','A','C']
 t_exp.setFeatures(newFSet)
 print(t_exp.fSet)
-
+t_exp.saveExperiment()
 #Edit feature levels
 t_exp.autoSetFLevels(True)
 print(t_exp.fLevels)
