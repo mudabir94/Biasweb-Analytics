@@ -4,14 +4,13 @@ to batches/blocks or any other group
 """
 # Importing the libraries
 import numpy as np
-#import matplotlib.pyplot as plt
 import pandas as pd
 from tkinter import *
 from tkinter.filedialog import askopenfilename
 
 #%%
 class Assigner:
-    def __init__(self, df):
+    def __init__(self, df = None):
         self.df = df
 
     #%%The function that assigns a DataFrame (gp) RANDOMLY into k groups
@@ -44,15 +43,20 @@ class Assigner:
     def assignAutoTest(self):
         self.df = pd.DataFrame({'customer_id': np.random.normal(size=10000),
                    'group': np.random.choice(['a','b','c'], size=10000)})
-        proportions = {'a':[.5,.5],'b':[.4,.6], 'c':[.2,.8]}
-        self.df.head()
-        self.df['batch'] = self.assign(self,3) #allocate df rows into three batches
+        self.proportions = {'a':[.5,.5],'b':[.4,.6], 'c':[.2,.8]}
+        print(self.df.head())
+        self.df['batch'] = self.assign(3,['A','B','C']) #allocate df rows into three batches
 
-        (self.df.groupby(['group','batch'])
+        print(self.df.groupby(['group','batch'])
             .size()
-            .unstack())  #create a sort of pivot table
+            .unstack()
+            .assign())  #create a sort of pivot table
 
-
+    #def calcSplitRatio():
+        #Input: Series or List of batches
+        #Output: dictionary of proportions
+        #Find out the unique values in the batch list
+        #Calculate their proportion using groupby.size()?
     #%% NOW TESTING ON A FILE
     def getLocalDToAssign(self):
         #from tkinter.filedialog import asksaveasfilename
@@ -117,19 +121,49 @@ class Assigner:
 
     
 
-    
-#%%ORIGINAL CODE FOR ALLOCATING BY CERTAIN PROPORTIONS OF A GIVEN GROUP
-#def assigner(gp):
-#    group = gp['group'].iloc[0]
-#     ...:     cut = pd.qcut(
-#                  np.arange(gp.shape[0]), 
-#                  q=np.cumsum([0] + proportions[group]), 
-#                  labels=range(len(proportions[group]))
-#              ).get_values()
-#     ...:     return pd.Series(cut[np.random.permutation(gp.shape[0])],
-#                               index=gp.index,
-#                               name='assignment')
-#     ...:
-#
+
+    def assignByPc(self, df, dPc):  # here df is a dataframe with column 
+                                    # dPc is the df.groupby(batchField).size() result
+                                    # converted into decimilized proportions
+        #group = df['group'].iloc[0]
+        qCol = dPc.iloc[:,1]
+        qCol = list(qCol)
+        qCol = [0] + qCol
+        cut = pd.qcut(np.arange(df.shape[0]), #Series to be cut by quantiles
+                q = np.cumsum(qCol),
+                labels = dPc.iloc[:,0]
+                ).get_values()
+
+        #Original parameters:
+        # q=np.cumsum([0] + proportions[group]), #The quantiles to use
+        # labels=range(len(proportions[group])) #Labels for resulting bins
+
+        return pd.Series(cut[np.random.permutation(df.shape[0])],
+                                index=df.index,
+                                name='assignment')
+# 
+# To perform the assignment in proportion with group
+#   df['assignment'] = df.groupby('group', group_keys=False).apply(assigner)
+#   df.head()
+# Out[233]:
+#    customer_id group  assignment
+# 0       0.6547     c           1
+# 1       1.4190     a           1
+# 2       0.4205     a           0
+# 3       2.3266     a           1
+# 4      -0.5691     b           0
+
 # to obtain pivot table
 # pd.pivot_table(df,index=['Group'],values=["customer_id"],aggfunc=lambda x: len(x.unique()))
+# OR
+# In [234]: (df.groupby(['group', 'assignment'])
+#              .size()
+#              .unstack()
+#              .assign(proportion=lambda x: x[0] / (x[0] + x[1])))
+# Assuming that 0 and 1 are the two batches to assign to
+# Out[234]:
+# assignment     0     1  proportion
+# group
+# a           1659  1658      0.5002
+# b           1335  2003      0.3999
+# c            669  2676      0.200

@@ -69,18 +69,62 @@ class platform_feature(models.Model):
         ordering = ['pk']
 
 class  experiment(models.Model):
-    experiment_name=models.CharField(max_length=100)
-    feature_set= ListTextField(
-        base_field=models.CharField(max_length=100),
-        size=100,  # Maximum of 100 ids in list
-        null=True,
-        blank=True
-    )
+    status = models.CharField(max_length=100,default='DESIGN_MODE')
+    """
+    STATUS LEVELS:
+     DESIGN_MODE = Under Construction
+     READY = Design complete but login not shared with Subjects
+     OPEN = READY + login shared
+     ACTIVE = Subject(s) are undergoing experiment
+     INACTIVE = Partially completed but no Subjects
+     CLOSED = No longer accepting Subjects - awaiting analysis
+     SUSPENDED = Not accepting Subjects - 
+                 but could be reopened - some design changes (such as cap change) allowed
+     CANCELLED = Abandoned - not accepting subjects ever
+     ANALYZED = Analysis Reports 
+    """
     custom_exp_id=models.CharField(max_length=100,null=True,blank=True,unique=True)
+    batches_title=models.CharField(max_length=100, null=True, blank=True)
+    capacity=models.IntegerField(default=100, null=True, blank=True)
+    #TODO@MUDABIR: NEED ADD ADMIN ID AS A FOREIGN KEY
     def __str__(self):
-        return self.experiment_name
+        return self.custom_exp_id
     class Meta:
         verbose_name_plural="experiment"
+        ordering = ['pk']
+
+class Experiment_Batch(models.Model):
+    exp = models.ForeignKey(experiment, on_delete=models.CASCADE)
+    batch_label= models.CharField(max_length=100, null=True, blank=True)
+
+class experiment_feature(models.Model):
+    used_in = models.ForeignKey(experiment, on_delete=models.CASCADE)
+    p_feature = models.ForeignKey(platform_feature, on_delete=models.CASCADE)
+    chosen_levels = ListCharField(
+         base_field=models.CharField(max_length=20),
+         size=6,
+         max_length=(6 * 21) # 6 * 10 character nominals, plus commas
+    )
+    def __str__(self):
+        fName = self.p_feature.feature_name
+        return fName
+    
+
+class block(models.Model):
+    #The Experiment Id where it is used
+    used_in = models.ForeignKey(experiment, on_delete=models.CASCADE)
+    #So if there are 16 blocks, the serial_no will be a number from 1-16
+    #This should help recompile a tuple list if needed later, to ensure order
+    serial_no = models.IntegerField()
+    levels_set = ListCharField(
+        base_field=CharField(max_length=20),
+        size=10,
+        max_length=(10*21)
+    )
+    def __str__(self):
+        return self.used_in.custom_exp_id
+    class Meta:
+        #verbose_name_plural="block"
         ordering = ['pk']
 
 class signup_table(models.Model):
