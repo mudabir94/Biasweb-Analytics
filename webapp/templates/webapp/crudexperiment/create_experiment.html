@@ -2,62 +2,75 @@
 {% block content %}
 {%load static from staticfiles%}
 <div class="container-fluid text-center">    
-        <div class="row content">
+        <div class="row-fluid">
           <div class="col-sm-2 sidenav">
 
          
           </div>
         <div class="col-sm-9  col-md-9 col-lg-9 col-xs-9 text-left" > 
-            <p1>Create Experiment</p1> <!-- Show Experiment Id here e.g. ses-007 (admin id) + experiment no. (5 digits)-->
-            <!-- <form action="{%url 'createexp'%}"> -->
-            <!--No of Experiments:<br> --> 
-            <!-- <input type="hidden" value="1" id="nofexp" name="Experiments"/>
-            No of subjects capicity:<br>  
-            <input type="text" value="50" id="nofsc" name="subjects"/> -->
-              <!-- Fetching feature names from platform_feature model.  
-              Then Creating check boxes for selection. If Check box is clicked then An ajax call
-              would be made inorder to fetch further details of that feature. After which more 
-              checkbox options will be shown based on the further details. e.g pruned/full.
-              -->
-              <!-- <input type="submit" value="Submit">
-            </form> -->
+          <div class ="row">     
+                <div class="row" style="background: aquamarine;">
+                    <p1>Create Experiment </p1> <!-- Show Experiment Id here e.g. ses-007 (admin id) + experiment no. (5 digits)-->
+                    <p1>Experiment id ses-007-2</p1>
+                </div>   
             <br>
-            {% for feature in platformfeatobj%}
-          
-            <input type="checkbox"  id='{{feature.id}}' action='{%url "createexp"%}' method="post" 
-            value="{{feature.feature_symbol}}" 
-            onclick="outerCheckBox($(this).attr('value'),$(this).attr('id'))">{{feature.feature_name}} 
-            <div id='{{feature.id}}-innercheckboxdiv' class='innerchecksboxdivs' title='{{feature.feature_symbol}}'>
+                <div class="row" style="background: aqua;">  
+                      <div class='row' >
+                        <div class="col-md-3">
+                          <input type=text/>
+                        </div>
+                        <div class="col-md-9">
+                         No of Experiment
+                        </div>
+                      </div> 
+                      <div class='row' >
+                          <div class="col-md-3">
+                            <input type=text/>
+                          </div>
+                          <div class="col-md-9">
+                           Subject Capicity
+                          </div>
+                        </div> 
+                </div>
+            <br>
+                <div class='row' style="background: cadetblue">
+                    
+                    <button >Upload</button>
+                   
+               </div>
+            <br>
+                  <div class='row' style="background:peru;">
+                        {% for feature in platformfeatobj%}
+                      
+                            <input type="checkbox"  id='{{feature.id}}' action='{%url "createexp"%}'
+                                  method="post" 
+                                  value="{{feature.feature_symbol}}" 
+                                  onclick="outerCheckBox($(this).attr('value'),$(this).attr('id'))">
+                                  {{feature.feature_name}} 
+                                  <div  id='{{feature.id}}-innercheckboxdiv' class='innerchecksboxdivs' title='{{feature.feature_symbol}}'>
+                                  </div>
+                            </input>
+                            <br>
+                        {%endfor%}
+                        <button onclick='sendDictionary()'> Send Dictionary </button>
+                  </div>
+             </div>
+          </div>
+                <div class="col-sm-1 sidenav">
               
-            </div>
-            </input>
-            <br>
-            
-            {%endfor%}
-             
-            
-            <button onclick='sendDictionary()'> Send Dictionary </button>
+                </div>
+      </div>
 
-            <input type="file" name="myfile" id='filepath'>
-            <button onclick='sendFilePath("filepath")'> Upload File</button>
 
-            <!-- <li><a href='{% url "datadefined" %}'>data defined Batches</a></li>
-            <li><a href=#>admin defined  </a></li> -->
-            <br>
-            <br>
-            
-          </div>
-          <div class="col-sm-1 sidenav">
-         
-          </div>
-        </div>
+
+      
       </div>
       <footer>
 		
-            <div class="container-fluid" style='margin-left:15px'>
-                <p><a href="#" target="blank">Contact</a> | <a href="#" target="blank">LinkedIn1</a> | <a href="#" target="blank">Twitter</a> | <a href="#" target="blank">Google+</a></p>
-            </div>
-    </footer>	
+          <div class="container-fluid" style='margin-left:15px'>
+              <p><a href="#" target="blank">Contact</a> | <a href="#" target="blank">LinkedIn1</a> | <a href="#" target="blank">Twitter</a> | <a href="#" target="blank">Google+</a></p>
+          </div>
+     </footer>	
 <script>
       //Global Variable
       var dict = {};

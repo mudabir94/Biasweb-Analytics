@@ -728,12 +728,11 @@ def subDetails(request):
             print(arrlist)
     return HttpResponse(json.dumps(arrlist), content_type='application/json')
 
-#global var 
     
 class createExperiment(TemplateView): 
 
     admin_id='ses-007'
-    exp_id=admin_id + "-2"
+    exp_id=admin_id + "-4"
     t_exp=''
     def get(self,request):
         ##test experimemt functions. 
@@ -756,14 +755,14 @@ class createExperiment(TemplateView):
                 print('b',b)
                 ## get csv file path. 
                 ## if extension is csv 
-                csvdataframe=pd.read_csv('C://biasweb//biasweb//utils//data//'+b)
-                print(csvdataframe)
-                ## Make batches according to sections in files. 
+                # csvdataframe=pd.read_csv('C://biasweb//biasweb//utils//data//'+b)
+                # print(csvdataframe)
+                # ## Make batches according to sections in files. 
 
-                labels=csvdataframe.SECTION.unique()
-                print(labels)
-                labels=list(labels)
-                no_batches=len(labels)
+                # labels=csvdataframe.SECTION.unique()
+                # print(labels)
+                # labels=list(labels)
+                # no_batches=len(labels)
 
                 # Make batches according to your given number. 
 
@@ -781,21 +780,21 @@ class createExperiment(TemplateView):
                     # df1 = xl.parse('Sheet1')
 
 
-                assigner = Assigner(csvdataframe)
-                dSubBatches=assigner.splitInBins(no_batches,'batch',labels )
-                dSubBatches.get_group('A')
+                # assigner = Assigner(csvdataframe)
+                # dSubBatches=assigner.splitInBins(no_batches,'batch',labels )
+                # dSubBatches.get_group('A')
 
 
 
 
-            # t_exp = ExperimentController(self.exp_id, self.admin_id)
-            # #t_exp.setfeaturelist(feature_dictionary)
-            # t_exp.setFeatureLevels(b)
-            # print(t_exp.fLevels)
-            # t_exp.generateBlocks()
-            # print(t_exp.blocks)
-            # e=exp(experiment_name='exp1',custom_exp_id=self.exp_id,feature_set=json.dumps(t_exp.blocks))
-            # e.save()
+            t_exp = ExperimentController(self.exp_id, self.admin_id)
+            #t_exp.setfeaturelist(feature_dictionary)
+            t_exp.setFeatureLevels(b)
+            print(t_exp.fLevels)
+            t_exp.generateBlocks()
+            print(t_exp.blocks)
+            e=exp(experiment_name='exp1',custom_exp_id=self.exp_id,feature_set=json.dumps(t_exp.blocks))
+            e.save()
        
       
 
