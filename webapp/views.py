@@ -745,13 +745,16 @@ def uploadSampleFile(request):
             label = json_data[0].split(",")
             #label=json_data[0]
             print('label',label)
-            nohead=json_data[1:-1]
+            nohead=[i.split(',') for i in json_data[1:-1]] 
             print(type(nohead))
-            # a = np.array(nohead)
-            # print(a)
-            # print('no head',type(nohead))
+            print(nohead)
+
+            a = np.array(nohead)
+            print(a)
+            
 
             csvdataframe= pd.DataFrame.from_records(a,columns=label)
+            print(csvdataframe)
             # csvdataframe= pd.DataFrame(data=json_data)
             # print(type(csvdataframe))
             # print()
