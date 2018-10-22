@@ -734,7 +734,35 @@ import csv
 import codecs
 def uploadSampleFile(request):
     if request.method == 'POST':
-        pass
+        if request.is_ajax:
+            data = request.POST.get('csvfiledata')
+            #print('d',d)
+            json_data = json.loads(data)
+            print('json_data',type(json_data))
+            json_data=[i.replace('\r','') for i in json_data]  
+            print(json_data)
+            #print('head',type(json_data[0]))
+            label = json_data[0].split(",")
+            #label=json_data[0]
+            print('label',label)
+            nohead=json_data[1:-1]
+            print(type(nohead))
+            # a = np.array(nohead)
+            # print(a)
+            # print('no head',type(nohead))
+
+            csvdataframe= pd.DataFrame.from_records(a,columns=label)
+            # csvdataframe= pd.DataFrame(data=json_data)
+            # print(type(csvdataframe))
+            # print()
+            # labels=csvdataframe.SECTION.unique()
+            # print(labels)
+            # labels=list(labels)
+            # no_batches=len(labels)
+            # assigner = Assigner(csvdataframe)
+            # dSubBatches=assigner.splitInBins(no_batches,'batch',labels )
+            # print(dSubBatches.get_group('A'))
+        
     else:
         pass
     return render(request, 'webapp/crudexperiment/create_experiment.html')    

@@ -107,33 +107,63 @@
           </div>
      </footer>	
 <script>
-      $(function () {
+$(function () {
     $("#upload").bind("click", function () {
         var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.csv|.txt)$/;
+
         if (regex.test($("#fileUpload").val().toLowerCase())) {
             if (typeof (FileReader) != "undefined") {
                 var reader = new FileReader();
                 reader.onload = function (e) {
-                    var table = $("<table />");
+                  console.log(e);
+
+                    // var table = $("<table />");
                     var rows = e.target.result.split("\n");
+                    //console.log(rows); 
+                    var arrlist=[]
                     for (var i = 0; i < rows.length; i++) {
-                        var row = $("<tr />");
-                        var cells = rows[i].split(",");
-                        for (var j = 0; j < cells.length; j++) {
-                            var cell = $("<td />");
-                            cell.html(cells[j]);
-                            row.append(cell);
-                        }
-                        table.append(row);
+                        console.log(rows[i]);
+                        arrlist.push(rows[i]);
+
+                        
+                        // var row = $("<tr />");
+                        // var cells = rows[i].split(",");
+                        // for (var j = 0; j < cells.length; j++) {
+                        //     var cell = $("<td />");
+                        //     cell.html(cells[j]);
+                        //     row.append(cell);
+                        // }
+                        // table.append(row);
                     }
-                    $("#dvCSV").html('');
-                    $("#dvCSV").append(table);
+                    console.log("arr",arrlist)
+
+                    $.ajax({
+                    type: 'POST',
+                    dataType: "json",
+                    'data': {
+                    'csvfiledata': JSON.stringify(arrlist),
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    },
+                    // the ajax call is sent to subdetails url name in the post function.  
+                    url: "{% url 'uploadsamplefile' %}",
+                    success: function(data){}
+                    
+                    }); 
+
+                    // $("#dvCSV").html('');
+                    // $("#dvCSV").append(table);
+
                 }
+              
+
                 reader.readAsText($("#fileUpload")[0].files[0]);
-            } else {
+                
+            }
+             else {
                 alert("This browser does not support HTML5.");
             }
-        } else {
+        } 
+        else {
             alert("Please upload a valid CSV file.");
         }
     });
