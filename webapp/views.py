@@ -736,11 +736,18 @@ class createExperiment(TemplateView):
     t_exp=''
     def get(self,request):
         ##test experimemt functions. 
-       
+        
+        #texp = ExperimentController(a_id=admin_id, e_id=9)
+        #nexp = ExperimentController(a_id=admin_id)
+        #print("Exp Custom Id:",texp.exp.custom_exp_id)
+        #print("The following features are set to be enabled:")
+        #print(list(texp.fSet.all()))
+
         platformfeatobj=platform_feature.objects.all()
         return render(request,'webapp/crudexperiment/create_experiment.html',
                                         {'platformfeatobj':platformfeatobj,
-                                     
+                                          'admin_id':'ses-007' ,
+                                          'experiment_id':'009'
                                         })
                                         
 
@@ -787,14 +794,14 @@ class createExperiment(TemplateView):
 
 
 
-            t_exp = ExperimentController(self.exp_id, self.admin_id)
-            #t_exp.setfeaturelist(feature_dictionary)
-            t_exp.setFeatureLevels(b)
-            print(t_exp.fLevels)
-            t_exp.generateBlocks()
-            print(t_exp.blocks)
-            e=exp(experiment_name='exp1',custom_exp_id=self.exp_id,feature_set=json.dumps(t_exp.blocks))
-            e.save()
+            # t_exp = ExperimentController(self.exp_id, self.admin_id)
+            # #t_exp.setfeaturelist(feature_dictionary)
+            # t_exp.setFeatureLevels(b)
+            # print(t_exp.fLevels)
+            # t_exp.generateBlocks()
+            # print(t_exp.blocks)
+            # e=exp(experiment_name='exp1',custom_exp_id=self.exp_id,feature_set=json.dumps(t_exp.blocks))
+            # e.save()
        
       
 

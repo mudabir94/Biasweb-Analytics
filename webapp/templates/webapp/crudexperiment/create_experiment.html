@@ -2,69 +2,81 @@
 {% block content %}
 {%load static from staticfiles%}
 <div class="container-fluid text-center">    
-        <div class="row-fluid">
-          <div class="col-sm-2 sidenav">
-
-         
-          </div>
-        <div class="col-sm-9  col-md-9 col-lg-9 col-xs-9 text-left" > 
-          <div class ="row">     
-                <div class="row" style="background: aquamarine;">
-                    <p1>Create Experiment </p1> <!-- Show Experiment Id here e.g. ses-007 (admin id) + experiment no. (5 digits)-->
-                    <p1>Experiment id ses-007-2</p1>
-                </div>   
-            <br>
-                <div class="row" style="background: aqua;">  
-                      <div class='row' >
-                        <div class="col-md-3">
-                          <input type=text/>
+      <div class="row content">
+          <div class="col-sm-2 sidenav" style='background:teal'></div>
+          <div class="col-sm-9  col-md-9 col-lg-9 col-xs-9 text-left" > 
+                  <div class ="row-fluid">     
+                      <div class ="row">   
+                            <div class='col-md-12' >
+                            <p1>Create Experiment </p1> <!-- Show Experiment Id here e.g. ses-007 (admin id) + experiment no. (5 digits)-->
+                            </div>  
                         </div>
-                        <div class="col-md-9">
-                         No of Experiment
-                        </div>
-                      </div> 
-                      <div class='row' >
+                      <div class ="row"> 
+                          <div class='col-md-12' >    
+                            <p1>Admin id {{admin_id}}</p1>
+                          </div>                            
+                      </div>
+                      <div class ="row"> 
+                          <div class='col-md-12' >    
+                            <p1>Experiment id {{experiment_id}}</p1>
+                          </div>                            
+                      </div>
+                  </div>
+                  <!-- <div class="row-fluid" style="background:thistle;">  
+                        <div class='row-fluid' >
                           <div class="col-md-3">
                             <input type=text/>
                           </div>
                           <div class="col-md-9">
-                           Subject Capicity
+                          No of Experiment
                           </div>
                         </div> 
-                </div>
-            <br>
-                <div class='row' style="background: cadetblue">
-                    
-                    <button >Upload</button>
-                   
-               </div>
-            <br>
-                  <div class='row' style="background:peru;">
-                        {% for feature in platformfeatobj%}
-                      
-                            <input type="checkbox"  id='{{feature.id}}' action='{%url "createexp"%}'
-                                  method="post" 
-                                  value="{{feature.feature_symbol}}" 
-                                  onclick="outerCheckBox($(this).attr('value'),$(this).attr('id'))">
-                                  {{feature.feature_name}} 
-                                  <div  id='{{feature.id}}-innercheckboxdiv' class='innerchecksboxdivs' title='{{feature.feature_symbol}}'>
-                                  </div>
-                            </input>
-                            <br>
-                        {%endfor%}
-                        <button onclick='sendDictionary()'> Send Dictionary </button>
+                        <div class='row-fluid' >
+                            <div class="col-md-3">
+                              <input type=text/>
+                            </div>
+                            <div class="col-md-9">
+                            Subject Capicity
+                            </div>
+                        </div> 
+                  </div> -->
+                  <br>
+                  <div class='row-fluid' style="background: cadetblue">
+                      <div class='col-md-2'>
+                        <input type='file'/>
+                      </div>
+                      <div class='col-md-10'>
+
+                      <button>Upload</button>
+                      </div>
                   </div>
-             </div>
+              <br>
+                    <div class='row-fluid' style="background:peru;">
+                          {% for feature in platformfeatobj%}
+                          <div class='row-fluid'>
+                              <div class='col-md-12'>
+                                  <input type="checkbox"  id='{{feature.id}}' action='{%url "createexp"%}'
+                                        method="post" 
+                                        value="{{feature.feature_symbol}}" 
+                                        onclick="outerCheckBox($(this).attr('value'),$(this).attr('id'))">
+                                        {{feature.feature_name}} 
+                                        <div  id='{{feature.id}}-innercheckboxdiv' class='innerchecksboxdivs' title='{{feature.feature_symbol}}'>
+                                        </div>
+                                  </input>
+                                  <br>
+                              </div>
+                          </div>
+                          {%endfor%}
+                          <div class='row-fluid'>
+
+                              <button onclick='sendFeatureLevels()'> Set Feature Levels </button>
+                          </div>  
+                      </div>
           </div>
-                <div class="col-sm-1 sidenav">
-              
-                </div>
+          
+          <div class="col-sm-1 sidenav" style='background:yellow'>side bar</div>
       </div>
-
-
-
-      
-      </div>
+</div>
       <footer>
 		
           <div class="container-fluid" style='margin-left:15px'>
@@ -227,7 +239,7 @@
         }
       }
 
-      function sendDictionary(){
+      function sendFeatureLevels(){
         $.ajax({
        type: 'POST',
        dataType: "json",
