@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic import TemplateView
-from .forms import blogForm,SignUpForm,mobile_phone_form,filterform,sort_filter_form,NameForm
+#loading forms from forms.py file. 
+from .forms import blogForm,SignUpForm,mobile_phone_form,filterform,sort_filter_form
+from .forms import NameForm
 #-----------------------------------------------------------------
 from .models import blog,mobile_phone,phone,samsung_phone,sort_feature
 from .models import User,userscoreRecord,prunedmobilephones
@@ -727,8 +729,15 @@ def subDetails(request):
             print(type(arrlist))    
             print(arrlist)
     return HttpResponse(json.dumps(arrlist), content_type='application/json')
-
-    
+## Function for getting the sample file. 
+import csv
+import codecs
+def uploadSampleFile(request):
+    if request.method == 'POST':
+        pass
+    else:
+        pass
+    return render(request, 'webapp/crudexperiment/create_experiment.html')    
 class createExperiment(TemplateView): 
 
     admin_id='ses-007'
@@ -742,12 +751,13 @@ class createExperiment(TemplateView):
         #print("Exp Custom Id:",texp.exp.custom_exp_id)
         #print("The following features are set to be enabled:")
         #print(list(texp.fSet.all()))
-
         platformfeatobj=platform_feature.objects.all()
         return render(request,'webapp/crudexperiment/create_experiment.html',
                                         {'platformfeatobj':platformfeatobj,
                                           'admin_id':'ses-007' ,
                                           'experiment_id':'009'
+                                          
+
                                         })
                                         
 

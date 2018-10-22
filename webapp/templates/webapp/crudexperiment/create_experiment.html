@@ -42,17 +42,38 @@
                   </div> -->
                   <br>
                   <div class='row-fluid' style="background: cadetblue">
-                      <div class='col-md-2'>
-                        <input type='file'/>
-                      </div>
-                      <div class='col-md-10'>
+                    <div class='row'>
+                      <div class='col-md-5'>
+                         
+                          <!-- <form action="{%url 'uploadsamplefile'%}" method="post" enctype="multipart/form-data">
+                              {% csrf_token %}
 
-                      <button>Upload</button>
+                            File: <input type="file" name="myfile"><br>
+                            
+                            <button type="submit">Submit</button><br>
+                          </form>
+                          -->
+                          <input type="file" id="fileUpload" />
+                          <input type="button" id="upload" value="Upload" />
+
+                          <hr />
+                          <div id="dvCSV">
+                          </div>
                       </div>
+                      <div class='col-md-1'>
+
+                      <!-- <button>Upload</button> -->
+                      <div class='row'>
+
+                      </div>
+                    </div>
+                      <div class='col-md-6'></div> 
+                        
+                    </div>
                   </div>
               <br>
                     <div class='row-fluid' style="background:peru;">
-                          {% for feature in platformfeatobj%}
+                      {% for feature in platformfeatobj%}
                           <div class='row-fluid'>
                               <div class='col-md-12'>
                                   <input type="checkbox"  id='{{feature.id}}' action='{%url "createexp"%}'
@@ -67,11 +88,13 @@
                               </div>
                           </div>
                           {%endfor%}
+                    
                           <div class='row-fluid'>
 
                               <button onclick='sendFeatureLevels()'> Set Feature Levels </button>
                           </div>  
                       </div>
+                   
           </div>
           
           <div class="col-sm-1 sidenav" style='background:yellow'>side bar</div>
@@ -84,6 +107,40 @@
           </div>
      </footer>	
 <script>
+      $(function () {
+    $("#upload").bind("click", function () {
+        var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.csv|.txt)$/;
+        if (regex.test($("#fileUpload").val().toLowerCase())) {
+            if (typeof (FileReader) != "undefined") {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    var table = $("<table />");
+                    var rows = e.target.result.split("\n");
+                    for (var i = 0; i < rows.length; i++) {
+                        var row = $("<tr />");
+                        var cells = rows[i].split(",");
+                        for (var j = 0; j < cells.length; j++) {
+                            var cell = $("<td />");
+                            cell.html(cells[j]);
+                            row.append(cell);
+                        }
+                        table.append(row);
+                    }
+                    $("#dvCSV").html('');
+                    $("#dvCSV").append(table);
+                }
+                reader.readAsText($("#fileUpload")[0].files[0]);
+            } else {
+                alert("This browser does not support HTML5.");
+            }
+        } else {
+            alert("Please upload a valid CSV file.");
+        }
+    });
+});    
+
+
+
       //Global Variable
       var dict = {};
       var arr_feature_levels=[];
