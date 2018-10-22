@@ -3,6 +3,10 @@ import numpy as np
 import pandas as pd
 from biasweb.experiment.controller import ExperimentController
 from biasweb.utils.Assigner import Assigner
+from webapp.models import experiment as Experiment
+from webapp.models import block as Block
+from webapp.models import experiment_feature as ExpFeature
+from webapp.models import platform_feature as PFeature
 
 #print("As-Salaam Alaikum")
 admin_id = "ses-007"
@@ -10,23 +14,36 @@ admin_id = "ses-007"
 #^^^No longer needed as now controller will retrieve from database and compose
 
 
-t_exp = ExperimentController(admin_id)
-print("Exp Custom Id:",t_exp.exp.custom_exp_id)
-print("--> The following features will be enabled:")
-print(t_exp.fSet)
+texp = ExperimentController(a_id=admin_id, e_id=9)
+#nexp = ExperimentController(a_id=admin_id)
+print("Exp Custom Id:",texp.exp.custom_exp_id)
+#print("New Exp Custom Id:",nexp.exp.custom_exp_id)
+print("The following features are set to be enabled:")
+print(list(texp.fSet.all()))
+#print(texp.fSet)
 #Set a different set of features
-newFSet = ['W','A','C']
-t_exp.setFeatures(newFSet)
-print(t_exp.fSet)
-t_exp.saveExperiment()
+
+fSymbol = 'W' #JUST TO test individual feature handling
+#xFSym = 'D' #Againd Ditto
+nFSym = 'I' #For testing the addition of new feature
+#levFSym= 'A' #TODO@SHAZIB: Test change levels of existing feature through add feature
+
+texp.addFeature(fSymbol)
+texp.delFeature(fSymbol)
+newFSet = ['W','A','R']  #please change depending on what's in the database
+#TODO@shazib: TEST setFSet
+texp.setFSet(newFSet)
+print(texp.fSet)
+texp.saveExperiment()
 #Edit feature levels
-t_exp.autoSetFLevels(True)
-print(t_exp.fLevels)
+texp.autoSetFLevels(True)
+print(texp.fLevels)
+texp.saveExperiment()
 
 #Test block generation
-#list(itertools.product(*t_exp.fLevels.values()))
-t_exp.generateBlocks()
-print(t_exp.blocks)
+#list(itertools.product(*texp.fLevels.values()))
+texp.generateBlocks()
+print(texp.blocks)
 #Test batch assignment
 assigner = Assigner()
 #TODO: On view, implement a subject files import method
@@ -40,7 +57,7 @@ dSub.groupby('group').size()
 
 
 #Test block assignment
-# dPc = t_exp.assignToBlocks(df = dSub, batchField = 'group')
+# dPc = texp.assignToBlocks(df = dSub, batchField = 'group')
 # dPc
 assigner.getLocalDToAssign()
 labels=['A','B','C']

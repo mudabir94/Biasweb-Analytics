@@ -11,7 +11,9 @@ import pandas as pd
 from biasweb.utils.Assigner import Assigner
 from webapp.models import experiment as Experiment
 from webapp.models import block as Block
-from webapp.models import experiment_feature as Feature
+from webapp.models import experiment_feature as ExpFeature
+from webapp.models import platform_feature as PFeature
+
 
 #    STATUS LEVELS:
 DESIGN_MODE = 'DESIGN_MODE' #Under Construction
@@ -25,49 +27,92 @@ CANCELLED = 'CANCELLED' #Abandoned - not accepting subjects ever
 ANALYZED = 'ANALYZED' #Analysis Reports 
 
 class ExperimentController:
-    def __init__(self, a_id, fSet = None, cap = 100):
+    def __init__(self, a_id, e_id = None, cap = 100):
         self.exp = Experiment()
-        self.exp.status = DESIGN_MODE
-        self.exp.custom_exp_id = a_id
-        exp_id = 1 + Experiment.objects.latest('id').id
-        exp_id = '-' + str(exp_id).zfill(4)  #ensuring the id is now a 4 digit numeric string
-        self.exp.custom_exp_id += exp_id
-        self.exp.capacity = cap            #Capacity to budget for experiment
-        self.admin_id = a_id      #TODO@MUDABIR - NEED TO MODIFY EXPERIMENT ADMIN IMPLEMENTATION
         self.fLevels = {}
-        if fSet:
-            self.fSet = fSet
+        if e_id:
+            self.exp = Experiment.objects.get(id=e_id)
+            self.fSet = self.exp.experiment_feature_set
+            self.fLevels = self.retrieveFLevels()
         else:
-            self.fSet = [   'I',    #I = Interactivity
-                            'R',    #R = Revisability
-                            'W',    #W = Weight generation method - direct or ahp
-                            'A',    #A = Alternative display method (e.g., phones to choose from)
-                                    #    all, 1by1, 2by2, user
-                            'C'     #C = Criteria display mehtod (e.g. memory, os, etc.)
-                                    #    prune,full, self-extended [0,1,2]
-            ]
+            self.exp.status = DESIGN_MODE
+            self.admin_id = a_id      #TODO@MUDABIR - NEED TO MODIFY EXPERIMENT ADMIN IMPLEMENTATION
+            
+            self.exp.custom_exp_id = 'TBA' #can only be created after Experient table assigns an id
+            self.exp.capacity = cap            #Capacity to budget for experiment
+            self.saveExperiment()
+            self.exp.custom_exp_id = a_id
+            exp_id = self.exp.id
+            exp_id = '-' + str(exp_id).zfill(4)  #ensuring the id is now a 4 digit numeric string
+            self.exp.custom_exp_id += exp_id
+            self.saveExperiment()
 
     def saveExperiment(self):
         #Check necessary fields and set STATUS
-        #Write to DB
+        #Create and Write Experiment in DB
         self.exp.save()
-        #Write Experiment Features by first checking against exsiting Platform Features
-        #save block
+        #Create and Write Feature with fSet in DB
+        #Create and Write Batches with batch_title
+        #Create and Write Blocks in DB
 
-    def setFeatures(self, fSet):
-        self.fSet = fSet
+    #def saveFSet(self):    
+        #assumes setFeatures has been called to add new features
 
-    def clarifyFeature(self, enquiry):
+    def getFSet(self):
+        return list(self.fSet.all())
+
+    def setFSet(self, fSet):
+        self.fInSet = []
+        for f in fSet:
+            if isinstance(f,str):
+                self.fInSet.append(self.addFeature(f))
+            else:
+                print("Req str list: Feature",f,"is a",type(f))
+        self.fSet.all().delete()
+        self.fSet.bulk_create(self.fInSet)
+
+    
+    def addFeature(self, fSymbol, newFLevels = None):
+        pf = PFeature.objects.filter(feature_symbol=fSymbol)[0]
+        if newFLevels:
+            self.fLevels[fSymbol] = newFLevels
+        elif fSymbol not in self.fLevels:
+            self.fLevels[fSymbol] = pf.feature_levels
+        #check if feature already exists, else create
+        expF = self.fSet.filter(p_feature__feature_symbol=fSymbol)
+        if expF.exists():
+            print(expF[0].p_feature.feature_name,": This feature already exists.")
+            if newFLevels:
+                expF[0].chosen_levels = "Features replaced"
+                print(expF[0].chosen_levels)
+            return expF[0]
+        else:
+            newEF = self.fSet.create(
+                    p_feature = pf,
+                    chosen_levels = self.fLevels[fSymbol]          
+            )
+            #TODO@Shazib: clarifyFeatures
+            return newEF
+    
+    def delFeature(self,fSymbol):
+        expF = self.getFeature(fSymbol)
+        if expF:
+            expF.delete()
+            del self.fLevels[fSymbol]
+
+    def getFeature(self,fSymbol):
+        expF = self.fSet.filter(p_feature__feature_symbol=fSymbol)
+        if expF.exists():
+            return expF[0]
+        else:
+            return None
+
+    def clarifyFeature(self, enquiry, byPrompt = False):
         levToPop = '999'
         for f in enquiry:
-            
-          
-            flevList=self.fLevels[f]
-            
+            flevList=self.fLevels[f]            
             while len(levToPop) > 0:
-                
                 print("Feature",f,"has the following factor levels.")
-                
                 for i,l in enumerate(flevList):
                     print("[",i,"] = ",l)
                 levToPop = input("Enter numbers for level to drop: ")
@@ -76,14 +121,16 @@ class ExperimentController:
                     print(len(levToPop))
                     flevList.pop(eval(levToPop))
                     print(flevList)
-
             return flevList
 
-                            
+    def retrieveFLevels(self):
+    #only for setting fLevels afresh from database
+        for f in self.fSet.all():
+            self.fLevels[f.p_feature.feature_symbol] = f.chosen_levels
+        return self.fLevels
+
     def setFeatureLevels(self, fLevels):
-        print("asdasd",fLevels)
         self.fLevels = fLevels
-        print('in feature levels')
 
     def autoSetFLevels(self, byPrompt = False):
         if byPrompt: enquiry = []

@@ -99,14 +99,14 @@ class Experiment_Batch(models.Model):
 
 class experiment_feature(models.Model):
     used_in = models.ForeignKey(experiment, on_delete=models.CASCADE)
-    feature_id = models.ForeignKey(platform_feature, on_delete=models.CASCADE)
+    p_feature = models.ForeignKey(platform_feature, on_delete=models.CASCADE)
     chosen_levels = ListCharField(
-        base_field=models.CharField(max_length=20),
-        size=6,
-        max_length=(6 * 21) # 6 * 10 character nominals, plus commas
+         base_field=models.CharField(max_length=20),
+         size=6,
+         max_length=(6 * 21) # 6 * 10 character nominals, plus commas
     )
     def __str__(self):
-        fName = self.feature_id.feature_name
+        fName = self.p_feature.feature_name
         return fName
     
 
