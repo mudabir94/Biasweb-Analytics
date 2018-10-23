@@ -12,8 +12,6 @@ from webapp.models import platform_feature as PFeature
 admin_id = "ses-007"
 #exp_id = admin_id + "-1234"
 #^^^No longer needed as now controller will retrieve from database and compose
-
-
 texp = ExperimentController(a_id=admin_id, e_id=9)
 #nexp = ExperimentController(a_id=admin_id)
 print("Exp Custom Id:",texp.exp.custom_exp_id)
@@ -25,25 +23,32 @@ print(list(texp.fSet.all()))
 
 fSymbol = 'W' #JUST TO test individual feature handling
 #xFSym = 'D' #Againd Ditto
-nFSym = 'I' #For testing the addition of new feature
 #levFSym= 'A' #TODO@SHAZIB: Test change levels of existing feature through add feature
 
-texp.addFeature(fSymbol)
-texp.delFeature(fSymbol)
-newFSet = ['W','A','R']  #please change depending on what's in the database
+#texp.addFeature(fSymbol)
+#texp.delFeature(fSymbol)
+nFSym = 'C' #For testing the addition of new feature
+newFSet = ['W','A',nFSym]  #please change depending on what's in the database
 #TODO@shazib: TEST setFSet
-texp.setFSet(newFSet)
-print(texp.fSet)
+texp.setFSet(newFSet,prompt=True)
+print(texp.fSet.all())
+#newLevs = {'W': ['direct', 'AHP'], 'C': ['full', 'pruned']}
+newLevs = {'W': ['direct', 'AHP'], 'A': ['all', '2by2','user'], 'R': ['0', '1']}
+
+texp.setFSet(newFLevels=newLevs,prompt=True)
 texp.saveExperiment()
 #Edit feature levels
-texp.autoSetFLevels(True)
+#texp.autoSetFLevels(True)
 print(texp.fLevels)
 texp.saveExperiment()
 
 #Test block generation
 #list(itertools.product(*texp.fLevels.values()))
 texp.generateBlocks()
-print(texp.blocks)
+print("List of blocks is as follows:")
+for i,b in enumerate(texp.blocks):
+    print(i,":", b)
+#print(texp.blocks)
 #Test batch assignment
 assigner = Assigner()
 #TODO: On view, implement a subject files import method
@@ -54,16 +59,54 @@ assigner.assignAutoTest()
 #dSubBatches.get_group(0).head() #Batch 0 members summary/head
 dSub = assigner.df
 dSub.groupby('group').size()
-
-
+#Following operations are simply to make uneven groups to test
+#reassignment correction.
+dSub.groupby(['batch','group']).size().unstack()
+dSub = dSub[dSub.batch != 'C'] #Just keeping two batches
+dSub.groupby(['group','batch']).size().unstack()
+dSub = dSub[~((dSub.group == 'c') & (dSub.batch == 'A'))] #Making group c unevenly distributed
+dSub.groupby(['group','batch']).size().unstack()
 #Test block assignment
-# dPc = texp.assignToBlocks(df = dSub, batchField = 'group')
-# dPc
+GpLabel = 'group'
+BatchLabel = 'batch'
+dfGpCount = dSub.groupby(GpLabel).size().to_frame(name = 'split_edges')
+total = dSub.shape[0]
+dfGpPc = dfGpCount.apply(lambda x: x / total)
+#TODO@SHAZIB: Add Column and then convert to dictionary
+dPc = dfGpPc.reset_index()
+dPc
+dAss = (dSub.groupby(BatchLabel, group_keys=False)
+            .apply(assigner.assignByPc, dPc))
+dSub[GpLabel] = dAss
+dSub.groupby(['assigned','batch']).size().unstack()
+#TODO@SHAZIB: ASSIGNMENT BY PROPORTIONS NEEDS TO BE FIXED TO TWO LEVEL THROUGH APPLY
 assigner.getLocalDToAssign()
-labels=['A','B','C']
+labels=[1,2]
 no_batches=len(labels)
 print(no_batches)
-dSubBatches = assigner.splitInBins(no_batches,'batch', labels )
-dSubBatches.get_group('A')
+dSubBatched = assigner.splitInBins(no_batches,BatchLabel, labels )
+GpLabel = 'SECTION'
+#CHECK PERCENTAGES AFTER BATCH ASSIGNMENT
+(assigner.df.groupby([BatchLabel,GpLabel])
+    .size()
+    .groupby(level=0)
+    .apply(lambda x: x/float(x.sum())))
+print("SHOULD BE:")
+#CORRECT BATCH ASSIGNEMENT PC  -- NOT NEEDED IN GENERAL - BUT PRE-TESTING FOR BLOCK ASSIGNMENT
+dSub = assigner.df
+dfGpCount = dSub.groupby(GpLabel).size().to_frame(name = 'split_edges')
+total = dSub.shape[0]
+dfGpPc = dfGpCount.apply(lambda x: x / total)
+#TODO@SHAZIB: Add Column and then convert to dictionary
+dPc = dfGpPc.reset_index()
+dPc
+dAss = (dSub.groupby(BatchLabel, group_keys=False)
+            .apply(assigner.assignByPc, dPc))
+dSub[GpLabel] = dAss
+(dSub.groupby([BatchLabel,GpLabel])
+    .size()
+    .groupby(level=0)
+    .apply(lambda x: x/float(x.sum())))
 
 #Test block assignment
+#TODO@SHAZIB: NOW CREATE BLOCKS FIRST AND ASSIGN TO EACH BLOCK IN PROPORTION TO SECTIONS

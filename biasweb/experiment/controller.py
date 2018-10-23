@@ -32,7 +32,7 @@ class ExperimentController:
         self.fLevels = {}
         if e_id:
             self.exp = Experiment.objects.get(id=e_id)
-            self.fSet = self.exp.experiment_feature_set
+            self.fSet = self.exp.experiment_feature_set.select_related('p_feature')
             self.fLevels = self.retrieveFLevels()
         else:
             self.exp.status = DESIGN_MODE
@@ -60,38 +60,57 @@ class ExperimentController:
 
     def getFSet(self):
         return list(self.fSet.all())
-
-    def setFSet(self, fSet):
-        self.fInSet = []
-        for f in fSet:
-            if isinstance(f,str):
-                self.fInSet.append(self.addFeature(f))
-            else:
-                print("Req str list: Feature",f,"is a",type(f))
-        self.fSet.all().delete()
-        self.fSet.bulk_create(self.fInSet)
+    """
+    setFSet
+    Inputs: Either newFSet (list of feature_symbols for features to be set)
+            OR newFLevels (dictionary with symbols as key pointing to chosen list of levels)
+    """
+    def setFSet(self, newFSet=None, newFLevels=None, prompt = False):
+        #check whether FSet or FLevels
+        if newFLevels:
+            print("New Levels have been supplied - extracting FSet...")
+            newFSet = list(newFLevels.keys())
+        #3 things
+        #1. add all features (incl existing) in newFSet along with any new LevList
+        for f in newFSet:
+            nLev = None
+            if newFLevels:
+                nLev = newFLevels[f]
+            self.addFeature(fSymbol=f, newLevList=nLev, byPrompt=prompt)
+        #2. compare the existing fSet with proposed, and identify diffs
+        curFSet = list(self.fSet.values_list('p_feature__feature_symbol', flat=True))
+        dropFList = list(set(curFSet)-set(newFSet))
+        #3. delete any features not required
+        for d in dropFList:
+            self.delFeature(d)
+        #self.fSet.bulk_create(self.fInSet)
 
     
-    def addFeature(self, fSymbol, newFLevels = None):
+    def addFeature(self, fSymbol, newLevList = None, byPrompt = False):
         pf = PFeature.objects.filter(feature_symbol=fSymbol)[0]
-        if newFLevels:
-            self.fLevels[fSymbol] = newFLevels
+        if newLevList:
+            print("New Levels for ",fSymbol," are: ",newLevList)
+            self.fLevels[fSymbol] = newLevList
         elif fSymbol not in self.fLevels:
             self.fLevels[fSymbol] = pf.feature_levels
         #check if feature already exists, else create
         expF = self.fSet.filter(p_feature__feature_symbol=fSymbol)
         if expF.exists():
             print(expF[0].p_feature.feature_name,": This feature already exists.")
-            if newFLevels:
-                expF[0].chosen_levels = "Features replaced"
+            if newLevList:
+                expF.update(chosen_levels = newLevList)
                 print(expF[0].chosen_levels)
             return expF[0]
         else:
-            newEF = self.fSet.create(
+            if not newLevList and byPrompt and len(self.fLevels[fSymbol])>2:
+                enq = [fSymbol]
+                fList = self.clarifyFeature(enq)
+                print(fList)
+                self.fLevels[fSymbol] = fList
+            newEF = self.exp.experiment_feature_set.create(
                     p_feature = pf,
                     chosen_levels = self.fLevels[fSymbol]          
             )
-            #TODO@Shazib: clarifyFeatures
             return newEF
     
     def delFeature(self,fSymbol):
@@ -107,7 +126,7 @@ class ExperimentController:
         else:
             return None
 
-    def clarifyFeature(self, enquiry, byPrompt = False):
+    def clarifyFeature(self, enquiry):
         levToPop = '999'
         for f in enquiry:
             flevList=self.fLevels[f]            
@@ -124,27 +143,27 @@ class ExperimentController:
             return flevList
 
     def retrieveFLevels(self):
-    #only for setting fLevels afresh from database
+    #only for setting fLevels afresh by unpacking QuerySet
         for f in self.fSet.all():
             self.fLevels[f.p_feature.feature_symbol] = f.chosen_levels
         return self.fLevels
 
-    def setFeatureLevels(self, fLevels):
-        self.fLevels = fLevels
+    # def setFeatureLevels(self, fLevels):
+    #     self.fLevels = fLevels
 
-    def autoSetFLevels(self, byPrompt = False):
-        if byPrompt: enquiry = []
-        for f in self.fSet:
-            if f=='I' or f=='R' or f=='C':
-                self.fLevels[f] = [0,1]
-            if f=='W':
-                self.fLevels[f] = ["direct", "ahp"]
-            if f=='A':
-                self.fLevels[f] = ["all", "1by1", "2by2", "user"]
-                if byPrompt:
-                    enquiry.append(f)
-                    self.fLevels[f] = self.clarifyFeature(enquiry)
-        print(self.fLevels[f])
+    # def autoSetFLevels(self, byPrompt = False):
+    #     if byPrompt: enquiry = []
+    #     for f in self.fSet:
+    #         if f=='I' or f=='R' or f=='C':
+    #             self.fLevels[f] = [0,1]
+    #         if f=='W':
+    #             self.fLevels[f] = ["direct", "ahp"]
+    #         if f=='A':
+    #             self.fLevels[f] = ["all", "1by1", "2by2", "user"]
+    #             if byPrompt:
+    #                 enquiry.append(f)
+    #                 self.fLevels[f] = self.clarifyFeature(enquiry)
+    #     print(self.fLevels[f])
 
     def generateBlocks(self):
         self.blocks = list(
@@ -152,9 +171,7 @@ class ExperimentController:
                 *self.fLevels.values()
             )
         )
-        """ print("List of blocks is as follows:")
-        for i,b in enumerate(self.blocks):
-            print(i,":", b) """
+
 
     def writeBlocks(self):
         print("1st Block Set: ")
@@ -178,16 +195,16 @@ class ExperimentController:
     #5. Check proportions to be kept for batches (if existing)
     #5.5 Ask if proportions are wanted based on any other field
     #6. Assign to blocks in given proportions of batches
-    # def assignToBlocks(self, df, blockSet = None, batchField = None):
-    #     print('I was called with field:', batchField)
-    #     assigner = Assigner()
-    #     #GET batches for this experiment
-    #     if batchField:
-    #         #Calculate the proportions of each batch
-    #         #For now working with default
-    #         dfBatchCount = df.groupby(batchField).size().to_frame(name = 'split_edges')
-    #         dfBatchPc = dfBatchCount.apply(lambda x: x / x.sum())
-    #         dfBatchPc = dfBatchPc.reset_index()
-    #         #assigner.assignByPc(df, dfBatchPc)
-    #         #Need to use apply method on each Block so first a group by should run
+    def assignToBlocks(self, df, blockSet = None, batchField = None):
+        print('I was called with field:', batchField)
+        assigner = Assigner()
+        #GET batches for this experiment
+        if batchField:
+            #Calculate the proportions of each batch
+            #For now working with default
+            dfBatchCount = df.groupby(batchField).size().to_frame(name = 'split_edges')
+            dfBatchPc = dfBatchCount.apply(lambda x: x / x.sum())
+            dfBatchPc = dfBatchPc.reset_index()
+            #assigner.assignByPc(df, dfBatchPc)
+            #Need to use apply method on each Block so first a group by should run
    #         #Pass to assign funciton of Assigner APPLY SEPARATELY FOR EACH GROUP
