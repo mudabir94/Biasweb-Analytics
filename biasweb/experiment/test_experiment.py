@@ -4,15 +4,15 @@ import pandas as pd
 from biasweb.experiment.controller import ExperimentController
 from biasweb.utils.Assigner import Assigner
 from webapp.models import experiment as Experiment
-from webapp.models import block as Block
+from webapp.models import Block
 from webapp.models import experiment_feature as ExpFeature
 from webapp.models import platform_feature as PFeature
+from webapp.models import User, Subject
 
-
-#%% RETRIEVE AN EXISTING EXPERIMENT
-admin_id = "ses-007"
-#e_id = admin_id + "-1234"
-#^^^No longer needed as now controller will retrieve from database and compose
+OUT_PATH="biasweb/data/output/"
+#%% 1. RETRIEVE AN EXISTING EXPERIMENT
+admin_id = "ses-001" #USING THE CUSTOM-ID OF SUPERUSER #1
+#^^^SUBSTITUE WITH YOUR OWN - ELSE DEFAULT IS THE ONE WITH ID=1
 texp = ExperimentController(a_id=admin_id, e_id=9)
 print("Exp Custom Id:",texp.exp.custom_exp_id)
 #print("New Exp Custom Id:",nexp.exp.custom_exp_id)
@@ -20,18 +20,18 @@ print("The following features are set to be enabled:")
 print(list(texp.fSet.all()))
 #print(texp.fSet)
 
-#%% CREATE A NEW EXPERIMENT
+#%% 2. CREATE A NEW EXPERIMENT
 #nexp = ExperimentController(a_id=admin_id)
 #print("NEW Exp Custom Id:",nexp.exp.custom_exp_id)
-#%% TEST INDIV FEATURE MODIFICATION
+#%% 3. TEST INDIV FEATURE MODIFICATION
 fSymbol = 'W' #JUST TO test individual feature handling
 xFSym = 'D' #Againd Ditto
 levFSym= 'A' #FOR testing levels change in an existing feature
 texp.addFeature(fSymbol)
 texp.delFeature(fSymbol)
-texp.addFeature(fSymbol=levFSymbol, byPrompt=True)
+texp.addFeature(fSymbol=levFSym, byPrompt=True)
 #texp.delFeature(levFSymbol)
-#%% TEST FSET MODIFICATION (EN MASSE)
+#%% 4. TEST FSET MODIFICATION (EN MASSE) ----
 nFSym = 'C' #For testing the addition of new feature
 newFSet = ['W','A',nFSym]  #please change depending on what's in the database
 texp.setFSet(newFSet,prompt=True)
@@ -45,11 +45,8 @@ texp.saveExperiment()
 print(texp.fLevels)
 texp.saveExperiment()
 
-#%% Test BLOCK GENERATION -- only proceed if DB has feature levels
+#%% 5. Test BLOCK GENERATION -- only proceed if DB has feature levels
 texp.generateBlocks()
-print("List of blocks is as follows:")
-for i,b in enumerate(texp.blocks):
-    print(i,":", b)
 #print(texp.blocks)
 #TODO@SHAZIB: save to blocks in DB
 
@@ -71,14 +68,14 @@ dSub = dSub[~((dSub.group == 'c') & (dSub.batch == 'A'))] #Making group c uneven
 dSub.groupby(['group','batch']).size().unstack()
 #Test block assignment
 GpLabel = 'group'
-BatchLabel = 'batch'
+batchesTitle = 'batch'
 dfGpCount = dSub.groupby(GpLabel).size().to_frame(name = 'split_edges')
 total = dSub.shape[0]
 dfGpPc = dfGpCount.apply(lambda x: x / total)
 #TODO@SHAZIB: Add Column and then convert to dictionary
 dPc = dfGpPc.reset_index()
 dPc
-dAss = (dSub.groupby(BatchLabel, group_keys=False)
+dAss = (dSub.groupby(batchesTitle, group_keys=False)
             .apply(assigner.assignByPc, dPc))
 dSub[GpLabel] = dAss
 dSub.groupby(['assigned','batch']).size().unstack()
@@ -95,25 +92,27 @@ fields = assigner.df.columns
 for i in range(len(fields)):
     print("[",i,"]",fields[i])
 inputNo = eval(input("No of Batch Column?  "))
-#%%IF SELF-DEFINED BATCHING
+#%%IF SELF-DEFINED BATCHING OR PRE-DEFINED
 if inputNo == 999:
     no_batches = eval(input("Number of Batches? "))
-    batchLabels = list()
+    batchesLabels = list()
     for j in range(no_batches):
         print("BATCH #",j+1,"\' OK? ")
-        batchLabels.append(input() or (j+1))
+        batchesLabels.append(input() or (j+1))
     batchesTitle = input("Title as \'BATCHES\' or...?") or 'BATCHES'
-    print("Using",batchesTitle,"as title for the",no_batches,"batches",batchLabels)
-    dSubBatched = assigner.splitInBins(no_batches,batchesTitle, batchLabels)
+    print("Using",batchesTitle,"as title for the",no_batches,"batches",batchesLabels)
+    dSubBatched = assigner.splitInBins(no_batches,batchesTitle, batchesLabels)
     print(assigner.df.head())
 elif inputNo:
-    print(fields[batchColNo], ": Setting  as BATCH TITLE")
-    texp.setBatchesTitle(fields[batchColNo])
+    print(fields[inputNo], ": Setting  as BATCH TITLE")
+    texp.setBatchesTitle(fields[inputNo])
+    batchesLabels = assigner.df.iloc[:,inputNo].unique()
 
-
+#%% JUST TESTING - WHILE ASSUMING SECTIONS ARE BLOCKS
+#NOTE: NOT MEANT FOR FRONT-END IMPLEMENTATION
 GpLabel = 'SECTION'
 #CHECK PERCENTAGES AFTER BATCH ASSIGNMENT
-(assigner.df.groupby([BatchLabel,GpLabel])
+(assigner.df.groupby([batchesTitle,GpLabel])
     .size()
     .groupby(level=0)
     .apply(lambda x: x/float(x.sum())))
@@ -126,13 +125,24 @@ dfGpPc = dfGpCount.apply(lambda x: x / total)
 #TODO@SHAZIB: Add Column and then convert to dictionary
 dPc = dfGpPc.reset_index()
 dPc
-dAss = (dSub.groupby(BatchLabel, group_keys=False)
+dAss = (dSub.groupby(batchesTitle, group_keys=False)
             .apply(assigner.assignByPc, dPc))
 dSub[GpLabel] = dAss
-(dSub.groupby([BatchLabel,GpLabel])
+(dSub.groupby([batchesTitle,GpLabel])
     .size()
     .groupby(level=0)
     .apply(lambda x: x/float(x.sum())))
 
 #Test block assignment
 #TODO@SHAZIB: NOW CREATE BLOCKS FIRST AND ASSIGN TO EACH BLOCK IN PROPORTION TO SECTIONS
+#WORKFLOW:
+#1. Setup write of subjects (with self/pre-defined batches to database)
+#2. Setup write of blocks to database
+#3. Assign subjects to blocks
+#3.a. If batches pre-exist: ask whether AssignmentByPc?
+#3.b. If batches do not exist, do direct Assignment ... later batch assignment will
+#     automatically be propotionate, TODO: TEST BOTH CASES IN ANY CASE
+#4. WRITE EXCEL FILE
+writer = pd.ExcelWriter(OUT_PATH+'Sample_SelfDefBatches_NoBlocks.xlsx')
+dSub.to_excel(writer, sheet_name='SF_BATCH_ASSIGN')
+writer.save()

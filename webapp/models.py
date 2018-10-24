@@ -26,7 +26,7 @@ class User(AbstractUser):
     platform_admin= models.BooleanField(default=False)
     experiment_admin=models.BooleanField(default=False)
     role_id = models.ForeignKey(Role, on_delete=models.CASCADE,default=None,null=True)
-    custom_id=models.IntegerField(unique=True,default=None,null=True,blank=True)
+    custom_id=models.CharField(max_length=100,unique=True,default=None,null=True,blank=True)
 class templates(models.Model):
     template_name=models.CharField(max_length=100,null=True)
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
@@ -86,24 +86,52 @@ class  experiment(models.Model):
     custom_exp_id=models.CharField(max_length=100,null=True,blank=True,unique=True)
     batches_title=models.CharField(max_length=100, null=True, blank=True)
     capacity=models.IntegerField(default=100, null=True, blank=True)
-    #TODO@MUDABIR: NEED ADD ADMIN ID AS A FOREIGN KEY
+    #DONE 24/10/2018 as ManyToMany: NEED ADD ADMIN ID AS A FOREIGN KEY
+    admin=models.ManyToManyField(to=User, related_name='can_modify')
+    #right now on delete will throw a PROTECT error, but
+    #we should TODO change this to SET_DEFAULT once we can 
+    #identify which user is to be DEFAULT platform admin.
+    owner=models.ForeignKey(User, on_delete=models.PROTECT, related_name='creator')
+    inFile=models.CharField(max_length=256,null=True,blank=True)
+    outFile=models.CharField(max_length=256,null=True,blank=True)
     def __str__(self):
         return self.custom_exp_id
     class Meta:
         verbose_name_plural="experiment"
         ordering = ['pk']
 
-class Subject(User):
-    exp = models.ForeignKey(experiment, on_delete=models.CASCADE)
-    #TODO: batch #fk with Batches model
-    #TODO: block #fk with Block model
-    def __str__(self):
-        subjectStr = self.custom_id + self.last_name
-        return subjectStr
+class Batch(models.Model):
+     exp = models.ForeignKey(experiment, on_delete=models.CASCADE)
+     batch_label= models.CharField(max_length=100, null=True, blank=True)
 
-class Experiment_Batch(models.Model):
+class Block(models.Model):
+    #The Experiment Id where it is used
+    used_in = models.ForeignKey(experiment, on_delete=models.CASCADE)
+    #So if there are 16 blocks, the serial_no will be a number from 1-16
+    #This should help recompile a tuple list if needed later, to ensure order
+    serial_no = models.IntegerField()
+    levels_set = ListCharField(
+        base_field=CharField(max_length=20),
+        size=10,
+        max_length=(10*21)
+    )
+    def __str__(self):
+        blockStr = str(self.serial_no).zfill(2)+": "+str(self.levels_set)
+        return blockStr
+    class Meta:
+        #verbose_name_plural="block"
+        ordering = ['pk']
+
+class Subject(models.Model):
+    #NOTE: I HAVE CHANGED SUBJECT TO ONLY HAVE USER AS FK
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     exp = models.ForeignKey(experiment, on_delete=models.CASCADE)
-    batch_label= models.CharField(max_length=100, null=True, blank=True)
+    batch = models.ForeignKey(Batch, on_delete=models.SET_NULL, null=True, blank=True)
+    block = models.ForeignKey(Block, on_delete=models.SET_NULL, null=True, blank=True)
+    status = models.CharField
+    def __str__(self):
+        subjectStr = self.user.custom_id + self.user.last_name
+        return subjectStr
 
 class experiment_feature(models.Model):
     used_in = models.ForeignKey(experiment, on_delete=models.CASCADE)
@@ -117,23 +145,6 @@ class experiment_feature(models.Model):
         fName = self.p_feature.feature_name
         return fName
     
-
-class block(models.Model):
-    #The Experiment Id where it is used
-    used_in = models.ForeignKey(experiment, on_delete=models.CASCADE)
-    #So if there are 16 blocks, the serial_no will be a number from 1-16
-    #This should help recompile a tuple list if needed later, to ensure order
-    serial_no = models.IntegerField()
-    levels_set = ListCharField(
-        base_field=CharField(max_length=20),
-        size=10,
-        max_length=(10*21)
-    )
-    def __str__(self):
-        return self.used_in.custom_exp_id
-    class Meta:
-        #verbose_name_plural="block"
-        ordering = ['pk']
 
 class signup_table(models.Model):
     username=models.CharField(max_length=200)

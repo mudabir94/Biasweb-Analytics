@@ -10,9 +10,10 @@ import itertools
 import pandas as pd
 from biasweb.utils.Assigner import Assigner
 from webapp.models import experiment as Experiment
-from webapp.models import block as Block
+from webapp.models import Block
 from webapp.models import experiment_feature as ExpFeature
 from webapp.models import platform_feature as PFeature
+from webapp.models import User, Subject
 
 
 #    STATUS LEVELS:
@@ -30,13 +31,15 @@ class ExperimentController:
     def __init__(self, a_id, e_id = None, cap = 100):
         self.exp = Experiment()
         self.fLevels = {}
+        self.subjData = pd.DataFrame()
+        self.subjects = Subject()
         if e_id:
             self.exp = Experiment.objects.get(id=e_id)
             self.fSet = self.exp.experiment_feature_set.select_related('p_feature')
             self.fLevels = self.retrieveFLevels()
         else:
             self.exp.status = DESIGN_MODE
-            self.admin_id = a_id      #TODO@MUDABIR - NEED TO MODIFY EXPERIMENT ADMIN IMPLEMENTATION
+            self.exp.owner = User.objects.get(custom_id=a_id)      #TODO@MUDABIR - NEED TO MODIFY EXPERIMENT ADMIN IMPLEMENTATION
             
             self.exp.custom_exp_id = 'TBA' #can only be created after Experient table assigns an id
             self.exp.capacity = cap            #Capacity to budget for experiment
@@ -54,6 +57,7 @@ class ExperimentController:
         #Create and Write Feature with fSet in DB
         #Create and Write Batches with batch_title
         #Create and Write Blocks in DB
+        #WRITE SUBJECTS to Subject Database
 
     #def saveFSet(self):    
         #assumes setFeatures has been called to add new features
@@ -61,6 +65,7 @@ class ExperimentController:
     def setBatchesTitle(self, btLabel):
         self.exp.batches_title = btLabel
         self.exp.save()
+        print("Batches Title set to: ",self.exp.batches_title)
 
     def getFSet(self):
         return list(self.fSet.all())
@@ -175,7 +180,19 @@ class ExperimentController:
                 *self.fLevels.values()
             )
         )
-
+        self.saveBlocks()
+    
+    def saveBlocks(self):
+        print("List of blocks is as follows:")
+        blocksInDb = list()
+        for i,b in enumerate(self.blocks):
+            newBlock = Block()
+            newBlock.used_in = self.exp
+            newBlock.serial_no = i+1
+            newBlock.levels_set = list(b)
+            blocksInDb.append(newBlock)
+        print(blocksInDb)
+        self.exp.block_set.bulk_create(blocksInDb)
 
     def writeBlocks(self):
         print("1st Block Set: ")
@@ -189,26 +206,36 @@ class ExperimentController:
         #2. write to correct blocks field
         #3. 
 
+    def importSujbectData(self,iFile):
+        self.assigner = Assigner()
+        self.assigner.getLocalDToAssign(iFile)
+        self.subjData = self.assigner.df
 
 
     #TODO: Work on Blocks to Students Assignment
     #1. (?) use workaround OR implement blocks writing to Blocks model
     #2. USE OTHER METHOD --> retrieve block list/block id for experiment
     #3. check if batches have been assigned and which is the field
-    #4. DONE --> implement batches as part of experiment model
     #5. Check proportions to be kept for batches (if existing)
     #5.5 Ask if proportions are wanted based on any other field
     #6. Assign to blocks in given proportions of batches
-    def assignToBlocks(self, df, blockSet = None, batchField = None):
-        print('I was called with field:', batchField)
-        assigner = Assigner()
+    def assignToBlocks(self, blockSet = None):
         #GET batches for this experiment
-        if batchField:
+        if self.exp.batches_title:
             #Calculate the proportions of each batch
             #For now working with default
-            dfBatchCount = df.groupby(batchField).size().to_frame(name = 'split_edges')
+            dfBatchCount = self.subjData.groupby(batchField).size().to_frame(name = 'split_edges')
             dfBatchPc = dfBatchCount.apply(lambda x: x / x.sum())
             dfBatchPc = dfBatchPc.reset_index()
             #assigner.assignByPc(df, dfBatchPc)
             #Need to use apply method on each Block so first a group by should run
-   #         #Pass to assign funciton of Assigner APPLY SEPARATELY FOR EACH GROUP
+            #Pass to assign funciton of Assigner APPLY SEPARATELY FOR EACH GROUP
+    
+    def saveSubjects(self, dSub, fName=None):
+        if not self.subjData:
+            self.subjData = dSub
+        #WRITE TO DATABASE
+        #if not self.subjects.pk:
+
+        #WRITE TO FILE AS WELL, IF GIVEN
+        #ELSE DEFAULT TO CUSTOM-ID WITH CERTAIN SWITCHES
