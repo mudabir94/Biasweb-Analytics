@@ -224,7 +224,7 @@ class ExperimentController:
         if self.exp.batches_title:
             #Calculate the proportions of each batch
             #For now working with default
-            dfBatchCount = self.subjData.groupby(batchField).size().to_frame(name = 'split_edges')
+            dfBatchCount = self.subjData.groupby(self.exp.batches_title).size().to_frame(name = 'split_edges')
             dfBatchPc = dfBatchCount.apply(lambda x: x / x.sum())
             dfBatchPc = dfBatchPc.reset_index()
             #assigner.assignByPc(df, dfBatchPc)
