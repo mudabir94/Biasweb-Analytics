@@ -93,6 +93,14 @@ class  experiment(models.Model):
         verbose_name_plural="experiment"
         ordering = ['pk']
 
+class Subject(User):
+    exp = models.ForeignKey(experiment, on_delete=models.CASCADE)
+    #TODO: batch #fk with Batches model
+    #TODO: block #fk with Block model
+    def __str__(self):
+        subjectStr = self.custom_id + self.last_name
+        return subjectStr
+
 class Experiment_Batch(models.Model):
     exp = models.ForeignKey(experiment, on_delete=models.CASCADE)
     batch_label= models.CharField(max_length=100, null=True, blank=True)

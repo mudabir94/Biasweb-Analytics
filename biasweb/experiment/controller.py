@@ -58,6 +58,10 @@ class ExperimentController:
     #def saveFSet(self):    
         #assumes setFeatures has been called to add new features
 
+    def setBatchesTitle(self, btLabel):
+        self.exp.batches_title = btLabel
+        self.exp.save()
+
     def getFSet(self):
         return list(self.fSet.all())
     """

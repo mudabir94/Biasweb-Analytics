@@ -58,11 +58,13 @@ class Assigner:
         #Find out the unique values in the batch list
         #Calculate their proportion using groupby.size()?
     #%% NOW TESTING ON A FILE
-    def getLocalDToAssign(self):
+    def getLocalDToAssign(self, fPath = None):
         #from tkinter.filedialog import asksaveasfilename
-
+        if fPath:
         # Read in a file and evaluate its format [Excel or CSV]
-        fToUpload = askopenfilename()
+            fToUpload = fPath
+        else:
+            fToUpload = askopenfilename()
         print(fToUpload)
         qMoreInput = False
         qMoreInput, dToAssign, xlSheets = \
@@ -78,7 +80,7 @@ class Assigner:
                     self.extractData(fToUpload, xlShNo)
         self.df = dToAssign
         #return dToAssign
-        
+    
     #%%
     # Extracts a pandas DataFrame from a given CVS or XLS file
     # returns: needShNo = whether we need selection of sheet number
