@@ -27,6 +27,10 @@ class User(AbstractUser):
     experiment_admin=models.BooleanField(default=False)
     role_id = models.ForeignKey(Role, on_delete=models.CASCADE,default=None,null=True)
     custom_id=models.CharField(max_length=100,unique=True,default=None,null=True,blank=True)
+    def __str__(self):
+        userStr = self.custom_id + ": " + self.username
+        return userStr
+
 class templates(models.Model):
     template_name=models.CharField(max_length=100,null=True)
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
@@ -128,7 +132,7 @@ class Subject(models.Model):
     exp = models.ForeignKey(experiment, on_delete=models.CASCADE)
     batch = models.ForeignKey(Batch, on_delete=models.SET_NULL, null=True, blank=True)
     block = models.ForeignKey(Block, on_delete=models.SET_NULL, null=True, blank=True)
-    status = models.CharField
+    status = models.CharField(max_length=100)
     def __str__(self):
         subjectStr = self.user.custom_id + self.user.last_name
         return subjectStr

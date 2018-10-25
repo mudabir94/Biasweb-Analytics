@@ -210,6 +210,14 @@ class ExperimentController:
         self.assigner = Assigner()
         self.assigner.getLocalDToAssign(iFile)
         self.subjData = self.assigner.df
+        #Ask to set custom_id_field
+
+    def setIdField(self, idFName):
+        self.idField = idFName
+
+    def getSubColNames(self):
+        cols = self.subjData.columns
+        return cols
 
 
     #TODO: Work on Blocks to Students Assignment
@@ -235,7 +243,23 @@ class ExperimentController:
         if not self.subjData:
             self.subjData = dSub
         #WRITE TO DATABASE
-        #if not self.subjects.pk:
+        #obtain set of existing users
+        currUsers = User.objects.all()
+        print(currUsers)
+        #check if subjects exist for this exp object
+        if not self.subjects.pk:
+            subjForDb = list()
+            #for every entry in the DataFrame
+            for index, subj in self.subjData.iterrows():
+                #check custom_id
+                print(index,": Custom id will be -->",subj[self.idField])
+                #user = User()
+                #exp
+                #batch
+                #block
+                #status
+        
+        #STEPS: CREATE/RETRIEVE USER
 
         #WRITE TO FILE AS WELL, IF GIVEN
         #ELSE DEFAULT TO CUSTOM-ID WITH CERTAIN SWITCHES

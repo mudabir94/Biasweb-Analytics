@@ -31,6 +31,7 @@ texp.addFeature(fSymbol)
 texp.delFeature(fSymbol)
 texp.addFeature(fSymbol=levFSym, byPrompt=True)
 #texp.delFeature(levFSymbol)
+
 #%% 4. TEST FSET MODIFICATION (EN MASSE) ----
 nFSym = 'C' #For testing the addition of new feature
 newFSet = ['W','A',nFSym]  #please change depending on what's in the database
@@ -51,44 +52,33 @@ texp.generateBlocks()
 #TODO@SHAZIB: save to blocks in DB
 
 #%%TEST ASSIGNMENT TO BATCHES AND BLOCKS
-assigner = Assigner()
+#NEW: NOW ASSIGNER IS INSIDE CONTROLLER
+#CREATED ON IMPORT OF SUBJECTS!!
+#assigner = Assigner()
 
-#%%TEST ASSIGNMENT ON RANDOMLY ASSEMBLED DB
-assigner.assignAutoTest()
-#dSubBatches = assigner.splitInBins(3,'batch' )
-#dSubBatches.get_group(0).head() #Batch 0 members summary/head
-dSub = assigner.df
-dSub.groupby('group').size()
-#Following operations are simply to make uneven groups to test
-#reassignment correction.
-dSub.groupby(['batch','group']).size().unstack()
-dSub = dSub[dSub.batch != 'C'] #Just keeping two batches
-dSub.groupby(['group','batch']).size().unstack()
-dSub = dSub[~((dSub.group == 'c') & (dSub.batch == 'A'))] #Making group c unevenly distributed
-dSub.groupby(['group','batch']).size().unstack()
-#Test block assignment
-GpLabel = 'group'
-batchesTitle = 'batch'
-dfGpCount = dSub.groupby(GpLabel).size().to_frame(name = 'split_edges')
-total = dSub.shape[0]
-dfGpPc = dfGpCount.apply(lambda x: x / total)
-#TODO@SHAZIB: Add Column and then convert to dictionary
-dPc = dfGpPc.reset_index()
-dPc
-dAss = (dSub.groupby(batchesTitle, group_keys=False)
-            .apply(assigner.assignByPc, dPc))
-dSub[GpLabel] = dAss
-dSub.groupby(['assigned','batch']).size().unstack()
 
 #%%TEST ASSIGNER ON ACTUAL SAMPLE SUBJECTS DATA
 fPath = "biasweb/utils/data/SampleExpData_oneSheet.xlsx"
-assigner.getLocalDToAssign(fPath)
+#assigner.getLocalDToAssign(fPath)
+#NEW: use controller to access files now
+texp.importSujbectData(fPath)
+#TODO@SHAZIB: for now assuming no appending to existing users
+#NEED TO REFINE STORAGE IF A LIST OF SUBJECTS ALREADY IS STORED
+print(texp.subjData.head())
+
+#%%OBTAIN DATA COL NAMES/FIELDS
+fields = texp.getSubColNames()
+print("Which field will be used as CUSTOM ID")
+for i in range(len(fields)):
+    print("[",i,"]",fields[i])
+customIdNo = eval(input("ENTER Column No for CUSTOM ID:  "))
+texp.setIdField(fields[customIdNo])
+
 
 #%%TEST INTERACTIVE BATCH ASSIGNMENT WITHOUT BLOCKS EXISTING
 print("EITHER identify a column no. for PRE-DEFINED Batching ")
 print("OR ENTER 999 FOR SELF-DEFINED BATCHING")
 print("OR just press ENTER to skip BATCHING:")
-fields = assigner.df.columns
 for i in range(len(fields)):
     print("[",i,"]",fields[i])
 inputNo = eval(input("No of Batch Column?  "))
@@ -101,12 +91,12 @@ if inputNo == 999:
         batchesLabels.append(input() or (j+1))
     batchesTitle = input("Title as \'BATCHES\' or...?") or 'BATCHES'
     print("Using",batchesTitle,"as title for the",no_batches,"batches",batchesLabels)
-    dSubBatched = assigner.splitInBins(no_batches,batchesTitle, batchesLabels)
-    print(assigner.df.head())
+    dSubBatched = texp.assigner.splitInBins(no_batches,batchesTitle, batchesLabels)
+    print(texp.assigner.df.head())
 elif inputNo:
     print(fields[inputNo], ": Setting  as BATCH TITLE")
     texp.setBatchesTitle(fields[inputNo])
-    batchesLabels = assigner.df.iloc[:,inputNo].unique()
+    batchesLabels = texp.subjData.iloc[:,inputNo].unique()
 
 #%% JUST TESTING - WHILE ASSUMING SECTIONS ARE BLOCKS
 #NOTE: NOT MEANT FOR FRONT-END IMPLEMENTATION
@@ -118,7 +108,7 @@ GpLabel = 'SECTION'
     .apply(lambda x: x/float(x.sum())))
 print("SHOULD BE:")
 #CORRECT BATCH ASSIGNEMENT PC  -- NOT NEEDED IN GENERAL - BUT PRE-TESTING FOR BLOCK ASSIGNMENT
-dSub = assigner.df
+dSub = texp.subjData
 dfGpCount = dSub.groupby(GpLabel).size().to_frame(name = 'split_edges')
 total = dSub.shape[0]
 dfGpPc = dfGpCount.apply(lambda x: x / total)
