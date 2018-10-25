@@ -45,6 +45,7 @@ urlpatterns = [
     url(r'^manageshortlist/',views.ManageShortList.as_view(), name='manage_shortlisting'),
     url(r'^createexp/',views.createExperiment.as_view(), name='createexp'),
     url(r'^subdetails/',views.subDetails, name='subdetails'),
+    url(r'^uploadsamplefile/',views.uploadSampleFile, name='uploadsamplefile'),
 
     url(r'^datadefinded/',views.datadefined.as_view(), name='datadefined'),
 
