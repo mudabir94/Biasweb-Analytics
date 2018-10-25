@@ -54,7 +54,7 @@
                             <button type="submit">Submit</button><br>
                           </form>
                           -->
-                          <input type="file" id="fileUpload" />
+                          <input type="file" id="fileUpload" onclick="chooseFileFunc()"/>
                           <input type="button" id="upload" value="Upload" />
                           
                           <hr />
@@ -182,7 +182,7 @@
           </div>
      </footer>	 -->
 <script>
- 
+
 function radioBtnFunc(radiovalue){
         console.log('radiovalue',radiovalue.attr('value')) ;
         var radioinput_value=radiovalue.attr('value'); 
@@ -337,7 +337,10 @@ function selfAssignBatch(){
                     // the ajax call is sent to subdetails url name in the post function.  
                     url: "{% url 'uploadsamplefile' %}",
                     success: function(data){
-                      
+                      var mydata = eval(data);
+                        var table = $.makeTable(mydata);
+                        transposeTable(table)
+                        $(table).appendTo("#TableCont");
                        }
                      
                     }); 
@@ -434,7 +437,9 @@ else {
     alert("Please upload a valid CSV file.");
 }
 }
-
+function chooseFileFunc(){
+  $('#upload').prop('disabled',false);
+}
 $(function () {
     $("#upload").bind("click", function () {
         var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.csv|.xlsx)$/;
@@ -470,12 +475,12 @@ $(function () {
                             row.append(cell);
                         }
                          table.append(row);
-                       
+                         console.log($(this))
                       
-                          //$("#showfiledata").html('');
-                         //$("#showfiledata").append(table);
                     }
-                    
+                           $('#upload').prop('disabled',true);
+                        //$("#showfiledata").html('');
+                       //  $("#showfiledata").append(table);
                     setFileDataList(filedatalist);
                     // for (var i = 0; i < header.length; i++) {
                     //     var radioBtn = $('<input type="radio" name="'+header[i]+'" value="'+header[i]+'"\
@@ -541,6 +546,7 @@ $(function () {
         $('#pre-defined').hide();
         $('#selfbuttondiv').hide();
         $('#prebuttondiv').hide();
+        $('#upload').prop('disabled',true);
 
       
     });

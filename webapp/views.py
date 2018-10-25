@@ -777,7 +777,11 @@ def uploadSampleFile(request):
                 print(dataframe)
                 assigner = Assigner(dataframe)
                 dSubBatches=assigner.splitInBins(batch_num,batch_name,customlabels )
-                print("dSubbatches",dSubBatches)
+                print("dSubbatches")
+                print(dSubBatches.size())
+                print("assigner df",assigner.df)
+                dataframe=assigner.df
+                dataframe=dataframe.to_json()
                 ## ONCE THE DATA IS PROCESSED WE CAN SAVE INTO EXCEL OR CSV FILE
                 #print(dSubBatches.get_group('1'))
             elif  assign_type=='pre':
@@ -828,7 +832,7 @@ def uploadSampleFile(request):
                 
 
                 
-            return HttpResponse()#dSubBatches_grp_A_json)
+            return HttpResponse(dataframe)#dSubBatches_grp_A_json)
 
         
     else:
