@@ -2,63 +2,175 @@
 {% block content %}
 {%load static from staticfiles%}
 <div class="container-fluid text-center">    
-        <div class="row content">
-          <div class="col-sm-2 sidenav">
+      <div class="row content">
+          <div class="col-sm-2 sidenav" style='background:teal'></div>
+          <div class="col-sm-9  col-md-9 col-lg-9 col-xs-9 text-left" > 
+                  <div class ="row-fluid">     
+                      <div class ="row">   
+                            <div class='col-md-12' >
+                            <p1>Create Experiment </p1> <!-- Show Experiment Id here e.g. ses-007 (admin id) + experiment no. (5 digits)-->
+                            </div>  
+                        </div>
+                      <div class ="row"> 
+                          <div class='col-md-12' >    
+                            <p1>Admin id {{admin_id}}</p1>
+                          </div>                            
+                      </div>
+                      <div class ="row"> 
+                          <div class='col-md-12' >    
+                            <p1>Experiment id {{experiment_id}}</p1>
+                          </div>                            
+                      </div>
+                  </div>
+                  <!-- <div class="row-fluid" style="background:thistle;">  
+                        <div class='row-fluid' >
+                          <div class="col-md-3">
+                            <input type=text/>
+                          </div>
+                          <div class="col-md-9">
+                          No of Experiment
+                          </div>
+                        </div> 
+                        <div class='row-fluid' >
+                            <div class="col-md-3">
+                              <input type=text/>
+                            </div>
+                            <div class="col-md-9">
+                            Subject Capicity
+                            </div>
+                        </div> 
+                  </div> -->
+                  <br>
+                  <div class='row-fluid' style="background: cadetblue">
+                    <div class='row'>
+                      <div class='col-md-5'>
+                         
+                          <!-- <form action="{%url 'uploadsamplefile'%}" method="post" enctype="multipart/form-data">
+                              {% csrf_token %}
 
-         
+                            File: <input type="file" name="myfile"><br>
+                            
+                            <button type="submit">Submit</button><br>
+                          </form>
+                          -->
+                          <input type="file" id="fileUpload" />
+                          <input type="button" id="upload" value="Upload" />
+
+                          <hr />
+                          <div id="dvCSV">
+                          </div>
+                      </div>
+                      <div class='col-md-1'>
+
+                      <!-- <button>Upload</button> -->
+                      <div class='row'>
+
+                      </div>
+                    </div>
+                      <div class='col-md-6'></div> 
+                        
+                    </div>
+                  </div>
+              <br>
+                    <div class='row-fluid' style="background:peru;">
+                      {% for feature in platformfeatobj%}
+                          <div class='row-fluid'>
+                              <div class='col-md-12'>
+                                  <input type="checkbox"  id='{{feature.id}}' action='{%url "createexp"%}'
+                                        method="post" 
+                                        value="{{feature.feature_symbol}}" 
+                                        onclick="outerCheckBox($(this).attr('value'),$(this).attr('id'))">
+                                        {{feature.feature_name}} 
+                                        <div  id='{{feature.id}}-innercheckboxdiv' class='innerchecksboxdivs' title='{{feature.feature_symbol}}'>
+                                        </div>
+                                  </input>
+                                  <br>
+                              </div>
+                          </div>
+                          {%endfor%}
+                    
+                          <div class='row-fluid'>
+
+                              <button onclick='sendFeatureLevels()'> Set Feature Levels </button>
+                          </div>  
+                      </div>
+                   
           </div>
-        <div class="col-sm-9  col-md-9 col-lg-9 col-xs-9 text-left" > 
-            <p1>Create Experiment</p1> <!-- Show Experiment Id here e.g. ses-007 (admin id) + experiment no. (5 digits)-->
-            <!-- <form action="{%url 'createexp'%}"> -->
-            <!--No of Experiments:<br> --> 
-            <!-- <input type="hidden" value="1" id="nofexp" name="Experiments"/>
-            No of subjects capicity:<br>  
-            <input type="text" value="50" id="nofsc" name="subjects"/> -->
-              <!-- Fetching feature names from platform_feature model.  
-              Then Creating check boxes for selection. If Check box is clicked then An ajax call
-              would be made inorder to fetch further details of that feature. After which more 
-              checkbox options will be shown based on the further details. e.g pruned/full.
-              -->
-              <!-- <input type="submit" value="Submit">
-            </form> -->
-            <br>
-            {% for feature in platformfeatobj%}
           
-            <input type="checkbox"  id='{{feature.id}}' action='{%url "createexp"%}' method="post" 
-            value="{{feature.feature_symbol}}" 
-            onclick="outerCheckBox($(this).attr('value'),$(this).attr('id'))">{{feature.feature_name}} 
-            <div id='{{feature.id}}-innercheckboxdiv' class='innerchecksboxdivs' title='{{feature.feature_symbol}}'>
-              
-            </div>
-            </input>
-            <br>
-            
-            {%endfor%}
-             
-            
-            <button onclick='sendDictionary()'> Send Dictionary </button>
-
-            <input type="file" name="myfile" id='filepath'>
-            <button onclick='sendFilePath("filepath")'> Upload File</button>
-
-            <!-- <li><a href='{% url "datadefined" %}'>data defined Batches</a></li>
-            <li><a href=#>admin defined  </a></li> -->
-            <br>
-            <br>
-            
-          </div>
-          <div class="col-sm-1 sidenav">
-         
-          </div>
-        </div>
+          <div class="col-sm-1 sidenav" style='background:yellow'>side bar</div>
       </div>
+</div>
       <footer>
 		
-            <div class="container-fluid" style='margin-left:15px'>
-                <p><a href="#" target="blank">Contact</a> | <a href="#" target="blank">LinkedIn1</a> | <a href="#" target="blank">Twitter</a> | <a href="#" target="blank">Google+</a></p>
-            </div>
-    </footer>	
+          <div class="container-fluid" style='margin-left:15px'>
+              <p><a href="#" target="blank">Contact</a> | <a href="#" target="blank">LinkedIn1</a> | <a href="#" target="blank">Twitter</a> | <a href="#" target="blank">Google+</a></p>
+          </div>
+     </footer>	
 <script>
+$(function () {
+    $("#upload").bind("click", function () {
+        var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.csv|.txt)$/;
+
+        if (regex.test($("#fileUpload").val().toLowerCase())) {
+            if (typeof (FileReader) != "undefined") {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                  console.log(e);
+
+                    // var table = $("<table />");
+                    var rows = e.target.result.split("\n");
+                    //console.log(rows); 
+                    var arrlist=[]
+                    for (var i = 0; i < rows.length; i++) {
+                        console.log(rows[i]);
+                        arrlist.push(rows[i]);
+
+                        
+                        // var row = $("<tr />");
+                        // var cells = rows[i].split(",");
+                        // for (var j = 0; j < cells.length; j++) {
+                        //     var cell = $("<td />");
+                        //     cell.html(cells[j]);
+                        //     row.append(cell);
+                        // }
+                        // table.append(row);
+                    }
+                    console.log("arr",arrlist)
+
+                    $.ajax({
+                    type: 'POST',
+                    dataType: "json",
+                    'data': {
+                    'csvfiledata': JSON.stringify(arrlist),
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    },
+                    // the ajax call is sent to subdetails url name in the post function.  
+                    url: "{% url 'uploadsamplefile' %}",
+                    success: function(data){}
+                    
+                    }); 
+
+                    // $("#dvCSV").html('');
+                    // $("#dvCSV").append(table);
+
+                }
+              
+
+                reader.readAsText($("#fileUpload")[0].files[0]);
+                
+            }
+             else {
+                alert("This browser does not support HTML5.");
+            }
+        } 
+        else {
+            alert("Please upload a valid CSV file.");
+        }
+    });
+});    
+
+
+
       //Global Variable
       var dict = {};
       var arr_feature_levels=[];
@@ -214,7 +326,7 @@
         }
       }
 
-      function sendDictionary(){
+      function sendFeatureLevels(){
         $.ajax({
        type: 'POST',
        dataType: "json",

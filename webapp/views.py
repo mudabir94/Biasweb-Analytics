@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic import TemplateView
-from .forms import blogForm,SignUpForm,mobile_phone_form,filterform,sort_filter_form,NameForm
+#loading forms from forms.py file. 
+from .forms import blogForm,SignUpForm,mobile_phone_form,filterform,sort_filter_form
+from .forms import NameForm
 #-----------------------------------------------------------------
 from .models import blog,mobile_phone,phone,samsung_phone,sort_feature
 from .models import User,userscoreRecord,prunedmobilephones
@@ -727,22 +729,70 @@ def subDetails(request):
             print(type(arrlist))    
             print(arrlist)
     return HttpResponse(json.dumps(arrlist), content_type='application/json')
+## Function for getting the sample file. 
+import csv
+import codecs
+def uploadSampleFile(request):
+    if request.method == 'POST':
+        if request.is_ajax:
+            data = request.POST.get('csvfiledata')
+            #print('d',d)
+            json_data = json.loads(data)
+            print('json_data',type(json_data))
+            json_data=[i.replace('\r','') for i in json_data]  
+            print(json_data)
+            #print('head',type(json_data[0]))
+            label = json_data[0].split(",")
+            #label=json_data[0]
+            print('label',label)
+            nohead=[i.split(',') for i in json_data[1:-1]] 
+            print(type(nohead))
+            print(nohead)
 
-#global var 
-    
+            a = np.array(nohead)
+            print(a)
+            
+
+            csvdataframe= pd.DataFrame.from_records(a,columns=label)
+            print(csvdataframe)
+            # csvdataframe= pd.DataFrame(data=json_data)
+            # print(type(csvdataframe))
+            # print()
+            # labels=csvdataframe.SECTION.unique()
+            # print(labels)
+            # labels=list(labels)
+            # no_batches=len(labels)
+            # assigner = Assigner(csvdataframe)
+            # dSubBatches=assigner.splitInBins(no_batches,'batch',labels )
+            # print(dSubBatches.get_group('A'))
+        
+    else:
+        pass
+    return render(request, 'webapp/crudexperiment/create_experiment.html')    
 class createExperiment(TemplateView): 
 
     admin_id='ses-007'
-    exp_id=admin_id + "-2"
+    exp_id=admin_id + "-4"
     t_exp=''
     def get(self,request):
         ##test experimemt functions. 
+
         #TODO@SHAZIB: Check experiment & experiment features tables before loading
         # and pass objects to create_experiment.html   
+
+        
+        #texp = ExperimentController(a_id=admin_id, e_id=9)
+        #nexp = ExperimentController(a_id=admin_id)
+        #print("Exp Custom Id:",texp.exp.custom_exp_id)
+        #print("The following features are set to be enabled:")
+        #print(list(texp.fSet.all()))
         platformfeatobj=platform_feature.objects.all()
         return render(request,'webapp/crudexperiment/create_experiment.html',
                                         {'platformfeatobj':platformfeatobj,
-                                     
+                                          'admin_id':'ses-007' ,
+                                          'experiment_id':'009'
+                                          
+
                                         })
                                         
 
@@ -757,14 +807,14 @@ class createExperiment(TemplateView):
                 print('b',b)
                 ## get csv file path. 
                 ## if extension is csv 
-                csvdataframe=pd.read_csv('C://biasweb//biasweb//utils//data//'+b)
-                print(csvdataframe)
-                ## Make batches according to sections in files. 
+                # csvdataframe=pd.read_csv('C://biasweb//biasweb//utils//data//'+b)
+                # print(csvdataframe)
+                # ## Make batches according to sections in files. 
 
-                labels=csvdataframe.SECTION.unique()
-                print(labels)
-                labels=list(labels)
-                no_batches=len(labels)
+                # labels=csvdataframe.SECTION.unique()
+                # print(labels)
+                # labels=list(labels)
+                # no_batches=len(labels)
 
                 # Make batches according to your given number. 
 
@@ -782,9 +832,9 @@ class createExperiment(TemplateView):
                     # df1 = xl.parse('Sheet1')
 
 
-                assigner = Assigner(csvdataframe)
-                dSubBatches=assigner.splitInBins(no_batches,'batch',labels )
-                dSubBatches.get_group('A')
+                # assigner = Assigner(csvdataframe)
+                # dSubBatches=assigner.splitInBins(no_batches,'batch',labels )
+                # dSubBatches.get_group('A')
 
 
 
