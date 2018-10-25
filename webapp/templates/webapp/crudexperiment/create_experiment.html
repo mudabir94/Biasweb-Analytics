@@ -5,7 +5,8 @@
       <div class="row content">
           <div class="col-sm-2 sidenav" style='background:teal'></div>
           <div class="col-sm-9  col-md-9 col-lg-9 col-xs-9 text-left" > 
-                  <div class ="row-fluid">     
+                  
+            <div class ="row-fluid">     
                       <div class ="row">   
                             <div class='col-md-12' >
                             <p1>Create Experiment </p1> <!-- Show Experiment Id here e.g. ses-007 (admin id) + experiment no. (5 digits)-->
@@ -130,7 +131,7 @@
                       </div>
                       <div class='col-md-1'>
 
-                      <!-- <button>Upload</button> -->
+                   
                       <div class='row-fluid'>
 
                       </div>
@@ -325,6 +326,7 @@ function selfAssignBatch(){
     filedata.push(fieldlabel);
     filedata.push(assigntype);
     console.log(filedata);
+    refreshFileDataList();
     $.ajax({
                     type: 'POST',
                     dataType: "json",
@@ -335,7 +337,7 @@ function selfAssignBatch(){
                     // the ajax call is sent to subdetails url name in the post function.  
                     url: "{% url 'uploadsamplefile' %}",
                     success: function(data){
-
+                      
                        }
                      
                     }); 
@@ -353,6 +355,7 @@ function preAssignBatch(radioinput_value){
     filedata.push(fieldname);
     filedata.push('pre');
     console.log(filedata);
+    refreshFileDataList();
     $.ajax({
                     type: 'POST',
                     dataType: "json",
@@ -363,6 +366,7 @@ function preAssignBatch(radioinput_value){
                     // the ajax call is sent to subdetails url name in the post function.  
                     url: "{% url 'uploadsamplefile' %}",
                     success: function(data){
+                      
                        //create table
                         
                         //  for (var i in data){// 
@@ -391,13 +395,49 @@ var globalfiledatalist=[]
 function setFileDataList(filedatalist){
     globalfiledatalist=filedatalist
 }
+function emptyFileDataList(){
+  globalfiledatalist=[];
+}
 function getFileDataList(){
     return globalfiledatalist;
+   
+}
+function refreshFileDataList (){
+  var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.csv|.txt)$/;
+
+if (regex.test($("#fileUpload").val().toLowerCase())) {
+    if (typeof (FileReader) != "undefined") {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+          
+            var rows = e.target.result.split("\n");
+            var filedatalist=[];
+
+            for (var i = 0; i < rows.length; i++) {
+               
+                console.log(rows[i]);
+                filedatalist.push(rows[i]);
+
+            }
+            
+            setFileDataList(filedatalist);
+            
+
+        }
+        reader.readAsText($("#fileUpload")[0].files[0]);
+    }
+     else {
+        alert("This browser does not support HTML5.");
+    }
+} 
+else {
+    alert("Please upload a valid CSV file.");
+}
 }
 
 $(function () {
     $("#upload").bind("click", function () {
-        var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.csv|.txt)$/;
+        var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.csv|.xlsx)$/;
 
         if (regex.test($("#fileUpload").val().toLowerCase())) {
             if (typeof (FileReader) != "undefined") {
@@ -429,8 +469,8 @@ $(function () {
                             cell.html(cells[j]);
                             row.append(cell);
                         }
-                        table.append(row);
-                         //$("#showfiledata").html('');
+                         table.append(row);
+                        // $("#showfiledata").html('');
                          //$("#showfiledata").append(table);
                     }
                     
