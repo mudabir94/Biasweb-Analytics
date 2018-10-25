@@ -679,9 +679,6 @@ class  BiasTestFeature(TemplateView):
             template_sidebar='webapp/sidebartemplates/sidebartemp_expadm.html'
             expadm_maincontent_temp='webapp/main_content_temps/biaswebfeature/main_cont_temp_expadmin.html'
         #*****************************************************
-        
-     
-
         return render(request,self.template_name,{'template_sidebar':template_sidebar,
                                                     'role_name':role_name,
                                                     'expadm_maincontent_temp':expadm_maincontent_temp
@@ -738,33 +735,95 @@ def uploadSampleFile(request):
             data = request.POST.get('csvfiledata')
             #print('d',d)
             json_data = json.loads(data)
-            print('json_data',type(json_data))
+            #print(json_data)
+            #print('json_data',type(json_data))
+
+
+
             json_data=[i.replace('\r','') for i in json_data]  
-            print(json_data)
-            #print('head',type(json_data[0]))
-            label = json_data[0].split(",")
-            #label=json_data[0]
-            print('label',label)
-            nohead=[i.split(',') for i in json_data[1:-1]] 
-            print(type(nohead))
-            print(nohead)
-
-            a = np.array(nohead)
-            print(a)
+            ## check last index of the json data. 
+            ## it'll tell which assign type it is. on the basis of assign type perform action. 
+            assign_type=json_data.pop()
+            assign_type=assign_type.replace('\n','')
+            print(assign_type)
             
+            if assign_type=='self':
+                customlabels=json_data.pop()
+                customlabels=customlabels.replace('\n','')
+                
+                customlabels=customlabels.split(',')
+                print(customlabels)
 
-            csvdataframe= pd.DataFrame.from_records(a,columns=label)
-            print(csvdataframe)
-            # csvdataframe= pd.DataFrame(data=json_data)
-            # print(type(csvdataframe))
-            # print()
-            # labels=csvdataframe.SECTION.unique()
-            # print(labels)
-            # labels=list(labels)
-            # no_batches=len(labels)
-            # assigner = Assigner(csvdataframe)
-            # dSubBatches=assigner.splitInBins(no_batches,'batch',labels )
-            # print(dSubBatches.get_group('A'))
+                batch_num=json_data.pop()
+                batch_num=batch_num.replace('\n','')
+                print(batch_num)
+                batch_num=int(batch_num)
+                batch_name=json_data.pop()
+                batch_name=batch_name.replace('\n','')
+                print(batch_name)
+                print('head',type(json_data[0]))
+                filefields = json_data[0].split(",")
+                #label=json_data[0]
+                print('filefields',filefields)
+                filebody=[i.split(',') for i in json_data[1:-1]] 
+                print(type(filebody))
+                print(filebody)
+
+                arr_filebody = np.array(filebody)
+                print(arr_filebody)
+
+                
+                dataframe= pd.DataFrame.from_records(arr_filebody,columns=filefields)
+                print(dataframe)
+                assigner = Assigner(dataframe)
+                dSubBatches=assigner.splitInBins(batch_num,batch_name,customlabels )
+                print("dSubbatches",dSubBatches)
+                print(dSubBatches.get_group('1'))
+            elif  assign_type=='pre':
+                selected_fieldname=json_data.pop()
+                selected_fieldname=selected_fieldname.replace('\n','')
+                print(selected_fieldname)
+                print('filefields',type(json_data[0]))
+                filefields = json_data[0].split(",")
+                
+                print('filefields',filefields)
+                filebody=[i.split(',') for i in json_data[1:-1]] 
+                print(type(filebody))
+                print(filebody)
+
+                arr_filebody = np.array(filebody)
+                print(arr_filebody)
+                
+
+                dataframe= pd.DataFrame.from_records(arr_filebody,columns=filefields)
+                print(dataframe)
+                #assigner = Assigner(dataframe)
+                #dSubBatches=assigner.splitByField(selected_fieldname)
+                #print(type(dSubBatches))
+                #print(dSubBatches.get_group())
+            
+                # seclabels=csvdataframe[name].unique()
+                # print('seclabels',seclabels)
+                # seclabels=list(seclabels)
+                # no_batches=len(seclabels)
+                # assigner = Assigner(csvdataframe)
+                # #PRE-DEFINED DOES NOT NEED SPLIT IN BINS
+                
+                # #TODO@MUDABIR: USE SPLIT IN BINS FOR SELF-DEFINED OPTION
+                # dSubBatches=assigner.splitInBins(no_batches,'batch',seclabels )
+                # print("dSubbatches",dSubBatches)
+                
+                
+                # dSubBatches_grp_A=dSubBatches.get_group('A')
+                # print(type(dSubBatches_grp_A))
+                # dSubBatches_grp_A_json=dSubBatches_grp_A.to_json()
+                # print(dSubBatches_grp_A_json)
+                # print(type(dSubBatches_grp_A_json))
+                
+
+                
+            return HttpResponse()#dSubBatches_grp_A_json)
+
         
     else:
         pass
