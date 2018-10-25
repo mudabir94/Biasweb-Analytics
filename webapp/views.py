@@ -51,17 +51,17 @@ class Home(TemplateView):
         userobj=User.objects.get(pk=request.user.id)
         print("user object",userobj.role_id_id)
         role=userobj.role_id_id
-        if role==7:
+        if role==1:
             roleobj=Role.objects.get(pk=role)
             role_name=roleobj.role_name
             print(role_name)
             template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
-        elif role==8:
+        elif role==2:
             roleobj=Role.objects.get(pk=role)
             role_name=roleobj.role_name
             print(role_name)
             template_sidebar='webapp/sidebartemplates/sidebartemp_pltfadm.html'
-        elif role==9:
+        elif role==3:
             roleobj=Role.objects.get(pk=role)
             role_name=roleobj.role_name
             print(role_name)
@@ -657,7 +657,7 @@ class  BiasTestFeature(TemplateView):
         userobj=User.objects.get(pk=request.user.id)
         print("user object",userobj.role_id_id)
         role=userobj.role_id_id
-        if role==7:
+        if role==1:
               
             roleobj=Role.objects.get(pk=role)
             role_name=roleobj.role_name
@@ -665,13 +665,13 @@ class  BiasTestFeature(TemplateView):
             template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
             expadm_maincontent_temp='webapp/main_content_temps/biaswebfeature/main_cont_temp_expadmin.html'
 
-        elif role==8:
+        elif role==2:
               
             roleobj=Role.objects.get(pk=role)
             role_name=roleobj.role_name
             print(role_name)
             template_sidebar='webapp/sidebartemplates/sidebartemp_pltfadm.html'
-        elif role==9:
+        elif role==3:
               
             roleobj=Role.objects.get(pk=role)
             role_name=roleobj.role_name
@@ -841,6 +841,10 @@ class createExperiment(TemplateView):
     t_exp=''
     def get(self,request):
         ##test experimemt functions. 
+
+        #TODO@SHAZIB: Check experiment & experiment features tables before loading
+        # and pass objects to create_experiment.html   
+
         
         #texp = ExperimentController(a_id=admin_id, e_id=9)
         #nexp = ExperimentController(a_id=admin_id)
