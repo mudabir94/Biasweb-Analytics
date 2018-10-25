@@ -239,8 +239,8 @@ class ExperimentController:
             #Need to use apply method on each Block so first a group by should run
             #Pass to assign funciton of Assigner APPLY SEPARATELY FOR EACH GROUP
     
-    def saveSubjects(self, dSub, fName=None):
-        if not self.subjData:
+    def saveSubjects(self, dSub=None, fName=None):
+        if dSub:
             self.subjData = dSub
         #WRITE TO DATABASE
         #obtain set of existing users
@@ -249,10 +249,32 @@ class ExperimentController:
         #check if subjects exist for this exp object
         if not self.subjects.pk:
             subjForDb = list()
+            newUserList = list()
+            uF = SubjectCreationForm()
             #for every entry in the DataFrame
             for index, subj in self.subjData.iterrows():
-                #check custom_id
+                #TODO: check custom_id against existing user
                 print(index,": Custom id will be -->",subj[self.idField])
+                subjUser = uF.save()
+                subjUser.username = subj[self.idField]
+                subjUser.custom_id = subj[self.idField]
+                subjUser.set_password = subj[self.idField]
+                newUserList.append(subjUser)
+            #USERS NEED TO EXIST BEFORE SUBJECT CAN BE SAVED
+                
+
+            for index, subj in self.subjData.iterrows():    
+                subject = Subject()
+                subject.user = subjUser
+                subject.exp = self.exp
+                if self.exp.batches_title:
+                    subject.batch = subj[self.exp.batches_title]
+                subject.status = DESIGN_MODE
+                subjForDb.append(subject)
+            print(subjForDb)
+            self.exp.subject_set.bulk_create(subjForDb)
+                #BLOCK ASSIGNMENT CANNOT BE DONE HERE - WILL BE NULL
+                #TODO: subjUser.email
                 #user = User()
                 #exp
                 #batch

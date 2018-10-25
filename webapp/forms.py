@@ -2,7 +2,8 @@ from django.forms import ModelForm
 from .models import blog,signup_table,mobile_phone,phone,samsung_phone,sort_feature
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User 
+from django.contrib.auth.models import User
+from webapp.models import User as SubjUser 
 class blogForm(ModelForm):
     class Meta:
         model=blog
@@ -14,6 +15,20 @@ class SignUpForm(UserCreationForm):
     class Meta:
         model = User
         fields = ('username', 'password1', 'password2', )
+
+class SubjectCreationForm(forms.ModelForm):
+    class Meta:
+        model = SubjUser
+        fields = ('username', 'custom_id')
+
+    def save(self, commit=True, pwd='qwerty12345'):
+        # Save the provided password in hashed format
+        user = super(SubjectCreationForm, self).save(commit=False)
+        default_password = pwd
+        user.set_password(default_password) #Set de default password
+        if commit:
+            user.save()
+        return user
 
 class mobile_phone_form(ModelForm):
     class Meta:

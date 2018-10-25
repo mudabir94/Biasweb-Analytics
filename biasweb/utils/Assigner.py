@@ -8,7 +8,6 @@ import pandas as pd
 from tkinter import *
 from tkinter.filedialog import askopenfilename
 
-#%%
 class Assigner:
     def __init__(self, df = None):
         self.df = df
@@ -39,7 +38,6 @@ class Assigner:
         print(groups.size())
         return groups
             
-    #%%
     def assignAutoTest(self):
         self.df = pd.DataFrame({'customer_id': np.random.normal(size=10000),
                    'group': np.random.choice(['a','b','c'], size=10000)})
@@ -81,7 +79,6 @@ class Assigner:
         self.df = dToAssign
         #return dToAssign
     
-    #%%
     # Extracts a pandas DataFrame from a given CVS or XLS file
     # returns: needShNo = whether we need selection of sheet number
     def extractData(self, fName, shNo = 0):

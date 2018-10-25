@@ -8,6 +8,7 @@ from webapp.models import Block
 from webapp.models import experiment_feature as ExpFeature
 from webapp.models import platform_feature as PFeature
 from webapp.models import User, Subject
+from webapp.forms import SubjectCreationForm as scf
 
 OUT_PATH="biasweb/data/output/"
 #%% 1. RETRIEVE AN EXISTING EXPERIMENT
@@ -64,7 +65,7 @@ fPath = "biasweb/utils/data/SampleExpData_oneSheet.xlsx"
 texp.importSujbectData(fPath)
 #TODO@SHAZIB: for now assuming no appending to existing users
 #NEED TO REFINE STORAGE IF A LIST OF SUBJECTS ALREADY IS STORED
-print(texp.subjData.head())
+print(texp.subjData)
 
 #%%OBTAIN DATA COL NAMES/FIELDS
 fields = texp.getSubColNames()
@@ -74,10 +75,37 @@ for i in range(len(fields)):
 customIdNo = eval(input("ENTER Column No for CUSTOM ID:  "))
 texp.setIdField(fields[customIdNo])
 
+##FOR TESTING THIS SAMPLE DATA ONLY!!
+texp.setIdField(fields[0])
+texp.saveSubjects()
+
+# subjForDb = list()
+# #for every entry in the DataFrame
+# for index, subj in texp.subjData.iterrows():
+#     #check custom_id
+#     print(index,": Custom id will be -->",subj[texp.idField])
+# subj=texp.subjData.iloc[0]
+# subjUser = User()
+# subjUser.username = subj[texp.idField]
+# subjUser.custom_id = subj[texp.idField]
+# subjUser.set_password = subj[texp.idField]
+# subject = Subject()
+# subject.user = subjUser
+# subject.exp = texp.exp
+# if texp.exp.batches_title:
+#     subject.batch = subj[texp.exp.batches_title]
+# subject.status = 'DESIGN_MODE'
+# subjForDb.append(subject)
+# print(subjForDb)
+newSubject = scf().save(commit=False, pwd='abc123')
+newSubject.username = 'zebra'
+newSubject.custom_id = 'zeb-008'
+newSubject.save('abc123')
+
 
 #%%TEST INTERACTIVE BATCH ASSIGNMENT WITHOUT BLOCKS EXISTING
 print("EITHER identify a column no. for PRE-DEFINED Batching ")
-print("OR ENTER 999 FOR SELF-DEFINED BATCHING")
+print("OR ENTER 999 FOR texp-DEFINED BATCHING")
 print("OR just press ENTER to skip BATCHING:")
 for i in range(len(fields)):
     print("[",i,"]",fields[i])
@@ -102,7 +130,7 @@ elif inputNo:
 #NOTE: NOT MEANT FOR FRONT-END IMPLEMENTATION
 GpLabel = 'SECTION'
 #CHECK PERCENTAGES AFTER BATCH ASSIGNMENT
-(assigner.df.groupby([batchesTitle,GpLabel])
+(texp.subjData.groupby([batchesTitle,GpLabel])
     .size()
     .groupby(level=0)
     .apply(lambda x: x/float(x.sum())))
@@ -116,7 +144,7 @@ dfGpPc = dfGpCount.apply(lambda x: x / total)
 dPc = dfGpPc.reset_index()
 dPc
 dAss = (dSub.groupby(batchesTitle, group_keys=False)
-            .apply(assigner.assignByPc, dPc))
+            .apply(texp.assigner.assignByPc, dPc))
 dSub[GpLabel] = dAss
 (dSub.groupby([batchesTitle,GpLabel])
     .size()

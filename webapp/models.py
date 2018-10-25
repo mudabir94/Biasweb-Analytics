@@ -28,7 +28,7 @@ class User(AbstractUser):
     role_id = models.ForeignKey(Role, on_delete=models.CASCADE,default=None,null=True)
     custom_id=models.CharField(max_length=100,unique=True,default=None,null=True,blank=True)
     def __str__(self):
-        userStr = self.custom_id + ": " + self.username
+        userStr = str(self.custom_id) + ": " + str(self.username)
         return userStr
 
 class templates(models.Model):
@@ -130,12 +130,11 @@ class Subject(models.Model):
     #NOTE: I HAVE CHANGED SUBJECT TO ONLY HAVE USER AS FK
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     exp = models.ForeignKey(experiment, on_delete=models.CASCADE)
-    batch = models.ForeignKey(Batch, on_delete=models.SET_NULL, null=True, blank=True)
+    batch = models.CharField(max_length=100, null=True, blank=True) #ForeignKey(Batch, on_delete=models.SET_NULL, null=True, blank=True)
     block = models.ForeignKey(Block, on_delete=models.SET_NULL, null=True, blank=True)
     status = models.CharField(max_length=100)
     def __str__(self):
-        subjectStr = self.user.custom_id + self.user.last_name
-        return subjectStr
+        return str(self.user.custom_id)
 
 class experiment_feature(models.Model):
     used_in = models.ForeignKey(experiment, on_delete=models.CASCADE)
