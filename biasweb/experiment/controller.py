@@ -240,6 +240,19 @@ class ExperimentController:
             #Need to use apply method on each Block so first a group by should run
             #Pass to assign funciton of Assigner APPLY SEPARATELY FOR EACH GROUP
     
+    #WORK IN PROGRESS
+    # def updateAllSubjBatches(self):
+    #     """Updates batches in database using self.SubjData with self.exp.batches_title as column"""
+    #     subjInDb = self.exp.subject_set.select_related('user')
+    #     if self.exp.batches_title:
+    #         for subj in self.subjData.iterrows():
+    #             c_id = subjData[self.idField]
+    #             sInDb = subjInDb.filter(user__custom_id=c_id)
+    #             if sInDb.exists():
+    #                 sInDb
+    #     else:
+    #         print("ERROR: No batch column identified in the subjData")
+
     def saveSubjects(self, dSub=None, fName=None):
         if dSub:
             self.subjData = dSub
@@ -252,7 +265,7 @@ class ExperimentController:
             subjForDb = list()
             #for every entry in the DataFrame
             for index, subj in self.subjData.iterrows():
-                c_id = subj[self.idField]
+                c_id = str(subj[self.idField])
                 #TODO: check custom_id against existing user
                 if(currUsers.filter(custom_id=c_id).exists()):
                     print("User already exists - re-using existing user")
