@@ -1,4 +1,4 @@
-# import itertools
+#%%0. IMPORT MODULES REQUIRED
 import numpy as np
 import pandas as pd
 from biasweb.experiment.controller import ExperimentController
@@ -58,7 +58,7 @@ texp.generateBlocks()
 #assigner = Assigner()
 
 
-#%%TEST ASSIGNER ON ACTUAL SAMPLE SUBJECTS DATA
+#%%7. TEST ASSIGNER ON ACTUAL SAMPLE SUBJECTS DATA
 fPath = "biasweb/utils/data/SampleExpData_oneSheet.xlsx"
 #assigner.getLocalDToAssign(fPath)
 #NEW: use controller to access files now
@@ -67,7 +67,7 @@ texp.importSujbectData(fPath)
 #NEED TO REFINE STORAGE IF A LIST OF SUBJECTS ALREADY IS STORED
 print(texp.subjData)
 
-#%%OBTAIN DATA COL NAMES/FIELDS
+#%%8.a OBTAIN DATA COL NAMES/FIELDS
 fields = texp.getSubColNames()
 print("Which field will be used as CUSTOM ID")
 for i in range(len(fields)):
@@ -75,33 +75,9 @@ for i in range(len(fields)):
 customIdNo = eval(input("ENTER Column No for CUSTOM ID:  "))
 texp.setIdField(fields[customIdNo])
 
-##FOR TESTING THIS SAMPLE DATA ONLY!!
+#%%8.b FOR TESTING THIS SAMPLE DATA ONLY!!
 texp.setIdField(fields[0])
 texp.saveSubjects()
-
-# subjForDb = list()
-# #for every entry in the DataFrame
-# for index, subj in texp.subjData.iterrows():
-#     #check custom_id
-#     print(index,": Custom id will be -->",subj[texp.idField])
-# subj=texp.subjData.iloc[0]
-# subjUser = User()
-# subjUser.username = subj[texp.idField]
-# subjUser.custom_id = subj[texp.idField]
-# subjUser.set_password = subj[texp.idField]
-# subject = Subject()
-# subject.user = subjUser
-# subject.exp = texp.exp
-# if texp.exp.batches_title:
-#     subject.batch = subj[texp.exp.batches_title]
-# subject.status = 'DESIGN_MODE'
-# subjForDb.append(subject)
-# print(subjForDb)
-newSubject = scf().save(commit=False, pwd='abc123')
-newSubject.username = 'zebra'
-newSubject.custom_id = 'zeb-008'
-newSubject.save('abc123')
-
 
 #%%TEST INTERACTIVE BATCH ASSIGNMENT WITHOUT BLOCKS EXISTING
 print("EITHER identify a column no. for PRE-DEFINED Batching ")

@@ -14,6 +14,7 @@ from webapp.models import Block
 from webapp.models import experiment_feature as ExpFeature
 from webapp.models import platform_feature as PFeature
 from webapp.models import User, Subject
+from webapp.forms import SubjectCreationForm as scf
 
 
 #    STATUS LEVELS:
@@ -249,21 +250,19 @@ class ExperimentController:
         #check if subjects exist for this exp object
         if not self.subjects.pk:
             subjForDb = list()
-            newUserList = list()
-            uF = SubjectCreationForm()
             #for every entry in the DataFrame
             for index, subj in self.subjData.iterrows():
+                c_id = subj[self.idField]
                 #TODO: check custom_id against existing user
-                print(index,": Custom id will be -->",subj[self.idField])
-                subjUser = uF.save()
-                subjUser.username = subj[self.idField]
-                subjUser.custom_id = subj[self.idField]
-                subjUser.set_password = subj[self.idField]
-                newUserList.append(subjUser)
-            #USERS NEED TO EXIST BEFORE SUBJECT CAN BE SAVED
-                
-
-            for index, subj in self.subjData.iterrows():    
+                if(currUsers.filter(custom_id=c_id).exists()):
+                    print("User already exists - re-using existing user")
+                    subjUser = currUsers.get(custom_id=c_id)
+                else:
+                    print(index,": Custom id will be -->",c_id)
+                    subjUser = scf().save(commit=False, pwd=c_id)
+                    subjUser.username = c_id
+                    subjUser.custom_id = c_id
+                    subjUser.save()
                 subject = Subject()
                 subject.user = subjUser
                 subject.exp = self.exp
@@ -273,15 +272,5 @@ class ExperimentController:
                 subjForDb.append(subject)
             print(subjForDb)
             self.exp.subject_set.bulk_create(subjForDb)
-                #BLOCK ASSIGNMENT CANNOT BE DONE HERE - WILL BE NULL
-                #TODO: subjUser.email
-                #user = User()
-                #exp
-                #batch
-                #block
-                #status
-        
-        #STEPS: CREATE/RETRIEVE USER
-
         #WRITE TO FILE AS WELL, IF GIVEN
         #ELSE DEFAULT TO CUSTOM-ID WITH CERTAIN SWITCHES
