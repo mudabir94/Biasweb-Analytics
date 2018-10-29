@@ -8,7 +8,7 @@ Created on Mon Oct  8 15:57:03 2018
 #from biasweb.experiment import Experiment
 import itertools
 import pandas as pd
-from biasweb.utils.Assigner import Assigner
+from biasweb.utils.assign import Assigner
 from webapp.models import experiment as Experiment
 from webapp.models import Block
 from webapp.models import experiment_feature as ExpFeature
@@ -195,18 +195,6 @@ class ExperimentController:
         print(blocksInDb)
         self.exp.block_set.bulk_create(blocksInDb)
 
-    def writeBlocks(self):
-        print("1st Block Set: ")
-        print(self.blocks)
-        #MUST TEST FOR EXPERIMENT WRITE BEFORE
-        #WRITING TO BLOCK
-        # cBlockSet = Block(
-        #     used_in = 
-        # )
-        #1. get Experiment object from models
-        #2. write to correct blocks field
-        #3. 
-
     def importSujbectData(self,iFile):
         self.assigner = Assigner()
         self.assigner.getLocalDToAssign(iFile)
@@ -220,39 +208,50 @@ class ExperimentController:
         cols = self.subjData.columns
         return cols
 
-
-    #TODO: Work on Blocks to Students Assignment
-    #1. (?) use workaround OR implement blocks writing to Blocks model
-    #2. USE OTHER METHOD --> retrieve block list/block id for experiment
-    #3. check if batches have been assigned and which is the field
-    #5. Check proportions to be kept for batches (if existing)
-    #5.5 Ask if proportions are wanted based on any other field
-    #6. Assign to blocks in given proportions of batches
     def assignToBlocks(self, blockSet = None):
+        """
+        Adds/updates block column of subjData and its database table.
+        Parameters
+        ----------
+        blockSet: List of tuples in the order of the features defined.
+            This is an optional argument.  By default the blocks in self.blocks will
+            be used, assuming that generateBlocks and saveBlocks have been called.
+        """
+        #GET blocks number and labels
+        blockCount = self.exp.block_set.count()
+        blockBinName = 'block__serial_no'
+
         #GET batches for this experiment
-        if self.exp.batches_title:
+        if self.exp.batches_title:            
             #Calculate the proportions of each batch
             #For now working with default
             dfBatchCount = self.subjData.groupby(self.exp.batches_title).size().to_frame(name = 'split_edges')
             dfBatchPc = dfBatchCount.apply(lambda x: x / x.sum())
             dfBatchPc = dfBatchPc.reset_index()
-            #assigner.assignByPc(df, dfBatchPc)
-            #Need to use apply method on each Block so first a group by should run
-            #Pass to assign funciton of Assigner APPLY SEPARATELY FOR EACH GROUP
-    
-    #WORK IN PROGRESS
-    # def updateAllSubjBatches(self):
-    #     """Updates batches in database using self.SubjData with self.exp.batches_title as column"""
-    #     subjInDb = self.exp.subject_set.select_related('user')
-    #     if self.exp.batches_title:
-    #         for subj in self.subjData.iterrows():
-    #             c_id = subjData[self.idField]
-    #             sInDb = subjInDb.filter(user__custom_id=c_id)
-    #             if sInDb.exists():
-    #                 sInDb
-    #     else:
-    #         print("ERROR: No batch column identified in the subjData")
-
+            self.dSubByBlock = self.assigner.splitByField(
+                        nBins=blockCount,
+                        bName='block__serial_no',
+                        fieldName=self.exp.batches_title,
+            )
+            print(self.dSubByBlock.groupby(['block__serial_no',
+                                    self.exp.batches_title])
+                    .size()
+                    .groupby(level=0)
+                    .apply(lambda x: x/float(x.sum())))
+            print("SHOULD BE:")
+            print(dfBatchPc)
+            blockDict = dict(self.exp.block_set.values_list('serial_no','id'))
+            self.dSubByBlock['block_id'] = self.dSubByBlock.block__serial_no.map(blockDict)
+            subjSet = self.exp.subject_set
+            for index, subj in self.dSubByBlock.iterrows():
+                c_id=subj[self.idField]
+                b_id=subj['block_id']
+                subjSet.filter(user__custom_id=c_id).update(block_id=b_id)
+            print(pd.DataFrame(list(subjSet.values()))
+                    .groupby(['block_id','batch'])
+                    .size().unstack())
+            self.subjData = self.dSubByBlock
+            
     def saveSubjects(self, dSub=None, fName=None):
         if dSub:
             self.subjData = dSub
