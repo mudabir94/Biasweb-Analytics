@@ -63,20 +63,20 @@
                             
                                 <div class='col-md-12' >
                                         <div class='row'>
-                                                <div class='col-md-6' style='background:lightgreen'>Custom_id </div>
-                                                <div class='col-md-6'style='background: orange'> <div class="show_select_tag"></div></div>
+                                                <div class='col-md-6' style='background:lightgreen'><div class='map_select_label' id='custom_id_select_label'> Custom ID </div></div>
+                                                <div class='col-md-6'style='background: orange'> <div class="map_select_tag"></div></div>
                                         </div>
                                     </div>
                                     <div class='col-md-12' >
                                             <div class='row'>
-                                                    <div class='col-md-6' style='background: lightgreen'> Email_id</div>
-                                                    <div class='col-md-6'style='background: orange'> <div class="show_select_tag"></div></div>
+                                                    <div class='col-md-6' style='background: lightgreen'><div class='map_select_label' id='email_select_label'>Email</div></div>
+                                                    <div class='col-md-6'style='background: orange'> <div class="map_select_tag"></div></div>
                                             </div>
                                     </div>
                                     <div class='col-md-12' >
                                             <div class='row'>
-                                                    <div class='col-md-6' style='background: lightgreen'> Batch Title</div>
-                                                    <div class='col-md-6'style='background: orange'> <div class="show_select_tag"></div></div>
+                                                    <div class='col-md-6' style='background: lightgreen'> <div class='map_select_label' id='batch_select_label'>Batch Title</div></div>
+                                                    <div class='col-md-6'style='background: orange'> <div class="map_select_tag"></div></div>
                                             </div>
                                     </div>
                                    
@@ -217,10 +217,12 @@ var globalfiledatalist=[];
 $(document).ready(function () {
     // This Will hide all the divs with class=innerchecksboxdivs
 $('.innerchecksboxdivs').hide();
+$('.map_select_label').hide();
 $('#self-defined').hide();
 $('#pre-defined').hide();
 $('#selfbuttondiv').hide();
 $('#prebuttondiv').hide();
+
 $('#upload').prop('disabled',true);
 
 
@@ -269,8 +271,11 @@ $(function () {
                         for(var col in header) {
                             $('<option />', {value: col, text: header[col]}).appendTo(select_tag);
                         }
-                        $('.show_select_tag').html('');
-                        $('.show_select_tag').append(select_tag);
+                        // $('.map_select_label').html('');
+                        $('.map_select_label').show(500);
+                        
+                        $('.map_select_tag').html('');
+                        $('.map_select_tag').append(select_tag);
                         //$("#showfiledata").html('');
 
                         //$("#showfiledata").append(select_tag);
