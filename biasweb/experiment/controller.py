@@ -14,6 +14,7 @@ from webapp.models import Block
 from webapp.models import experiment_feature as ExpFeature
 from webapp.models import platform_feature as PFeature
 from webapp.models import User, Subject
+from webapp.forms import SubjectCreationForm as scf
 
 
 #    STATUS LEVELS:
@@ -239,8 +240,21 @@ class ExperimentController:
             #Need to use apply method on each Block so first a group by should run
             #Pass to assign funciton of Assigner APPLY SEPARATELY FOR EACH GROUP
     
-    def saveSubjects(self, dSub, fName=None):
-        if not self.subjData:
+    #WORK IN PROGRESS
+    # def updateAllSubjBatches(self):
+    #     """Updates batches in database using self.SubjData with self.exp.batches_title as column"""
+    #     subjInDb = self.exp.subject_set.select_related('user')
+    #     if self.exp.batches_title:
+    #         for subj in self.subjData.iterrows():
+    #             c_id = subjData[self.idField]
+    #             sInDb = subjInDb.filter(user__custom_id=c_id)
+    #             if sInDb.exists():
+    #                 sInDb
+    #     else:
+    #         print("ERROR: No batch column identified in the subjData")
+
+    def saveSubjects(self, dSub=None, fName=None):
+        if dSub:
             self.subjData = dSub
         #WRITE TO DATABASE
         #obtain set of existing users
@@ -251,15 +265,25 @@ class ExperimentController:
             subjForDb = list()
             #for every entry in the DataFrame
             for index, subj in self.subjData.iterrows():
-                #check custom_id
-                print(index,": Custom id will be -->",subj[self.idField])
-                #user = User()
-                #exp
-                #batch
-                #block
-                #status
-        
-        #STEPS: CREATE/RETRIEVE USER
-
+                c_id = str(subj[self.idField])
+                #TODO: check custom_id against existing user
+                if(currUsers.filter(custom_id=c_id).exists()):
+                    print("User already exists - re-using existing user")
+                    subjUser = currUsers.get(custom_id=c_id)
+                else:
+                    print(index,": Custom id will be -->",c_id)
+                    subjUser = scf().save(commit=False, pwd=c_id)
+                    subjUser.username = c_id
+                    subjUser.custom_id = c_id
+                    subjUser.save()
+                subject = Subject()
+                subject.user = subjUser
+                subject.exp = self.exp
+                if self.exp.batches_title:
+                    subject.batch = subj[self.exp.batches_title]
+                subject.status = DESIGN_MODE
+                subjForDb.append(subject)
+            print(subjForDb)
+            self.exp.subject_set.bulk_create(subjForDb)
         #WRITE TO FILE AS WELL, IF GIVEN
         #ELSE DEFAULT TO CUSTOM-ID WITH CERTAIN SWITCHES
