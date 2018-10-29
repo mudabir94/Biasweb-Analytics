@@ -43,7 +43,7 @@
                   </div> -->
                   <br>
                   <div class='row-fluid' style="background: cadetblue">
-                    <div class='row-fluid'>
+                    <div class='row'>
                       <div class='col-md-5'>
                          
                           <!-- <form action="{%url 'uploadsamplefile'%}" method="post" enctype="multipart/form-data">
@@ -54,13 +54,33 @@
                             <button type="submit">Submit</button><br>
                           </form>
                           -->
+                          <div class=row-fluid>
                           <input type="file" id="fileUpload" onclick="chooseFileFunc()"/>
                           <input type="button" id="upload" value="Upload" />
-                          
+                          </div>
                           <hr />
                           <div class='row-fluid'>
                             
-                            <div id="showfiledata"></div>
+                                <div class='col-md-12' >
+                                        <div class='row'>
+                                                <div class='col-md-6' style='background:lightgreen'>Custom_id </div>
+                                                <div class='col-md-6'style='background: orange'> <div class="show_select_tag"></div></div>
+                                        </div>
+                                    </div>
+                                    <div class='col-md-12' >
+                                            <div class='row'>
+                                                    <div class='col-md-6' style='background: lightgreen'> Email_id</div>
+                                                    <div class='col-md-6'style='background: orange'> <div class="show_select_tag"></div></div>
+                                            </div>
+                                    </div>
+                                    <div class='col-md-12' >
+                                            <div class='row'>
+                                                    <div class='col-md-6' style='background: lightgreen'> Batch Title</div>
+                                                    <div class='col-md-6'style='background: orange'> <div class="show_select_tag"></div></div>
+                                            </div>
+                                    </div>
+                                   
+                                    <div id="showfiledata"></div>
                           </div>
                           
                           <div class='row-fluid' >
@@ -136,7 +156,13 @@
 
                       </div>
                     </div>
-                      <div class='col-md-6'></div> 
+                      <div class='col-md-6'>
+                          <div class='row'>
+                              <div class='col-md-12'>
+                                        <div class='batchsize' ></div>
+                                  </div>
+                              </div>
+                      </div> 
                         
                     </div>
                   </div>
@@ -182,66 +208,125 @@
           </div>
      </footer>	 -->
 <script>
+//Global Variable
+var dict = {};
+var arr_feature_levels=[];
+var globalfiledatalist=[];
 
-function radioBtnFunc(radiovalue){
-        console.log('radiovalue',radiovalue.attr('value')) ;
-        var radioinput_value=radiovalue.attr('value'); 
-        var assignbutton= $('<button onclick=preAssignBatch('+JSON.stringify(radioinput_value)+')>Make Batch</button>') ;
-                         assignbutton.fadeIn(300);
-                         $('#pre-assignbuttondiv' ).append(assignbutton) ;
-    
-}
-$.makeTable = function (mydata) {
-    var table = $('<table  id="mytable" class="table table-bordred table-striped">');
-    var thead = $('<thead>');
+// When the page will this will be the first javascript function that will be called. 
+$(document).ready(function () {
+    // This Will hide all the divs with class=innerchecksboxdivs
+$('.innerchecksboxdivs').hide();
+$('#self-defined').hide();
+$('#pre-defined').hide();
+$('#selfbuttondiv').hide();
+$('#prebuttondiv').hide();
+$('#upload').prop('disabled',true);
 
-    var tblHeader = "<tr>";
-        
-    for (var k in mydata) tblHeader += "<th>" + k + "</th>";
 
-    tblHeader += "</tr>";
-    $(tblHeader).appendTo(thead);
-    $(thead).appendTo(table)
-    
-    var tbody = $('<tbody>');
+});
+// Uploading file Function . 
+$(function () {
+    $("#upload").bind("click", function () {
+        var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.csv|.xlsx)$/;
+
+        if (regex.test($("#fileUpload").val().toLowerCase())) {
+            if (typeof (FileReader) != "undefined") {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                    console.log(e);
+                    var table = $("<table />");
+                    var rows = e.target.result.split("\n");
+                    console.log(rows); 
+                    var filedatalist=[]
+                    console.log('header',rows[0]);
+                    header=rows[0];
+                    header=header.split(',');
+                    console.log('header',header[0]);
+                    console.log('header',typeof(header));
+
+                 
+
+                    for (var i = 0; i < rows.length; i++) {
+                       
+                        console.log(rows[i]);
+                        filedatalist.push(rows[i]);
+ 
+                        
+                        var row = $("<tr />");
+                        var cells = rows[i].split(",");
+                        for (var j = 0; j < cells.length; j++) {
+                            var cell = $("<td />");
+                            cell.html(cells[j]);
+                            row.append(cell);
+                        }
+                         table.append(row);
+                         console.log($(this))
+                      
+                    }
+                        $('#upload').prop('disabled',true);
+                        var select_tag = $('<select />');
+                        for(var col in header) {
+                            $('<option />', {value: col, text: header[col]}).appendTo(select_tag);
+                        }
+                        $('.show_select_tag').html('');
+                        $('.show_select_tag').append(select_tag);
+                        //$("#showfiledata").html('');
+
+                        //$("#showfiledata").append(select_tag);
+                    setFileDataList(filedatalist);
+                    // for (var i = 0; i < header.length; i++) {
+                    //     var radioBtn = $('<input type="radio" name="'+header[i]+'" value="'+header[i]+'"\
+                    //      onclick=radioBtnFunc($(this).attr("value"),'+JSON.stringify(arrlist)+')>'+header[i]+'</input>');
+                    //     //radioBtn.appendTo('#RadioDiv');
+
+                    //     $("#RadioDiv").append(radioBtn);
+
+                    // }
+
+// 
+//                      console.log("arr",arrlist);
+//                      console.log("arr",typeof(arrlist)); 
+
+                     var selfbutton= document.createElement("BUTTON");
+                     var text = document.createTextNode("Self Defined ");
+                     selfbutton.appendChild(text)
+                     selfbutton.onclick = function() {switchVisible($('#self-defined'),header)};
+                     selfbutton.classList.add("barbutton");
+                     
+                     
+                    
+                     var prebutton= document.createElement("BUTTON");
+                     var text = document.createTextNode("PreDefined");
+                     prebutton.appendChild(text)
+
+                     prebutton.onclick = function() {switchVisible($('#pre-defined'),header)};
+                     prebutton.classList.add("barbutton");
+                    
+                     
+                    
+                      $('#selfbuttondiv').append(selfbutton).slideDown(1000).fadeIn(1000);
+                      $('#predefbuttondiv').append(prebutton).slideDown(1000).fadeIn(1000);
+                  
+                     
+                     
+                     
+
    
-
-    $.each(mydata, function (index, value) {
-        var TableRow = "<tr>";
-                
-        $.each(value, function (key, val) {
-            TableRow += "<td>" + val + "</td>";
-    
-        });
-        TableRow += "</tr>";
-        $(TableRow).appendTo(tbody);
-        // $(table).append(TableRow);
-        
-
+                }
+                reader.readAsText($("#fileUpload")[0].files[0]);
+            }
+             else {
+                alert("This browser does not support HTML5.");
+            }
+        } 
+        else {
+            alert("Please upload a valid CSV file.");
+        }
     });
-
-    $(tbody).appendTo(table);
-    return ($(table));
-};
-function transposeTable(table) {
-        var $this = table.children('tbody');
-        var newrows = [];
-        $this.find("tr").each(function(){
-            var i = 0;
-            $(this).find("td").each(function(){
-                i++;
-                if(newrows[i] === undefined) { newrows[i] = $("<tr></tr>"); }
-                newrows[i].append($(this));
-            });
-        });
-        $this.find("tr").remove();
-        $.each(newrows, function(){
-            $this.append(this);
-        });
-  
-}
+});    
+// Switch Function to show and hide self and pre defined divs. 
 function switchVisible(obj,header) {
-    
     if (obj) {
         console.log("swvob",obj);
         console.log('header',header)
@@ -249,11 +334,11 @@ function switchVisible(obj,header) {
         if (obj.attr("id") === "self-defined" &&  obj.is(":hidden")) {
             console.log("in if");
             var batchtitlename=$('<label>Batch Name:</label>');
-            var batchtitleinput = $('<input type="text" name="batchtitle" value="Batch" placeholder="Batch" id="selfbatchtitleid">');
+            var batchtitleinput = $('<input class="crtinput" type="text" name="batchtitle" value="Batch" placeholder="Batch" id="selfbatchtitleid">');
             var batchnumname=$('<label>Num of Batches:</label>');
-            var batchnuminput = $('<input type="text" name="batchnum" value="2" placeholder="2"  id="selfbatchnumid" >');
+            var batchnuminput = $('<input type="text" class="crtinput" name="batchnum" value="2" placeholder="2"  id="selfbatchnumid" >');
             var batchlabelname=$('<label>Label Batches:</label>');
-            var batchlabelinput = $('<input type="text" name="batchlabel"  id="selfbatchlabelid" >');
+            var batchlabelinput = $('<input type="text" class="crtinput" name="batchlabel"  id="selfbatchlabelid" >');
             var selfassignbutton= $('<button id="selfassignbutton"onclick=selfAssignBatch()>Make Batch</button>') ;
             
             $('#batchtitle_name').append(batchtitlename);
@@ -310,6 +395,7 @@ function switchVisible(obj,header) {
             }   
     }
 }
+//  
 function selfAssignBatch(){
     var filedata=getFileDataList();
     console.log('filedata',filedata);
@@ -337,17 +423,52 @@ function selfAssignBatch(){
                     // the ajax call is sent to subdetails url name in the post function.  
                     url: "{% url 'uploadsamplefile' %}",
                     success: function(data){
-                      var mydata = eval(data);
+                      
+                        console.log(JSON.parse(data[1]))
+                        
+                        dataframe_table=JSON.parse(data[1])
+                        var mydata = eval(dataframe_table);
                         var table = $.makeTable(mydata);
                         transposeTable(table)
+                        
                         $(table).appendTo("#TableCont");
+                        $('#mytable').DataTable({
+                           
+                            "bLengthChange": false,
+                            "bFilter": false,
+                            "pageLength": 5
+                            });
+                        groups=JSON.parse(data[2]);
+
+                        for (var obj in groups)  {
+                            console.log(obj);
+                            console.log(groups[obj]);
+                        }      
+                        
+                       
+                     
+                           
+                        
+                        $('.batchsize').append(data[2]);
+
                        }
+                     
                      
                     }); 
     
 
 
 }
+//  
+function radioBtnFunc(radiovalue){
+        console.log('radiovalue',radiovalue.attr('value')) ;
+        var radioinput_value=radiovalue.attr('value'); 
+        var assignbutton= $('<button onclick=preAssignBatch('+JSON.stringify(radioinput_value)+')>Make Batch</button>') ;
+                         assignbutton.fadeIn(300);
+                         $('#pre-assignbuttondiv' ).append(assignbutton) ;
+    
+}
+
 function preAssignBatch(radioinput_value){
     var filedata=getFileDataList();
     console.log(filedata);
@@ -394,7 +515,58 @@ function preAssignBatch(radioinput_value){
                     }); 
     
 }
-var globalfiledatalist=[]
+
+$.makeTable = function (mydata) {
+    var table = $('<table  id="mytable" class="table table-bordred table-striped">');
+    var thead = $('<thead>');
+
+    var tblHeader = "<tr>";
+        
+    for (var k in mydata) tblHeader += "<th>" + k + "</th>";
+
+    tblHeader += "</tr>";
+    $(tblHeader).appendTo(thead);
+    $(thead).appendTo(table)
+    
+    var tbody = $('<tbody>');
+   
+
+    $.each(mydata, function (index, value) {
+        var TableRow = "<tr>";
+                
+        $.each(value, function (key, val) {
+            TableRow += "<td>" + val + "</td>";
+    
+        });
+        TableRow += "</tr>";
+        $(TableRow).appendTo(tbody);
+        // $(table).append(TableRow);
+        
+
+    });
+
+    $(tbody).appendTo(table);
+    return ($(table));
+};
+
+function transposeTable(table) {
+        var $this = table.children('tbody');
+        var newrows = [];
+        $this.find("tr").each(function(){
+            var i = 0;
+            $(this).find("td").each(function(){
+                i++;
+                if(newrows[i] === undefined) { newrows[i] = $("<tr></tr>"); }
+                newrows[i].append($(this));
+            });
+        });
+        $this.find("tr").remove();
+        $.each(newrows, function(){
+            $this.append(this);
+        });
+  
+}
+
 function setFileDataList(filedatalist){
     globalfiledatalist=filedatalist
 }
@@ -440,285 +612,173 @@ else {
 function chooseFileFunc(){
   $('#upload').prop('disabled',false);
 }
-$(function () {
-    $("#upload").bind("click", function () {
-        var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.csv|.xlsx)$/;
 
-        if (regex.test($("#fileUpload").val().toLowerCase())) {
-            if (typeof (FileReader) != "undefined") {
-                    var reader = new FileReader();
-                    reader.onload = function (e) {
-                    console.log(e);
-                    var table = $("<table />");
-                    var rows = e.target.result.split("\n");
-                    console.log(rows); 
-                    var filedatalist=[]
-                    console.log('header',rows[0]);
-                    header=rows[0];
-                    header=header.split(',');
-                    console.log('header',header[0]);
-                    console.log('header',typeof(header));
+// Outercheckbox function 
+// This function gets 2 arguments when called val and id attribute of input type=checkbox
+// having id based on the feature.id.
+// It is called through onclick function. 
+function outerCheckBox(outercheckval,outercheckid) {
+console.log("checkbox");
+console.log(outercheckval);
+console.log(outercheckid);
+// Ajax call is made to send the outercheckboxid to the controller. 
+// The controller will fetch the sub-details of that feature from model and return back in
+// in success function. 
+// Success funtion will first check if the outercheckbox is checked or unchecked. 
+// If unchecked it'll simply hide the innercheckboxdiv or do nothing as by default its hidden.
+// else will populate data in that div and show to user.  
+$.ajax({
+type: 'POST',
+dataType: "json",
+'data': {
+'d': JSON.stringify(outercheckval),
+'csrfmiddlewaretoken': '{{ csrf_token }}',
+},
+// the ajax call is sent to subdetails url name in the post function.  
+url: "{% url 'subdetails' %}",
+success: function(data){
+console.log("success");
+var outerckbox = $('#'+outercheckid);
+console.log(outerckbox);
+dict[outercheckval]=data
+console.log(dict[outercheckval]);
+// checking if the user has checked or not. 
 
-                 
+if (outerckbox.is(':checked')) {
+    alert('You Checked');
+    console.log('asdasd',outercheckval);
+    console.log(data)
+    dict[outercheckval]=data
+    if (data==null){
+        dict[outercheckval]=[0,1]
+    }
+    console.log(dict)
+    // calling innercheckboxdivs. 
+    // these divs basically come after outercheckbox that contain innerchecks.
+    // outercheck id and the data is sent to this function.
+    // This function shows the innerChecksdivs after including and populating data in 
+    // innerchecks.
+    // todo: change the name of innercheckboxdivs name as it seems like it is refering to
+    // div inside inner checks...
+    showInnerCheckBoxDivs(outercheckid,data);
+} else {
+    alert('You Un-Checked it');
+    // For now its purpose is simply to hide the innercheckdivs.  
+    hideInnerCheckBoxDivs(outercheckid);
+    console.log(outercheckval);
+    dict[outercheckval]=null;
+    if (dict[outercheckval]==null  ){
+        delete dict[outercheckval];
+        console.log('in else condition');  
+    }
+    console.log(dict)
 
-                    for (var i = 0; i < rows.length; i++) {
-                       
-                        console.log(rows[i]);
-                        filedatalist.push(rows[i]);
- 
-                        
-                        var row = $("<tr />");
-                        var cells = rows[i].split(",");
-                        for (var j = 0; j < cells.length; j++) {
-                            var cell = $("<td />");
-                            cell.html(cells[j]);
-                            row.append(cell);
-                        }
-                         table.append(row);
-                         console.log($(this))
-                      
-                    }
-                           $('#upload').prop('disabled',true);
-                        //$("#showfiledata").html('');
-                       //  $("#showfiledata").append(table);
-                    setFileDataList(filedatalist);
-                    // for (var i = 0; i < header.length; i++) {
-                    //     var radioBtn = $('<input type="radio" name="'+header[i]+'" value="'+header[i]+'"\
-                    //      onclick=radioBtnFunc($(this).attr("value"),'+JSON.stringify(arrlist)+')>'+header[i]+'</input>');
-                    //     //radioBtn.appendTo('#RadioDiv');
+}
+}
+}); 
+}
+function showInnerCheckBoxDivs(outercheckid,data){
+console.log('#'+outercheckid+'-innercheckboxdiv')
+// Creating inner checks and populating them with data. 
+for (var o in data){
+    console.log('A',o);
+    var $ctrl =  $(document.createElement("input")).attr({
+            id:  o+'-innercheckbox',
+            name:  '',
+            value: data[o],
+            text :'',
+            type:  'checkbox',
+            checked:true,
+            onclick:"innerCheckBox($(this).attr('value'),$(this).attr('id'),\
+            $(this).parent().attr('title'),\
+            )"
+            
+    })
+// adding input attributes to a div
+$('#'+outercheckid+'-innercheckboxdiv').append($ctrl);
+$('#'+outercheckid+'-innercheckboxdiv').append(data[o]);
+$('#'+outercheckid+'-innercheckboxdiv').show();
+}
+}
+// function that hides the divs containing innercheckbox
+function hideInnerCheckBoxDivs(outercheckid){
+$('#'+outercheckid+'-innercheckboxdiv').hide();
+$('#'+outercheckid+'-innercheckboxdiv').empty();
 
-                    //     $("#RadioDiv").append(radioBtn);
+}
+// once the onclick function=>(innercheckbox) of inner checks are called it 
+// shows three things. innercheck value , id and outer check value/title.
+function innerCheckBox(innercheckval,innercheckid,outercheckdivtitle){
+//console.log(innercheckval,innercheckid,outercheckdivtitle);
+var innercheckboxid = $('#'+innercheckid);
+var innercheckboxid_elem = document.getElementById(innercheckboxid);
 
-                    // }
+//console.log("outerchekboxid-",outercheckid );
+console.log("innercheckbox-",innercheckboxid );
+// checking if the user has checked or not. 
 
-// 
-//                      console.log("arr",arrlist);
-//                      console.log("arr",typeof(arrlist)); 
-
-                     var selfbutton= document.createElement("BUTTON");
-                     var text = document.createTextNode("Self Defined ");
-                     selfbutton.appendChild(text)
-                     selfbutton.onclick = function() {switchVisible($('#self-defined'),header)};
-                     selfbutton.classList.add("barbutton");
-                     
-                     
-                    
-                     var prebutton= document.createElement("BUTTON");
-                     var text = document.createTextNode("PreDefined");
-                     prebutton.appendChild(text)
-
-                     prebutton.onclick = function() {switchVisible($('#pre-defined'),header)};
-                     prebutton.classList.add("barbutton");
-                    
-                     
-                    
-                      $('#selfbuttondiv').append(selfbutton).slideDown(1000).fadeIn(1000);
-                      $('#predefbuttondiv').append(prebutton).slideDown(1000).fadeIn(1000);
-                  
-                     
-                     
-                     
-
-   
-                }
-                reader.readAsText($("#fileUpload")[0].files[0]);
-            }
-             else {
-                alert("This browser does not support HTML5.");
-            }
-        } 
-        else {
-            alert("Please upload a valid CSV file.");
-        }
-    });
-});    
-
-
-
-      //Global Variable
-      var dict = {};
-      var arr_feature_levels=[];
-      // When the page will this will be the first javascript function that will be called. 
-       $(document).ready(function () {
-         // This Will hide all the divs with class=innerchecksboxdivs
-        $('.innerchecksboxdivs').hide();
-        $('#self-defined').hide();
-        $('#pre-defined').hide();
-        $('#selfbuttondiv').hide();
-        $('#prebuttondiv').hide();
-        $('#upload').prop('disabled',true);
-
-      
-    });
-    
- 
-      // Outercheckbox function 
-      // This function gets 2 arguments when called val and id attribute of input type=checkbox
-      // having id based on the feature.id.
-      // It is called through onclick function. 
-      function outerCheckBox(outercheckval,outercheckid) {
-        console.log("checkbox");
-        console.log(outercheckval);
-        console.log(outercheckid);
-      // Ajax call is made to send the outercheckboxid to the controller. 
-      // The controller will fetch the sub-details of that feature from model and return back in
-      // in success function. 
-      // Success funtion will first check if the outercheckbox is checked or unchecked. 
-      // If unchecked it'll simply hide the innercheckboxdiv or do nothing as by default its hidden.
-      // else will populate data in that div and show to user.  
-       $.ajax({
-       type: 'POST',
-       dataType: "json",
-       'data': {
-       'd': JSON.stringify(outercheckval),
-       'csrfmiddlewaretoken': '{{ csrf_token }}',
-      },
-      // the ajax call is sent to subdetails url name in the post function.  
-       url: "{% url 'subdetails' %}",
-       success: function(data){
-       console.log("success");
-       var outerckbox = $('#'+outercheckid);
-       console.log(outerckbox);
-       dict[outercheckval]=data
-       console.log(dict[outercheckval]);
-        // checking if the user has checked or not. 
+if ($(innercheckboxid).is(':checked')) {
+    if (dict[outercheckdivtitle] == null) {
+            dict[outercheckdivtitle]=[]
+        }   
+    alert('You have Checked innercheckbox');
+    arr_feature_levels=dict[outercheckdivtitle];
+    console.log('Specific dict in Checked',dict[outercheckdivtitle]);
+    console.log('insert',arr_feature_levels);
+    arr_feature_levels.push(innercheckval);
+    dict[outercheckdivtitle]=arr_feature_levels;
+    console.log('arr',arr_feature_levels);
+    console.log('All dict in checked condition.',dict);
+    console.log('INNER CHECKING',innercheckboxid.change(false));
         
-        if (outerckbox.is(':checked')) {
-           alert('You Checked');
-           console.log('asdasd',outercheckval);
-           console.log(data)
-           dict[outercheckval]=data
-           if (data==null){
-             dict[outercheckval]=[0,1]
-           }
-           console.log(dict)
-            // calling innercheckboxdivs. 
-            // these divs basically come after outercheckbox that contain innerchecks.
-            // outercheck id and the data is sent to this function.
-            // This function shows the innerChecksdivs after including and populating data in 
-            // innerchecks.
-            // todo: change the name of innercheckboxdivs name as it seems like it is refering to
-            // div inside inner checks...
-            showInnerCheckBoxDivs(outercheckid,data);
-        } else {
-            alert('You Un-Checked it');
-            // For now its purpose is simply to hide the innercheckdivs.  
-            hideInnerCheckBoxDivs(outercheckid);
-            console.log(outercheckval);
-            dict[outercheckval]=null;
-            if (dict[outercheckval]==null  ){
-              delete dict[outercheckval];
-              console.log('in else condition');  
-           }
-           console.log(dict)
+    
+} else {
 
+    alert('You UNNNChecked innercheckbox');
+    arr_feature_levels=dict[outercheckdivtitle];
+    console.log('Specific dict in UnChecked',dict[outercheckdivtitle]);
+    console.log('arr',arr_feature_levels);
+    console.log(innercheckval);
+    var index = $.inArray(innercheckval, arr_feature_levels);
+        if (index != -1) {
+            var removedvalue=arr_feature_levels.splice(index, 1);
+            console.log('removedvalue',removedvalue);
         }
-       }
-       }); 
-      }
-      function showInnerCheckBoxDivs(outercheckid,data){
-        console.log('#'+outercheckid+'-innercheckboxdiv')
-        // Creating inner checks and populating them with data. 
-        for (var o in data){
-          console.log('A',o);
-          var $ctrl =  $(document.createElement("input")).attr({
-                    id:  o+'-innercheckbox',
-                    name:  '',
-                    value: data[o],
-                    text :'',
-                    type:  'checkbox',
-                    checked:true,
-                    onclick:"innerCheckBox($(this).attr('value'),$(this).attr('id'),\
-                    $(this).parent().attr('title'),\
-                    )"
-                    
-            })
-        // adding input attributes to a div
-        $('#'+outercheckid+'-innercheckboxdiv').append($ctrl);
-        $('#'+outercheckid+'-innercheckboxdiv').append(data[o]);
-        $('#'+outercheckid+'-innercheckboxdiv').show();
-        }
-      }
-      // function that hides the divs containing innercheckbox
-      function hideInnerCheckBoxDivs(outercheckid){
-        $('#'+outercheckid+'-innercheckboxdiv').hide();
-        $('#'+outercheckid+'-innercheckboxdiv').empty();
+    console.log('del arr',arr_feature_levels);  
+    console.log('del arr',arr_feature_levels.length);
+    if (arr_feature_levels.length===0){
+        delete  dict[outercheckdivtitle];
+        console.log('condition check');
+        console.log('deleted dic',dict);
+        
 
-      }
-      // once the onclick function=>(innercheckbox) of inner checks are called it 
-      // shows three things. innercheck value , id and outer check value/title.
-      function innerCheckBox(innercheckval,innercheckid,outercheckdivtitle){
-        //console.log(innercheckval,innercheckid,outercheckdivtitle);
-        var innercheckboxid = $('#'+innercheckid);
-        var innercheckboxid_elem = document.getElementById(innercheckboxid);
+    }
+    else{ 
+        dict[outercheckdivtitle]=arr_feature_levels;
+        console.log('dict',dict);
+        
+    }
+    
 
-        //console.log("outerchekboxid-",outercheckid );
-        console.log("innercheckbox-",innercheckboxid );
-        // checking if the user has checked or not. 
-       
-        if ($(innercheckboxid).is(':checked')) {
-            if (dict[outercheckdivtitle] == null) {
-                   dict[outercheckdivtitle]=[]
-               }   
-            alert('You have Checked innercheckbox');
-            arr_feature_levels=dict[outercheckdivtitle];
-            console.log('Specific dict in Checked',dict[outercheckdivtitle]);
-            console.log('insert',arr_feature_levels);
-            arr_feature_levels.push(innercheckval);
-            dict[outercheckdivtitle]=arr_feature_levels;
-            console.log('arr',arr_feature_levels);
-            console.log('All dict in checked condition.',dict);
-            console.log('INNER CHECKING',innercheckboxid.change(false));
-               
-            
-        } else {
+}
+}
 
-            alert('You UNNNChecked innercheckbox');
-            arr_feature_levels=dict[outercheckdivtitle];
-            console.log('Specific dict in UnChecked',dict[outercheckdivtitle]);
-            console.log('arr',arr_feature_levels);
-            console.log(innercheckval);
-            var index = $.inArray(innercheckval, arr_feature_levels);
-              if (index != -1) {
-                  var removedvalue=arr_feature_levels.splice(index, 1);
-                  console.log('removedvalue',removedvalue);
-              }
-            console.log('del arr',arr_feature_levels);  
-            console.log('del arr',arr_feature_levels.length);
-            if (arr_feature_levels.length===0){
-              delete  dict[outercheckdivtitle];
-              console.log('condition check');
-              console.log('deleted dic',dict);
-              
+function sendFeatureLevels(){
+$.ajax({
+type: 'POST',
+dataType: "json",
+'data': {
+'dict': JSON.stringify(dict),
+'csrfmiddlewaretoken': '{{ csrf_token }}',
+},
+// the ajax call is sent to subdetails url name in the post function.  
+url: "{% url 'createexp' %}",
+success: function(data){}
 
-            }
-            else{ 
-              dict[outercheckdivtitle]=arr_feature_levels;
-              console.log('dict',dict);
-               
-            }
-            
+}); 
+}
 
-        }
-      }
-
-      function sendFeatureLevels(){
-        $.ajax({
-       type: 'POST',
-       dataType: "json",
-       'data': {
-       'dict': JSON.stringify(dict),
-       'csrfmiddlewaretoken': '{{ csrf_token }}',
-      },
-      // the ajax call is sent to subdetails url name in the post function.  
-       url: "{% url 'createexp' %}",
-       success: function(data){}
-       
-       }); 
-      }
-
-
-      function sendFilePath(id){
+function sendFilePath(id){
         console.log(id);
         console.log($('#'+id).val().replace(/C:\\fakepath\\/i, ''));
         var filepath=$('#'+id).val().replace(/C:\\fakepath\\/i, '');
@@ -738,5 +798,7 @@ $(function () {
 
       }
 </script>
+<script type="text/javascript" src="{% static 'webapp/createexp/DataTables/datatables.min.js' %}"></script>
+<link rel="stylesheet" type="text/css" src="{% static 'webapp/createexp/DataTables/datatables.css' %}"/>
  
 {%endblock%}

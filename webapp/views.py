@@ -774,14 +774,27 @@ def uploadSampleFile(request):
 
                 
                 dataframe= pd.DataFrame.from_records(arr_filebody,columns=filefields)
-                print(dataframe)
+                print('asd',dataframe)
                 assigner = Assigner(dataframe)
+                print('asdahehr')
                 dSubBatches=assigner.splitInBins(batch_num,batch_name,customlabels )
-                print("dSubbatches")
-                print(dSubBatches.size())
+                print("dSubbatches",type(dSubBatches))
+
+                print('asdokao',dSubBatches.size())
+                #print(type(dSubBatches.size()))
                 print("assigner df",assigner.df)
+                print("assigner df",type(assigner.df))
                 dataframe=assigner.df
+                dict_all={}
                 dataframe=dataframe.to_json()
+                groupsize=dSubBatches.size()
+                groupsize=groupsize.to_json()
+                dict_all['1']=dataframe
+                dict_all['2']=groupsize
+                print('dictionary all')
+                
+                print(dict_all)
+               
                 ## ONCE THE DATA IS PROCESSED WE CAN SAVE INTO EXCEL OR CSV FILE
                 #print(dSubBatches.get_group('1'))
             elif  assign_type=='pre':
@@ -832,7 +845,7 @@ def uploadSampleFile(request):
                 
 
                 
-            return HttpResponse(dataframe)#dSubBatches_grp_A_json)
+            return HttpResponse(json.dumps(dict_all))#dSubBatches_grp_A_json)
 
         
     else:
