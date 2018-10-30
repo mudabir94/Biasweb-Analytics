@@ -30,7 +30,7 @@ import itertools
 import numpy as np
 import pandas as pd
 from biasweb.experiment.controller import ExperimentController
-from biasweb.utils.Assigner import Assigner
+from biasweb.utils.assign import Assigner
 import csv
 
 
@@ -56,16 +56,17 @@ class Home(TemplateView):
             role_name=roleobj.role_name
             print(role_name)
             template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
+        
+        elif role==2:
+            roleobj=Role.objects.get(pk=role)
+            role_name=roleobj.role_name
+            print(role_name)
+            template_sidebar='webapp/sidebartemplates/sidebartemp_expadm.html'
         elif role==2:
             roleobj=Role.objects.get(pk=role)
             role_name=roleobj.role_name
             print(role_name)
             template_sidebar='webapp/sidebartemplates/sidebartemp_pltfadm.html'
-        elif role==3:
-            roleobj=Role.objects.get(pk=role)
-            role_name=roleobj.role_name
-            print(role_name)
-            template_sidebar='webapp/sidebartemplates/sidebartemp_expadm.html'
 
         #*****************************************************
 
@@ -665,20 +666,21 @@ class  BiasTestFeature(TemplateView):
             template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
             expadm_maincontent_temp='webapp/main_content_temps/biaswebfeature/main_cont_temp_expadmin.html'
 
+       
         elif role==2:
-              
-            roleobj=Role.objects.get(pk=role)
-            role_name=roleobj.role_name
-            print(role_name)
-            template_sidebar='webapp/sidebartemplates/sidebartemp_pltfadm.html'
-        elif role==3:
               
             roleobj=Role.objects.get(pk=role)
             role_name=roleobj.role_name
             print(role_name)
             template_sidebar='webapp/sidebartemplates/sidebartemp_expadm.html'
             expadm_maincontent_temp='webapp/main_content_temps/biaswebfeature/main_cont_temp_expadmin.html'
-        #*****************************************************
+        elif role==3:
+              
+            roleobj=Role.objects.get(pk=role)
+            role_name=roleobj.role_name
+            print(role_name)
+            template_sidebar='webapp/sidebartemplates/sidebartemp_pltfadm.html'
+         #*****************************************************
         return render(request,self.template_name,{'template_sidebar':template_sidebar,
                                                     'role_name':role_name,
                                                     'expadm_maincontent_temp':expadm_maincontent_temp
@@ -778,6 +780,7 @@ def uploadSampleFile(request):
                 assigner = Assigner(dataframe)
                 print('asdahehr')
                 dSubBatches=assigner.splitInBins(batch_num,batch_name,customlabels )
+                ## Problem
                 print("dSubbatches",type(dSubBatches))
 
                 print('asdokao',dSubBatches.size())
@@ -789,6 +792,23 @@ def uploadSampleFile(request):
                 dataframe=dataframe.to_json()
                 groupsize=dSubBatches.size()
                 groupsize=groupsize.to_json()
+
+                ## ASSIGN TO BLOCKS
+                # no_batches = eval(input("Number of Batches? "))
+                # batchesLabels = list()
+                # for j in range(no_batches):
+                #     print("BATCH #",j+1,"\' OK? ")
+                #     batchesLabels.append(input() or (j+1))
+                # batchesTitle = input("Title as \'BATCHES\' or...?") or 'BATCHES'
+                # print("Using",batchesTitle,"as title for the",no_batches,"batches",batchesLabels)
+                # dSubBatched = texp.assigner.splitInBins(no_batches,batchesTitle, batchesLabels)
+                # print(texp.assigner.df.head())
+
+                ## ASSIGING SUBJECTS TO DATABASE.
+                # texp.setIdField(fields[0]) #Col 0 is assumed as ROLLNO
+                # print("ID FIELD: ", texp.idField)
+                  #texp.saveSubjects()
+
                 dict_all['1']=dataframe
                 dict_all['2']=groupsize
                 print('dictionary all')
@@ -808,6 +828,24 @@ def uploadSampleFile(request):
                 batch_title_field=json_data.pop()
                 batch_title_field=batch_title_field.replace('\n','')
                 print(batch_title_field)
+
+
+                #Assign To Blocks
+
+                # print(fields[inputNo], ": Setting  as BATCH TITLE")
+                # texp.setBatchesTitle(fields[inputNo])
+                # batchesLabels = texp.subjData.iloc[:,inputNo].unique()
+                # batchesTitle = texp.exp.batches_title
+                # texp.assignToBlocks()
+
+                ## Assign Subjects
+                
+                # print("Which field will be used as CUSTOM ID")
+                # for i in range(len(fields)):
+                #     print("[",i,"]",fields[i])
+                # customIdNo = eval(input("ENTER Column No for CUSTOM ID:  "))
+                # texp.setIdField(fields[customIdNo])
+                  
                 
 
 
@@ -826,9 +864,10 @@ def uploadSampleFile(request):
 
                 dataframe= pd.DataFrame.from_records(arr_filebody,columns=filefields)
                 print(dataframe)
+
                 #assigner = Assigner(dataframe)
                 #dSubBatches=assigner.splitByField(selected_fieldname)
-                #print(type(dSubBatches))
+                print(type(dSubBatches))
                 #print(dSubBatches.get_group())
             
                 # seclabels=csvdataframe[name].unique()
@@ -863,12 +902,50 @@ def uploadSampleFile(request):
     else:
         pass
     return render(request, 'webapp/crudexperiment/create_experiment.html')    
+def createNewExp(request):
+        if request.is_ajax:
+            data = request.POST.get('csvfiledata')
+            #print('d',d)
+            json_data = json.loads(data)
+            batch_field_name=json_data.pop()
+            email=json_data.pop()
+            custom_id=json_data.pop()
+            print(batch_field_name)
+            print(custom_id)
+                
+        return HttpResponse()
+
+    
+    
+            
+
+
+            
+
+
+
+
+
+ # newexp = ExperimentController(a_id=self.admin_id)
+        
+#Global variable check#
+newexp=None
 class createExperiment(TemplateView): 
 
     admin_id='ses-007'
-    exp_id=admin_id + "-4"
-    t_exp=''
+    # exp_id=admin_id + "-4"
+    
     def get(self,request):
+        #   data = request.POST.get('csvfiledata')
+        #     #print('d',d)
+        #     json_data = json.loads(data)
+        #     batch_field_name=json_data.pop()
+        #     email=json_data.pop()
+        #     custom_id=json_data.pop()
+        #     print(batch_field_name)
+        #     print(custom_id)
+        #     return HttpResponse()
+        
         ##test experimemt functions. 
 
         #TODO@SHAZIB: Check experiment & experiment features tables before loading
@@ -880,14 +957,21 @@ class createExperiment(TemplateView):
         #print("Exp Custom Id:",texp.exp.custom_exp_id)
         #print("The following features are set to be enabled:")
         #print(list(texp.fSet.all()))
-        platformfeatobj=platform_feature.objects.all()
-        return render(request,'webapp/crudexperiment/create_experiment.html',
-                                        {'platformfeatobj':platformfeatobj,
-                                          'admin_id':'ses-007' ,
-                                          'experiment_id':'009'
-                                          
+        if newexp:
+            platformfeatobj=platform_feature.objects.all()
+            return render(request,'webapp/crudexperiment/create_experiment.html',
+                                            {'platformfeatobj':platformfeatobj,
+                                            
 
-                                        })
+                                            })
+        else:
+            platformfeatobj=platform_feature.objects.all()
+            return render(request,'webapp/crudexperiment/create_experiment.html',
+                                            {'platformfeatobj':platformfeatobj,
+                                            
+
+                                            })
+                                        
                                         
 
     def post(self,request):
@@ -933,13 +1017,15 @@ class createExperiment(TemplateView):
 
 
 
-            # t_exp = ExperimentController(self.exp_id, self.admin_id)
-            # #t_exp.setfeaturelist(feature_dictionary)
-            # t_exp.setFeatureLevels(b)
-            # print(t_exp.fLevels)
-            # t_exp.generateBlocks()
-            # print(t_exp.blocks)
-            # e=exp(experiment_name='exp1',custom_exp_id=self.exp_id,feature_set=json.dumps(t_exp.blocks))
+            
+            
+            #newexp.setfeaturelist(feature_dictionary)
+            #newexp.setFeatureLevels(b)
+            # print(newexp.fLevels)
+            # newexp.generateBlocks()
+            # print(newexp.blocks)
+            # e=exp(experiment_name='exp1',custom_exp_id=self.exp_id,feature_set=json.dumps(newexp.blocks))
+            # e=exp(experiment_name='exp1',custom_exp_id=self.exp_id,feature_set=json.dumps(newexp.blocks))
             # e.save()
        
       

@@ -46,6 +46,7 @@ urlpatterns = [
     url(r'^createexp/',views.createExperiment.as_view(), name='createexp'),
     url(r'^subdetails/',views.subDetails, name='subdetails'),
     url(r'^uploadsamplefile/',views.uploadSampleFile, name='uploadsamplefile'),
+    url(r'^createnewexp/',views.createNewExp, name='createnewexp'),
 
     url(r'^datadefinded/',views.datadefined.as_view(), name='datadefined'),
 
