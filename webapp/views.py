@@ -794,13 +794,24 @@ def uploadSampleFile(request):
                 print('dictionary all')
                 
                 print(dict_all)
+                return HttpResponse(json.dumps(dict_all))#dSubBatches_grp_A_json)
                
                 ## ONCE THE DATA IS PROCESSED WE CAN SAVE INTO EXCEL OR CSV FILE
                 #print(dSubBatches.get_group('1'))
             elif  assign_type=='pre':
-                selected_fieldname=json_data.pop()
-                selected_fieldname=selected_fieldname.replace('\n','')
-                print(selected_fieldname)
+                customid_field=json_data.pop()
+                customid_field=customid_field.replace('\n','')
+                print(customid_field)
+                email_field=json_data.pop()
+                email_field=email_field.replace('\n','')
+                print(email_field)
+                batch_title_field=json_data.pop()
+                batch_title_field=batch_title_field.replace('\n','')
+                print(batch_title_field)
+                
+
+
+                
                 print('filefields',type(json_data[0]))
                 filefields = json_data[0].split(",")
                 
@@ -841,11 +852,12 @@ def uploadSampleFile(request):
                 
                 
                 #dataframe=dataframe.to_json()
+                return HttpResponse()#dSubBatches_grp_A_json)
 
                 
 
                 
-            return HttpResponse(json.dumps(dict_all))#dSubBatches_grp_A_json)
+           
 
         
     else:
