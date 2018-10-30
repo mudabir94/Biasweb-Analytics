@@ -51,18 +51,20 @@ class Home(TemplateView):
         userobj=User.objects.get(pk=request.user.id)
         print("user object",userobj.role_id_id)
         role=userobj.role_id_id
-        if role==1:
-            roleobj=Role.objects.get(pk=role)
-            role_name=roleobj.role_name
-            print(role_name)
+        roleobj=Role.objects.get(pk=role)
+        role=roleobj.role_name
+        print(role)
+
+        if role=='Super Admin':
+            
             template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
         
-        elif role==2:
+        elif role=='Experiment Admin':
             roleobj=Role.objects.get(pk=role)
             role_name=roleobj.role_name
             print(role_name)
             template_sidebar='webapp/sidebartemplates/sidebartemp_expadm.html'
-        elif role==2:
+        elif role=='Platform Admin':
             roleobj=Role.objects.get(pk=role)
             role_name=roleobj.role_name
             print(role_name)
@@ -658,31 +660,27 @@ class  BiasTestFeature(TemplateView):
         userobj=User.objects.get(pk=request.user.id)
         print("user object",userobj.role_id_id)
         role=userobj.role_id_id
-        if role==1:
-              
-            roleobj=Role.objects.get(pk=role)
-            role_name=roleobj.role_name
-            print(role_name)
+        roleobj=Role.objects.get(pk=role)
+        role=roleobj.role_name
+        print('ikoko',role)
+
+        if role=='Super Admin':
             template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
             expadm_maincontent_temp='webapp/main_content_temps/biaswebfeature/main_cont_temp_expadmin.html'
 
        
-        elif role==2:
+        elif role=='Experimental Admin':
               
-            roleobj=Role.objects.get(pk=role)
-            role_name=roleobj.role_name
-            print(role_name)
+            
             template_sidebar='webapp/sidebartemplates/sidebartemp_expadm.html'
             expadm_maincontent_temp='webapp/main_content_temps/biaswebfeature/main_cont_temp_expadmin.html'
-        elif role==3:
+        elif role=='Platform Admin':
               
-            roleobj=Role.objects.get(pk=role)
-            role_name=roleobj.role_name
-            print(role_name)
+            
             template_sidebar='webapp/sidebartemplates/sidebartemp_pltfadm.html'
          #*****************************************************
         return render(request,self.template_name,{'template_sidebar':template_sidebar,
-                                                    'role_name':role_name,
+                                                    'role_name':role,
                                                     'expadm_maincontent_temp':expadm_maincontent_temp
                                                     })
     def post(self,request):
