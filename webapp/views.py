@@ -903,15 +903,38 @@ def uploadSampleFile(request):
         pass
     return render(request, 'webapp/crudexperiment/create_experiment.html')    
 def createNewExp(request):
+        admin_id='ses-007'
         if request.is_ajax:
             data = request.POST.get('csvfiledata')
             #print('d',d)
+            newexp = ExperimentController(a_id=admin_id)
             json_data = json.loads(data)
+            json_data=[i.replace('\r','') for i in json_data]  
             batch_field_name=json_data.pop()
             email=json_data.pop()
             custom_id=json_data.pop()
             print(batch_field_name)
             print(custom_id)
+            filefields = json_data[0].split(",")
+            print('filefields',filefields)
+            filebody=[i.split(',') for i in json_data[1:-1]] 
+            print(type(filebody))
+            print(filebody)
+            arr_filebody = np.array(filebody)
+            print(arr_filebody) 
+            dataframe= pd.DataFrame.from_records(arr_filebody,columns=filefields)
+            print("filedata")
+            print(dataframe)
+            if custom_id!='None':
+                newexp.setIdField(custom_id)
+            if batch_field_name!='None':
+                newexp.setBatchesTitle(batch_field_name)
+            newexp.saveSubjects(dataframe)
+            print(newexp.exp.subject_set.all())
+            print(newexp.subjData.groupby(batch_field_name).size())
+
+
+
                 
         return HttpResponse()
 
@@ -926,13 +949,13 @@ def createNewExp(request):
 
 
 
- # newexp = ExperimentController(a_id=self.admin_id)
+ 
         
 #Global variable check#
 newexp=None
 class createExperiment(TemplateView): 
 
-    admin_id='ses-007'
+    
     # exp_id=admin_id + "-4"
     
     def get(self,request):

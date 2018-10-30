@@ -253,7 +253,7 @@ class ExperimentController:
             self.subjData = self.dSubByBlock
             
     def saveSubjects(self, dSub=None, fName=None):
-        if dSub:
+        if isinstance(dSub,pd.DataFrame):
             self.subjData = dSub
         #WRITE TO DATABASE
         #obtain set of existing users

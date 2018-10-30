@@ -366,8 +366,8 @@ $(function () {
 });    
 function postExpData(){
     var custom_id=$('#s1').children('option:selected').text();
-    var email=$('#s2').children('option:selected').text();
-    var batch_field=$('#s3').children('option:selected').val();
+    var email=$('#s2').children('option:selected').text() ;
+    var batch_field=$('#s3').children('option:selected').text();
     var filedata=getFileDataList();
     filedata.push(custom_id);
     filedata.push(email);
