@@ -900,12 +900,19 @@ def uploadSampleFile(request):
     else:
         pass
     return render(request, 'webapp/crudexperiment/create_experiment.html')    
+from django.core import serializers
+import pickle
 def createNewExp(request):
         admin_id='ses-007'
         if request.is_ajax:
             data = request.POST.get('csvfiledata')
             #print('d',d)
             newexp = ExperimentController(a_id=admin_id)
+            ## object storing example
+                    # pickle.dump( newexp, open( "save.p", "wb" ) )
+            ## object retrieving example
+                    # Tnewexp = pickle.load( open( "save.p", "rb" ) )
+                    # print(Tnewexp.exp.capacity)
             json_data = json.loads(data)
             json_data=[i.replace('\r','') for i in json_data]  
             batch_field_name=json_data.pop()
@@ -950,13 +957,14 @@ def createNewExp(request):
  
         
 #Global variable check#
-newexp=None
+
 class createExperiment(TemplateView): 
 
     
     # exp_id=admin_id + "-4"
     
     def get(self,request):
+
         #   data = request.POST.get('csvfiledata')
         #     #print('d',d)
         #     json_data = json.loads(data)
@@ -967,31 +975,14 @@ class createExperiment(TemplateView):
         #     print(custom_id)
         #     return HttpResponse()
         
-        ##test experimemt functions. 
-
-        #TODO@SHAZIB: Check experiment & experiment features tables before loading
-        # and pass objects to create_experiment.html   
 
         
-        #texp = ExperimentController(a_id=admin_id, e_id=9)
-        #nexp = ExperimentController(a_id=admin_id)
-        #print("Exp Custom Id:",texp.exp.custom_exp_id)
-        #print("The following features are set to be enabled:")
-        #print(list(texp.fSet.all()))
-        if newexp:
-            platformfeatobj=platform_feature.objects.all()
-            return render(request,'webapp/crudexperiment/create_experiment.html',
-                                            {'platformfeatobj':platformfeatobj,
-                                            
+        platformfeatobj=platform_feature.objects.all()
+        return render(request,'webapp/crudexperiment/create_experiment.html',
+                                        {'platformfeatobj':platformfeatobj,
+                                        
 
-                                            })
-        else:
-            platformfeatobj=platform_feature.objects.all()
-            return render(request,'webapp/crudexperiment/create_experiment.html',
-                                            {'platformfeatobj':platformfeatobj,
-                                            
-
-                                            })
+                                        })
                                         
                                         
 

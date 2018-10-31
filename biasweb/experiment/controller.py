@@ -70,6 +70,7 @@ class ExperimentController:
 
     def getFSet(self):
         return list(self.fSet.all())
+    
     """
     setFSet
     Inputs: Either newFSet (list of feature_symbols for features to be set)
@@ -286,3 +287,5 @@ class ExperimentController:
             self.exp.subject_set.bulk_create(subjForDb)
         #WRITE TO FILE AS WELL, IF GIVEN
         #ELSE DEFAULT TO CUSTOM-ID WITH CERTAIN SWITCHES
+    def toString():
+        print("This class is the Controler Class");
