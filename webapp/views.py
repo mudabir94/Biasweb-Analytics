@@ -988,13 +988,27 @@ class createExperiment(TemplateView):
 
     def post(self,request):
         if request.method=="POST":
-            print("IN POSt")
+            print("====IN CREATEEXP POST METHOD====")
 
             if request.is_ajax:
                 d = request.POST.get('dict')
                 #print('d',d)
-                b = json.loads(d)
-                print('b',b)
+                postedFLevels = json.loads(d)
+                print('b',type(postedFLevels),postedFLevels)
+                #CHECK IF EXPERIMENT CONTROLLER EXISTS IN PICKLE
+                existExpId = 11 #WILL NOT CREATE NEW FOR TESTING, CHANGE TO None if you want new
+                #TODO@SHAZIB/MUDABIR^^^^^^^^^^^
+
+                #CREATE EXPERIMENT CONTROLLER AND INITIALIZE
+                print(request.user.custom_id,":",request.user.username)
+                expAdminId = request.user.custom_id
+                expCont = ExperimentController(a_id=expAdminId,e_id=existExpId)
+                print("Exp Custom Id:",expCont.exp.custom_exp_id)
+                print("The following features are ALREADY enabled:")
+                print(list(expCont.fSet.all()))
+
+                #SET FLEVELS
+                expCont.setFSet(newFLevels=postedFLevels,prompt=False)
                 ## get csv file path. 
                 ## if extension is csv 
                 # csvdataframe=pd.read_csv('C://biasweb//biasweb//utils//data//'+b)
