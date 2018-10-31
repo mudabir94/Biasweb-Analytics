@@ -769,20 +769,20 @@ url: "{% url 'subdetails' %}",
 success: function(data){
 console.log("success");
 var outerckbox = $('#'+outercheckid);
-console.log(outerckbox);
+console.log('outercheckbox obj',outerckbox);
 dict[outercheckval]=data
-console.log(dict[outercheckval]);
+console.log('value of key in dic',dict[outercheckval]);
 // checking if the user has checked or not. 
 
 if (outerckbox.is(':checked')) {
     alert('You Checked');
-    console.log('asdasd',outercheckval);
-    console.log(data)
+    console.log('outercheckval',outercheckval);
+    console.log('data retrieved',data)
     dict[outercheckval]=data
     if (data==null){
         dict[outercheckval]=[0,1]
     }
-    console.log(dict)
+    console.log('dictionary',dict)
     // calling innercheckboxdivs. 
     // these divs basically come after outercheckbox that contain innerchecks.
     // outercheck id and the data is sent to this function.
@@ -810,17 +810,21 @@ if (outerckbox.is(':checked')) {
 function showInnerCheckBoxDivs(outercheckid,data){
 console.log('#'+outercheckid+'-innercheckboxdiv')
 // Creating inner checks and populating them with data. 
+
+
 for (var o in data){
     console.log('A',o);
+    
+   
     var $ctrl =  $(document.createElement("input")).attr({
-            id:  o+'-innercheckbox',
+            id: o +'-innercheckbox-'+outercheckid,
             name:  '',
             value: data[o],
             text :'',
             type:  'checkbox',
             checked:true,
             onclick:"innerCheckBox($(this).attr('value'),$(this).attr('id'),\
-            $(this).parent().attr('title'),\
+            $(this).parent().attr('title'), $(this).parent().attr('id')\
             )"
             
     })
@@ -838,9 +842,15 @@ $('#'+outercheckid+'-innercheckboxdiv').empty();
 }
 // once the onclick function=>(innercheckbox) of inner checks are called it 
 // shows three things. innercheck value , id and outer check value/title.
-function innerCheckBox(innercheckval,innercheckid,outercheckdivtitle){
+function innerCheckBox(innercheckval,innercheckid,outercheckdivtitle,outercheckdivid){
 //console.log(innercheckval,innercheckid,outercheckdivtitle);
+
+console.log('outercheckbox title',outercheckdivtitle)
 var innercheckboxid = $('#'+innercheckid);
+//var parentdiv=innercheckboxid.parent();
+//var parentdivid=parentdiv.attr('id');
+var temparr=outercheckdivid.split('-');
+console.log('outercheck id ',temparr[0])
 var innercheckboxid_elem = document.getElementById(innercheckboxid);
 
 //console.log("outerchekboxid-",outercheckid );
@@ -848,6 +858,9 @@ console.log("innercheckbox-",innercheckboxid );
 // checking if the user has checked or not. 
 
 // if ($(innercheckboxid).is(':checked')) {
+    console.log('#'+temparr[0])
+    // $('#'+temparr[0]).prop('checked',true);
+    
 if ($(innercheckboxid).prop('checked') == true){
     if (dict[outercheckdivtitle] == null) {
             dict[outercheckdivtitle]=[]
@@ -860,11 +873,13 @@ if ($(innercheckboxid).prop('checked') == true){
     dict[outercheckdivtitle]=arr_feature_levels;
     console.log('arr',arr_feature_levels);
     console.log('All dict in checked condition.',dict);
+    
+    
    
 
         
     
-} else {
+} else if ($(innercheckboxid).prop('checked') == false) {
 
     alert('You UNNNChecked innercheckbox');
     arr_feature_levels=dict[outercheckdivtitle];
@@ -875,7 +890,7 @@ if ($(innercheckboxid).prop('checked') == true){
         if (index != -1) {
             var removedvalue=arr_feature_levels.splice(index, 1);
             console.log('removedvalue',removedvalue);
-            $(innercheckboxid).prop('checked', false);
+      
         
 
         }

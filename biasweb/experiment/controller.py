@@ -130,8 +130,10 @@ class ExperimentController:
     def delFeature(self,fSymbol):
         expF = self.getFeature(fSymbol)
         if expF:
+            fName = expF.p_feature.feature_name
             expF.delete()
             del self.fLevels[fSymbol]
+            print("DELETED",fName)
 
     def getFeature(self,fSymbol):
         expF = self.fSet.filter(p_feature__feature_symbol=fSymbol)
