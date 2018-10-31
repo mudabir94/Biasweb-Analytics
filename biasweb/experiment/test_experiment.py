@@ -85,6 +85,7 @@ if interactive:
     inputNo = eval(input("No of Batch Column?  "))
 else:
     inputNo = 1 #Col 1 is assumed SECTION
+print("INPUT NO:", inputNo)
 #%%IF SELF-DEFINED BATCHING VS. PRE-DEFINED
 if inputNo == 999:
     no_batches = eval(input("Number of Batches? "))
@@ -94,14 +95,21 @@ if inputNo == 999:
         batchesLabels.append(input() or (j+1))
     batchesTitle = input("Title as \'BATCHES\' or...?") or 'BATCHES'
     print("Using",batchesTitle,"as title for the",no_batches,"batches",batchesLabels)
+    texp.setBatchesTitle(batchesTitle)
     dSubBatched = texp.assigner.splitInBins(no_batches,batchesTitle, batchesLabels)
     print(texp.assigner.df.head())
 elif inputNo:
     print(fields[inputNo], ": Setting  as BATCH TITLE")
     texp.setBatchesTitle(fields[inputNo])
     batchesLabels = texp.subjData.iloc[:,inputNo].unique()
-batchesTitle = texp.exp.batches_title
-
+    batchesTitle = texp.exp.batches_title
+texp.subjData.groupby(batchesTitle).size()
+#TEST OLD BATCH
+# texp.exp.subject_set.filter(user__custom_id='16010075').update(batch='TEST')
+# texp.exp.subject_set.get(user__custom_id='16010075').batch
+# texp.updateOneBatch(subjC_Id='16010075')
+texp.updateAllBatches()
+texp.saveSubjects()
 texp.assignToBlocks()
 
 # #texp.updateBatch DOES NOT EXIST 
