@@ -55,16 +55,16 @@ class Home(TemplateView):
         role=roleobj.role_name
         print(role)
 
-        if role=='Super_Admin':
+        if role=='Super Admin':
             
             template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
         
-        elif role=='Experiment_Admin':
+        elif role=='Experiment Admin':
             roleobj=Role.objects.get(pk=role)
             role_name=roleobj.role_name
             print(role_name)
             template_sidebar='webapp/sidebartemplates/sidebartemp_expadm.html'
-        elif role=='Platform_Admin':
+        elif role=='Platform Admin':
             roleobj=Role.objects.get(pk=role)
             role_name=roleobj.role_name
             print(role_name)
@@ -664,17 +664,17 @@ class  BiasTestFeature(TemplateView):
         role=roleobj.role_name
         print('ikoko',role)
 
-        if role=='Super_Admin':
+        if role=='Super Admin':
             template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
             expadm_maincontent_temp='webapp/main_content_temps/biaswebfeature/main_cont_temp_expadmin.html'
 
        
-        elif role=='Experimental_Admin':
+        elif role=='Experimental Admin':
               
             
             template_sidebar='webapp/sidebartemplates/sidebartemp_expadm.html'
             expadm_maincontent_temp='webapp/main_content_temps/biaswebfeature/main_cont_temp_expadmin.html'
-        elif role=='Platform_Admin':
+        elif role=='Platform Admin':
               
             
             template_sidebar='webapp/sidebartemplates/sidebartemp_pltfadm.html'
