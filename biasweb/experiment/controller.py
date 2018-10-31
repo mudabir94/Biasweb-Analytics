@@ -298,11 +298,7 @@ class ExperimentController:
         #TODO@SHAZIB else left to implement
         #ELSE: DO A SIMPLE SPLIT_IN_BINS
             
-<<<<<<< HEAD
-    def saveSubjects(self, dSub=None, fName=None):
-=======
     def saveSubjects(self, dSub=None, fName=None, writeXL=False):
->>>>>>> a325fcf8c9d2146874052d0cc00629ec37abba52
         if isinstance(dSub,pd.DataFrame):
             self.subjData = dSub
         #WRITE TO DATABASE
