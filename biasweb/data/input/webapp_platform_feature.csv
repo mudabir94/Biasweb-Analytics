@@ -1,6 +1,0 @@
-"id";"feature_name";"feature_levels";"feature_symbol"
-"1";"Interactivity";"0,1";"I"
-"2";"Revisability";"0,1";"R"
-"3";"Weight Generation Method";"direct,AHP";"W"
-"4";"Alterantives Display Method";"all,1by1,2by2,user";"A"
-"5";"Criteria Display Method";"full,pruned,self-extended";"C"

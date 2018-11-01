@@ -37,9 +37,9 @@ class ExperimentController:
         self.subjData = pd.DataFrame()
         self.subjects = Subject()
         self.idField = None
+        self.fSet = self.exp.experiment_feature_set.select_related('p_feature')
         if e_id:
             self.exp = Experiment.objects.get(id=e_id)
-            self.fSet = self.exp.experiment_feature_set.select_related('p_feature')
             self.fLevels = self.retrieveFLevels()
         else:
             self.exp.status = DESIGN_MODE

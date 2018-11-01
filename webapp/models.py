@@ -149,7 +149,6 @@ class experiment_feature(models.Model):
         return fName
     
 class exp_fLevel(models.Model):
-    used_in = models.ForeignKey(experiment, on_delete=models.CASCADE)
     e_feature = models.ForeignKey(experiment_feature, on_delete=models.CASCADE)
     chosen_level = models.CharField(max_length=100)
     def __str__(self):
