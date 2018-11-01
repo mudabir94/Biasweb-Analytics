@@ -1,6 +1,11 @@
 {% extends "webapp/crudexperiment/base_experiment.html" %}
 {% block content %}
 {%load static from staticfiles%}
+<style>
+table, th, td {
+    border: 1px solid black;
+}
+</style>
 <div class="container-fluid text-center">    
       <div class="row content">
           <div class="col-sm-2 sidenav" style='background:teal'></div>
@@ -8,7 +13,7 @@
                   
             <div class ="row-fluid">     
                       <div class ="row">   
-                            <div class='col-md-12' >
+                            <div class='col-md-12' id="cr_exp_header" >
                             <p1>Create Experiment </p1> <!-- Show Experiment Id here e.g. ses-007 (admin id) + experiment no. (5 digits)-->
                             </div>  
                         </div>
@@ -47,6 +52,13 @@
                             </input>
                             <br>
                         </div>
+                        </div>
+                        {%endfor%}
+                </div>
+                <div class='row-fluid'>
+                    <button onclick='sendFeatureLevels()'> Set Feature Levels </button>
+                    <button onclick='showImportSubdiv()'>NEXT</button>
+                </div>  
                     </div>
                     {%endfor%}
                 
@@ -88,7 +100,6 @@
                           </div>
                           <hr />
                           <div class='row-fluid'>
-                            
                                 <div class='col-md-12'  >
                                         <div class='row'>
                                                 <div class='col-md-6' ><div class='map_select_label' id='custom_label_id'>Custom id</div> </div>
@@ -240,7 +251,7 @@
                     </div>
             </div>
                         
-        </div>
+            </div>
         <div class="col-sm-1 sidenav" style='background:yellow'>side bar</div>   
     </div>
               <br>
@@ -261,6 +272,8 @@
 var dict = {};
 var arr_feature_levels=[];
 var globalfiledatalist=[];
+var exp_id = "";
+var block_list = [];
 
 // When the page will this will be the first javascript function that will be called. 
 $(document).ready(function () {
@@ -284,6 +297,7 @@ $('#dispFeatLvlrowdiv').hide();
 // Uploading file Function . 
 function showImportSubdiv(){
     $('#feat_lvl_div').hide();
+    $('#outputsDiv').hide();
     $('#importSubdiv').show("slide", { direction: "left" }, 1000);
 }
 function showFeatLvlDiv(){
@@ -917,15 +931,15 @@ dataType: "json",
 // the ajax call is sent to subdetails url name in the post function.  
 url: "{% url 'subdetails' %}",
 success: function(data){
-console.log("success");
-var outerckbox = $('#'+outercheckid);
-console.log('outercheckbox obj',outerckbox);
-dict[outercheckval]=data
-console.log('value of key in dic',dict[outercheckval]);
-// checking if the user has checked or not. 
+    console.log("success");
+    var outerckbox = $('#'+outercheckid);
+    console.log('outercheckbox obj',outerckbox);
+    dict[outercheckval]=data
+    console.log('value of key in dic',dict[outercheckval]);
+    // checking if the user has checked or not. 
 
 if (outerckbox.is(':checked')) {
-    alert('You Checked');
+    //alert('You Checked');
     console.log('outercheckval',outercheckval);
     console.log('data retrieved',data)
     dict[outercheckval]=data
@@ -942,7 +956,7 @@ if (outerckbox.is(':checked')) {
     // div inside inner checks...
     showInnerCheckBoxDivs(outercheckid,data);
 } else {
-    alert('You Un-Checked it');
+    //alert('You Un-Checked it');
     // For now its purpose is simply to hide the innercheckdivs.  
     hideInnerCheckBoxDivs(outercheckid);
     console.log(outercheckval);
@@ -1015,7 +1029,7 @@ if ($(innercheckboxid).prop('checked') == true){
     if (dict[outercheckdivtitle] == null) {
             dict[outercheckdivtitle]=[]
         }   
-    alert('You have Checked innercheckbox');
+    //alert('You have Checked innercheckbox');
     arr_feature_levels=dict[outercheckdivtitle];
     console.log('Specific dict in Checked',dict[outercheckdivtitle]);
     console.log('insert',arr_feature_levels);
@@ -1031,7 +1045,7 @@ if ($(innercheckboxid).prop('checked') == true){
     
 } else if ($(innercheckboxid).prop('checked') == false) {
 
-    alert('You UNNNChecked innercheckbox');
+    //alert('You UNNNChecked innercheckbox');
     arr_feature_levels=dict[outercheckdivtitle];
     console.log('Specific dict in UnChecked',dict[outercheckdivtitle]);
     console.log('arr',arr_feature_levels);
@@ -1064,21 +1078,63 @@ if ($(innercheckboxid).prop('checked') == true){
 }
 
 function sendFeatureLevels(){
-
-       // Ajax Call to send the dic to the post function of createExperiment.
-        $.ajax({
-        type: 'POST',
-        dataType: "json",
-        'data': {
-        'dict': JSON.stringify(dict),
-        'csrfmiddlewaretoken': '{{ csrf_token }}',
-        },
-        // the ajax call is sent to subdetails url name in the post function.  
-        url: "{% url 'createexp' %}",
-        success: function(data){}
-
-        }); 
+$.ajax({
+type: 'POST',
+dataType: "json",
+'data': {
+'dict': JSON.stringify(dict,undefined,''),
+'exp_id': exp_id,
+'csrfmiddlewaretoken': '{{ csrf_token }}',
+},
+// the ajax call is sent to subdetails url name in the post function.  
+url: "{% url 'createexp' %}",
+success: function(data){
+    console.log("<<---FEATURES POSTED SUCCESSFULLY--->>");
+    console.log(data)
+    //console.log('Blocks---> ',data);
+    for(var i in data){
+        console.log("Hi:",i,data[i])
+    }
+    //if exp id is not set, set it first time
+    exp_id = data['exp_id'];
+    $('#cr_exp_header').html("<p1>CREATE EXPERIMENT</p1>");
+    $('#cr_exp_header').append("<p>"+data['custom_exp_id']+" is UNDER CONSTRUCITON</p>");
+    if (data['block_list']!=null){
+        var tab_blocks = $("<table />");
+        var head_row = $("<tr />");
+        var head_sno_col = $("<th />");
+        head_sno_col.html("Block No")
+        head_row.append(head_sno_col)
+        var head_lset_col = $("<th />");
+        head_lset_col.html("Feature Level Combination")
+        head_row.append(head_lset_col)
+        tab_blocks.append(head_row)
+        blkList = data['block_list']
+        for(var i = 0; i < blkList.length; i++){
+            var blk_row = $("<tr />");
+            var blk_no_cell = $("<td />");
+            console.log("Block: ",blkList[i]['serial_no'])
+            blk_no_cell.html(blkList[i]['serial_no']);
+            blk_row.append(blk_no_cell);
+            var blk_lSet_cell = $("<td />");
+            var blk_lSet = blkList[i]['levels_set']
+            blk_lSet_cell.html('')
+            for(var j = 0; j < blk_lSet.length; j++){
+                blk_lSet_cell.append(blk_lSet[j])
+                if(j!=(blk_lSet.length-1)){
+                    blk_lSet_cell.append(", ")
+                }
+            }
+            blk_row.append(blk_lSet_cell);
+            tab_blocks.append(blk_row);
         }
+        console.log(tab_blocks)
+        $('#blocksBreakUp').html('');
+        $('#blocksBreakUp').append(tab_blocks);
+    }
+}
+}); 
+}
 
 function sendFilePath(id){
         console.log(id);

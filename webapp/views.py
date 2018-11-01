@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic import TemplateView
+from django.http import JsonResponse
 #loading forms from forms.py file. 
 from .forms import blogForm,SignUpForm,mobile_phone_form,filterform,sort_filter_form
 from .forms import NameForm
@@ -967,105 +968,58 @@ def createNewExp(request):
 #Global variable check#
 
 class createExperiment(TemplateView): 
-
     
-    # exp_id=admin_id + "-4"
-    
-    def get(self,request):
-
-        #   data = request.POST.get('csvfiledata')
-        #     #print('d',d)
-        #     json_data = json.loads(data)
-        #     batch_field_name=json_data.pop()
-        #     email=json_data.pop()
-        #     custom_id=json_data.pop()
-        #     print(batch_field_name)
-        #     print(custom_id)
-        #     return HttpResponse()
-        
-
-        
+    def get(self,request):       
         platformfeatobj=platform_feature.objects.all()
         return render(request,'webapp/crudexperiment/create_experiment.html',
                                         {'platformfeatobj':platformfeatobj,
+                                        }
+        )
                                         
-
-                                        })
-                                        
-                                        
-
+                                    
     def post(self,request):
         if request.method=="POST":
             print("====IN CREATEEXP POST METHOD====")
+            data = {'data':"data"}
 
             if request.is_ajax:
                 d = request.POST.get('dict')
                 #print('d',d)
                 postedFLevels = json.loads(d)
                 print('b',type(postedFLevels),postedFLevels)
-
-                #CHECK IF EXPERIMENT CONTROLLER EXISTS IN PICKLE
-                existExpId = 11 #WILL NOT CREATE NEW FOR TESTING, CHANGE TO None if you want new
-                #TODO@SHAZIB/MUDABIR^^^^^^^^^^^
+                #CHECK IF EXPERIMENT CONTROLLER EXISTS IN 
+                existExpId = request.POST.get('exp_id')
+                print("without MANIPULATION:", existExpId)
+                if not existExpId:
+                    print("RECEIVED NOTHING", existExpId)
+                    existExpId = None
+                else:
+                    print("--->RECEIVED exp id: ", existExpId)
 
                 #CREATE EXPERIMENT CONTROLLER AND INITIALIZE
                 print(request.user.custom_id,":",request.user.username)
                 expAdminId = request.user.custom_id
                 expCont = ExperimentController(a_id=expAdminId,e_id=existExpId)
+                if not existExpId:
+                     existExpId = expCont.exp.id
                 print("Exp Custom Id:",expCont.exp.custom_exp_id)
                 print("The following features are ALREADY enabled:")
                 print(list(expCont.fSet.all()))
 
                 #SET FLEVELS
                 expCont.setFSet(newFLevels=postedFLevels,prompt=False)
-                ## get csv file path. 
-                ## if extension is csv 
-                # csvdataframe=pd.read_csv('C://biasweb//biasweb//utils//data//'+b)
-                # print(csvdataframe)
-                # ## Make batches according to sections in files. 
-
-                # labels=csvdataframe.SECTION.unique()
-                # print(labels)
-                # labels=list(labels)
-                # no_batches=len(labels)
-
-                # Make batches according to your given number. 
-
-                ## get all sections from the file. 
-                ## put them in a list... 
-                
-                
-                
-                ## elif extension is excel 
-                    # # Load spreadsheet
-                    # xl = pd.ExcelFile(file)
-                    # # Print the sheet names
-                    # print(xl.sheet_names)
-                    # # Load a sheet into a DataFrame by name: df1
-                    # df1 = xl.parse('Sheet1')
-
-
-                # assigner = Assigner(csvdataframe)
-                # dSubBatches=assigner.splitInBins(no_batches,'batch',labels )
-                # dSubBatches.get_group('A')
-
-
-
-
-            
-            
-            #newexp.setfeaturelist(feature_dictionary)
-            #newexp.setFeatureLevels(b)
-            # print(newexp.fLevels)
-            # newexp.generateBlocks()
-            # print(newexp.blocks)
-            # e=exp(experiment_name='exp1',custom_exp_id=self.exp_id,feature_set=json.dumps(newexp.blocks))
-            # e=exp(experiment_name='exp1',custom_exp_id=self.exp_id,feature_set=json.dumps(newexp.blocks))
-            # e.save()
-       
-      
-
-        return render(request,'webapp/crudexperiment/create_experiment.html',{'data':"data"})
+                block_set = expCont.generateBlocks()
+                block_list = list(block_set.all().values('serial_no','levels_set'))
+                # # blockStr = "\n".join(str(b) for b in expCont.exp.block_set.all())
+                print('<<<<<<TO DISPLAY ON PAGE>>>>>>')
+                print(block_list)
+                data = {
+                    'exp_id':existExpId,
+                    'custom_exp_id':expCont.exp.custom_exp_id,
+                    'block_list':block_list
+                }
+                return JsonResponse(data) #, safe=False)
+        #return render(request,'webapp/crudexperiment/create_experiment.html',data)
     
 
 class datadefined(TemplateView):
