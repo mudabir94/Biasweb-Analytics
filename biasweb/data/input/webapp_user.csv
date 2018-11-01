@@ -1,0 +1,2 @@
+"id";"password";"last_login";"is_superuser";"username";"first_name";"last_name";"email";"is_staff";"is_active";"date_joined";"is_student";"is_prof";"is_ra";"experiment_admin";"platform_admin";"role_id_id";"custom_id"
+"1";"pbkdf2_sha256$120000$24rF0g6ltSig$52p+/89vMrjVEIBzwD44kDs2qzvbNE/862v5PiKqLVQ=";"2018-10-31 11:23:23.108290";"1";"shazib";;;"shazib.ehsan@itu.edu.pk";"1";"1";"2018-10-15 15:54:50.000000";"0";"0";"0";"0";"0";"1";"ses-001"
