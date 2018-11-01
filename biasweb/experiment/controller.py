@@ -188,9 +188,13 @@ class ExperimentController:
             )
         )
         self.saveBlocks()
+        return self.exp.block_set
     
     def saveBlocks(self):
-        print("List of blocks is as follows:")
+        if self.exp.block_set.exists():
+            print("Deleting pre-existing blocks")
+            self.exp.block_set.all().delete()
+        print("List of blocks to GENERATE is as follows:")
         blocksInDb = list()
         for i,b in enumerate(self.blocks):
             newBlock = Block()
@@ -198,8 +202,10 @@ class ExperimentController:
             newBlock.serial_no = i+1
             newBlock.levels_set = list(b)
             blocksInDb.append(newBlock)
-        print(blocksInDb)
+        print(*blocksInDb, sep="\n")
+        #print(list(blocksInDb))
         self.exp.block_set.bulk_create(blocksInDb)
+        
 
     def importSujbectData(self,iFile):
         self.assigner = Assigner()

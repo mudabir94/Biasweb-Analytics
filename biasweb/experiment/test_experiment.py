@@ -20,7 +20,7 @@ feature_editing = False
 #%% 1. RETRIEVE AN EXISTING EXPERIMENT
 admin_id = "ses-001" #USING THE CUSTOM-ID OF SUPERUSER #1
 #^^^SUBSTITUE WITH YOUR OWN - ELSE DEFAULT IS THE ONE WITH ID=1
-texp = ExperimentController(a_id=admin_id, e_id=9)
+texp = ExperimentController(a_id=admin_id, e_id=11) #9) #9 is prompt-based testing and #11 is web-based
 print("Exp Custom Id:",texp.exp.custom_exp_id)
 print("The following features are set to be enabled:")
 print(list(texp.fSet.all()))

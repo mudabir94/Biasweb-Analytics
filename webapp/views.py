@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic import TemplateView
+from django.http import JsonResponse
 #loading forms from forms.py file. 
 from .forms import blogForm,SignUpForm,mobile_phone_form,filterform,sort_filter_form
 from .forms import NameForm
@@ -1009,7 +1010,13 @@ class createExperiment(TemplateView):
 
                 #SET FLEVELS
                 expCont.setFSet(newFLevels=postedFLevels,prompt=False)
-                ## get csv file path. 
+                block_set = expCont.generateBlocks()
+                block_list = list(block_set.all().values('serial_no','levels_set'))
+                # blockStr = "\n".join(str(b) for b in expCont.exp.block_set.all())
+                print('<<<<<<TO DISPLAY ON PAGE>>>>>>')
+                print(block_list)
+                
+                # ## get csv file path. 
                 ## if extension is csv 
                 # csvdataframe=pd.read_csv('C://biasweb//biasweb//utils//data//'+b)
                 # print(csvdataframe)
@@ -1055,8 +1062,8 @@ class createExperiment(TemplateView):
             # e.save()
        
       
-
-        return render(request,'webapp/crudexperiment/create_experiment.html',{'data':"data"})
+        return JsonResponse(block_list, safe=False)
+        #return render(request,'webapp/crudexperiment/create_experiment.html',{'data':"data"})
     
 
 class datadefined(TemplateView):
