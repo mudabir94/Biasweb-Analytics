@@ -903,17 +903,76 @@ def uploadSampleFile(request):
     return render(request, 'webapp/crudexperiment/create_experiment.html')    
 from django.core import serializers
 import pickle
+def getExpController(request):
+    try:
+        sess_expId = request.session['sess_expId']
+    except KeyError:
+        sess_expId = None
+    if sess_expId: print("----->>>>>RETRIEVED EXP ID:",sess_expId,"FROM SESSION<<<<<<-----")
+    ## object storing example
+        # pickle.dump( newexp, open( "save.p", "wb" ) )
+    ## object retrieving example
+        # Tnewexp = pickle.load( open( "save.p", "rb" ) )
+        # print(Tnewexp.exp.capacity)
+    print(request.user.custom_id,":",request.user.username)
+    expAdminId = request.user.custom_id
+    expCont = ExperimentController(a_id=expAdminId,e_id=sess_expId)
+    print("Exp Custom Id:",expCont.exp.custom_exp_id)
+    if not sess_expId:
+        request.session['sess_expId'] = expCont.exp.id
+        request.session['sess_custExpId'] = expCont.exp.custom_exp_id
+        print("SAVED EXPERIMENT TO SESSION---->>>>>>")
+    else:
+        print("The following features are ALREADY enabled:")
+        print(list(expCont.exp.experiment_feature_set.all()))
+    return expCont
+
+def importSubjects(request):
+    expCont = getExpController(request)
+    if request.is_ajax:
+        data = request.POST.get('csvfiledata')
+        json_data = json.loads(data)
+        json_data=[i.replace('\r','') for i in json_data]  
+        batch_field_name=json_data.pop()
+        email=json_data.pop()
+        custom_id=json_data.pop()
+        print(batch_field_name)
+        print(custom_id)
+        filefields = json_data[0].split(",")
+        print('filefields',filefields)
+        filebody=[i.split(',') for i in json_data[1:-1]] 
+        print(type(filebody))
+        print(filebody)
+        arr_filebody = np.array(filebody)
+        print(arr_filebody) 
+        dataframe= pd.DataFrame.from_records(arr_filebody,columns=filefields)
+        print("filedata")
+        print(dataframe)
+        if custom_id!='None':
+            expCont.setIdField(custom_id)
+        if batch_field_name!='None':
+            expCont.setBatchesTitle(batch_field_name)
+            preDefBatches = True
+        expCont.saveSubjects(dataframe)
+        print(expCont.exp.subject_set.all())
+        if preDefBatches:
+            batchGpDict = expCont.subjData.groupby(batch_field_name).size().to_dict()
+            print(batchGpDict)
+        else:
+            batchGpDict = ""
+        data = {    'exp_id':expCont.exp.id,
+                    'custom_exp_id':expCont.exp.custom_exp_id,
+                    'batches':batchGpDict
+        }
+        return JsonResponse(data)
+    #return HttpResponse()
+        
 def createNewExp(request):
-        admin_id='ses-007'
+        admin_id='ses-001'
         if request.is_ajax:
             data = request.POST.get('csvfiledata')
             #print('d',d)
             newexp = ExperimentController(a_id=admin_id)
-            ## object storing example
-                    # pickle.dump( newexp, open( "save.p", "wb" ) )
-            ## object retrieving example
-                    # Tnewexp = pickle.load( open( "save.p", "rb" ) )
-                    # print(Tnewexp.exp.capacity)
             json_data = json.loads(data)
             json_data=[i.replace('\r','') for i in json_data]  
             batch_field_name=json_data.pop()
@@ -979,25 +1038,13 @@ class createExperiment(TemplateView):
                 #print('d',d)
                 postedFLevels = json.loads(d)
                 print('b',type(postedFLevels),postedFLevels)
-                #CHECK IF EXPERIMENT CONTROLLER EXISTS IN 
-                existExpId = request.POST.get('exp_id')
-                print("without MANIPULATION:", existExpId)
-                if not existExpId:
-                    print("RECEIVED NOTHING", existExpId)
-                    existExpId = None
-                else:
-                    print("--->RECEIVED exp id: ", existExpId)
-
+                
                 #CREATE EXPERIMENT CONTROLLER AND INITIALIZE
-                print(request.user.custom_id,":",request.user.username)
-                expAdminId = request.user.custom_id
-                expCont = ExperimentController(a_id=expAdminId,e_id=existExpId)
-                if not existExpId:
-                     existExpId = expCont.exp.id
-                print("Exp Custom Id:",expCont.exp.custom_exp_id)
-                print("The following features are ALREADY enabled:")
-                print(list(expCont.fSet.all()))
-
+                #returns either a controller for new experiment
+                #or for existing one [TODO: CHECK STATUS OF EXPERIMENT AS IN DESIGN_MODE]
+                expCont = getExpController(request)
+                existExpId = expCont.exp.id
+    
                 #SET FLEVELS
                 expCont.setFSet(newFLevels=postedFLevels,prompt=False)
                 block_set = expCont.generateBlocks()

@@ -19,7 +19,7 @@ interactive = False #Make True if you want this test to ask for field names mapp
 feature_editing = True
 #%% 1. RETRIEVE AN EXISTING EXPERIMENT
 admin_id = "ses-001" #USING THE CUSTOM-ID OF SUPERUSER #1
-init_expid = 15
+init_expid = 42
 texp = ExperimentController(a_id=admin_id, e_id=init_expid) #9) #9 is prompt-based testing and #11 is web-based
 print("Exp Custom Id:",texp.exp.custom_exp_id)
 print("The following features are set to be enabled:")
@@ -56,7 +56,7 @@ if feature_editing:
     texp.generateBlocks()
 
 #%%TEST ASSIGNMENT TO BATCHES AND BLOCKS
-fPath = "biasweb/utils/data/SampleExpData_oneSheet.xlsx"
+fPath = "biasweb/data/input/SampleExpData_oneSheet.xlsx"
 texp.importSujbectData(fPath)
 #TODO@SHAZIB: for now assuming no appending to existing users
 #TODO@SHAZIB: NEED TO REFINE STORAGE IF A LIST OF SUBJECTS ALREADY IS STORED

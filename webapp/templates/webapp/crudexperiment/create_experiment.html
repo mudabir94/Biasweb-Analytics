@@ -2,7 +2,11 @@
 {% block content %}
 {%load static from staticfiles%}
 <style>
-table, th, td {
+table {
+    vertical-align: center;
+    border: 1px solid black;
+}
+th, td {
     border: 1px solid black;
 }
 </style>
@@ -204,7 +208,6 @@ table, th, td {
                               <div class='col-md-12'>
                                         <div class='batchsize' ></div>
                                         <button onclick="showFeatLvlDiv()">Previous</button>
-
                                   </div>
                               </div>
                              
@@ -242,6 +245,7 @@ var dict = {};
 var arr_feature_levels=[];
 var globalfiledatalist=[];
 var exp_id = "";
+var custom_exp_id="";
 var block_list = [];
 
 // When the page will this will be the first javascript function that will be called. 
@@ -275,13 +279,15 @@ function showFeatureLvls(){
     $('#importSubdiv').hide();
     $('#feat_lvl_div').slideDown(500);
     $('#outputsDiv').slideDown(500);
-
-
 }
 function showBatchManagement(){
     $('#importSubdiv').slideDown();
     $('#feat_lvl_div').hide();
     $('#outputsDiv').hide();
+}
+function showExpWIP(){
+    $('#cr_exp_header').html("<p1>CREATE EXPERIMENT</p1>");
+    $('#cr_exp_header').append("<p>"+custom_exp_id+" is UNDER CONSTRUCITON</p>");
 }
 $(function () {
     $("#upload").bind("click", function () {
@@ -346,8 +352,9 @@ $(function () {
                         $('#show_s2').append(select_tag2);
                         $('#show_s3').append(select_tag3);
                         var proceedbtn= document.createElement("BUTTON");
-                        var text = document.createTextNode("Proceed ");
-                        proceedbtn.appendChild(text)
+                        var proceedStr="Process Import"
+                        var text = document.createTextNode(proceedStr);
+                        proceedText = proceedbtn.appendChild(text)
                         proceedbtn.onclick = function() {postExpData()};
                        // proceedbtn.classList.add("");
 
@@ -406,10 +413,54 @@ function postExpData(){
                     'csrfmiddlewaretoken': '{{ csrf_token }}',
                     },
                     // the ajax call is sent to subdetails url name in the post function.  
-                    url: "{% url 'createnewexp' %}",
+                    //url: "{% url 'createnewexp' %}",
+                    url: "{% url 'import_subjects' %}",
                     success: function(data){
-                      
-                       }
+                        console.log("<<---SUBJECT IMPORT POST WAS GREAT!--->>");
+                        console.log(data)
+                        for(var i in data){
+                            console.log("data:",i,data[i]);
+                        }
+                        if(exp_id===""){
+                            exp_id=data['exp_id'];
+                            custom_exp_id=data['custom_exp_id'];
+                            showExpWIP();
+                        }
+                        if(data['batches']!==""){
+                            var tab_batches = $("<table />");
+                            var head_row = $("<tr />");
+                            var head_sno_col = $("<th />");
+                            head_sno_col.html("Batches")
+                            head_row.append(head_sno_col)
+                            var head_lset_col = $("<th />");
+                            head_lset_col.html("Subject Count")
+                            head_row.append(head_lset_col)
+                            tab_batches.append(head_row)
+                            var totCount = 0;
+                            for(var j in data['batches']){
+                                var btch_row = $("<tr />");
+                                var btch_cell = $("<td />");
+                                btch_cell.html(j);
+                                btch_row.append(btch_cell);
+                                var count_cell = $("<td />");
+                                var btch_count = data['batches'][j];
+                                count_cell.html(btch_count);
+                                totCount += btch_count;
+                                btch_row.append(count_cell);
+                                tab_batches.append(btch_row)
+                            }
+                            total_row = $("<tr />");
+                            total_label = $("<td />");
+                            total_label.html('Total');
+                            total_row.append(total_label);
+                            total_cell = $("<td />");
+                            total_cell.html(totCount);
+                            total_row.append(total_cell);
+                            tab_batches.append(total_row);
+                            $('.batchsize').html('');
+                            $('.batchsize').append(tab_batches);
+                        }
+                    }
                      
                     }); 
     
@@ -588,16 +639,7 @@ function selfAssignBatch(){
                             console.log(obj);
                             console.log(groups[obj]);
                         }      
-                        
-                       
-                     
-                           
-                        
-                        $('.batchsize').append(data[2]);
-
                        }
-                     
-                     
                     }); 
     
 
@@ -947,10 +989,11 @@ success: function(data){
     for(var i in data){
         console.log("Hi:",i,data[i])
     }
-    //if exp id is not set, set it first time
-    exp_id = data['exp_id'];
-    $('#cr_exp_header').html("<p1>CREATE EXPERIMENT</p1>");
-    $('#cr_exp_header').append("<p>"+data['custom_exp_id']+" is UNDER CONSTRUCITON</p>");
+    if(exp_id===""){
+        exp_id = data['exp_id'];
+        custom_exp_id = data['custom_exp_id'];
+        showExpWIP()
+    }
     if (data['block_list']!=null){
         var tab_blocks = $("<table />");
         var head_row = $("<tr />");

@@ -2,7 +2,7 @@
 """
 Created on Mon Oct  8 15:57:03 2018
 
-@author: Dr. Shazib Sh
+@author: Dr. Shazib Shaikh
 """
 
 #from biasweb.experiment import Experiment
@@ -37,9 +37,9 @@ class ExperimentController:
         self.subjData = pd.DataFrame()
         self.subjects = Subject()
         self.idField = None
-        self.fSet = self.exp.experiment_feature_set.select_related('p_feature')
         if e_id:
             self.exp = Experiment.objects.get(id=e_id)
+            self.fSet = self.exp.experiment_feature_set.select_related('p_feature')
             self.fLevels = self.retrieveFLevels()
         else:
             self.exp.status = DESIGN_MODE
@@ -52,6 +52,7 @@ class ExperimentController:
             exp_id = self.exp.id
             exp_id = '-' + str(exp_id).zfill(4)  #ensuring the id is now a 4 digit numeric string
             self.exp.custom_exp_id += exp_id
+            self.fSet = self.exp.experiment_feature_set
             self.saveExperiment()
 
     def saveExperiment(self):
@@ -328,7 +329,7 @@ class ExperimentController:
                     subjUser.username = c_id
                     subjUser.custom_id = c_id
                     subjUser.save()
-                    subj_id = subjUser.user_id
+                    subj_id = subjUser.id
                 #TODO@SHAZIB: CHECK IF SUBJECT USER EXISTS IN EXPERIMENT
                 oldSubj = self.exp.subject_set.filter(user_id = subj_id)
                 if oldSubj.exists():
