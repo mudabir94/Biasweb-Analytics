@@ -244,8 +244,8 @@ th, td {
 var dict = {};
 var arr_feature_levels=[];
 var globalfiledatalist=[];
-var exp_id = "";
-var custom_exp_id="";
+var exp_id = {{sess_expId}};
+var custom_exp_id='{{sess_custExpId}}';
 var block_list = [];
 
 // When the page will this will be the first javascript function that will be called. 
@@ -261,7 +261,22 @@ $('#selfbuttondiv').hide();
 $('#prebuttondiv').hide();
 $('#upload').prop('disabled',true);
 $('#importSubdiv').hide();
-//$('#feat_lvl_div').hide();
+//TODO@MUDABIR:
+if(exp_id===""){
+    $('#feat_lvl_div').hide();
+    //test to see if session exp empty
+    //if not, then alert that session exists
+    //if ok, load the experiment details as were
+    //else, set sess_expId to None
+} else {
+    let contin = confirm("Continue working on Experiment: "+custom_exp_id+"?");
+     if(contin===false){
+         alert("TO BE IMPLEMENTED")
+     }else{
+         showExpWIP()
+     }
+}
+
 
 });
 // Uploading file Function . 

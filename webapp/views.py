@@ -1022,8 +1022,18 @@ class createExperiment(TemplateView):
     
     def get(self,request):       
         platformfeatobj=platform_feature.objects.all()
+        try:
+            sess_expId = request.session['sess_expId']
+        except KeyError:
+            sess_expId = ""
+        try:
+            sess_custExpId = request.session['sess_custExpId']
+        except KeyError:
+            sess_custExpId = "123"
         return render(request,'webapp/crudexperiment/create_experiment.html',
                                         {'platformfeatobj':platformfeatobj,
+                                         'sess_expId':sess_expId,
+                                         'sess_custExpId':sess_custExpId
                                         }
         )
                                         
