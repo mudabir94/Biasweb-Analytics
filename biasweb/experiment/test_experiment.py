@@ -53,13 +53,12 @@ if feature_editing:
     texp.saveExperiment()
 
     #%% 5. Test BLOCK GENERATION -- only proceed if DB has feature levels
-    texp.generateBlocks()
+    blocks = texp.generateBlocks()
 
 #%%TEST ASSIGNMENT TO BATCHES AND BLOCKS
 fPath = "biasweb/data/input/SampleExpData_oneSheet.xlsx"
 texp.importSujbectData(fPath)
 #TODO@SHAZIB: for now assuming no appending to existing users
-#TODO@SHAZIB: NEED TO REFINE STORAGE IF A LIST OF SUBJECTS ALREADY IS STORED
 #print(texp.subjData)
 
 #%%8.a OBTAIN DATA COL NAMES/FIELDS
@@ -111,6 +110,8 @@ texp.subjData.groupby(batchesTitle).size()
 texp.updateAllBatches()
 texp.saveSubjects()
 texp.assignToBlocks()
+#texp.getBlockedGroups()
+#texp.getBlockedDict()
 
 # #texp.updateBatch DOES NOT EXIST 
 # #TODO@SHAZIB
@@ -174,6 +175,6 @@ texp.assignToBlocks()
 #     automatically be propotionate, TODO: TEST BOTH CASES IN ANY CASE
 #4. WRITE EXCEL FILE
 
-writer = pd.ExcelWriter(OUT_PATH+'Sample_PDbatchWBlocks.xlsx')
+writer = pd.ExcelWriter(OUT_PATH+texp.exp.custom_exp_id+'.xlsx')
 texp.subjData.to_excel(writer, sheet_name='PD_ASSIGNED')
 writer.save()

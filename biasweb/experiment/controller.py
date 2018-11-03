@@ -349,9 +349,14 @@ class ExperimentController:
             self.exp.subject_set.bulk_create(subjForDb)
         if writeXL:
             writer = pd.ExcelWriter(OUT_PATH + writeXL + '.xlsx')
-            texp.subjData.to_excel(writer)
+            self.subjData.to_excel(writer)
             writer.save()
         #WRITE TO FILE AS WELL, IF GIVEN
         #ELSE DEFAULT TO CUSTOM-ID WITH CERTAIN SWITCHES
+    def saveSubjToXL(self, fName):
+        writer = pd.ExcelWriter(OUT_PATH + fName + '.xlsx')
+        self.subjData.to_excel(writer)
+        writer.save()
+    
     def toString():
         print("This class is the Controler Class");
