@@ -10,13 +10,33 @@ from webapp.models import platform_feature as PFeature
 from webapp.models import User, Subject
 from webapp.forms import SubjectCreationForm as scf
 
-# def tFn(a, df):
-#     tS = df[a].head()
-#     print(tS)
-#     return pd.Series(tS)
+def setSelfDefinedBatches(expCont, defaultNo=None):
+    if not defaultNo:
+        no_batches = eval(input("Number of Batches? "))
+        batchesLabels = list()
+        for j in range(no_batches):
+            batNo = j+1
+            print("LABEL FOR BATCH ",batNo,"=",batNo,", CHANGE? ")
+            batchesLabels.append(input() or (batNo))
+        batchesTitle = input("Title as \'BATCHES\' or...?") or 'BATCHES'
+        print("Using",batchesTitle,"as title for the",no_batches,"batches",batchesLabels)
+        expCont.setBatchesTitle(batchesTitle)
+        expCont.subjData = expCont.assigner.splitInBins(no_batches,batchesTitle, batchesLabels)
+        return batchesTitle
+    else:
+        print("RECEIVED DEFAULT NO: ", defaultNo)
+        batchesTitle = 'BATCHES'
+        expCont.subjData = expCont.assigner.splitInBins(defaultNo, batchesTitle)
+        expCont.setBatchesTitle(batchesTitle)
+        return batchesTitle
+
+
+def setPreDefinedBatches():
+    pass
+
 OUT_PATH="biasweb/data/output/"
 interactive = False #Make True if you want this test to ask for field names mapping
-feature_editing = True
+feature_editing = False
 #%% 1. RETRIEVE AN EXISTING EXPERIMENT
 admin_id = "ses-001" #USING THE CUSTOM-ID OF SUPERUSER #1
 init_expid = 42
@@ -87,29 +107,34 @@ else:
 print("INPUT NO:", inputNo)
 #%%IF SELF-DEFINED BATCHING VS. PRE-DEFINED
 if inputNo == 999:
-    no_batches = eval(input("Number of Batches? "))
-    batchesLabels = list()
-    for j in range(no_batches):
-        print("BATCH #",j+1,"\' OK? ")
-        batchesLabels.append(input() or (j+1))
-    batchesTitle = input("Title as \'BATCHES\' or...?") or 'BATCHES'
-    print("Using",batchesTitle,"as title for the",no_batches,"batches",batchesLabels)
-    texp.setBatchesTitle(batchesTitle)
-    dSubBatched = texp.assigner.splitInBins(no_batches,batchesTitle, batchesLabels)
+    if interactive:
+        batchesTitle = setSelfDefinedBatches(texp)
+    else:
+        batchesTitle = setSelfDefinedBatches(texp, defaultNo=3)
     print(texp.assigner.df.head())
 elif inputNo:
     print(fields[inputNo], ": Setting  as BATCH TITLE")
     texp.setBatchesTitle(fields[inputNo])
     batchesLabels = texp.subjData.iloc[:,inputNo].unique()
-    batchesTitle = texp.exp.batches_title
+
+batchesTitle = texp.exp.batches_title
 texp.subjData.groupby(batchesTitle).size()
-#TEST OLD BATCH
+#TEST SINGLE SUBJECT BATCH UPDATE
 # texp.exp.subject_set.filter(user__custom_id='16010075').update(batch='TEST')
 # texp.exp.subject_set.get(user__custom_id='16010075').batch
 # texp.updateOneBatch(subjC_Id='16010075')
-texp.updateAllBatches()
+
+#TEST BULK UPDATE OF CHANGE TO BATCHES AND THEN CHECK
+batchesTitle = setSelfDefinedBatches(texp, defaultNo=3)
+texp.subjData.groupby(batchesTitle).size()
+texp.updateAllBatches() #MAKE SURE TO CALL IF YOU CHANGED THE BATCHES
+
+
 texp.saveSubjects()
-texp.assignToBlocks()
+
+breakUp = texp.assignToBlocks() #retruns a dataframe of groupby sizes (unstacked for batchwise breakup)
+breakUp.to_json(orient='index') #FOR ROW-WISE printing in HTML as json object
+texp.saveSubjects(writeXL=True) #DEFAULT FILE NAME IS CUSTOM_EXP_ID
 #texp.getBlockedGroups()
 #texp.getBlockedDict()
 

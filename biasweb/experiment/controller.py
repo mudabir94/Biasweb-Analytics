@@ -226,6 +226,7 @@ class ExperimentController:
     
     def updateOneBatch(self, subjId=None, subjC_Id=None):
         batchField = self.exp.batches_title
+        
         if batchField:
             #retrieve based on subjId,
             if subjId:
@@ -276,38 +277,56 @@ class ExperimentController:
 
         #GET batches for this experiment
         if self.exp.batches_title:            
-            #Calculate the proportions of each batch
-            #For now working with default
-            dfBatchCount = self.subjData.groupby(self.exp.batches_title).size().to_frame(name = 'split_edges')
-            dfBatchPc = dfBatchCount.apply(lambda x: x / x.sum())
-            dfBatchPc = dfBatchPc.reset_index()
             self.dSubByBlock = self.assigner.splitByField(
                         nBins=blockCount,
-                        bName='block__serial_no',
+                        bName=blockBinName,
                         fieldName=self.exp.batches_title,
             )
-            print(self.dSubByBlock.groupby(['block__serial_no',
+            #PERCENTAGE BREAKUP AFTER ASSIGNMENT
+            print(self.dSubByBlock.groupby([blockBinName,
                                     self.exp.batches_title])
                     .size()
                     .groupby(level=0)
                     .apply(lambda x: x/float(x.sum())))
+            #'SHOULD BE' PERCENTAGE
             print("SHOULD BE:")
+            dfBatchCount = self.subjData.groupby(self.exp.batches_title).size().to_frame(name = 'split_edges')
+            dfBatchPc = dfBatchCount.apply(lambda x: x / x.sum())
+            dfBatchPc = dfBatchPc.reset_index()
             print(dfBatchPc)
-            blockDict = dict(self.exp.block_set.values_list('serial_no','id'))
-            self.dSubByBlock['block_id'] = self.dSubByBlock.block__serial_no.map(blockDict)
-            subjSet = self.exp.subject_set
-            for index, subj in self.dSubByBlock.iterrows():
-                c_id=subj[self.idField]
-                b_id=subj['block_id']
-                subjSet.filter(user__custom_id=c_id).update(block_id=b_id)
-            print(pd.DataFrame(list(subjSet.values()))
-                    .groupby(['block_id','batch'])
-                    .size().unstack())
-            self.subjData = self.dSubByBlock
-        #TODO@SHAZIB else left to implement
-        #ELSE: DO A SIMPLE SPLIT_IN_BINS
+        else:
+            self.dSubByBlock = self.assigner.splitInBins(
+                no_bins=blockCount,
+                binName=blockBinName
+            )
+        
+        #ADD BLOCK_IDs from database (mapped to their serial_no)
+        blockDict = dict(self.exp.block_set.values_list('serial_no','id'))
+        self.dSubByBlock['block_id'] = self.dSubByBlock.block__serial_no.map(blockDict)
+        subjSet = self.exp.subject_set
+        for index, subj in self.dSubByBlock.iterrows():
+            c_id=subj[self.idField]
+            b_id=subj['block_id']
+            subjSet.filter(user__custom_id=c_id).update(block_id=b_id)
+        subjSetList = list(self.exp.subject_set.values()) #just to refresh subject_set in cache
+        # if self.exp.batches_title:
+        #     print(pd.DataFrame(subjSetList)
+        #             .groupby(['block_id','batch'])
+        #             .size().unstack())
+        self.subjData = self.dSubByBlock
+        if self.exp.batches_title:
+            blocksBreakUp = self.subjData.groupby([blockBinName,
+                                    self.exp.batches_title]).size().unstack()
+        else:
+            blocksBreakUp = self.subjData.groupby(blockBinName).size()
+        return blocksBreakUp
+
+    def saveSubjToXL(self, fName):
+        writer = pd.ExcelWriter(OUT_PATH + fName + '.xlsx')
+        self.subjData.to_excel(writer, sheet_name='Subjects')
+        writer.save()
             
-    def saveSubjects(self, dSub=None, fName=None, writeXL=False):
+    def saveSubjects(self, dSub=None, writeXL=False, fName=None):
         if isinstance(dSub,pd.DataFrame):
             self.subjData = dSub
         #WRITE TO DATABASE
@@ -348,15 +367,11 @@ class ExperimentController:
             print(subjForDb)
             self.exp.subject_set.bulk_create(subjForDb)
         if writeXL:
-            writer = pd.ExcelWriter(OUT_PATH + writeXL + '.xlsx')
-            self.subjData.to_excel(writer)
-            writer.save()
-        #WRITE TO FILE AS WELL, IF GIVEN
-        #ELSE DEFAULT TO CUSTOM-ID WITH CERTAIN SWITCHES
-    def saveSubjToXL(self, fName):
-        writer = pd.ExcelWriter(OUT_PATH + fName + '.xlsx')
-        self.subjData.to_excel(writer)
-        writer.save()
+            if not fName:
+                fName = self.exp.custom_exp_id
+            self.saveSubjToXL(fName)
+
+
     
     def toString():
         print("This class is the Controler Class");

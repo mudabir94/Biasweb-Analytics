@@ -975,42 +975,19 @@ def importSubjects(request):
         return JsonResponse(data)
     #return HttpResponse()
         
-def createNewExp(request):
-        admin_id='ses-001'
-        if request.is_ajax:
-            data = request.POST.get('csvfiledata')
-            #print('d',d)
-            newexp = ExperimentController(a_id=admin_id)
-            json_data = json.loads(data)
-            json_data=[i.replace('\r','') for i in json_data]  
-            batch_field_name=json_data.pop()
-            email=json_data.pop()
-            custom_id=json_data.pop()
-            print(batch_field_name)
-            print(custom_id)
-            filefields = json_data[0].split(",")
-            print('filefields',filefields)
-            filebody=[i.split(',') for i in json_data[1:-1]] 
-            print(type(filebody))
-            print(filebody)
-            arr_filebody = np.array(filebody)
-            print(arr_filebody) 
-            dataframe= pd.DataFrame.from_records(arr_filebody,columns=filefields)
-            print("filedata")
-            print(dataframe)
-            if custom_id!='None':
-                newexp.setIdField(custom_id)
-            if batch_field_name!='None':
-                newexp.setBatchesTitle(batch_field_name)
-            newexp.saveSubjects(dataframe)
-            print(newexp.exp.subject_set.all())
-            print(newexp.subjData.groupby(batch_field_name).size())
-
-
-
-                
-        return HttpResponse()
-
+def assignToBlocks(request):
+    #get the expCont
+    expCont = getExpController(request)
+    blocksBreakUp = "HELLO!"
+    #call expCont.assignToBlocks()
+    if request.is_ajax:
+        print("Are there batches>>>",expCont.exp.batches_title)
+        data = {    'exp_id':expCont.exp.id,
+                    'custom_exp_id':expCont.exp.custom_exp_id,
+                    'blocks':blocksBreakUp
+        }
+        #create to_json dictionary of blocks (by batches, ie. index-wise, then row-wise)
+        return JsonResponse(data)
     
     
             
