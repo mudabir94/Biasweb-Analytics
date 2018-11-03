@@ -762,6 +762,18 @@ def uploadSampleFile(request):
                 batch_name=json_data.pop()
                 batch_name=batch_name.replace('\n','')
                 print(batch_name)
+                customid_field=json_data.pop()
+                customid_field=customid_field.replace('\n','')
+                print(customid_field)
+                email_field=json_data.pop()
+                email_field=email_field.replace('\n','')
+                print(email_field)
+                batch_title_field=json_data.pop()
+                batch_title_field=batch_title_field.replace('\n','')
+                print(batch_title_field)
+               
+
+
                 print('head',type(json_data[0]))
                 filefields = json_data[0].split(",")
                 #label=json_data[0]
@@ -777,20 +789,16 @@ def uploadSampleFile(request):
                 dataframe= pd.DataFrame.from_records(arr_filebody,columns=filefields)
                 print('asd',dataframe)
                 assigner = Assigner(dataframe)
-                print('asdahehr')
                 dSubBatches=assigner.splitInBins(batch_num,batch_name,customlabels )
-                ## Problem
-                print("dSubbatches",type(dSubBatches))
-
-                print('asdokao',dSubBatches.size())
-                #print(type(dSubBatches.size()))
-                print("assigner df",assigner.df)
-                print("assigner df",type(assigner.df))
-                dataframe=assigner.df
+               
+                print("assigner df",dSubBatches)
+                print("assigner df",type(dSubBatches))
+                dataframe=dSubBatches
                 dict_all={}
                 dataframe=dataframe.to_json()
-                groupsize=dSubBatches.size()
-                groupsize=groupsize.to_json()
+
+                # groupsize=dSubBatches.size()
+                # groupsize=groupsize.to_json()
 
                 ## ASSIGN TO BLOCKS
                 # no_batches = eval(input("Number of Batches? "))
@@ -809,7 +817,7 @@ def uploadSampleFile(request):
                   #texp.saveSubjects()
 
                 dict_all['1']=dataframe
-                dict_all['2']=groupsize
+                # dict_all['2']=groupsize
                 print('dictionary all')
                 
                 print(dict_all)
