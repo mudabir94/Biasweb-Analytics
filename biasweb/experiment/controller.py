@@ -37,6 +37,7 @@ class ExperimentController:
         self.subjData = pd.DataFrame()
         self.subjects = Subject()
         self.idField = None
+        self.assigner = Assigner()
         if e_id:
             self.exp = Experiment.objects.get(id=e_id)
             self.fSet = self.exp.experiment_feature_set.select_related('p_feature')
@@ -209,7 +210,6 @@ class ExperimentController:
         
 
     def importSujbectData(self,iFile):
-        self.assigner = Assigner()
         self.assigner.getLocalDToAssign(iFile)
         self.subjData = self.assigner.df
         if self.idField:
@@ -270,27 +270,31 @@ class ExperimentController:
         blockSet: List of tuples in the order of the features defined.
             This is an optional argument.  By default the blocks in self.blocks will
             be used, assuming that generateBlocks and saveBlocks have been called.
+        Returns
+        -------
+        blocksBreakUp: a DataFrame with size statistics. If subjects have been assigned,
+            it provides a batch-wise breakup count.
         """
         #GET blocks number and labels
         blockCount = self.exp.block_set.count()
         blockBinName = 'block__serial_no'
-
+        batchField = self.exp.batches_title
         #GET batches for this experiment
-        if self.exp.batches_title:            
+        if batchField:            
             self.dSubByBlock = self.assigner.splitByField(
                         nBins=blockCount,
                         bName=blockBinName,
-                        fieldName=self.exp.batches_title,
+                        fieldName=batchField,
             )
             #PERCENTAGE BREAKUP AFTER ASSIGNMENT
             print(self.dSubByBlock.groupby([blockBinName,
-                                    self.exp.batches_title])
+                                    batchField])
                     .size()
                     .groupby(level=0)
                     .apply(lambda x: x/float(x.sum())))
             #'SHOULD BE' PERCENTAGE
             print("SHOULD BE:")
-            dfBatchCount = self.subjData.groupby(self.exp.batches_title).size().to_frame(name = 'split_edges')
+            dfBatchCount = self.subjData.groupby(batchField).size().to_frame(name = 'split_edges')
             dfBatchPc = dfBatchCount.apply(lambda x: x / x.sum())
             dfBatchPc = dfBatchPc.reset_index()
             print(dfBatchPc)
@@ -314,11 +318,22 @@ class ExperimentController:
         #             .groupby(['block_id','batch'])
         #             .size().unstack())
         self.subjData = self.dSubByBlock
-        if self.exp.batches_title:
-            blocksBreakUp = self.subjData.groupby([blockBinName,
-                                    self.exp.batches_title]).size().unstack()
-        else:
-            blocksBreakUp = self.subjData.groupby(blockBinName).size()
+        blocksBreakUp = pd.pivot_table(
+                self.subjData,
+                index=blockBinName,
+                columns=batchField,
+                aggfunc='count',
+                values=['ROLLNO'],
+                margins=True,
+                margins_name='Total'
+            )
+        blocksBreakUp.columns = blocksBreakUp.columns.droplevel(0)
+        blocksBreakUp = blocksBreakUp.rename(
+            columns={
+                blocksBreakUp.columns[-1]:'Block Total'
+            }
+        )
+        blocksBreakUp = blocksBreakUp.rename_axis("Block No.")
         return blocksBreakUp
 
     def saveSubjToXL(self, fName):

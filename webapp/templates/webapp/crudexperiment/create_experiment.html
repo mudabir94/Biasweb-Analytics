@@ -517,7 +517,8 @@ $(function () {
     });
 });    
 function assignToBlocks(){
-    //alert("I'M ALIVE!")
+    $('#blocksBreakUpDiv').html(
+        "<font color=red><b><i>Please wait while the assignment is being processed</i></b></font>")
     $.ajax({
         type: 'POST',
         dataType: "json",
@@ -533,29 +534,10 @@ function assignToBlocks(){
                 console.log("data:",i,data[i]);
             }
             $('#blocksBreakUpDiv').html(data['blocks'])
-            if(data['blocks']!==""){
-                alert('GOT BLOCKS')
-                var tab_blocks = $("<table />");
-                var head_row = $("<tr />");
-                var head_sno_col = $("<th />");
-                head_sno_col.html("Blocks")
-                head_row.append(head_sno_col)
-                var head_lset_col = $("<th />");
-                head_lset_col.html("Total in Blocks"+data['blocks'])
-                head_row.append(head_lset_col)
-                tab_blocks.append(head_row)
-                var totCount = 0;
-                total_row = $("<tr />");
-                total_label = $("<td />");
-                total_label.html('Total');
-                total_row.append(total_label);
-                total_cell = $("<td />");
-                total_cell.html(totCount);
-                total_row.append(total_cell);
-                tab_blocks.append(total_row);
-                console.log(tab_blocks)
-                $('#blocksBreakUpDiv').html('');
-                $('#blocksBreakUpDiv').append(tab_blocks);
+            if(data['blocks']!=="Empty"){
+                alert('TODO@MUDABIR: MERGE INTO ONE TABLE')
+            } else {
+                alert('PLEASE IMPORT SUBJECTS FIRST')
             }
         }
                      
@@ -600,7 +582,7 @@ function postExpData(){
                             showExpWIP();
                         }
                         if(data['batches']!==""){
-                            var tab_batches = $("<table />");
+                            var tab_batches = $("<table id=\'tab_batch\'/>");
                             var head_row = $("<tr />");
                             var head_sno_col = $("<th />");
                             head_sno_col.html("Batches")
@@ -1166,7 +1148,7 @@ success: function(data){
         showExpWIP()
     }
     if (data['block_list']!=null){
-        var tab_blocks = $("<table />");
+        var tab_blocks = $("<table id=\'tab_blocks\'/>");
         var head_row = $("<tr />");
         var head_sno_col = $("<th />");
         head_sno_col.html("Block No")

@@ -134,6 +134,27 @@ texp.saveSubjects()
 
 breakUp = texp.assignToBlocks() #retruns a dataframe of groupby sizes (unstacked for batchwise breakup)
 breakUp.to_json(orient='index') #FOR ROW-WISE printing in HTML as json object
+
+tpvt = pd.pivot_table(
+        data=texp.subjData,
+        index='block__serial_no',
+        columns=texp.exp.batches_title,
+        values=texp.idField,
+        aggfunc='count',
+        margins=True,
+        margins_name='Total'
+)
+tpvt.columns = tpvt.columns.droplevel(0)
+tpvt = tpvt.rename(
+    columns={
+        tpvt.columns[-1]:'Block Total'
+    }
+)
+print(tpvt)
+tpvt.to_json(orient='columns')
+
+
+
 texp.saveSubjects(writeXL=True) #DEFAULT FILE NAME IS CUSTOM_EXP_ID
 #texp.getBlockedGroups()
 #texp.getBlockedDict()

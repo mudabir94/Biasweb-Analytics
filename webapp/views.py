@@ -916,24 +916,34 @@ def getExpController(request):
         sess_expId = request.session['sess_expId']
     except KeyError:
         sess_expId = None
-    if sess_expId: print("----->>>>>RETRIEVED EXP ID:",sess_expId,"FROM SESSION<<<<<<-----")
-    ## object storing example
-        # pickle.dump( newexp, open( "save.p", "wb" ) )
-    ## object retrieving example
-        # Tnewexp = pickle.load( open( "save.p", "rb" ) )
-        # print(Tnewexp.exp.capacity)
-    print(request.user.custom_id,":",request.user.username)
-    expAdminId = request.user.custom_id
-    expCont = ExperimentController(a_id=expAdminId,e_id=sess_expId)
-    print("Exp Custom Id:",expCont.exp.custom_exp_id)
-    if not sess_expId:
-        request.session['sess_expId'] = expCont.exp.id
-        request.session['sess_custExpId'] = expCont.exp.custom_exp_id
-        print("SAVED EXPERIMENT TO SESSION---->>>>>>")
-    else:
+    if sess_expId:
+        print("----->>>>>RETRIEVED EXP ID:",sess_expId,"FROM SESSION<<<<<<-----")
+        print(request.user.custom_id,":",request.user.username)
+        expAdminId = request.user.custom_id
+        expCont = ExperimentController(a_id=expAdminId,e_id=sess_expId)
+        print("Exp Custom Id:",expCont.exp.custom_exp_id)
         print("The following features are ALREADY enabled:")
         print(list(expCont.exp.experiment_feature_set.all()))
+        try:
+            pickledExpCont = pickle.load( open("expCont.p", "rb") )
+        except:
+            pickledExpCont = None
+        if pickledExpCont:
+            expCont.subjData = pickledExpCont.subjData
+            expCont.assigner.df = expCont.subjData
+            expCont.idField = pickledExpCont.idField
+            #POSSIBLY TRANSFER OTEHR THINGS AS WELL
+            #CAN'T USE THE PICKLED EXP CONT DIRECTLY AS all funcitons are not transferred as expected
+        else:
+            pickleExpController(expCont)
+    else: #CREATE
+        request.session['sess_expId'] = expCont.exp.id
+        request.session['sess_custExpId'] = expCont.exp.custom_exp_id
+        print("SAVED NEW EXPERIMENT TO SESSION---->>>>>>")
     return expCont
+
+def pickleExpController(expCont):
+    pickle.dump(expCont, open('expCont.p','wb'))
 
 def importSubjects(request):
     expCont = getExpController(request)
@@ -963,6 +973,8 @@ def importSubjects(request):
             preDefBatches = True
         expCont.saveSubjects(dataframe)
         print(expCont.exp.subject_set.all())
+        print('subjData:\n',expCont.subjData)
+        pickleExpController(expCont) #pickle so that we can retrieve the subjData
         if preDefBatches:
             batchGpDict = expCont.subjData.groupby(batch_field_name).size().to_dict()
             print(batchGpDict)
@@ -979,15 +991,22 @@ def assignToBlocks(request):
     #get the expCont
     expCont = getExpController(request)
     blocksBreakUp = "HELLO!"
-    #call expCont.assignToBlocks()
     if request.is_ajax:
         print("Are there batches>>>",expCont.exp.batches_title)
+        print("Data in Exp Cont\n", expCont.assigner.df)
+        if not expCont.subjData.empty:
+            blocksBreakUp = expCont.assignToBlocks()
+            blocksBreakUp = blocksBreakUp.to_html() #to_json(orient='index')
+            print(blocksBreakUp)
+        else:
+            blocksBreakUp = "Empty"
+
         data = {    'exp_id':expCont.exp.id,
                     'custom_exp_id':expCont.exp.custom_exp_id,
                     'blocks':blocksBreakUp
         }
         #create to_json dictionary of blocks (by batches, ie. index-wise, then row-wise)
-        return JsonResponse(data)
+        return JsonResponse(data, safe=False)
     
     
             
