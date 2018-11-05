@@ -1,11 +1,6 @@
 {% extends "webapp/crudexperiment/base_experiment.html" %}
 {% block content %}
 {%load static from staticfiles%}
-<style>
-table, th, td {
-    border: 1px solid black;
-}
-</style>
 <div class="container-fluid text-center">    
       <div class="row content">
           <div class="col-sm-2 sidenav" style='background:teal'></div>
@@ -13,7 +8,7 @@ table, th, td {
                   
             <div class ="row-fluid">     
                       <div class ="row">   
-                            <div class='col-md-12' id="cr_exp_header" >
+                            <div class='col-md-12' >
                             <p1>Create Experiment </p1> <!-- Show Experiment Id here e.g. ses-007 (admin id) + experiment no. (5 digits)-->
                             </div>  
                         </div>
@@ -28,11 +23,15 @@ table, th, td {
                           </div>                            
                       </div>
             </div>
+                
+                   
+        
+            
             <div class='row-fluid'>
-                <div class='row'>
-                <div class='col-md-4'><button onclick='showFeatureLvls()'>Feature Levels</button> </div>
-                <div class='col-md-4'><button onclick='showBatchManagement()'>Batch Management</button></div>
-                <div class='col-md-4'><button>Block Management</button></div>
+                <div class='row' id='custom_nav_div' >
+                <div class='col-md-4'><button id='ftlvl' class='custom_nav_btn active 'onclick='showFeatureLvls($(this))'>Feature Levels</button> </div>
+                <div class='col-md-4'><button id='btchmng' class='custom_nav_btn'onclick='showBatchManagement()'>Batch Management</button></div>
+                <div class='col-md-4'><button id='blkmng' class='custom_nav_btn'>Block Management</button></div>
                 </div>    
             </div>
             <br>
@@ -52,13 +51,6 @@ table, th, td {
                             </input>
                             <br>
                         </div>
-                        </div>
-                        {%endfor%}
-                </div>
-                <div class='row-fluid'>
-                    <button onclick='sendFeatureLevels()'> Set Feature Levels </button>
-                    <button onclick='showImportSubdiv()'>NEXT</button>
-                </div>  
                     </div>
                     {%endfor%}
                 
@@ -68,12 +60,30 @@ table, th, td {
    
                     </div> 
                 </div>
-                <div class='col-md-6' style='background: green' id='displayfeaturelevelTable'><label> Feature Levels</label><hr/></div>
+                <div class='col-md-6' style='background: green' >
+                    <div class='row'>
+                        <div class='col-md-12'>
+                             <label> Feature Levels</label>
+                        </div>
+                    </div>
+                    <div class='row'>
+                        <div class='col-md-12'>
+                        </div>    
+                    </div>
+                    <div class='row'>
+                            <div class='col-md-12' >
+                                    <div class='displayfeaturelevelTable'>
+                                                    
+                                    </div>
+                            </div>
+                    </div>
+
+                </div>
                 <div class='col-md-2' style='background: lightgray'>
                     <div class='row'>
                         <div class='col-md-3'></div>
                         <div class='col-md-3'></div>
-                        <div class='col-md-6'>  <button style="margin-top: 12pc;float: right;"onclick='showImportSubdiv()'>NEXT</button></div>
+                        <div class='col-md-6'>  <button style="float: right;"onclick='showImportSubdiv()'>NEXT</button></div>
 
                         
                     </div>
@@ -83,7 +93,7 @@ table, th, td {
               </div>
             </div>  
             <br>
-            <div class='row-fluid' style="background: rgb(250, 154, 202)" id='importSubdiv'> 
+            <div class='row-fluid' style="background: rgb(209, 91, 150)" id='importSubdiv'> 
                     <div class='row'>
                         <div class='col-md-1'>
 
@@ -92,14 +102,15 @@ table, th, td {
                             </div>
                       <div class='col-md-5'>
                 
-                          <div class=row-fluid>
+                          <div class=row>
                               <label>Import Subjects</label>
                                <br>
                               <input type="file"  id="fileUpload" onclick="chooseFileFunc()"/>
                           <input type="button" id="upload" value="Upload" />
                           </div>
                           <hr />
-                          <div class='row-fluid'>
+                          <div class='row'>
+                            
                                 <div class='col-md-12'  >
                                         <div class='row'>
                                                 <div class='col-md-6' ><div class='map_select_label' id='custom_label_id'>Custom id</div> </div>
@@ -169,7 +180,7 @@ table, th, td {
                                     </div>
                                  </div>
                           </div>
-                          <div class='row-fluid'>
+                          <div class='row'>
                                     <div class='row-fluid' >
                                         <div class='col-md-12' id='predefbuttondiv'>
                                             
@@ -212,53 +223,93 @@ table, th, td {
                       </div>
                       
                       <div class='col-md-6'>
-                          <div class='row'>
+                          <div class='row-fluid'>
                               <div class='col-md-12'>
-                                        <div class='batchsize' ></div>
-                                      
-
+                                        <div>Batch Size</div>
                               </div>
                           </div>
-                              <div class='row'>
-                                    <div class='col-md-12'>  <div id="showfiledatadiv"></div></div>
+                              <div class='row-fluid'>
+                                    <div class='col-md-12'>  
+                                           <div class='batchsize_div'></div>
+                                    </div>
                               </div>
+                              <br>
+                             
+                              <div class='row-fluid' id='subj_split_batch_rowdiv'>
+                                    
+                                    <div class='col-md-12'>
+                                            <div class='row-fluid'>
+                                                <label>Subject Split to Batches</label>
+                                            </div>
+                                            <div class='row-fluid'>
+                                                <div id='subj_split_batch' class=" table-bordered">
+                                                </div>
+                                            </div>
+                                    </div>
+        
+                            </div>
                         </div>
                              
                       </div> 
-                      
+                      <br>
                     
-                    <div class='row' id='dispFeatLvlrowdiv'>
+                    <div class='row' id='dispFileFeatLvldiv'>
                        <div class='col-md-1'></div>
-                        <div class='col-md-5'> </div>
-                        <div class='col-md-5' id='displayfeaturelevelTablediv'> <label> Feature Levels</label><hr/></div>
+                       
+                        <div class='col-md-5'> 
+                            <div class='row'>
+                                
+                                <label> Uploaded data from file. </label>
+                            </div>
+                            <div class='row'>
+                                    <div id="showfiledatadiv">
+
+                                     </div>
+                            </div>
+                        </div>
+                        <div class='col-md-5'> 
+                                <div class='row-fluid'>
+                                        <div class='col-md-12'>
+                                             <label> Feature Levels</label>
+                                        </div>
+                                    </div>
+                                    <div class='row-fluid'>
+                                        <div class='col-md-12'>
+
+                                        </div>    
+                                    </div>
+                                    <div class='row-fluid'>
+                                            <div class='col-md-12' >
+                                                <div class='displayfeaturelevelTable'>
+
+                                                </div>
+                                            </div>
+                                    </div>
+                        </div>
                         <div class='col-md-1'></div>
                     </div>
+                   
                     <div class='row'>
                             <div class='col-md-1'><button onclick="showFeatLvlDiv()">Previous</button></div>
                             <div class='col-md-5'></div>
                             <div class='col-md-6'></div>
-
-
-                        </div>
-                    
+                    </div>
+                   
                      
             </div> 
+            <div class='row-fluid'>  
+                        <div class='col-md-12' style='background:palegoldenrod' id='outputsDiv'>
+                        <div id='blocksBreakUp'><b></b></div>
+                        </div>
+           </div>
             <div class='row-fluid'>
-                    <div class='col-md-12'>
-
-                            <div id='TableContdiv' class="table-responsive">
-                            </div>
-                    </div>
+                   
             </div>
                         
-            </div>
+        </div>
         <div class="col-sm-1 sidenav" style='background:yellow'>side bar</div>   
     </div>
               <br>
-                    
-               
-                    
-
       <!-- <footer>
 		
           <div class="container-fluid" style='margin-left:15px'>
@@ -266,20 +317,45 @@ table, th, td {
           </div>
      </footer>	 -->
 <script>
-    
- 
+
 //Global Variable
 var dict = {};
 var arr_feature_levels=[];
 var globalfiledatalist=[];
 var exp_id = "";
 var block_list = [];
+var header = document.getElementById("custom_nav_div");
+var btns = header.getElementsByClassName("custom_nav_btn");
 
 // When the page will this will be the first javascript function that will be called. 
 $(document).ready(function () {
- 
-    
     // This Will hide all the divs with class=innerchecksboxdivs
+ var dispfeatlevels = JSON.parse(window.localStorage.getItem("dispfeatlevels"));
+ var blockList = JSON.parse(window.localStorage.getItem("blockList"));
+ 
+ 
+ if ( blockList===null){
+        alert('empty');
+    }
+else{
+    table_blocks=draw_block_table(blockList)
+     display_blocktable(table_blocks);
+     localStorage.removeItem("blockList");
+}
+
+// if ( Object.keys(dispfeatlevels).length === 0){
+//         alert('empty');
+//         $('.displayfeaturelevelTable').empty();
+//     }
+// else{
+//     dict=dispfeatlevels;
+//     displayfeaturelevelTable();
+//     $('#importSubdiv').show();
+//     $('.displayfeaturelevelTable').show();
+    
+    
+    localStorage.removeItem("dispfeatlevels");
+// }
 $('.innerchecksboxdivs').hide();
 $('.map_select_label').hide();
 $('.show_select_tag').hide();
@@ -290,29 +366,55 @@ $('#selfbuttondiv').hide();
 $('#prebuttondiv').hide();
 $('#upload').prop('disabled',true);
 $('#importSubdiv').hide();
-$('#feat_lvl_div').hide();
-$('#dispFeatLvlrowdiv').hide();
+$('#dispFileFeatLvldiv').hide();
+$('#subj_split_batch_rowdiv').hide();
+
 
 });
+  // Code for changing the background colour of the custom_nav_btn
+
+for (var i = 0; i < btns.length; i++) {
+      btns[i].addEventListener("click", function() {
+    var current = document.getElementsByClassName("active");
+    current[0].className = current[0].className.replace(" active", "");
+    this.className += " active";
+  });
 // Uploading file Function . 
 function showImportSubdiv(){
+    // setting current active btn.
+    var current=$('#ftlvl')
+    current.prop('class',current.attr('class').replace('active',""));
+    $('#btchmng').prop('class', 'custom_nav_btn active');
+    
+    // current.className = current.className.replace(" active", "");
+    // $('btchmng').className += " active";
+    
     $('#feat_lvl_div').hide();
-    $('#outputsDiv').hide();
     $('#importSubdiv').show("slide", { direction: "left" }, 1000);
 }
 function showFeatLvlDiv(){
+    var current=$('#btchmng')
+    current.prop('class',current.attr('class').replace('active',""));
+    $('#ftlvl').prop('class', 'custom_nav_btn active');
+
     $('#feat_lvl_div').show("slide", { direction: "left" }, 1000);
     $('#importSubdiv').hide();
+
 }
-function showFeatureLvls(){
+function showFeatureLvls(btn_obj){
+    
+    
     $('#importSubdiv').hide();
     $('#feat_lvl_div').slideDown(500);
+  
+}
+
+
 }
 function displayfeaturelevelTable(){
-    $('#dispFeatLvlrowdiv').show();
+    $('#dispFileFeatLvldiv').show();
     makeFeatureLvldicTable();
-   
-    
+
 }
 function makeFeatureLvldicTable(){
     var table=document.createElement('TABLE');
@@ -330,8 +432,12 @@ function makeFeatureLvldicTable(){
     th.append('Feature Levels')
     trh.appendChild(th)
     console.log('amsdkmakdmakmdkamskmdkamsd')
-    for (var row in dict){
-        alert(row);
+    if (dict==='{}'){
+        console.log('emoty tabel');
+    }
+    else{
+        for (var row in dict){
+      
         var tr=document.createElement('TR');
         tbody.appendChild(tr)
         var td=document.createElement('TD')
@@ -342,15 +448,27 @@ function makeFeatureLvldicTable(){
         
         td.append(dict[row])
         tr.appendChild(td)
+         }
     }
+    
     console.log(table)
     $(table).appendTo("#displayfeaturelevelTablediv");
-    $(table).appendTo("#displayfeaturelevelTable");
+    $(table).appendTo(".displayfeaturelevelTable");
+    window.localStorage.setItem("dispfeatlevels", JSON.stringify(dict));
 }
+function updateFeatureLvls(){
+    window.localStorage.setItem("dispfeatlevels", JSON.stringify(dict));
+    $('.displayfeaturelevelTable').empty();
+    
+    displayfeaturelevelTable();
+   
+
+}
+
 function showBatchManagement(){
     $('#importSubdiv').slideDown();
     $('#feat_lvl_div').hide();
-    displayfeaturelevelTable();
+    
 }
 $(function () {
     $("#upload").bind("click", function () {
@@ -374,7 +492,7 @@ $(function () {
                         filedatalist.push(rows[row]);
                         }
                     }
-                   
+                   setFileDataList(filedatalist);
 
 
                 
@@ -386,14 +504,9 @@ $(function () {
                     console.log('header',typeof(header));
                     var table=document.createElement('TABLE');
                     table.setAttribute('id','showfiledataTable')
-                    table.setAttribute('class',"table table-bordred table-striped")    
+                    table.setAttribute('class',"display table table-striped table-bordered ")    
                     var thead=document.createElement('THEAD')
                     table.appendChild(thead)
-                    
-                        
-
-
-
                     var tbdoy=document.createElement('TBODY');
                     table.appendChild(tbdoy);
                    
@@ -430,8 +543,10 @@ $(function () {
                            
                             "bLengthChange": false,
                             "bFilter": false,
-                            "pageLength": 5
+                            "pageLength": 5,
+                            "pagingType": "full_numbers"
                             });
+                    $('#dispFileFeatLvldiv').show();
 
                     // for (var i = 0; i < rows.length; i++) {
                        
@@ -474,7 +589,7 @@ $(function () {
                         for(var col in header) {
                             $('<option />', {value: col, text: header[col]}).appendTo(select_tag2);
                         }
-                        var select_tag3 = $('<select id="s3"/>');
+                        var select_tag3 = $('<select id="s3" onchange="onS3Select(this)"/>');
                         $('<option />', {value: "", text:"None"}).appendTo(select_tag3);
                         for(var col in header) {
                             $('<option />', {value: col, text: header[col]}).appendTo(select_tag3);
@@ -495,7 +610,6 @@ $(function () {
                        //$('.show_select_tag').html('');
                        //$('.show_select_tag').append(select_tag);
                        
-                    setFileDataList(filedatalist);
                     // for (var i = 0; i < header.length; i++) {
                     //     var radioBtn = $('<input type="radio" name="'+header[i]+'" value="'+header[i]+'"\
                     //      onclick=radioBtnFunc($(this).attr("value"),'+JSON.stringify(arrlist)+')>'+header[i]+'</input>');
@@ -527,6 +641,31 @@ $(function () {
         }
     });
 });    
+
+
+
+function onS3Select(select) {
+     //alert(select.options[select.selectedIndex].text);
+     if (select.options[select.selectedIndex].text==='None'){
+        alert(select.options[select.selectedIndex].text);
+        $('#selfbtnid').prop('disabled',false);
+       
+        
+       
+     }
+     else{
+        $('#selfbtnid').prop('disabled',true);
+        $('#selfbuttondiv').empty();
+        $('#self-defined').hide( 1000 );
+        $('#batchtitle_name').empty();
+        $('#batchtitle_input').empty();
+        $('#batchnum_name').empty();
+        $('#batchnum_input').empty();
+        $('#batchlabel_name').empty();
+        $('#batchlabel_input').empty();
+        $('#self-assignbuttondiv').empty();
+     }
+}
 function postExpData(){
     var custom_id=$('#s1').children('option:selected').text();
     var email=$('#s2').children('option:selected').text() ;
@@ -538,6 +677,7 @@ function postExpData(){
         selfbutton.appendChild(text)
         selfbutton.onclick = function() {switchVisible($('#self-defined'),header)};
         selfbutton.classList.add("barbutton");
+        selfbutton.id='selfbtnid'
         $('#selfbuttondiv').append(selfbutton).slideDown(1000).fadeIn(1000);
     }
     else{
@@ -553,7 +693,7 @@ function postExpData(){
                     'csrfmiddlewaretoken': '{{ csrf_token }}',
                     },
                     // the ajax call is sent to subdetails url name in the post function.  
-                    url: "{% url 'createnewexp' %}",
+                    url: "{% url 'postexp' %}",
                     success: function(data){
                       
                        }
@@ -593,6 +733,7 @@ function selfpreDivOpt(){
     //     prebutton.classList.add("barbutton");
     //     $('#predefbuttondiv').append(prebutton).slideDown(1000).fadeIn(1000);
     // }
+
 }
 // Switch Function to show and hide self and pre defined divs. 
 function switchVisible(obj,header) {
@@ -622,7 +763,7 @@ function switchVisible(obj,header) {
             
 
         
-            $('#self-defined').show(1000);
+            $('#self-defined').toggle(1000);
 
            // document.getElementById('self-defined').style.display = 'block';
             $('#pre-defined').hide( 1000 );
@@ -633,10 +774,8 @@ function switchVisible(obj,header) {
             
             //document.getElementById('pre-defined').style.display = 'none';
         }
-        else if (obj.attr("id") === "pre-defined" &&  obj.is(":hidden")) {
-            
-           // $('[name=batchlabel]').remove();
-           $('#self-defined').hide( 1000 );
+        else if (obj.attr("id") === "self-defined" &&  obj.is(":visible")){
+            $('#self-defined').hide( 1000 );
             $('#batchtitle_name').empty();
             $('#batchtitle_input').empty();
             $('#batchnum_name').empty();
@@ -644,39 +783,51 @@ function switchVisible(obj,header) {
             $('#batchlabel_name').empty();
             $('#batchlabel_input').empty();
             $('#self-assignbuttondiv').empty();
-
-
-           // In future delete this block of code. @TODO
-        //    var batchtitle=$('<p>Select one of the Fields for Batch Assigning</p>');
-        //    $('pre-batchtitletext').append(batchtitle);
-        //    for (var i = 0; i < header.length; i++) {
-        //             var radioBtn = $('<input type="radio" name="'+header[i]+'" value="'+header[i]+'"\
-        //             onclick="radioBtnFunc($(this))"\
-        //             >'+header[i]+'</input>');
-        //             //radioBtn.appendTo('#RadioDiv');
-
-        //             $("#pre-RadioDiv").append(radioBtn);
-
-        //         }
-            var sel1T=$('#s1').children('option:selected').text();
-            var sel2T=$('#s2').children('option:selected').text();
-            var sel3T=$('#s3').children('option:selected').text();
-            $('#custom_label_id1').append('Customid');
-            $('#custom_label_id1').append('-->');
-            $('#custom_tag_id1').append(sel1T);
-            $('#email_label_id1').append('Email');
-            $('#email_label_id1').append('-->');
-            $('#email_tag_id1').append(sel2T);
-            $('#batchT_label_id1').append('Batch Title');
-            $('#batchT_label_id1').append('-->');
-            $('#batchT_tag_id1').append(sel3T);
+        }
+        else if (obj.attr("id") === "pre-defined" &&  obj.is(":hidden")) {
             
-            var assignbutton= $('<button onclick=preAssignBatch('+JSON.stringify(sel1T)+','+JSON.stringify(sel2T)+','+JSON.stringify(sel3T)+')>Make Batch</button>') ;
-            assignbutton.fadeIn(300);
-            $('#pre-assignbuttondiv' ).append(assignbutton) ;
-            $('#pre-defined').show(1000);
-           // document.getElementById('pre-defined').style.display = 'block';
-            }   
+        //    // $('[name=batchlabel]').remove();
+        //    $('#self-defined').hide( 1000 );
+        //     $('#batchtitle_name').empty();
+        //     $('#batchtitle_input').empty();
+        //     $('#batchnum_name').empty();
+        //     $('#batchnum_input').empty();
+        //     $('#batchlabel_name').empty();
+        //     $('#batchlabel_input').empty();
+        //     $('#self-assignbuttondiv').empty();
+
+
+        //    // In future delete this block of code. @TODO
+        // //    var batchtitle=$('<p>Select one of the Fields for Batch Assigning</p>');
+        // //    $('pre-batchtitletext').append(batchtitle);
+        // //    for (var i = 0; i < header.length; i++) {
+        // //             var radioBtn = $('<input type="radio" name="'+header[i]+'" value="'+header[i]+'"\
+        // //             onclick="radioBtnFunc($(this))"\
+        // //             >'+header[i]+'</input>');
+        // //             //radioBtn.appendTo('#RadioDiv');
+
+        // //             $("#pre-RadioDiv").append(radioBtn);
+
+        // //         }
+        //     var sel1T=$('#s1').children('option:selected').text();
+        //     var sel2T=$('#s2').children('option:selected').text();
+        //     var sel3T=$('#s3').children('option:selected').text();
+        //     $('#custom_label_id1').append('Customid');
+        //     $('#custom_label_id1').append('-->');
+        //     $('#custom_tag_id1').append(sel1T);
+        //     $('#email_label_id1').append('Email');
+        //     $('#email_label_id1').append('-->');
+        //     $('#email_tag_id1').append(sel2T);
+        //     $('#batchT_label_id1').append('Batch Title');
+        //     $('#batchT_label_id1').append('-->');
+        //     $('#batchT_tag_id1').append(sel3T);
+            
+        //     var assignbutton= $('<button onclick=preAssignBatch('+JSON.stringify(sel1T)+','+JSON.stringify(sel2T)+','+JSON.stringify(sel3T)+')>Make Batch</button>') ;
+        //     assignbutton.fadeIn(300);
+        //     $('#pre-assignbuttondiv' ).append(assignbutton) ;
+        //     $('#pre-defined').show(1000);
+        //    // document.getElementById('pre-defined').style.display = 'block';
+             }   
     }
 }
 //  
@@ -720,28 +871,50 @@ function selfAssignBatch(){
                         var table = makeTable(mydata,"mytable");
                         transposeTable(table)
                         
-                        $(table).appendTo("#TableContdiv");
+                        $(table).appendTo("#subj_split_batch");
                         $('#mytable').DataTable({
                            
                             "bLengthChange": false,
                             "bFilter": false,
                             "pageLength": 5
                             });
+                        $('#subj_split_batch_rowdiv').show();
 
+                        groups=JSON.parse(data[2]);
 
-                        // groups=JSON.parse(data[2]);
-
-                        // for (var obj in groups)  {
-                        //     console.log(obj);
-                        //     console.log(groups[obj]);
-                        // }      
-                        
-                       
-                     
-                           
-                        
-                       // $('.batchsize').append(data[2]);
-
+                        for (var obj in groups)  {
+                            console.log(obj);
+                            console.log(groups[obj]);
+                        }      
+                        var batch_size_table=document.createElement('TABLE'); 
+                        batch_size_table.setAttribute('class','table table-striped table-bordered ') 
+                        var b_thead=document.createElement('THEAD');
+                        batch_size_table.appendChild(b_thead);
+                        var b_tbdoy=document.createElement('TBODY');
+                        batch_size_table.appendChild(b_tbdoy);
+                        var trh=document.createElement('TR');
+                        b_thead.appendChild(trh);
+                        var th=document.createElement('TH');
+                        trh.appendChild(th);
+                        th.append('Index');
+                        var th=document.createElement('TH');
+                        th.append('Batch Size');
+                        trh.appendChild(th);
+                        for (var rowindex in groups){
+                            var tr=document.createElement('TR');
+                            b_tbdoy.appendChild(tr);
+                            var td=document.createElement('TD')
+                            console.log('rowindex',rowindex)
+                            td.append(rowindex);
+                            tr.appendChild(td);
+                            var td=document.createElement('TD')
+                            console.log('groups[rowindex]',groups[rowindex])
+                            td.append(groups[rowindex]);
+                            tr.appendChild(td);
+                        }
+                        console.log(batch_size_table);
+                       $(batch_size_table).appendTo('.batchsize_div')    
+                      // $('.batchsize_div').append(data[2]);
                        }
                      
                      
@@ -800,7 +973,7 @@ function preAssignBatch(sel1T,sel2T,sel3T){
                         var mydata = eval(data);
                         var table = makeTable(mydata);
                         transposeTable(table)
-                        $(table).appendTo("#TableContdiv");
+                        $(table).appendTo("#subj_split_batch");
                       
                 
                        }
@@ -810,7 +983,7 @@ function preAssignBatch(sel1T,sel2T,sel3T){
 }
 
 function makeTable (mydata,tableid) {
-    alert(mydata)
+    
     var table = $('<table  id='+tableid+' class="table table-bordred table-striped">');
     var thead = $('<thead>');
 
@@ -905,6 +1078,7 @@ else {
 }
 function chooseFileFunc(){
   $('#upload').prop('disabled',false);
+
 }
 
 // Outercheckbox function 
@@ -931,15 +1105,15 @@ dataType: "json",
 // the ajax call is sent to subdetails url name in the post function.  
 url: "{% url 'subdetails' %}",
 success: function(data){
-    console.log("success");
-    var outerckbox = $('#'+outercheckid);
-    console.log('outercheckbox obj',outerckbox);
-    dict[outercheckval]=data
-    console.log('value of key in dic',dict[outercheckval]);
-    // checking if the user has checked or not. 
+console.log("success");
+var outerckbox = $('#'+outercheckid);
+console.log('outercheckbox obj',outerckbox);
+dict[outercheckval]=data
+console.log('value of key in dic',dict[outercheckval]);
+// checking if the user has checked or not. 
 
 if (outerckbox.is(':checked')) {
-    //alert('You Checked');
+    // alert('You Checked');
     console.log('outercheckval',outercheckval);
     console.log('data retrieved',data)
     dict[outercheckval]=data
@@ -955,8 +1129,9 @@ if (outerckbox.is(':checked')) {
     // todo: change the name of innercheckboxdivs name as it seems like it is refering to
     // div inside inner checks...
     showInnerCheckBoxDivs(outercheckid,data);
+    updateFeatureLvls();
 } else {
-    //alert('You Un-Checked it');
+    // alert('You Un-Checked it');
     // For now its purpose is simply to hide the innercheckdivs.  
     hideInnerCheckBoxDivs(outercheckid);
     console.log(outercheckval);
@@ -966,7 +1141,7 @@ if (outerckbox.is(':checked')) {
         console.log('in else condition');  
     }
     console.log(dict)
-
+    updateFeatureLvls();
 }
 }
 }); 
@@ -1029,7 +1204,7 @@ if ($(innercheckboxid).prop('checked') == true){
     if (dict[outercheckdivtitle] == null) {
             dict[outercheckdivtitle]=[]
         }   
-    //alert('You have Checked innercheckbox');
+    // alert('You have Checked innercheckbox');
     arr_feature_levels=dict[outercheckdivtitle];
     console.log('Specific dict in Checked',dict[outercheckdivtitle]);
     console.log('insert',arr_feature_levels);
@@ -1038,14 +1213,14 @@ if ($(innercheckboxid).prop('checked') == true){
     console.log('arr',arr_feature_levels);
     console.log('All dict in checked condition.',dict);
     
-    
+    updateFeatureLvls();
    
 
         
     
 } else if ($(innercheckboxid).prop('checked') == false) {
 
-    //alert('You UNNNChecked innercheckbox');
+    // alert('You UNNNChecked innercheckbox');
     arr_feature_levels=dict[outercheckdivtitle];
     console.log('Specific dict in UnChecked',dict[outercheckdivtitle]);
     console.log('arr',arr_feature_levels);
@@ -1074,10 +1249,12 @@ if ($(innercheckboxid).prop('checked') == true){
     }
     
 
-}
+    }
+    updateFeatureLvls();
 }
 
 function sendFeatureLevels(){
+
 $.ajax({
 type: 'POST',
 dataType: "json",
@@ -1099,7 +1276,17 @@ success: function(data){
     exp_id = data['exp_id'];
     $('#cr_exp_header').html("<p1>CREATE EXPERIMENT</p1>");
     $('#cr_exp_header').append("<p>"+data['custom_exp_id']+" is UNDER CONSTRUCITON</p>");
-    if (data['block_list']!=null){
+        if (data['block_list']!=null){
+            blockList = data['block_list']
+            table_blocks=draw_block_table(blockList)
+            display_blocktable(table_blocks);
+            window.localStorage.setItem("blockList", JSON.stringify(blockList));
+ 
+        }
+    }
+  }); 
+}
+function draw_block_table(blocklist){
         var tab_blocks = $("<table />");
         var head_row = $("<tr />");
         var head_sno_col = $("<th />");
@@ -1109,15 +1296,14 @@ success: function(data){
         head_lset_col.html("Feature Level Combination")
         head_row.append(head_lset_col)
         tab_blocks.append(head_row)
-        blkList = data['block_list']
-        for(var i = 0; i < blkList.length; i++){
+    for(var i = 0; i < blocklist.length; i++){
             var blk_row = $("<tr />");
             var blk_no_cell = $("<td />");
-            console.log("Block: ",blkList[i]['serial_no'])
-            blk_no_cell.html(blkList[i]['serial_no']);
+            console.log("Block: ",blocklist[i]['serial_no'])
+            blk_no_cell.html(blocklist[i]['serial_no']);
             blk_row.append(blk_no_cell);
             var blk_lSet_cell = $("<td />");
-            var blk_lSet = blkList[i]['levels_set']
+            var blk_lSet = blocklist[i]['levels_set']
             blk_lSet_cell.html('')
             for(var j = 0; j < blk_lSet.length; j++){
                 blk_lSet_cell.append(blk_lSet[j])
@@ -1128,13 +1314,14 @@ success: function(data){
             blk_row.append(blk_lSet_cell);
             tab_blocks.append(blk_row);
         }
-        console.log(tab_blocks)
-        $('#blocksBreakUp').html('');
-        $('#blocksBreakUp').append(tab_blocks);
-    }
+    return tab_blocks;
 }
-}); 
+function display_blocktable(table_blocks){
+    $('#blocksBreakUp').html('');
+    $('#blocksBreakUp').append(table_blocks);
+    
 }
+
 
 function sendFilePath(id){
         console.log(id);
@@ -1156,7 +1343,19 @@ function sendFilePath(id){
 
       }
 </script>
-<script type="text/javascript" src="{% static 'webapp/createexp/DataTables/datatables.min.js' %}"></script>
-<link rel="stylesheet" type="text/css" src="{% static 'webapp/createexp/DataTables/datatables.css' %}"/>
- 
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
+
+<script src="{% static 'webapp/createexp/DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js' %}"></script>
+<link rel="stylesheet" type="text/css" src="{% static 'webapp/createexp/DataTables/DataTables-1.10.18/cs/jquery.dataTables.min.css' %}"/>
+<script>
+    // Warning before leaving the page (back button, or outgoinglink)
+    window.onbeforeunload = function() {
+       return "Do you really want to leave our brilliant application?";
+       //if we return nothing here (just calling return;) then there will be no pop-up question at all
+       //return;
+    };
+   
+</script>
 {%endblock%}

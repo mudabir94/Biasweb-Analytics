@@ -96,6 +96,7 @@ if inputNo == 999:
     batchesTitle = input("Title as \'BATCHES\' or...?") or 'BATCHES'
     print("Using",batchesTitle,"as title for the",no_batches,"batches",batchesLabels)
     texp.setBatchesTitle(batchesTitle)
+    
     dSubBatched = texp.assigner.splitInBins(no_batches,batchesTitle, batchesLabels)
     print(texp.assigner.df.head())
 elif inputNo:

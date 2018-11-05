@@ -33,9 +33,10 @@ import pandas as pd
 from biasweb.experiment.controller import ExperimentController
 from biasweb.utils.assign import Assigner
 import csv
-
-
-
+#--------------------------------------------------------------------------------------------------
+from django.core import serializers
+import pickle
+#--------------------------------------------------------------------------------------------------
 role=1   #global variable used in adminsetup and globalFunc function. 
 mobiles=samsung_phone.objects.raw('SELECT * FROM webapp_samsung_phone WHERE id=1 or id=2') # making mobiles object global.
 sizeofmob=0 # global variable assigned in filter class.
@@ -787,36 +788,34 @@ def uploadSampleFile(request):
 
                 
                 dataframe= pd.DataFrame.from_records(arr_filebody,columns=filefields)
-                print('asd',dataframe)
-                assigner = Assigner(dataframe)
-                dSubBatches=assigner.splitInBins(batch_num,batch_name,customlabels )
+                print('dataframe',dataframe)
+                
+                assign=Assigner(dataframe)
+                # object retrieving example
+                expCont = pickle.load( open( "save.p", "rb" ) )
+                
+                dSubBatches=assign.splitInBins(batch_num,batch_name,customlabels)
+                
                
-                print("assigner df",dSubBatches)
-                print("assigner df",type(dSubBatches))
+                print("controller df",dSubBatches)
+                print("cont df",type(dSubBatches))
                 dataframe=dSubBatches
+                print('DATAFRAME')
+                print(dataframe)
                 dict_all={}
+                
+                groupby_batch_name=dataframe.groupby(batch_name)
+                groupby_batch_name_size=groupby_batch_name.size()
+                # batchsize=dataframe.size()
                 dataframe=dataframe.to_json()
-
+                
+                groupby_batch_name_size=groupby_batch_name_size.to_json()
                 # groupsize=dSubBatches.size()
                 # groupsize=groupsize.to_json()
 
-                ## ASSIGN TO BLOCKS
-                # no_batches = eval(input("Number of Batches? "))
-                # batchesLabels = list()
-                # for j in range(no_batches):
-                #     print("BATCH #",j+1,"\' OK? ")
-                #     batchesLabels.append(input() or (j+1))
-                # batchesTitle = input("Title as \'BATCHES\' or...?") or 'BATCHES'
-                # print("Using",batchesTitle,"as title for the",no_batches,"batches",batchesLabels)
-                # dSubBatched = texp.assigner.splitInBins(no_batches,batchesTitle, batchesLabels)
-                # print(texp.assigner.df.head())
-
-                ## ASSIGING SUBJECTS TO DATABASE.
-                # texp.setIdField(fields[0]) #Col 0 is assumed as ROLLNO
-                # print("ID FIELD: ", texp.idField)
-                  #texp.saveSubjects()
-
                 dict_all['1']=dataframe
+                dict_all['2']=groupby_batch_name_size
+                
                 # dict_all['2']=groupsize
                 print('dictionary all')
                 
@@ -909,19 +908,16 @@ def uploadSampleFile(request):
     else:
         pass
     return render(request, 'webapp/crudexperiment/create_experiment.html')    
-from django.core import serializers
-import pickle
-def createNewExp(request):
+
+def postExp(request):
         admin_id='ses-007'
         if request.is_ajax:
             data = request.POST.get('csvfiledata')
             #print('d',d)
-            newexp = ExperimentController(a_id=admin_id)
-            ## object storing example
-                    # pickle.dump( newexp, open( "save.p", "wb" ) )
-            ## object retrieving example
-                    # Tnewexp = pickle.load( open( "save.p", "rb" ) )
-                    # print(Tnewexp.exp.capacity)
+            
+            # object retrieving example
+            # expCont = pickle.load( open( "save.p", "rb" ) )
+            print(expCont.exp.capacity)
             json_data = json.loads(data)
             json_data=[i.replace('\r','') for i in json_data]  
             batch_field_name=json_data.pop()
@@ -940,12 +936,15 @@ def createNewExp(request):
             print("filedata")
             print(dataframe)
             if custom_id!='None':
-                newexp.setIdField(custom_id)
+                expCont.setIdField(custom_id)
             if batch_field_name!='None':
-                newexp.setBatchesTitle(batch_field_name)
-            newexp.saveSubjects(dataframe)
-            print(newexp.exp.subject_set.all())
-            print(newexp.subjData.groupby(batch_field_name).size())
+                expCont.setBatchesTitle(batch_field_name)
+            expCont.saveSubjects(dataframe)
+            #object storing 
+            pickle.dump( expCont, open( "save.p", "wb" ) )
+            print(expCont.exp.subject_set.all())
+            print(expCont.subjData.groupby(batch_field_name).size())
+
 
 
 
@@ -970,6 +969,7 @@ def createNewExp(request):
 class createExperiment(TemplateView): 
     
     def get(self,request):       
+
         platformfeatobj=platform_feature.objects.all()
         return render(request,'webapp/crudexperiment/create_experiment.html',
                                         {'platformfeatobj':platformfeatobj,
@@ -1000,6 +1000,8 @@ class createExperiment(TemplateView):
                 print(request.user.custom_id,":",request.user.username)
                 expAdminId = request.user.custom_id
                 expCont = ExperimentController(a_id=expAdminId,e_id=existExpId)
+                
+
                 if not existExpId:
                      existExpId = expCont.exp.id
                 print("Exp Custom Id:",expCont.exp.custom_exp_id)
@@ -1018,6 +1020,8 @@ class createExperiment(TemplateView):
                     'custom_exp_id':expCont.exp.custom_exp_id,
                     'block_list':block_list
                 }
+                #object storing 
+                pickle.dump( expCont, open( "save.p", "wb" ) )
                 return JsonResponse(data) #, safe=False)
         #return render(request,'webapp/crudexperiment/create_experiment.html',data)
     
