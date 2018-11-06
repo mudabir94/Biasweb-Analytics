@@ -1,121 +1,122 @@
 {% extends "webapp/crudexperiment/base_experiment.html" %}
 {% block content %}
 {%load static from staticfiles%}
-<div class="container-fluid text-center">    
-      <div class="row content">
-          <div class="col-sm-2 sidenav" style='background:teal'></div>
-          <div class="col-sm-9  col-md-9 col-lg-9 col-xs-9 text-left" > 
-                  
+<div class="container-fluid text-center"> 
+    <!-- MAIN ROW CONTENT DIV  -->
+    <div class="row content">
+        <!-- 1st SIDEBAR COL DIV -->
+        <div class="col-sm-2 sidenav" style='background:teal'></div>
+        <div class="col-sm-9  col-md-9 col-lg-9 col-xs-9 text-left" > 
+            <!-- CREATE EXP ROW DIV  -->
             <div class ="row-fluid">     
-                      <div class ="row">   
-                            <div class='col-md-12' >
-                            <p1>Create Experiment </p1> <!-- Show Experiment Id here e.g. ses-007 (admin id) + experiment no. (5 digits)-->
-                            </div>  
-                        </div>
-                      <div class ="row"> 
-                          <div class='col-md-12' >    
-                            <!-- <p1>Admin id {{admin_id}}</p1> -->
-                          </div>                            
-                      </div>
-                      <div class ="row"> 
-                          <div class='col-md-12' >    
-                            <!-- <p1>Experiment id {{experiment_id}}</p1> -->
-                          </div>                            
-                      </div>
+                    <div class ="row">   
+                        <div class='col-md-12' >
+                        <p1>Create Experiment </p1> <!-- Show Experiment Id here e.g. ses-007 (admin id) + experiment no. (5 digits)-->
+                        </div>  
+                    </div>
+                    <div class ="row"> 
+                        <div class='col-md-12' >    
+                        <!-- <p1>Admin id {{admin_id}}</p1> -->
+                        </div>                            
+                    </div>
+                    <div class ="row"> 
+                        <div class='col-md-12' >    
+                        <!-- <p1>Experiment id {{experiment_id}}</p1> -->
+                        </div>                            
+                    </div>
             </div>
-                
-                   
-        
-            
+            <!-- CUSTOM NAV ROW DIV -->
             <div class='row-fluid'>
                 <div class='row' id='custom_nav_div' >
                 <div class='col-md-4'><button id='ftlvl' class='custom_nav_btn active 'onclick='showFeatureLvls($(this))'>Feature Levels</button> </div>
                 <div class='col-md-4'><button id='btchmng' class='custom_nav_btn'onclick='showBatchManagement()'>Batch Management</button></div>
-                <div class='col-md-4'><button id='blkmng' class='custom_nav_btn'>Block Management</button></div>
+                <div class='col-md-4'><button id='blkmng' class='custom_nav_btn' onclick='showBlockManagement()'>Block Management</button></div>
                 </div>    
             </div>
             <br>
+            <!--FEATURES LEVELS ROW DIV -->
             <div class='row-fluid' style="background:peru;" id='feat_lvl_div'>
-              <div class='row'>
-                <div class='col-md-4'>
-                {% for feature in platformfeatobj%}
-                    <div class='row-fluid'>
-                        <div class='col-md-12'>
-                            <input type="checkbox"  id='{{feature.id}}' action='{%url "createexp"%}'
-                                    method="post" 
-                                    value="{{feature.feature_symbol}}" 
-                                    onclick="outerCheckBox($(this).attr('value'),$(this).attr('id'))">
-                                    {{feature.feature_name}} 
-                                    <div  id='{{feature.id}}-innercheckboxdiv' class='innerchecksboxdivs' title='{{feature.feature_symbol}}'>
-                                    </div>
-                            </input>
-                            <br>
-                        </div>
-                    </div>
-                    {%endfor%}
-                
-                    <div class='row-fluid'>
-
-                        <button onclick='sendFeatureLevels()'> Set Feature Levels </button>
-   
-                    </div> 
-                </div>
-                <div class='col-md-6' style='background: green' >
-                    <div class='row'>
-                        <div class='col-md-12'>
-                             <label> Feature Levels</label>
-                        </div>
-                    </div>
-                    <div class='row'>
-                        <div class='col-md-12'>
-                        </div>    
-                    </div>
-                    <div class='row'>
-                            <div class='col-md-12' >
-                                    <div class='displayfeaturelevelTable'>
-                                                    
-                                    </div>
+                <div class='row'>
+                    <div class='col-md-4'>
+                            <p1><b>Select features to enable:</b></p1>
+                    {% for feature in platformfeatobj%}
+                        <div class='row-fluid'>
+                            <div class='col-md-12'>
+                                <input type="checkbox"  id='{{feature.id}}' action='{%url "createexp"%}'
+                                        method="post" 
+                                        value="{{feature.feature_symbol}}" 
+                                        onclick="outerCheckBox($(this).attr('value'),$(this).attr('id'))">
+                                        {{feature.feature_name}} 
+                                        <div  id='{{feature.id}}-innercheckboxdiv' class='innerchecksboxdivs' title='{{feature.feature_symbol}}'>
+                                        </div>
+                                </input>
+                                <br>
                             </div>
+                        </div>
+                        {%endfor%}
+                    
+                        <div class='row-fluid'>
+
+                            <button onclick='sendFeatureLevels()'> Set Feature Levels </button>
+    
+                        </div> 
                     </div>
 
-                </div>
-                <div class='col-md-2' style='background: lightgray'>
-                    <div class='row'>
-                        <div class='col-md-3'></div>
-                        <div class='col-md-3'></div>
-                        <div class='col-md-6'>  <button style="float: right;"onclick='showImportSubdiv()'>NEXT</button></div>
+                    <div class='col-md-6' style='background: green' >
+                        <div class='row'>
+                            <div class='col-md-12'>
+                                <!-- <label> Feature Levels</label> -->
+                            </div>
+                        </div>
+                        <div class='row'>
+                            <div class='col-md-12'>
+                            </div>    
+                        </div>
+                        <div class='row'>
+                                <div class='col-md-12' >
+                                        <!-- <div class='displayfeaturelevelTable'>
+                                                        
+                                        </div> -->
+                                </div>
+                        </div>
 
-                        
                     </div>
+                    
+                    <div class='col-md-2' style='background: lightgray'>
+                        <div class='row'>
+                            <div class='col-md-3'></div>
+                            <div class='col-md-3'></div>
+                            <div class='col-md-6'>  <button style="float: right;"onclick='showImportSubdiv()'>NEXT</button></div>
 
+                            
+                        </div>
+                    </div>
                 </div>
-
-              </div>
             </div>  
             <br>
+           
+            <!-- IMPORT SUBJECT DIV ROW DIV-->
             <div class='row-fluid' style="background: rgb(209, 91, 150)" id='importSubdiv'> 
                     <div class='row'>
                         <div class='col-md-1'>
-
-                
-                                <div class='row-fluid'></div>
+                            <div class='row-fluid'></div>
+                        </div>
+                        <div class='col-md-5'>
+                            <!-- Import Subjects Div -->
+                            <div class=row>
+                                    <label>Import Subjects</label>
+                                    <br>
+                                    <input type="file"  id="fileUpload" onclick="chooseFileFunc()"/>
+                                    <input type="button" id="upload" value="Upload" />
                             </div>
-                      <div class='col-md-5'>
-                
-                          <div class=row>
-                              <label>Import Subjects</label>
-                               <br>
-                              <input type="file"  id="fileUpload" onclick="chooseFileFunc()"/>
-                          <input type="button" id="upload" value="Upload" />
-                          </div>
-                          <hr />
-                          <div class='row'>
-                            
-                                <div class='col-md-12'  >
-                                        <div class='row'>
-                                                <div class='col-md-6' ><div class='map_select_label' id='custom_label_id'>Custom id</div> </div>
-                                                <div class='col-md-6'> <div class="show_select_tag" id="show_s1"></div></div>
-                                        </div>
+                            <hr />
+                            <!--SET COLUMN LABELS SELECTORS-->
+                            <div class='row'>
+                                    <div class='col-md-12'  >
+                                            <div class='row'>
+                                                    <div class='col-md-6' ><div class='map_select_label' id='custom_label_id'>Custom id</div> </div>
+                                                    <div class='col-md-6'> <div class="show_select_tag" id="show_s1"></div></div>
+                                            </div>
                                     </div>
                                     <div class='col-md-12' >
                                             <div class='row'>
@@ -129,187 +130,203 @@
                                                     <div class='col-md-6'> <div class="show_select_tag" id="show_s3"></div></div>
                                             </div>
                                     </div>
+                            </div>
+                            <!-- Proceed Btn Div -->
+                            <div class='row'>
                                     <div class='col-md-12' >
-                                        <div class='row'>
-                                                <div class='col-md-6' > </div>
-                                                <div class='col-md-6'> <div id='proceedbtndiv'></div></div>
-                                        </div>
-                                </div>
-                                <div class='col-md-12' >
-                                       
-                                </div>
-                                   
-                                   
-                          </div>
-                          
-                          <div class='row-fluid' >
-                               
+                                        <div class='col-md-6' > </div>
+                                        <div class='col-md-6'> <div id='proceedbtndiv'></div></div>
+                                    </div>
+                            </div>
+                        
+                            <!-- Self Defined DIV -->
+                            <div class='row-fluid' >
+                                        <!-- Self Button -->
                                         <div class='row-fluid' >
                                                 <div class='col-md-12' id='selfbuttondiv'>
                                                 
                                                 </div>
                                         </div>
-                                     
-                              
-                                 <div class='row-fluid' >
-                                    <div class='col-md-12'  id='self-defined'>
-                                         <hr/>
-                                         
-                                         <div class='row'>
-                                             <div class='col-md-6' id='batchtitle_name'></div>
-                                             <div class='col-md-6' id='batchtitle_input'></div>
+                                        
+                                        <!-- Self defined Input Fields -->
+                                        <div class='row-fluid' >
+                                            <div class='col-md-12'  id='self-defined'>
+                                                    <hr/>
+                                                    <div class='row'>
+                                                        <div class='col-md-6' id='batchtitle_name'></div>
+                                                        <div class='col-md-6' id='batchtitle_input'></div>
 
-                                         </div>
-                                         <div class='row'>
-                                                <div class='col-md-6' id='batchnum_name'></div>
-                                                <div class='col-md-6' id='batchnum_input'></div>
+                                                    </div>
+                                                    <div class='row'>
+                                                        <div class='col-md-6' id='batchnum_name'></div>
+                                                        <div class='col-md-6' id='batchnum_input'></div>
+                                                    </div>
+                                                    <div class='row'>
+                                                        <div class='col-md-6' id='batchlabel_name'></div>
+                                                        <div class='col-md-6' id='batchlabel_input'></div>
+                                                    </div>
+                                                    <div class='row'>
+                                                        <div class='col-md-6' ></div>
+                                                        <div class='col-md-6' id='self-assignbuttondiv'></div>
+                                                    </div>
 
-                                         </div>
-                                         
-                                         <div class='row'>
-                                                <div class='col-md-6' id='batchlabel_name'></div>
-                                                <div class='col-md-6' id='batchlabel_input'></div>
-
-                                         </div>
-                                        <div class='row'>
-                                            <div class='col-md-6' ></div>
-                                            <div class='col-md-6' id='self-assignbuttondiv'></div>
-                                       
+                                            </div>
                                         </div>
-
-                                    </div>
-                                 </div>
-                          </div>
-                          <div class='row'>
+                            </div>
+                            <!-- PreDefined Div-->
+                            <div class='row-fluid'>
                                     <div class='row-fluid' >
                                         <div class='col-md-12' id='predefbuttondiv'>
                                             
                                         </div>
                                     </div>
 
-                            <div class='row-fluid' >
+                                    <div class='row-fluid' >
 
-                                <div class='col-md-12' id='pre-defined'> 
-                                    <hr/>
-                                    <div class='row'>
-                                            <div class='col-md-6'><div id='custom_label_id1'></div></div>
-                                            <div class='col-md-6'><div id='custom_tag_id1'></div></div>
-                                    </div>
-                                    <div class='row'>
-                                            <div class='col-md-6'><div id='email_label_id1'></div></div>
-                                            <div class='col-md-6'><div id='email_tag_id1'></div></div>
-                                    </div>
-                                    <div class='row'>
-                                            <div class='col-md-6'><div id='batchT_label_id1'></div></div>
-                                            <div class='col-md-6'><div id='batchT_tag_id1'></div></div>
-                                    </div>
-                                    <!-- <div class='row'>
-                                            <div class='col-md-12' id="pre-batchtitletext"></div>
-                                    </div>
-                                    <div class='row'>
-                                        <div class='col-md-12' id="pre-RadioDiv"></div>
-                                    </div>-->
-                                    <div class='row'>
-                                            <div class='col-md-6' ></div>
-                                            <div class='col-md-6' id="pre-assignbuttondiv"></div>
+                                        <div class='col-md-12' id='pre-defined'> 
+                                            <hr/>
+                                            <div class='row'>
+                                                    <div class='col-md-6'><div id='custom_label_id1'></div></div>
+                                                    <div class='col-md-6'><div id='custom_tag_id1'></div></div>
+                                            </div>
+                                            <div class='row'>
+                                                    <div class='col-md-6'><div id='email_label_id1'></div></div>
+                                                    <div class='col-md-6'><div id='email_tag_id1'></div></div>
+                                            </div>
+                                            <div class='row'>
+                                                    <div class='col-md-6'><div id='batchT_label_id1'></div></div>
+                                                    <div class='col-md-6'><div id='batchT_tag_id1'></div></div>
+                                            </div>
+                                            <!-- <div class='row'>
+                                                    <div class='col-md-12' id="pre-batchtitletext"></div>
+                                            </div>
+                                            <div class='row'>
+                                                <div class='col-md-12' id="pre-RadioDiv"></div>
+                                            </div>-->
+                                            <div class='row'>
+                                                    <div class='col-md-6' ></div>
+                                                    <div class='col-md-6' id="pre-assignbuttondiv"></div>
+                                            </div> 
                                         </div> 
-                                </div> 
-                               
-                            </div>
-                            
-                          </div>
-                         
-                          
-                      </div>
-                      
-                      <div class='col-md-6'>
-                          <div class='row-fluid'>
-                              <div class='col-md-12'>
-                                        <div>Batch Size</div>
-                              </div>
-                          </div>
-                              <div class='row-fluid'>
-                                    <div class='col-md-12'>  
-                                           <div class='batchsize_div'></div>
+                                
                                     </div>
-                              </div>
-                              <br>
-                             
-                              <div class='row-fluid' id='subj_split_batch_rowdiv'>
-                                    
-                                    <div class='col-md-12'>
-                                            <div class='row-fluid'>
-                                                <label>Subject Split to Batches</label>
-                                            </div>
-                                            <div class='row-fluid'>
-                                                <div id='subj_split_batch' class=" table-bordered">
-                                                </div>
-                                            </div>
-                                    </div>
-        
                             </div>
                         </div>
-                             
-                      </div> 
-                      <br>
+                      
+                        <div class='col-md-6'>
+                            <div class='row-fluid'>
+                                <div class='col-md-12'>
+                                            <div>Batch Size</div>
+                                </div>
+                            </div>
+                            <div class='row-fluid'>
+                                <div class='col-md-12'>  
+                                        <div class='batchsize_div'></div>
+                                </div>
+                            </div>
+                            <br>  
+                            
+                        </div>      
+                    </div> 
+                    <!-- Row Ending -->
+                    <br>   
+            </div>
+            <!--  -->
+            <div class='row-fluid' id='dispFileFeatLvldiv' style='background:aqua'>
+                    <div class='col-md-1'></div>
                     
-                    <div class='row' id='dispFileFeatLvldiv'>
-                       <div class='col-md-1'></div>
-                       
-                        <div class='col-md-5'> 
-                            <div class='row'>
-                                
+                   
+                     <div class='col-md-5'> 
+                             <div class='row-fluid'>
+                                     <div class='col-md-12'>
+                                          <label> Feature Levels</label>
+                                     </div>
+                                 </div>
+                                 <div class='row-fluid'>
+                                     <div class='col-md-12'>
+
+                                     </div>    
+                                 </div>
+                                 <div class='row-fluid'>
+                                         <div class='col-md-12' >
+                                             <div class='displayfeaturelevelTable'>
+
+                                             </div>
+                                         </div>
+                                 </div>
+                     </div>
+                     <div class='col-md-1'></div>
+            </div>
+            <!--  -->
+            <div class='row-fluid' id='dataDiv' style="background:lawngreen" >
+                  
+                            <div class='row-fluid'>
                                 <label> Uploaded data from file. </label>
                             </div>
-                            <div class='row'>
+                             <!--DATA & DETAILS EDITING DISPLAY SECTION-->
+                            <div class='row-fluid' >
+                                <div class='col-md-12'>
                                     <div id="showfiledatadiv">
-
                                      </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class='col-md-5'> 
-                                <div class='row-fluid'>
-                                        <div class='col-md-12'>
-                                             <label> Feature Levels</label>
-                                        </div>
-                                    </div>
-                                    <div class='row-fluid'>
-                                        <div class='col-md-12'>
-
-                                        </div>    
-                                    </div>
-                                    <div class='row-fluid'>
-                                            <div class='col-md-12' >
-                                                <div class='displayfeaturelevelTable'>
-
-                                                </div>
-                                            </div>
-                                    </div>
-                        </div>
-                        <div class='col-md-1'></div>
-                    </div>
-                   
-                    <div class='row'>
-                            <div class='col-md-1'><button onclick="showFeatLvlDiv()">Previous</button></div>
-                            <div class='col-md-5'></div>
-                            <div class='col-md-6'></div>
-                    </div>
-                   
-                     
-            </div> 
-            <div class='row-fluid'>  
-                        <div class='col-md-12' style='background:palegoldenrod' id='outputsDiv'>
-                        <div id='blocksBreakUp'><b></b></div>
-                        </div>
-           </div>
-            <div class='row-fluid'>
-                   
+                    
             </div>
-                        
+            <!--  -->
+            <div class='row-fluid' id='subj_split_batch_rowdiv'>
+                                    
+                    <div class='col-md-12'>
+                            <div class='row-fluid'>
+                                <label>Subject Split to Batches</label>
+                            </div>
+                            <div class='row-fluid'>
+                                <div id='subj_split_batch' class=" table-bordered">
+                                </div>
+                            </div>
+                    </div>
+
+            </div>
+
+             <!--BLOCK ASSIGNMENT ROW DIV-->
+            <div class='row-fluid' id='block_assign_row_div' style="background: rgb(255, 105, 6)">
+                    <div class='row'>
+                        <div class="col-md-6" >
+                                <br>
+                                <br>
+                                    <div class='row-fluid'>
+
+                                        <p1><b><i>Assign subjects to latest set of feature blocks?</b></i></p1>
+                                        <br>
+                                        <br>
+                                        <button onclick='assignToBlocks()'> Assign to Blocks </button>
+                                    </div>
+                        </div>
+                    </div>
+            </div>
+               
+                <br>
+            <!--MY OUTPUT DIV ROW DIV-->
+            <div class='row-fluid' id='blkoutputsDiv' style='background:chartreuse'>  
+                      
+                        <div class='row'>
+                                <div class='col-md-6'>
+                                    <div id='blocksListDiv'></div>
+                                </div>
+                                <div class='col-md-6'>
+                                    <div id='blocksBreakUpDiv'></div>
+                                </div>
+                        </div>
+            </div> 
+            
+            <div class='row-fluid' id='batchmngprvbtn'>
+                    <div class='col-md-1'><button onclick="showFeatLvlDiv()">Previous</button></div>
+                    <div class='col-md-5'></div>
+                    <div class='col-md-6'></div>
+            </div>
         </div>
         <div class="col-sm-1 sidenav" style='background:yellow'>side bar</div>   
     </div>
-              <br>
+</div>
       <!-- <footer>
 		
           <div class="container-fluid" style='margin-left:15px'>
@@ -322,40 +339,29 @@
 var dict = {};
 var arr_feature_levels=[];
 var globalfiledatalist=[];
-var exp_id = "";
+var exp_id = '{{sess_expId}}';
+var custom_exp_id='{{sess_custExpId}}';
 var block_list = [];
 var header = document.getElementById("custom_nav_div");
 var btns = header.getElementsByClassName("custom_nav_btn");
+// variable to save outer and inner check box div info. for pre populating. 
+var checkbox_id_dict={1:['0-innercheckbox-1']};
 
 // When the page will this will be the first javascript function that will be called. 
 $(document).ready(function () {
-    // This Will hide all the divs with class=innerchecksboxdivs
- var dispfeatlevels = JSON.parse(window.localStorage.getItem("dispfeatlevels"));
- var blockList = JSON.parse(window.localStorage.getItem("blockList"));
- 
- 
+ var blockList = JSON.parse(window.localStorage.getItem("blockList")); 
  if ( blockList===null){
-        alert('empty');
+        alert('block list empty');
     }
 else{
-    table_blocks=draw_block_table(blockList)
+     table_blocks=draw_block_table(blockList)
      display_blocktable(table_blocks);
      localStorage.removeItem("blockList");
 }
+   
 
-// if ( Object.keys(dispfeatlevels).length === 0){
-//         alert('empty');
-//         $('.displayfeaturelevelTable').empty();
-//     }
-// else{
-//     dict=dispfeatlevels;
-//     displayfeaturelevelTable();
-//     $('#importSubdiv').show();
-//     $('.displayfeaturelevelTable').show();
-    
-    
-    localStorage.removeItem("dispfeatlevels");
-// }
+// This Will hide all the divs with class=innerchecksboxdivs
+
 $('.innerchecksboxdivs').hide();
 $('.map_select_label').hide();
 $('.show_select_tag').hide();
@@ -368,11 +374,43 @@ $('#upload').prop('disabled',true);
 $('#importSubdiv').hide();
 $('#dispFileFeatLvldiv').hide();
 $('#subj_split_batch_rowdiv').hide();
+$('#block_assign_row_div').hide();
+
+$('#batchmngprvbtn').hide();
+$('#dataDiv').hide();
+//TODO@MUDABIR:
+if(exp_id===""){
+    $('#feat_lvl_div').hide();
+    //test to see if session exp empty
+    //if not, then alert that session exists
+    //if ok, load the experiment details as were
+    //else, set sess_expId to None
+} else {
+    let contin = confirm("Continue working on Experiment: "+custom_exp_id+"?");
+     if(contin===false){
+         alert("TO BE IMPLEMENTED AS AJAX CALL")
+     }else{
+         showExpWIP()
+     }
+}
+
+// Filling outer checkboxes when the page is loaded. 
+for (var key in checkbox_id_dict){
+    console.log('chossebox value',checkbox_id_dict[key]);
+    console.log('key',key);
+    var outercheckbox = document.getElementById(key);
+    outercheckbox.checked = true; 
+   outerCheckBox( outercheckbox.getAttribute('value') ,key )
+}
 
 
 });
-  // Code for changing the background colour of the custom_nav_btn
 
+
+
+
+
+// Code for changing the background colour of the custom_nav_bt
 for (var i = 0; i < btns.length; i++) {
       btns[i].addEventListener("click", function() {
     var current = document.getElementsByClassName("active");
@@ -386,27 +424,27 @@ function showImportSubdiv(){
     current.prop('class',current.attr('class').replace('active',""));
     $('#btchmng').prop('class', 'custom_nav_btn active');
     
-    // current.className = current.className.replace(" active", "");
-    // $('btchmng').className += " active";
+    $('btchmng').className += " active";
     
     $('#feat_lvl_div').hide();
-    $('#importSubdiv').show("slide", { direction: "left" }, 1000);
+    $('#importSubdiv').show(1000);
+    $('#batchmngprvbtn').show();
+
+
 }
 function showFeatLvlDiv(){
+  
+   
+    $('#importSubdiv').hide();
+    $('#block_assign_row_div').hide();
+    $('#dataDiv').hide();
+    $('#batchmngprvbtn').hide();
+    $('#dataDiv').hide();
+    $('#feat_lvl_div').show( 1000);
+    
     var current=$('#btchmng')
     current.prop('class',current.attr('class').replace('active',""));
     $('#ftlvl').prop('class', 'custom_nav_btn active');
-
-    $('#feat_lvl_div').show("slide", { direction: "left" }, 1000);
-    $('#importSubdiv').hide();
-
-}
-function showFeatureLvls(btn_obj){
-    
-    
-    $('#importSubdiv').hide();
-    $('#feat_lvl_div').slideDown(500);
-  
 }
 
 
@@ -459,16 +497,43 @@ function makeFeatureLvldicTable(){
 function updateFeatureLvls(){
     window.localStorage.setItem("dispfeatlevels", JSON.stringify(dict));
     $('.displayfeaturelevelTable').empty();
-    
     displayfeaturelevelTable();
-   
+}
+function showFeatureLvls(){
+    $('#importSubdiv').hide();
+    $('#block_assign_row_div').hide();
+    $('#dataDiv').hide();
+    $('#batchmngprvbtn').hide();
+    $('#dataDiv').hide();
+    $('#feat_lvl_div').slideDown(500);  
+    $('#dispFileFeatLvldiv').show();
 
 }
 
 function showBatchManagement(){
-    $('#importSubdiv').slideDown();
     $('#feat_lvl_div').hide();
-    
+    $('#block_assign_row_div').hide();
+
+    $('#importSubdiv').slideDown();
+    $('#batchmngprvbtn').show();
+    $('#dispFileFeatLvldiv').show();
+
+   
+}
+function showBlockManagement(){
+    // hiding all unneccesary rows
+    $('#importSubdiv').hide();
+    $('#feat_lvl_div').hide();
+    $('#dispFileFeatLvldiv').hide();
+    $('#subj_split_batch_rowdiv').hide();
+    $('#dataDiv').hide();
+    $('#batchmngprvbtn').hide();
+    $('#block_assign_row_div').show();
+    // $('#blkoutputsDiv').show();
+}
+function showExpWIP(){
+    $('#cr_exp_header').html("<p1>CREATE EXPERIMENT</p1>");
+    $('#cr_exp_header').append("<p>"+custom_exp_id+" is UNDER CONSTRUCITON</p>");
 }
 $(function () {
     $("#upload").bind("click", function () {
@@ -546,7 +611,8 @@ $(function () {
                             "pageLength": 5,
                             "pagingType": "full_numbers"
                             });
-                    $('#dispFileFeatLvldiv').show();
+                            $('#dataDiv').show();
+                    // $('#dispFileFeatLvldiv').show();
 
                     // for (var i = 0; i < rows.length; i++) {
                        
@@ -583,6 +649,7 @@ $(function () {
 
                             $('<option />', {value: col, text: header[col]}).appendTo(select_tag1);
                         }
+                        //DEFAULT FOR TESTING
                         select_tag1.val('0');
                         var select_tag2 = $('<select id="s2" />');
                         $('<option />', {value: "", text:"None"}).appendTo(select_tag2);
@@ -594,13 +661,15 @@ $(function () {
                         for(var col in header) {
                             $('<option />', {value: col, text: header[col]}).appendTo(select_tag3);
                         }
-                        select_tag3.val('2');
+                        //DEFAULT FOR TESTING
+                        select_tag3.val('1');
                         $('#show_s1').append(select_tag1);
                         $('#show_s2').append(select_tag2);
                         $('#show_s3').append(select_tag3);
                         var proceedbtn= document.createElement("BUTTON");
-                        var text = document.createTextNode("Proceed ");
-                        proceedbtn.appendChild(text)
+                        var proceedStr="Process Import"
+                        var text = document.createTextNode(proceedStr);
+                        proceedText = proceedbtn.appendChild(text)
                         proceedbtn.onclick = function() {postExpData()};
                        // proceedbtn.classList.add("");
 
@@ -649,9 +718,6 @@ function onS3Select(select) {
      if (select.options[select.selectedIndex].text==='None'){
         alert(select.options[select.selectedIndex].text);
         $('#selfbtnid').prop('disabled',false);
-       
-        
-       
      }
      else{
         $('#selfbtnid').prop('disabled',true);
@@ -666,6 +732,34 @@ function onS3Select(select) {
         $('#self-assignbuttondiv').empty();
      }
 }
+function assignToBlocks(){
+    $('#blocksBreakUpDiv').html(
+        "<font color=red><b><i>Please wait while the assignment is being processed</i></b></font>")
+    $.ajax({
+        type: 'POST',
+        dataType: "json",
+        'data': {
+            'csrfmiddlewaretoken': '{{ csrf_token }}',
+        },
+        // the ajax call is sent to subdetails url name in the post function.  
+        url: "{% url 'assign_blocks' %}",
+        success: function(data){
+            console.log("<<---RECEIVED ASSIGN TO BLOCK POST RETURN--->>");
+            console.log(data)
+            for(var i in data){
+                console.log("data:",i,data[i]);
+            }
+            $('#blocksBreakUpDiv').html(data['blocks'])
+            if(data['blocks']!=="Empty"){
+                alert('TODO@MUDABIR: MERGE INTO ONE TABLE')
+            } else {
+                alert('PLEASE IMPORT SUBJECTS FIRST')
+            }
+        }
+                     
+    }); 
+}
+var proceedbtncount=0
 function postExpData(){
     var custom_id=$('#s1').children('option:selected').text();
     var email=$('#s2').children('option:selected').text() ;
@@ -682,9 +776,15 @@ function postExpData(){
     }
     else{
     var filedat=getFileDataList();
+    if (proceedbtncount!==0){
+        filedat.pop();
+        filedat.pop();
+        filedat.pop();
+    }
     filedat.push(custom_id);
     filedat.push(email);
     filedat.push(batch_field);    
+    proceedbtncount++;
     $.ajax({
                     type: 'POST',
                     dataType: "json",
@@ -693,10 +793,55 @@ function postExpData(){
                     'csrfmiddlewaretoken': '{{ csrf_token }}',
                     },
                     // the ajax call is sent to subdetails url name in the post function.  
-                    url: "{% url 'postexp' %}",
+                    // HAVE TO REMOVE IT LATER   
+                    // >>url: "{% url 'postexp' %}",
+                    url: "{% url 'import_subjects' %}",
                     success: function(data){
-                      
-                       }
+                        console.log("<<---SUBJECT IMPORT POST WAS GREAT!--->>");
+                        console.log(data)
+                        for(var i in data){
+                            console.log("data:",i,data[i]);
+                        }
+                        if(exp_id===""){
+                            exp_id=data['exp_id'];
+                            custom_exp_id=data['custom_exp_id'];
+                            showExpWIP();
+                        }
+                        if(data['batches']!==""){
+                            var tab_batches = $("<table id=\'tab_batch\'/>");
+                            var head_row = $("<tr />");
+                            var head_sno_col = $("<th />");
+                            head_sno_col.html("Batches")
+                            head_row.append(head_sno_col)
+                            var head_lset_col = $("<th />");
+                            head_lset_col.html("Subject Count")
+                            head_row.append(head_lset_col)
+                            tab_batches.append(head_row)
+                            var totCount = 0;
+                            for(var j in data['batches']){
+                                var btch_row = $("<tr />");
+                                var btch_cell = $("<td />");
+                                btch_cell.html(j);
+                                btch_row.append(btch_cell);
+                                var count_cell = $("<td />");
+                                var btch_count = data['batches'][j];
+                                count_cell.html(btch_count);
+                                totCount += btch_count;
+                                btch_row.append(count_cell);
+                                tab_batches.append(btch_row)
+                            }
+                            total_row = $("<tr />");
+                            total_label = $("<td />");
+                            total_label.html('Total');
+                            total_row.append(total_label);
+                            total_cell = $("<td />");
+                            total_cell.html(totCount);
+                            total_row.append(total_cell);
+                            tab_batches.append(total_row);
+                            $('.batchsize_div').html('');
+                            $('.batchsize_div').append(tab_batches);
+                        }
+                    }
                      
                     }); 
     }
@@ -861,13 +1006,14 @@ function selfAssignBatch(){
                     // the ajax call is sent to subdetails url name in the post function.  
                     url: "{% url 'uploadsamplefile' %}",
                     success: function(data){
-                        
-
+                        if(exp_id===""){
+                            exp_id=data['exp_id'];
+                            custom_exp_id=data['custom_exp_id'];
+                            showExpWIP();
+                        }
                         console.log(JSON.parse(data[1]))
-                        
                         dataframe_table=JSON.parse(data[1])
                         var mydata = dataframe_table;
-                        
                         var table = makeTable(mydata,"mytable");
                         transposeTable(table)
                         
@@ -878,14 +1024,12 @@ function selfAssignBatch(){
                             "bFilter": false,
                             "pageLength": 5
                             });
+                        // hiding the csv file data.
+                        $('#dataDiv').hide();
                         $('#subj_split_batch_rowdiv').show();
 
-                        groups=JSON.parse(data[2]);
-
-                        for (var obj in groups)  {
-                            console.log(obj);
-                            console.log(groups[obj]);
-                        }      
+                        groups=JSON.parse(data['batches']); 
+                       
                         var batch_size_table=document.createElement('TABLE'); 
                         batch_size_table.setAttribute('class','table table-striped table-bordered ') 
                         var b_thead=document.createElement('THEAD');
@@ -900,24 +1044,33 @@ function selfAssignBatch(){
                         var th=document.createElement('TH');
                         th.append('Batch Size');
                         trh.appendChild(th);
+                        var total=0;
                         for (var rowindex in groups){
                             var tr=document.createElement('TR');
                             b_tbdoy.appendChild(tr);
-                            var td=document.createElement('TD')
-                            console.log('rowindex',rowindex)
+                            var td=document.createElement('TD');
+                            console.log('rowindex',rowindex);
                             td.append(rowindex);
                             tr.appendChild(td);
                             var td=document.createElement('TD')
                             console.log('groups[rowindex]',groups[rowindex])
                             td.append(groups[rowindex]);
                             tr.appendChild(td);
+                            var num=parseInt(groups[rowindex])
+                            total=total+num;
                         }
+                            var tr=document.createElement('TR');
+                            b_tbdoy.appendChild(tr);
+                            var td=document.createElement('TD');
+                            td.append('Total');
+
+                            tr.appendChild(td);
+                            var td=document.createElement('TD');
+                            td.append(total);
+                            tr.appendChild(td);
                         console.log(batch_size_table);
                        $(batch_size_table).appendTo('.batchsize_div')    
-                      // $('.batchsize_div').append(data[2]);
                        }
-                     
-                     
                     }); 
     
 
@@ -1078,7 +1231,6 @@ else {
 }
 function chooseFileFunc(){
   $('#upload').prop('disabled',false);
-
 }
 
 // Outercheckbox function 
@@ -1128,6 +1280,8 @@ if (outerckbox.is(':checked')) {
     // innerchecks.
     // todo: change the name of innercheckboxdivs name as it seems like it is refering to
     // div inside inner checks...
+    
+    // checkbox_id_dict[outercheckid]=[];
     showInnerCheckBoxDivs(outercheckid,data);
     updateFeatureLvls();
 } else {
@@ -1146,39 +1300,7 @@ if (outerckbox.is(':checked')) {
 }
 }); 
 }
-function showInnerCheckBoxDivs(outercheckid,data){
-console.log('#'+outercheckid+'-innercheckboxdiv')
-// Creating inner checks and populating them with data. 
 
-
-for (var o in data){
-    console.log('A',o);
-    
-   
-    var $ctrl =  $(document.createElement("input")).attr({
-            id: o +'-innercheckbox-'+outercheckid,
-            name:  '',
-            value: data[o],
-            text :'',
-            type:  'checkbox',
-            checked:true,
-            onclick:"innerCheckBox($(this).attr('value'),$(this).attr('id'),\
-            $(this).parent().attr('title'), $(this).parent().attr('id')\
-            )"
-            
-    })
-// adding input attributes to a div
-$('#'+outercheckid+'-innercheckboxdiv').append($ctrl);
-$('#'+outercheckid+'-innercheckboxdiv').append(data[o]);
-$('#'+outercheckid+'-innercheckboxdiv').show();
-}
-}
-// function that hides the divs containing innercheckbox
-function hideInnerCheckBoxDivs(outercheckid){
-$('#'+outercheckid+'-innercheckboxdiv').hide();
-$('#'+outercheckid+'-innercheckboxdiv').empty();
-
-}
 // once the onclick function=>(innercheckbox) of inner checks are called it 
 // shows three things. innercheck value , id and outer check value/title.
 function innerCheckBox(innercheckval,innercheckid,outercheckdivtitle,outercheckdivid){
@@ -1201,60 +1323,161 @@ console.log("innercheckbox-",innercheckboxid );
     // $('#'+temparr[0]).prop('checked',true);
     
 if ($(innercheckboxid).prop('checked') == true){
-    if (dict[outercheckdivtitle] == null) {
-            dict[outercheckdivtitle]=[]
-        }   
-    // alert('You have Checked innercheckbox');
-    arr_feature_levels=dict[outercheckdivtitle];
-    console.log('Specific dict in Checked',dict[outercheckdivtitle]);
-    console.log('insert',arr_feature_levels);
-    arr_feature_levels.push(innercheckval);
-    dict[outercheckdivtitle]=arr_feature_levels;
-    console.log('arr',arr_feature_levels);
-    console.log('All dict in checked condition.',dict);
-    
-    updateFeatureLvls();
-   
+    //Process for adding the innercheck value in dict. 
+            if (dict[outercheckdivtitle] == null) {
+                    dict[outercheckdivtitle]=[]
+                }   
+            arr_feature_levels=dict[outercheckdivtitle];
+            console.log('Specific dict in Checked',dict[outercheckdivtitle]);
+            console.log('insert',arr_feature_levels);
+            arr_feature_levels.push(innercheckval);
+            dict[outercheckdivtitle]=arr_feature_levels;
+            console.log('arr',arr_feature_levels);
+            console.log('All dict in checked condition.',dict);
+            
+            updateFeatureLvls();
+    //Process for adding innercheck id in checkbox_id_dict
+            // 1.GET THE OUTER CHECK BOX ID BY GETTING LAST INDEX OF INNER CHECK ID. 
+            var outercheckid=innercheckid.slice(-1);
+            // get all innercheck present in check_id_dict
+            var innercheck_all_id=checkbox_id_dict[outercheckid];
+            // push newly selected one into innercheck_All_id
+            innercheck_all_id.push(innercheckid);
+            //
+            checkbox_id_dict[outercheckid]=innercheck_all_id;
+            console.log('newly added id in check dic',checkbox_id_dict)
+
+        
 
         
     
 } else if ($(innercheckboxid).prop('checked') == false) {
 
-    // alert('You UNNNChecked innercheckbox');
-    arr_feature_levels=dict[outercheckdivtitle];
-    console.log('Specific dict in UnChecked',dict[outercheckdivtitle]);
-    console.log('arr',arr_feature_levels);
-    console.log(innercheckval);
-    var index = $.inArray(innercheckval, arr_feature_levels);
-        if (index != -1) {
-            var removedvalue=arr_feature_levels.splice(index, 1);
-            console.log('removedvalue',removedvalue);
-      
-        
+   // PROCESS TO DELETE THE UNCHECKED  FEATURE LEVEL FROM DICT 
+                    // Getting all the feature levels of the feature in a list. 
+                    arr_feature_levels=dict[outercheckdivtitle];
+                    console.log('Specific dict in UnChecked',dict[outercheckdivtitle]);
+                    console.log('arr',arr_feature_levels);
+                    console.log(innercheckval);
+                    var index = $.inArray(innercheckval, arr_feature_levels);
+                        if (index != -1) {
+                            var removedvalue=arr_feature_levels.splice(index, 1);
+                            console.log('removedvalue',removedvalue);
+                    
+                        
 
-        }
-    console.log('del arr',arr_feature_levels);  
-    console.log('del arr',arr_feature_levels.length);
-    if (arr_feature_levels.length===0){
-        delete  dict[outercheckdivtitle];
-        console.log('condition check');
-        console.log('deleted dic',dict);
-        
+                        }
+                    console.log('del arr',arr_feature_levels);  
+                    console.log('del arr',arr_feature_levels.length);
+                    // A Check to see if all inner checks are unchecked then remove the key aswell
+                    if (arr_feature_levels.length===0){
+                        delete  dict[outercheckdivtitle];
+                        console.log('condition check');
+                        console.log('deleted dic',dict);
+   
+                    }
+                    else{ 
+                        dict[outercheckdivtitle]=arr_feature_levels;
+                        console.log('dict',dict);
+                        
+                    }
+ // PROCESS TO DELETE THE UNCHECKED FEATURE LEVEL ID FROM CHECKBOX_ID_DICT 
+                // 1.GET THE OUTER CHECK BOX ID BY GETTING LAST INDEX OF INNER CHECK ID. 
+                var outercheckid=innercheckid.slice(-1);
+                // get all the innercheck id from checkbox_id_dict of key outercheckid..
+                var innercheck_all_id=checkbox_id_dict[outercheckid]
+                // get the index of the innercheckid in innercheck_All_id list
+                // Then remove it. 
+                var innercheck_id_index = $.inArray(innercheckid, innercheck_all_id);
+                                    if (innercheck_id_index != -1) {
+                                        var removedid=innercheck_all_id.splice(index, 1);
+                                        console.log('removedid',removedid);
+                                    }
+                                    console.log('innercheck_all_id list',innercheck_all_id);  
+                                // A Check to see if all inner checks are unchecked then remove the key aswell
+                                if (innercheck_all_id.length===0){
+                                        delete  checkbox_id_dict[outercheckid];
+                                        console.log('condition check');
+                                        console.log('checkbox_id_dic after deletion',checkbox_id_dict);
+                                        var x = document.getElementById(outercheckid);
+                                        x.checked = false;
+                                        $('#'+outercheckid+'-innercheckboxdiv').hide();
+                                        $('#'+outercheckid+'-innercheckboxdiv').empty();
+                                    }
+                                else{ 
+                                    checkbox_id_dict[outercheckid]=innercheck_all_id;
+                                    console.log('checkbox_id_dict',checkbox_id_dict);
+                                }
 
-    }
-    else{ 
-        dict[outercheckdivtitle]=arr_feature_levels;
-        console.log('dict',dict);
-        
-    }
-    
+
 
     }
     updateFeatureLvls();
 }
 
-function sendFeatureLevels(){
+function showInnerCheckBoxDivs(outercheckid,data){
+console.log('#'+outercheckid+'-innercheckboxdiv')
+// Creating inner checks and populating them with data. 
 
+var innercheckbox_id_list=[];
+for (var o in data){
+        console.log('A',o);
+        
+    
+        var innercheck_element =  $(document.createElement("input")).attr({
+                id: o +'-innercheckbox-'+outercheckid,
+                name:  '',
+                value: data[o],
+                text :'',
+                type:  'checkbox',
+                checked:true,
+                onclick:"innerCheckBox($(this).attr('value'),$(this).attr('id'),\
+                $(this).parent().attr('title'), $(this).parent().attr('id')\
+                )"
+            
+        })
+        var inner_id=innercheck_element.attr('id')
+        console.log(inner_id)
+        console.log('INNERCHECK FUNC CHECK DICT',checkbox_id_dict);
+        var stored_innercheckbox_id_list=checkbox_id_dict[outercheckid]
+        console.log('stored_innercheckbox_id_list',stored_innercheckbox_id_list);
+        for (var value_id in stored_innercheckbox_id_list){
+            console.log(stored_innercheckbox_id_list[value_id]);
+            console.log (inner_id)
+            if (stored_innercheckbox_id_list[value_id]===inner_id)
+            {    console.log('in if cond')
+                innercheckbox_id_list.push(inner_id)
+            }
+            else{
+                innercheck_element.checked=false;
+            }
+        }
+
+
+        
+
+        // adding input attributes to a div
+        $('#'+outercheckid+'-innercheckboxdiv').append(innercheck_element);
+        $('#'+outercheckid+'-innercheckboxdiv').append(data[o]);
+        $('#'+outercheckid+'-innercheckboxdiv').show();
+    }
+    checkbox_id_dict[outercheckid]=innercheckbox_id_list;
+    alert(checkbox_id_dict[outercheckid]);
+    console.log('All innercheck boxid added to checkbox dict',checkbox_id_dict);
+}
+
+// function that hides the divs containing innercheckbox
+function hideInnerCheckBoxDivs(outercheckid){
+    delete checkbox_id_dict[outercheckid];
+    console.log("checkbox_id_dict",checkbox_id_dict);
+$('#'+outercheckid+'-innercheckboxdiv').hide();
+$('#'+outercheckid+'-innercheckboxdiv').empty();
+
+}
+
+
+
+function sendFeatureLevels(){
 $.ajax({
 type: 'POST',
 dataType: "json",
@@ -1263,7 +1486,7 @@ dataType: "json",
 'exp_id': exp_id,
 'csrfmiddlewaretoken': '{{ csrf_token }}',
 },
-// the ajax call is sent to subdetails url name in the post function.  
+// the ajax call is sent to createexp url name in the post function.  
 url: "{% url 'createexp' %}",
 success: function(data){
     console.log("<<---FEATURES POSTED SUCCESSFULLY--->>");
@@ -1272,10 +1495,12 @@ success: function(data){
     for(var i in data){
         console.log("Hi:",i,data[i])
     }
-    //if exp id is not set, set it first time
-    exp_id = data['exp_id'];
-    $('#cr_exp_header').html("<p1>CREATE EXPERIMENT</p1>");
-    $('#cr_exp_header').append("<p>"+data['custom_exp_id']+" is UNDER CONSTRUCITON</p>");
+    
+    if(exp_id===""){
+        exp_id = data['exp_id'];
+        custom_exp_id = data['custom_exp_id'];
+        showExpWIP()
+    }
         if (data['block_list']!=null){
             blockList = data['block_list']
             table_blocks=draw_block_table(blockList)
@@ -1317,11 +1542,13 @@ function draw_block_table(blocklist){
     return tab_blocks;
 }
 function display_blocktable(table_blocks){
-    $('#blocksBreakUp').html('');
-    $('#blocksBreakUp').append(table_blocks);
+    // Is not useed anymore
+    // $('#blocksBreakUp').html('');
+    // $('#blocksBreakUp').append(table_blocks);
+    $('#blocksListDiv').html('');
+    $('#blocksListDiv').append(table_blocks);
     
 }
-
 
 function sendFilePath(id){
         console.log(id);

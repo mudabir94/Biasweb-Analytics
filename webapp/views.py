@@ -33,6 +33,7 @@ import pandas as pd
 from biasweb.experiment.controller import ExperimentController
 from biasweb.utils.assign import Assigner
 import csv
+import codecs
 #--------------------------------------------------------------------------------------------------
 from django.core import serializers
 import pickle
@@ -729,9 +730,9 @@ def subDetails(request):
             print(arrlist)
     return HttpResponse(json.dumps(arrlist), content_type='application/json')
 ## Function for getting the sample file. 
-import csv
-import codecs
+
 def uploadSampleFile(request):
+    expCont = getExpController(request)
     if request.method == 'POST':
         if request.is_ajax:
             data = request.POST.get('csvfiledata')
@@ -782,19 +783,17 @@ def uploadSampleFile(request):
                 filebody=[i.split(',') for i in json_data[1:-1]] 
                 print(type(filebody))
                 print(filebody)
-
                 arr_filebody = np.array(filebody)
                 print(arr_filebody)
-
-                
                 dataframe= pd.DataFrame.from_records(arr_filebody,columns=filefields)
                 print('dataframe',dataframe)
                 
-                assign=Assigner(dataframe)
-                # object retrieving example
-                expCont = pickle.load( open( "save.p", "rb" ) )
-                
-                dSubBatches=assign.splitInBins(batch_num,batch_name,customlabels)
+
+                # assign=Assigner(dataframe)
+                # # object retrieving example
+                # expCont = pickle.load( open( "save.p", "rb" ) )
+                dSubBatches=expCont.assigner.splitInBins(batch_num,batch_name,customlabels)
+                # dSubBatches=assign.splitInBins(batch_num,batch_name,customlabels)
                 
                
                 print("controller df",dSubBatches)
@@ -814,7 +813,7 @@ def uploadSampleFile(request):
                 # groupsize=groupsize.to_json()
 
                 dict_all['1']=dataframe
-                dict_all['2']=groupby_batch_name_size
+                dict_all['batches']=groupby_batch_name_size
                 
                 # dict_all['2']=groupsize
                 print('dictionary all')
@@ -916,7 +915,7 @@ def postExp(request):
             #print('d',d)
             
             # object retrieving example
-            # expCont = pickle.load( open( "save.p", "rb" ) )
+            expCont = pickle.load( open( "save.p", "rb" ) )
             print(expCont.exp.capacity)
             json_data = json.loads(data)
             json_data=[i.replace('\r','') for i in json_data]  
@@ -944,17 +943,12 @@ def postExp(request):
             pickle.dump( expCont, open( "save.p", "wb" ) )
             print(expCont.exp.subject_set.all())
             print(expCont.subjData.groupby(batch_field_name).size())
-
-
-
-
-                
         return HttpResponse()
-from django.core import serializers
-import pickle
+
 def getExpController(request):
     try:
         sess_expId = request.session['sess_expId']
+        print('SESSION ID',sess_expId)
     except KeyError:
         sess_expId = None
     if sess_expId:
@@ -978,6 +972,9 @@ def getExpController(request):
         else:
             pickleExpController(expCont)
     else: #CREATE
+        print('in HERE ')
+        expAdminId = request.user.custom_id
+        expCont = ExperimentController(a_id=expAdminId)
         request.session['sess_expId'] = expCont.exp.id
         request.session['sess_custExpId'] = expCont.exp.custom_exp_id
         print("SAVED NEW EXPERIMENT TO SESSION---->>>>>>")
@@ -1037,6 +1034,12 @@ def assignToBlocks(request):
         print("Data in Exp Cont\n", expCont.assigner.df)
         if not expCont.subjData.empty:
             blocksBreakUp = expCont.assignToBlocks()
+            print('blocksBreakUp type',type(blocksBreakUp))
+            
+            # print(blocksBreakUp[['SECTION ']])
+            
+            print(blocksBreakUp.index)
+            blocksBreakUp=blocksBreakUp[['A','B']]
             blocksBreakUp = blocksBreakUp.to_html() #to_json(orient='index')
             print(blocksBreakUp)
         else:
@@ -1049,20 +1052,6 @@ def assignToBlocks(request):
         #create to_json dictionary of blocks (by batches, ie. index-wise, then row-wise)
         return JsonResponse(data, safe=False)
     
-    
-            
-
-
-            
-
-
-
-
-
- 
-        
-#Global variable check#
-
 class createExperiment(TemplateView): 
     
     def get(self,request):       
@@ -1113,8 +1102,6 @@ class createExperiment(TemplateView):
                     'custom_exp_id':expCont.exp.custom_exp_id,
                     'block_list':block_list
                 }
-                #object storing 
-                pickle.dump( expCont, open( "save.p", "wb" ) )
                 return JsonResponse(data) #, safe=False)
         #return render(request,'webapp/crudexperiment/create_experiment.html',data)
     
@@ -1124,8 +1111,5 @@ class datadefined(TemplateView):
         return render(request,'webapp/crudexperiment/datadefined.html')
 
     def post(self,request):  
-        #ajax would return a 2 strings
-        # 1. is the exp_id (which is combo of admin id + serial no of exp) 
-        # 2. newFset= e.g. [w,a,c]
-
+      
         return render(request,'webapp/crudexperiment/datadefined.html')     
