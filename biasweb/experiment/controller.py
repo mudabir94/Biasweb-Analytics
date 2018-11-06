@@ -2,7 +2,7 @@
 """
 Created on Mon Oct  8 15:57:03 2018
 
-@author: Dr. Shazib Sh
+@author: Dr. Shazib Shaikh
 """
 
 #from biasweb.experiment import Experiment
@@ -37,9 +37,10 @@ class ExperimentController:
         self.subjData = pd.DataFrame()
         self.subjects = Subject()
         self.idField = None
-        self.fSet = self.exp.experiment_feature_set.select_related('p_feature')
+        self.assigner = Assigner()
         if e_id:
             self.exp = Experiment.objects.get(id=e_id)
+            self.fSet = self.exp.experiment_feature_set.select_related('p_feature')
             self.fLevels = self.retrieveFLevels()
         else:
             self.exp.status = DESIGN_MODE
@@ -52,6 +53,7 @@ class ExperimentController:
             exp_id = self.exp.id
             exp_id = '-' + str(exp_id).zfill(4)  #ensuring the id is now a 4 digit numeric string
             self.exp.custom_exp_id += exp_id
+            self.fSet = self.exp.experiment_feature_set
             self.saveExperiment()
 
     def saveExperiment(self):
@@ -208,7 +210,6 @@ class ExperimentController:
         
 
     def importSujbectData(self,iFile):
-        self.assigner = Assigner()
         self.assigner.getLocalDToAssign(iFile)
         self.subjData = self.assigner.df
         if self.idField:
@@ -225,6 +226,7 @@ class ExperimentController:
     
     def updateOneBatch(self, subjId=None, subjC_Id=None):
         batchField = self.exp.batches_title
+        
         if batchField:
             #retrieve based on subjId,
             if subjId:
@@ -268,45 +270,78 @@ class ExperimentController:
         blockSet: List of tuples in the order of the features defined.
             This is an optional argument.  By default the blocks in self.blocks will
             be used, assuming that generateBlocks and saveBlocks have been called.
+        Returns
+        -------
+        blocksBreakUp: a DataFrame with size statistics. If subjects have been assigned,
+            it provides a batch-wise breakup count.
         """
         #GET blocks number and labels
         blockCount = self.exp.block_set.count()
         blockBinName = 'block__serial_no'
-
+        batchField = self.exp.batches_title
         #GET batches for this experiment
-        if self.exp.batches_title:            
-            #Calculate the proportions of each batch
-            #For now working with default
-            dfBatchCount = self.subjData.groupby(self.exp.batches_title).size().to_frame(name = 'split_edges')
-            dfBatchPc = dfBatchCount.apply(lambda x: x / x.sum())
-            dfBatchPc = dfBatchPc.reset_index()
+        if batchField:            
             self.dSubByBlock = self.assigner.splitByField(
                         nBins=blockCount,
-                        bName='block__serial_no',
-                        fieldName=self.exp.batches_title,
+                        bName=blockBinName,
+                        fieldName=batchField,
             )
-            print(self.dSubByBlock.groupby(['block__serial_no',
-                                    self.exp.batches_title])
+            #PERCENTAGE BREAKUP AFTER ASSIGNMENT
+            print(self.dSubByBlock.groupby([blockBinName,
+                                    batchField])
                     .size()
                     .groupby(level=0)
                     .apply(lambda x: x/float(x.sum())))
+            #'SHOULD BE' PERCENTAGE
             print("SHOULD BE:")
+            dfBatchCount = self.subjData.groupby(batchField).size().to_frame(name = 'split_edges')
+            dfBatchPc = dfBatchCount.apply(lambda x: x / x.sum())
+            dfBatchPc = dfBatchPc.reset_index()
             print(dfBatchPc)
-            blockDict = dict(self.exp.block_set.values_list('serial_no','id'))
-            self.dSubByBlock['block_id'] = self.dSubByBlock.block__serial_no.map(blockDict)
-            subjSet = self.exp.subject_set
-            for index, subj in self.dSubByBlock.iterrows():
-                c_id=subj[self.idField]
-                b_id=subj['block_id']
-                subjSet.filter(user__custom_id=c_id).update(block_id=b_id)
-            print(pd.DataFrame(list(subjSet.values()))
-                    .groupby(['block_id','batch'])
-                    .size().unstack())
-            self.subjData = self.dSubByBlock
-        #TODO@SHAZIB else left to implement
-        #ELSE: DO A SIMPLE SPLIT_IN_BINS
+        else:
+            self.dSubByBlock = self.assigner.splitInBins(
+                no_bins=blockCount,
+                binName=blockBinName
+            )
+        
+        #ADD BLOCK_IDs from database (mapped to their serial_no)
+        blockDict = dict(self.exp.block_set.values_list('serial_no','id'))
+        self.dSubByBlock['block_id'] = self.dSubByBlock.block__serial_no.map(blockDict)
+        subjSet = self.exp.subject_set
+        for index, subj in self.dSubByBlock.iterrows():
+            c_id=subj[self.idField]
+            b_id=subj['block_id']
+            subjSet.filter(user__custom_id=c_id).update(block_id=b_id)
+        subjSetList = list(self.exp.subject_set.values()) #just to refresh subject_set in cache
+        # if self.exp.batches_title:
+        #     print(pd.DataFrame(subjSetList)
+        #             .groupby(['block_id','batch'])
+        #             .size().unstack())
+        self.subjData = self.dSubByBlock
+        blocksBreakUp = pd.pivot_table(
+                self.subjData,
+                index=blockBinName,
+                columns=batchField,
+                aggfunc='count',
+                values=['ROLLNO'],
+                margins=True,
+                margins_name='Total'
+            )
+        blocksBreakUp.columns = blocksBreakUp.columns.droplevel(0)
+        blocksBreakUp = blocksBreakUp.rename(
+            columns={
+                blocksBreakUp.columns[-1]:'Block Total'
+            }
+        )
+        blocksBreakUp = blocksBreakUp.rename_axis("Block No.")
+        return blocksBreakUp
+
+    def saveSubjToXL(self, fName):
+        writer = pd.ExcelWriter(OUT_PATH + fName + '.xlsx')
+        self.subjData.to_excel(writer, sheet_name='Subjects')
+        writer.save()
             
-    def saveSubjects(self, dSub=None, fName=None, writeXL=False):
+    def saveSubjects(self, dSub=None, writeXL=False, fName=None):
         if isinstance(dSub,pd.DataFrame):
             self.subjData = dSub
         #WRITE TO DATABASE
@@ -328,7 +363,7 @@ class ExperimentController:
                     subjUser.username = c_id
                     subjUser.custom_id = c_id
                     subjUser.save()
-                    subj_id = subjUser.user_id
+                    subj_id = subjUser.id
                 #TODO@SHAZIB: CHECK IF SUBJECT USER EXISTS IN EXPERIMENT
                 oldSubj = self.exp.subject_set.filter(user_id = subj_id)
                 if oldSubj.exists():
@@ -347,10 +382,11 @@ class ExperimentController:
             print(subjForDb)
             self.exp.subject_set.bulk_create(subjForDb)
         if writeXL:
-            writer = pd.ExcelWriter(OUT_PATH + writeXL + '.xlsx')
-            texp.subjData.to_excel(writer)
-            writer.save()
-        #WRITE TO FILE AS WELL, IF GIVEN
-        #ELSE DEFAULT TO CUSTOM-ID WITH CERTAIN SWITCHES
+            if not fName:
+                fName = self.exp.custom_exp_id
+            self.saveSubjToXL(fName)
+
+
+    
     def toString():
         print("This class is the Controler Class");

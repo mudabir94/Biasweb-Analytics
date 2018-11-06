@@ -39,8 +39,8 @@ class Assigner:
  
     def splitInBins(self, no_bins, binName, df=None, binLabels=None):
         """
-        Similar to assign() but also returns the bins as separate dataframes,
-        in a groupby object, and nominates a field name for the bins column
+        Similar to assign() but returns DataFrame with 
+        bin column added to the dataframe.
         """
         if not isinstance(df,pd.DataFrame):
             df = self.df

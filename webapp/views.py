@@ -57,16 +57,16 @@ class Home(TemplateView):
         role=roleobj.role_name
         print(role)
 
-        if role=='Super Admin':
+        if role=='Super_Admin':
             
             template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
         
-        elif role=='Experiment Admin':
+        elif role=='Experiment_Admin':
             roleobj=Role.objects.get(pk=role)
             role_name=roleobj.role_name
             print(role_name)
             template_sidebar='webapp/sidebartemplates/sidebartemp_expadm.html'
-        elif role=='Platform Admin':
+        elif role=='Platform_Admin':
             roleobj=Role.objects.get(pk=role)
             role_name=roleobj.role_name
             print(role_name)
@@ -666,17 +666,17 @@ class  BiasTestFeature(TemplateView):
         role=roleobj.role_name
         print('ikoko',role)
 
-        if role=='Super Admin':
+        if role=='Super_Admin':
             template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
             expadm_maincontent_temp='webapp/main_content_temps/biaswebfeature/main_cont_temp_expadmin.html'
 
        
-        elif role=='Experimental Admin':
+        elif role=='Experimental_Admin':
               
             
             template_sidebar='webapp/sidebartemplates/sidebartemp_expadm.html'
             expadm_maincontent_temp='webapp/main_content_temps/biaswebfeature/main_cont_temp_expadmin.html'
-        elif role=='Platform Admin':
+        elif role=='Platform_Admin':
               
             
             template_sidebar='webapp/sidebartemplates/sidebartemp_pltfadm.html'
@@ -950,7 +950,104 @@ def postExp(request):
 
                 
         return HttpResponse()
+from django.core import serializers
+import pickle
+def getExpController(request):
+    try:
+        sess_expId = request.session['sess_expId']
+    except KeyError:
+        sess_expId = None
+    if sess_expId:
+        print("----->>>>>RETRIEVED EXP ID:",sess_expId,"FROM SESSION<<<<<<-----")
+        print(request.user.custom_id,":",request.user.username)
+        expAdminId = request.user.custom_id
+        expCont = ExperimentController(a_id=expAdminId,e_id=sess_expId)
+        print("Exp Custom Id:",expCont.exp.custom_exp_id)
+        print("The following features are ALREADY enabled:")
+        print(list(expCont.exp.experiment_feature_set.all()))
+        try:
+            pickledExpCont = pickle.load( open("expCont.p", "rb") )
+        except:
+            pickledExpCont = None
+        if pickledExpCont:
+            expCont.subjData = pickledExpCont.subjData
+            expCont.assigner.df = expCont.subjData
+            expCont.idField = pickledExpCont.idField
+            #POSSIBLY TRANSFER OTEHR THINGS AS WELL
+            #CAN'T USE THE PICKLED EXP CONT DIRECTLY AS all funcitons are not transferred as expected
+        else:
+            pickleExpController(expCont)
+    else: #CREATE
+        request.session['sess_expId'] = expCont.exp.id
+        request.session['sess_custExpId'] = expCont.exp.custom_exp_id
+        print("SAVED NEW EXPERIMENT TO SESSION---->>>>>>")
+    return expCont
 
+def pickleExpController(expCont):
+    pickle.dump(expCont, open('expCont.p','wb'))
+
+def importSubjects(request):
+    expCont = getExpController(request)
+    if request.is_ajax:
+        data = request.POST.get('csvfiledata')
+        json_data = json.loads(data)
+        json_data=[i.replace('\r','') for i in json_data]  
+        batch_field_name=json_data.pop()
+        email=json_data.pop()
+        custom_id=json_data.pop()
+        print(batch_field_name)
+        print(custom_id)
+        filefields = json_data[0].split(",")
+        print('filefields',filefields)
+        filebody=[i.split(',') for i in json_data[1:-1]] 
+        print(type(filebody))
+        print(filebody)
+        arr_filebody = np.array(filebody)
+        print(arr_filebody) 
+        dataframe= pd.DataFrame.from_records(arr_filebody,columns=filefields)
+        print("filedata")
+        print(dataframe)
+        if custom_id!='None':
+            expCont.setIdField(custom_id)
+        if batch_field_name!='None':
+            expCont.setBatchesTitle(batch_field_name)
+            preDefBatches = True
+        expCont.saveSubjects(dataframe)
+        print(expCont.exp.subject_set.all())
+        print('subjData:\n',expCont.subjData)
+        pickleExpController(expCont) #pickle so that we can retrieve the subjData
+        if preDefBatches:
+            batchGpDict = expCont.subjData.groupby(batch_field_name).size().to_dict()
+            print(batchGpDict)
+        else:
+            batchGpDict = ""
+        data = {    'exp_id':expCont.exp.id,
+                    'custom_exp_id':expCont.exp.custom_exp_id,
+                    'batches':batchGpDict
+        }
+        return JsonResponse(data)
+    #return HttpResponse()
+        
+def assignToBlocks(request):
+    #get the expCont
+    expCont = getExpController(request)
+    blocksBreakUp = "HELLO!"
+    if request.is_ajax:
+        print("Are there batches>>>",expCont.exp.batches_title)
+        print("Data in Exp Cont\n", expCont.assigner.df)
+        if not expCont.subjData.empty:
+            blocksBreakUp = expCont.assignToBlocks()
+            blocksBreakUp = blocksBreakUp.to_html() #to_json(orient='index')
+            print(blocksBreakUp)
+        else:
+            blocksBreakUp = "Empty"
+
+        data = {    'exp_id':expCont.exp.id,
+                    'custom_exp_id':expCont.exp.custom_exp_id,
+                    'blocks':blocksBreakUp
+        }
+        #create to_json dictionary of blocks (by batches, ie. index-wise, then row-wise)
+        return JsonResponse(data, safe=False)
     
     
             
@@ -971,8 +1068,18 @@ class createExperiment(TemplateView):
     def get(self,request):       
 
         platformfeatobj=platform_feature.objects.all()
+        try:
+            sess_expId = request.session['sess_expId']
+        except KeyError:
+            sess_expId = ""
+        try:
+            sess_custExpId = request.session['sess_custExpId']
+        except KeyError:
+            sess_custExpId = "123"
         return render(request,'webapp/crudexperiment/create_experiment.html',
                                         {'platformfeatobj':platformfeatobj,
+                                         'sess_expId':sess_expId,
+                                         'sess_custExpId':sess_custExpId
                                         }
         )
                                         
@@ -987,27 +1094,13 @@ class createExperiment(TemplateView):
                 #print('d',d)
                 postedFLevels = json.loads(d)
                 print('b',type(postedFLevels),postedFLevels)
-                #CHECK IF EXPERIMENT CONTROLLER EXISTS IN 
-                existExpId = request.POST.get('exp_id')
-                print("without MANIPULATION:", existExpId)
-                if not existExpId:
-                    print("RECEIVED NOTHING", existExpId)
-                    existExpId = None
-                else:
-                    print("--->RECEIVED exp id: ", existExpId)
-
-                #CREATE EXPERIMENT CONTROLLER AND INITIALIZE
-                print(request.user.custom_id,":",request.user.username)
-                expAdminId = request.user.custom_id
-                expCont = ExperimentController(a_id=expAdminId,e_id=existExpId)
                 
-
-                if not existExpId:
-                     existExpId = expCont.exp.id
-                print("Exp Custom Id:",expCont.exp.custom_exp_id)
-                print("The following features are ALREADY enabled:")
-                print(list(expCont.fSet.all()))
-
+                #CREATE EXPERIMENT CONTROLLER AND INITIALIZE
+                #returns either a controller for new experiment
+                #or for existing one [TODO: CHECK STATUS OF EXPERIMENT AS IN DESIGN_MODE]
+                expCont = getExpController(request)
+                existExpId = expCont.exp.id
+    
                 #SET FLEVELS
                 expCont.setFSet(newFLevels=postedFLevels,prompt=False)
                 block_set = expCont.generateBlocks()

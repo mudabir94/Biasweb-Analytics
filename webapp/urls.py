@@ -47,6 +47,8 @@ urlpatterns = [
     url(r'^subdetails/',views.subDetails, name='subdetails'),
     url(r'^uploadsamplefile/',views.uploadSampleFile, name='uploadsamplefile'),
     url(r'^postexp/',views.postExp, name='postexp'),
+    url(r'^import_subjects/',views.importSubjects, name='import_subjects'),
+    url(r'^assign_blocks/',views.assignToBlocks, name='assign_blocks'),
 
     url(r'^datadefinded/',views.datadefined.as_view(), name='datadefined'),
 
