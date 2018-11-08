@@ -738,7 +738,7 @@ def uploadSampleFile(request):
             data = request.POST.get('csvfiledata')
             #print('d',d)
             json_data = json.loads(data)
-            #print(json_data)
+           
             #print('json_data',type(json_data))
 
 
@@ -746,6 +746,8 @@ def uploadSampleFile(request):
             json_data=[i.replace('\r','') for i in json_data]  
             ## check last index of the json data. 
             ## it'll tell which assign type it is. on the basis of assign type perform action. 
+            print('FILE DATA')
+            print(json_data)
             assign_type=json_data.pop()
             assign_type=assign_type.replace('\n','')
             print(assign_type)
@@ -780,23 +782,23 @@ def uploadSampleFile(request):
                 filefields = json_data[0].split(",")
                 #label=json_data[0]
                 print('filefields',filefields)
-                filebody=[i.split(',') for i in json_data[1:-1]] 
+                filebody=[i.split(',') for i in json_data[1:]] 
                 print(type(filebody))
+                print('file body')
                 print(filebody)
                 arr_filebody = np.array(filebody)
+                print('arr_filebody')
                 print(arr_filebody)
                 dataframe= pd.DataFrame.from_records(arr_filebody,columns=filefields)
-                print('dataframe',dataframe)
-                
-
-                # assign=Assigner(dataframe)
-                # # object retrieving example
-                # expCont = pickle.load( open( "save.p", "rb" ) )
+                print('dataframe')
+                print(dataframe)
+                expCont.setBatchesTitle(batch_name)
                 dSubBatches=expCont.assigner.splitInBins(batch_num,batch_name,customlabels)
                 # dSubBatches=assign.splitInBins(batch_num,batch_name,customlabels)
                 
                
-                print("controller df",dSubBatches)
+                print("controller df")
+                print(dSubBatches)
                 print("cont df",type(dSubBatches))
                 dataframe=dSubBatches
                 print('DATAFRAME')
@@ -1000,7 +1002,7 @@ def importSubjects(request):
         print(custom_id)
         filefields = json_data[0].split(",")
         print('filefields',filefields)
-        filebody=[i.split(',') for i in json_data[1:-1]] 
+        filebody=[i.split(',') for i in json_data[1:]] 
         print(type(filebody))
         print(filebody)
         arr_filebody = np.array(filebody)

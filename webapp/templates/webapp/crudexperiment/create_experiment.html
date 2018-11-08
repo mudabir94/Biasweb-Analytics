@@ -68,7 +68,8 @@
                             </div>
                         </div>
                         <div class='row'>
-                            <div class='col-md-12'id='generated_blocks'>
+                            <div class='col-md-12'>
+                                <div class='table-responsive' id='generated_blocks'></div>
                             </div>    
                         </div>
                        
@@ -306,7 +307,9 @@
                                     <div id='blocksListDiv'></div>
                                 </div> -->
                                 <div class='col-md-12'>
+                                   
                                     <div id='blocksBreakUpDiv'></div>
+                                    
                                 </div>
                         </div>
             </div> 
@@ -1253,6 +1256,9 @@ function selfAssignBatch(){
     // filedata.pop();
     // filedata.pop();
     // filedata.pop();
+    var custom_id=$('#s1').children('option:selected').text();
+    var email=$('#s2').children('option:selected').text() ;
+    var batch_field=$('#s3').children('option:selected').text();
     console.log('filedata',filedata);
     var fieldname=$('#selfbatchtitleid').val();
     console.log('fieldname',fieldname);
@@ -1262,9 +1268,17 @@ function selfAssignBatch(){
     console.log('fieldlabel',fieldlabel);
     console.log(typeof(fieldlabel));
     var assigntype='self';
+    filedata.push(custom_id);
+    filedata.push(email);
+    filedata.push(batch_field);
+
+    
+    
     filedata.push(fieldname);
     filedata.push(fieldnum);
     filedata.push(fieldlabel);
+
+
     filedata.push(assigntype);
     console.log('fileDATA',filedata);
     refreshFileDataList();
