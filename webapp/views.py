@@ -730,6 +730,41 @@ def subDetails(request):
             print(arrlist)
     return HttpResponse(json.dumps(arrlist), content_type='application/json')
 ## Function for getting the sample file. 
+def selfDefault(request):
+    expCont = getExpController(request)
+    if request.method == 'POST':
+        if request.is_ajax:
+            data = request.POST.get('csvfiledata')
+            #print('d',d)
+            json_data = json.loads(data)
+            print("file",json_data)
+            json_data=[i.replace('\r','') for i in json_data]  
+            print('head',type(json_data[0]))
+            filefields = json_data[0].split(",")
+            #label=json_data[0]
+            print('filefields',filefields)
+            filebody=[i.split(',') for i in json_data[1:]] 
+            print(type(filebody))
+            print('file body')
+            print(filebody)
+            arr_filebody = np.array(filebody)
+            print('arr_filebody')
+            print(arr_filebody)
+            dataframe= pd.DataFrame.from_records(arr_filebody,columns=filefields)
+            print('dataframe')
+            print(dataframe)
+            expCont.subjData=dataframe
+            expCont.idField='ROLLNO'
+            batchesTitle = 'BATCHES'
+            defaultNo=1
+            expCont.subjData = expCont.assigner.splitInBins(defaultNo, batchesTitle)
+            expCont.setBatchesTitle(batchesTitle)
+            data=expCont.subjData.groupby(batchesTitle).size().to_dict()
+
+    return JsonResponse(data)
+
+
+
 
 def uploadSampleFile(request):
     expCont = getExpController(request)
@@ -738,7 +773,7 @@ def uploadSampleFile(request):
             data = request.POST.get('csvfiledata')
             #print('d',d)
             json_data = json.loads(data)
-           
+            
             #print('json_data',type(json_data))
 
 
@@ -792,6 +827,9 @@ def uploadSampleFile(request):
                 dataframe= pd.DataFrame.from_records(arr_filebody,columns=filefields)
                 print('dataframe')
                 print(dataframe)
+                expCont.subjData=dataframe
+                expCont.idField=customid_field
+
                 expCont.setBatchesTitle(batch_name)
                 dSubBatches=expCont.assigner.splitInBins(batch_num,batch_name,customlabels)
                 # dSubBatches=assign.splitInBins(batch_num,batch_name,customlabels)

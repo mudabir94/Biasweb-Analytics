@@ -49,7 +49,8 @@ urlpatterns = [
     url(r'^postexp/',views.postExp, name='postexp'),
     url(r'^import_subjects/',views.importSubjects, name='import_subjects'),
     url(r'^assign_blocks/',views.assignToBlocks, name='assign_blocks'),
-
+    url(r'^selfdefault/',views.selfDefault,  name='selfdefault'),
+   
     url(r'^datadefinded/',views.datadefined.as_view(), name='datadefined'),
 
 #---------------------------------------------------------------------------------------------   
