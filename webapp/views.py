@@ -988,7 +988,11 @@ def importSubjects(request):
     if request.is_ajax:
         data = request.POST.get('csvfiledata')
         json_data = json.loads(data)
+        print('file data')
+        print(json_data)
         json_data=[i.replace('\r','') for i in json_data]  
+        print('file data')
+        print(json_data)
         batch_field_name=json_data.pop()
         email=json_data.pop()
         custom_id=json_data.pop()
@@ -1035,12 +1039,13 @@ def assignToBlocks(request):
         if not expCont.subjData.empty:
             blocksBreakUp = expCont.assignToBlocks()
             print('blocksBreakUp type',type(blocksBreakUp))
-            
+            #blocksBreakUp = blocksBreakUp.reset_index()
+            print(blocksBreakUp)
             # print(blocksBreakUp[['SECTION ']])
             
             print(blocksBreakUp.index)
-            blocksBreakUp=blocksBreakUp[['A','B']]
-            blocksBreakUp = blocksBreakUp.to_html() #to_json(orient='index')
+            #blocksBreakUp=blocksBreakUp[['A','B']]
+            blocksBreakUp = blocksBreakUp.to_json(orient='index')#to_html(table_id="blocksBreakUp") #
             print(blocksBreakUp)
         else:
             blocksBreakUp = "Empty"

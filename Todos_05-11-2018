@@ -2,12 +2,14 @@ DUE BY WED 07/11 3pm Meeting (make invite)
 THESE ARE BEYOND SYNCHRONIZATION OF THINGS ALREADY ON shaz BRANCH that need to be accomodated in mudabir branch.
 
 1. CONTINUE PREVIOUS DESIGN SESSION:
-a. Pre-populate features to enable input checkboxes, if user wishes 
+*(done)a. Pre-populate features to enable input checkboxes, if user wishes 
 to continue with previous design session.
-b. import subjects (UNPICKLE)
+b. import subjects (UNPICKLE) after javascript prompt. 
 
 2. IF FEATURES NOT SELECTED: need to set defaults (TODO: Shazib needs to define these and
-Mudabir will implement)
+Mudabir will implement) 
+2.1 Should inform as a footnote to blocks table. What will be default settings for non selected features. 
+2.2 Give option to change these default unmeasured features. for e.g an extra column in feature level div.
 
 3. ENSURE 3 SCENARIOS FOR BATCH MANAGEMENT ARE CORRECTLY HANDLED:
 i. None --> Should ask if want's self-defined: if not then simply run splitInBins with 1 and give default batch name 'BATCH' and show summary with Batch = 1 and Total = total of batch 1.  ALso, should NOT show this as column on subject data table.
@@ -29,7 +31,7 @@ iii. SELF-DEFINED. ok, but ADD column to subjData (before pickling) AND show in 
 8. Should also be able to change mind about blocks (especially after changing batches in #7, or changing feature levels)
 MAYBE ASK AFTER FEATURE CHANGE WHETHER DIRECTLY __RE-ASSIGN ALREADY IMPORTED SUBJECTS TO NEW BLOCKS__.
 
-9. Adding dynamic column TO EXISTING BLOCKS TABLE (tab_blocks) rather than in separate div
+*(done)9. Adding dynamic column TO EXISTING BLOCKS TABLE (tab_blocks) rather than in separate div
 https://www.codeproject.com/Questions/698121/Adding-dynamic-column-by-jquery
 
 10. TABLE FORMATTING wishlist: 
@@ -39,3 +41,5 @@ https://www.codeproject.com/Questions/698121/Adding-dynamic-column-by-jquery
 10.4 Highlight batch field, and have mapped fields appear in small print under their title (e.g. 'SECTION'...Batch Field - under it in smaller font)
 10.5 Update batch/block column AFTER changes (use dynamic column addition - no need for separate input and output subjects data)
 10.6 Single Entry.
+
+11. Find why last record is pop from subject data. 
