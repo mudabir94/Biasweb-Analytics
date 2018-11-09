@@ -921,6 +921,7 @@ def getExpController(request):
         print(request.user.custom_id,":",request.user.username)
         expAdminId = request.user.custom_id
         expCont = ExperimentController(a_id=expAdminId,e_id=sess_expId)
+        
         print("Exp Custom Id:",expCont.exp.custom_exp_id)
         print("The following features are ALREADY enabled:")
         print(list(expCont.exp.experiment_feature_set.all()))
@@ -996,7 +997,7 @@ def assignToBlocks(request):
         print("Data in Exp Cont\n", expCont.assigner.df)
         if not expCont.subjData.empty:
             blocksBreakUp = expCont.assignToBlocks()
-            blocksBreakUp = blocksBreakUp.to_html() #to_json(orient='index')
+            blocksBreakUp = blocksBreakUp.to_html(table_id="blocksBreakUp") #to_json(orient='index')
             print(blocksBreakUp)
         else:
             blocksBreakUp = "Empty"

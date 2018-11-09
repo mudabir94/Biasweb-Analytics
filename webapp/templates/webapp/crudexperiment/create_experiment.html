@@ -304,7 +304,7 @@ if(exp_id===""){
 } else {
     let contin = confirm("Continue working on Experiment: "+custom_exp_id+"?");
      if(contin===false){
-         alert("TO BE IMPLEMENTED AS AJAX CALL")
+         alert("TO BE IMPLEMENTED AS AJAX CALL") //TODO@MUDABIR -- PROVIDE FOR EMPTY
      }else{
          showExpWIP()
      }
@@ -535,7 +535,8 @@ function assignToBlocks(){
             }
             $('#blocksBreakUpDiv').html(data['blocks'])
             if(data['blocks']!=="Empty"){
-                alert('TODO@MUDABIR: MERGE INTO ONE TABLE')
+                //alert('TODO@MUDABIR: MERGE INTO ONE TABLE')
+                console.log($("#blocksBreakUp > tbody > tr > th").html())
             } else {
                 alert('PLEASE IMPORT SUBJECTS FIRST')
             }
@@ -543,6 +544,7 @@ function assignToBlocks(){
                      
     }); 
 }
+var processbtnclicked=0
 function postExpData(){
     var custom_id=$('#s1').children('option:selected').text();
     var email=$('#s2').children('option:selected').text() ;
@@ -557,10 +559,17 @@ function postExpData(){
         $('#selfbuttondiv').append(selfbutton).slideDown(1000).fadeIn(1000);
     }
     else{
+      
     var filedat=getFileDataList();
+      if (processbtnclicked!=0){
+             filedat.pop();
+             filedat.pop();
+             filedat.pop();
+        }
     filedat.push(custom_id);
     filedat.push(email);
     filedat.push(batch_field);    
+    processbtnclicked++;
     $.ajax({
                     type: 'POST',
                     dataType: "json",
@@ -576,6 +585,7 @@ function postExpData(){
                         for(var i in data){
                             console.log("data:",i,data[i]);
                         }
+                       
                         if(exp_id===""){
                             exp_id=data['exp_id'];
                             custom_exp_id=data['custom_exp_id'];
