@@ -1,42 +1,47 @@
-from django.shortcuts import render
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.views.generic import TemplateView
-from django.http import JsonResponse
-#loading forms from forms.py file. 
-from .forms import blogForm,SignUpForm,mobile_phone_form,filterform,sort_filter_form
-from .forms import NameForm
-#-----------------------------------------------------------------
-from .models import blog,mobile_phone,phone,samsung_phone,sort_feature
-from .models import User,userscoreRecord,prunedmobilephones
-from.models import template_roles as tr 
-from .models import Role ,platform_feature
-from. models import templates as tpl
-from .models import experiment as exp
-#---------------------------------------------------------------
-from django.http import HttpResponse
-from django.contrib.auth import login as auth_login, authenticate
-from django.contrib.auth.forms import UserCreationForm
-from django.shortcuts import render, redirect
-from django.db import connection
-from django.db.models import Q
-import json
-from django.utils import timezone
-from biasweb.pythonscripts.getdata import get
-from biasweb.pythonscripts.insertcsvfiletotable import populate_Table
-from biasweb.pythonscripts.experiment_admin import Experiment_Admin
-
+import codecs
+import csv
 #-------------------------------------------------------------------------------------------------
 #test_experiment imports. 
 import itertools
+import json
+import os
+import pickle
+from pathlib import Path
+
+from django.contrib.auth import authenticate
+from django.contrib.auth import login as auth_login
+from django.contrib.auth.forms import UserCreationForm
+#--------------------------------------------------------------------------------------------------
+from django.core import serializers
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.db import connection
+from django.db.models import Q
+#---------------------------------------------------------------
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import redirect, render
+from django.utils import timezone
+from django.views.generic import TemplateView
+
 import numpy as np
 import pandas as pd
 from biasweb.experiment.controller import ExperimentController
+from biasweb.pythonscripts.experiment_admin import Experiment_Admin
+from biasweb.pythonscripts.getdata import get
+from biasweb.pythonscripts.insertcsvfiletotable import populate_Table
 from biasweb.utils.assign import Assigner
-import csv
-import codecs
-#--------------------------------------------------------------------------------------------------
-from django.core import serializers
-import pickle
+
+#loading forms from forms.py file. 
+from .forms import (NameForm, SignUpForm, blogForm, filterform,
+                    mobile_phone_form, sort_filter_form)
+#-----------------------------------------------------------------
+from .models import Role, User, blog
+from .models import experiment as exp
+from .models import (mobile_phone, phone, platform_feature, prunedmobilephones,
+                     samsung_phone, sort_feature, userscoreRecord)
+
+from.models import template_roles as tr 
+from. models import templates as tpl
+
 #--------------------------------------------------------------------------------------------------
 role=1   #global variable used in adminsetup and globalFunc function. 
 mobiles=samsung_phone.objects.raw('SELECT * FROM webapp_samsung_phone WHERE id=1 or id=2') # making mobiles object global.
@@ -666,20 +671,13 @@ class  BiasTestFeature(TemplateView):
         roleobj=Role.objects.get(pk=role)
         role=roleobj.role_name
         print('ikoko',role)
-
         if role=='Super_Admin':
             template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
             expadm_maincontent_temp='webapp/main_content_temps/biaswebfeature/main_cont_temp_expadmin.html'
-
-       
         elif role=='Experimental_Admin':
-              
-            
             template_sidebar='webapp/sidebartemplates/sidebartemp_expadm.html'
             expadm_maincontent_temp='webapp/main_content_temps/biaswebfeature/main_cont_temp_expadmin.html'
         elif role=='Platform_Admin':
-              
-            
             template_sidebar='webapp/sidebartemplates/sidebartemp_pltfadm.html'
          #*****************************************************
         return render(request,self.template_name,{'template_sidebar':template_sidebar,
@@ -690,7 +688,6 @@ class  BiasTestFeature(TemplateView):
         return render(request,'webapp/biasfeaturetest.html')
 
 class ManageShortList(TemplateView):
-
     def get(self,request):
         mobiles= samsung_phone.objects.all()
         paginator = Paginator(mobiles,9)
@@ -705,14 +702,10 @@ class ManageShortList(TemplateView):
             ####print("PST",request.POST.get('d')) 
             d = request.POST.get('data[0]')
             d=json.loads(d)
-            
             arrr = request.POST.get('data[1]')
             arr=json.dumps(arrr)
-            
             print(arr)
             print(d)
-           
-            
         return render(request,'webapp/mangeshortlist.html',{'mobiles':mobiles})
 def subDetails(request):
     if request.is_ajax:
@@ -721,7 +714,6 @@ def subDetails(request):
             ####print("PST",request.POST.get('d')) 
             d = request.POST.get('d')
         ### print('JSONLOADS',eval(d))
-
             b = json.loads(d)
             print(b)
             pltfobj=platform_feature.objects.get(feature_symbol=b)
@@ -757,17 +749,21 @@ def selfDefault(request):
             expCont.idField='ROLLNO'
             batchesTitle = 'BATCHES'
             defaultNo=1
+            pickleExpController(expCont)
+            expCont=getExpController(request)
+           
+            
             expCont.subjData = expCont.assigner.splitInBins(defaultNo, batchesTitle)
             expCont.setBatchesTitle(batchesTitle)
+            expCont.saveSubjects()
+            pickleExpController(expCont)
             data=expCont.subjData.groupby(batchesTitle).size().to_dict()
 
     return JsonResponse(data)
-
-
-
-
 def uploadSampleFile(request):
     expCont = getExpController(request)
+    print('expContid',expCont.idField)
+    
     if request.method == 'POST':
         if request.is_ajax:
             data = request.POST.get('csvfiledata')
@@ -775,9 +771,6 @@ def uploadSampleFile(request):
             json_data = json.loads(data)
             
             #print('json_data',type(json_data))
-
-
-
             json_data=[i.replace('\r','') for i in json_data]  
             ## check last index of the json data. 
             ## it'll tell which assign type it is. on the basis of assign type perform action. 
@@ -790,26 +783,24 @@ def uploadSampleFile(request):
             if assign_type=='self':
                 customlabels=json_data.pop()
                 customlabels=customlabels.replace('\n','')
-                
                 customlabels=customlabels.split(',')
-                print(customlabels)
-
+                print('customlabel',customlabels)
                 batch_num=json_data.pop()
                 batch_num=batch_num.replace('\n','')
-                print(batch_num)
+                print('batch number',batch_num)
                 batch_num=int(batch_num)
                 batch_name=json_data.pop()
                 batch_name=batch_name.replace('\n','')
-                print(batch_name)
-                customid_field=json_data.pop()
-                customid_field=customid_field.replace('\n','')
-                print(customid_field)
+                print('batch_name',batch_name)
+                batch_title_field=json_data.pop()
+                batch_title_field=batch_title_field.replace('\n','')
+                print('batch_title_field',batch_title_field)
                 email_field=json_data.pop()
                 email_field=email_field.replace('\n','')
                 print(email_field)
-                batch_title_field=json_data.pop()
-                batch_title_field=batch_title_field.replace('\n','')
-                print(batch_title_field)
+                customid_field=json_data.pop()
+                customid_field=customid_field.replace('\n','')
+                print('customid_field',customid_field)
                
 
 
@@ -826,21 +817,39 @@ def uploadSampleFile(request):
                 print(arr_filebody)
                 dataframe= pd.DataFrame.from_records(arr_filebody,columns=filefields)
                 print('dataframe')
-                print(dataframe)
+                print(dataframe.head())
                 expCont.subjData=dataframe
-                expCont.idField=customid_field
-
-                expCont.setBatchesTitle(batch_name)
-                dSubBatches=expCont.assigner.splitInBins(batch_num,batch_name,customlabels)
-                # dSubBatches=assign.splitInBins(batch_num,batch_name,customlabels)
                 
-               
+                print('subdata head')
+                print(expCont.subjData.head())
+                # expCont.idField=customid_field
+                print('custom id field')
+                print(customid_field)
+                expCont.setIdField(customid_field)
+                print('ExpCont.idField')
+                print(expCont.idField)
+                expCont.setBatchesTitle(batch_name)
+                print('expContsubjdatafield')
+                print(expCont.subjData.head())
+                pickleExpController(expCont)
+                expCont=getExpController(request)
+
+
+                expCont.subjData=expCont.assigner.splitInBins(batch_num,batch_name,customlabels)
+                print('ExpCont_SubjData')
+                print(expCont.subjData.head())
+                print('Exp assigner df')
+                print(expCont.assigner.df.head())
+                expCont.saveSubjects()
+                dSubBatches=expCont.subjData
+                pickleExpController(expCont)
+
                 print("controller df")
-                print(dSubBatches)
-                print("cont df",type(dSubBatches))
+                # print(dSubBatches)
+                print("contdf ",type(dSubBatches))
                 dataframe=dSubBatches
                 print('DATAFRAME')
-                print(dataframe)
+                # print(dataframe)
                 dict_all={}
                 
                 groupby_batch_name=dataframe.groupby(batch_name)
@@ -859,91 +868,12 @@ def uploadSampleFile(request):
                 print('dictionary all')
                 
                 print(dict_all)
+                
+
                 return HttpResponse(json.dumps(dict_all))#dSubBatches_grp_A_json)
                
                 ## ONCE THE DATA IS PROCESSED WE CAN SAVE INTO EXCEL OR CSV FILE
                 #print(dSubBatches.get_group('1'))
-            elif  assign_type=='pre':
-                customid_field=json_data.pop()
-                customid_field=customid_field.replace('\n','')
-                print(customid_field)
-                email_field=json_data.pop()
-                email_field=email_field.replace('\n','')
-                print(email_field)
-                batch_title_field=json_data.pop()
-                batch_title_field=batch_title_field.replace('\n','')
-                print(batch_title_field)
-
-
-                #Assign To Blocks
-
-                # print(fields[inputNo], ": Setting  as BATCH TITLE")
-                # texp.setBatchesTitle(fields[inputNo])
-                # batchesLabels = texp.subjData.iloc[:,inputNo].unique()
-                # batchesTitle = texp.exp.batches_title
-                # texp.assignToBlocks()
-
-                ## Assign Subjects
-                
-                # print("Which field will be used as CUSTOM ID")
-                # for i in range(len(fields)):
-                #     print("[",i,"]",fields[i])
-                # customIdNo = eval(input("ENTER Column No for CUSTOM ID:  "))
-                # texp.setIdField(fields[customIdNo])
-                  
-                
-
-
-                
-                print('filefields',type(json_data[0]))
-                filefields = json_data[0].split(",")
-                
-                print('filefields',filefields)
-                filebody=[i.split(',') for i in json_data[1:-1]] 
-                print(type(filebody))
-                print(filebody)
-
-                arr_filebody = np.array(filebody)
-                print(arr_filebody)
-                
-
-                dataframe= pd.DataFrame.from_records(arr_filebody,columns=filefields)
-                print(dataframe)
-
-                #assigner = Assigner(dataframe)
-                #dSubBatches=assigner.splitByField(selected_fieldname)
-                print(type(dSubBatches))
-                #print(dSubBatches.get_group())
-            
-                # seclabels=csvdataframe[name].unique()
-                # print('seclabels',seclabels)
-                # seclabels=list(seclabels)
-                # no_batches=len(seclabels)
-                # assigner = Assigner(csvdataframe)
-                # #PRE-DEFINED DOES NOT NEED SPLIT IN BINS
-                
-                # #TODO@MUDABIR: USE SPLIT IN BINS FOR SELF-DEFINED OPTION
-                # dSubBatches=assigner.splitInBins(no_batches,'batch',seclabels )
-                # print("dSubbatches",dSubBatches)
-                
-                
-                # dSubBatches_grp_A=dSubBatches.get_group('A')
-                # print(type(dSubBatches_grp_A))
-                # dSubBatches_grp_A_json=dSubBatches_grp_A.to_json()
-                # print(dSubBatches_grp_A_json)
-                # print(type(dSubBatches_grp_A_json))
-                ## ONCE THE DATA IS PROCESSED WE CAN SAVE INTO EXCEL OR CSV FILE
-                
-                
-                #dataframe=dataframe.to_json()
-                return HttpResponse()#dSubBatches_grp_A_json)
-
-                
-
-                
-           
-
-        
     else:
         pass
     return render(request, 'webapp/crudexperiment/create_experiment.html')    
@@ -1000,28 +930,36 @@ def getExpController(request):
         print("The following features are ALREADY enabled:")
         print(list(expCont.exp.experiment_feature_set.all()))
         try:
-            pickledExpCont = pickle.load( open("expCont.p", "rb") )
+            print('in try pickle expCont')
+            pickledExpCont = pickle.load( open("expCont2.p", "rb") )
+            print('pickledExpCont.subjData')
+            print(pickledExpCont.subjData)
         except:
+            print('in except pickled ExpCont=None')
             pickledExpCont = None
         if pickledExpCont:
+            print('in if condition if pickle exsists')
             expCont.subjData = pickledExpCont.subjData
             expCont.assigner.df = expCont.subjData
+            print('IN GETEXP CONT expCont.assigner.df',expCont.assigner.df.head())
             expCont.idField = pickledExpCont.idField
             #POSSIBLY TRANSFER OTEHR THINGS AS WELL
             #CAN'T USE THE PICKLED EXP CONT DIRECTLY AS all funcitons are not transferred as expected
         else:
+            print('in else cond to save obj in pickle')
             pickleExpController(expCont)
     else: #CREATE
-        print('in HERE ')
+        print('in else create Exp obj  ')
         expAdminId = request.user.custom_id
         expCont = ExperimentController(a_id=expAdminId)
+        print('Exp id',expCont.exp.id)
         request.session['sess_expId'] = expCont.exp.id
         request.session['sess_custExpId'] = expCont.exp.custom_exp_id
         print("SAVED NEW EXPERIMENT TO SESSION---->>>>>>")
     return expCont
 
 def pickleExpController(expCont):
-    pickle.dump(expCont, open('expCont.p','wb'))
+    pickle.dump(expCont, open('expCont2.p','wb'))
 
 def importSubjects(request):
     expCont = getExpController(request)
@@ -1064,8 +1002,9 @@ def importSubjects(request):
             batchGpDict = ""
         data = {    'exp_id':expCont.exp.id,
                     'custom_exp_id':expCont.exp.custom_exp_id,
-                    'batches':batchGpDict
-        }
+                    'batches':batchGpDict,
+                    'batch_field':batch_field_name
+                    }
         return JsonResponse(data)
     #return HttpResponse()
         
@@ -1077,6 +1016,7 @@ def assignToBlocks(request):
         print("Are there batches>>>",expCont.exp.batches_title)
         print("Data in Exp Cont\n", expCont.assigner.df)
         if not expCont.subjData.empty:
+            print('if exp subjdata is not empty')
             blocksBreakUp = expCont.assignToBlocks()
             print('blocksBreakUp type',type(blocksBreakUp))
             #blocksBreakUp = blocksBreakUp.reset_index()
@@ -1096,14 +1036,24 @@ def assignToBlocks(request):
         }
         #create to_json dictionary of blocks (by batches, ie. index-wise, then row-wise)
         return JsonResponse(data, safe=False)
+def removeSessionObj(request):
+    filepath = Path("E:/bias/expCont2.p")
+    if filepath:
+        os.remove('E:/bias/expCont2.p')
+    if request.session['sess_expId']:
+        del request.session['sess_expId']
+    
     
 class createExperiment(TemplateView): 
+
     
     def get(self,request):       
-
+        #removeSessionObj(request)
         platformfeatobj=platform_feature.objects.all()
+        
         try:
             sess_expId = request.session['sess_expId']
+            print("sesid",sess_expId)
         except KeyError:
             sess_expId = ""
         try:
@@ -1139,6 +1089,7 @@ class createExperiment(TemplateView):
                 expCont.setFSet(newFLevels=postedFLevels,prompt=False)
                 block_set = expCont.generateBlocks()
                 block_list = list(block_set.all().values('serial_no','levels_set'))
+                
                 # # blockStr = "\n".join(str(b) for b in expCont.exp.block_set.all())
                 print('<<<<<<TO DISPLAY ON PAGE>>>>>>')
                 print(block_list)

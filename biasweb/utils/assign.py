@@ -44,6 +44,10 @@ class Assigner:
         """
         if not isinstance(df,pd.DataFrame):
             df = self.df
+            print('if not isintance dataframe')
+            print(df.head())
+        print('outside if not isstance dataframe')
+        print(df.head())
         df[binName] = self.assign(no_groups=no_bins,
                         df=df,
                         gpLabels=binLabels
@@ -53,12 +57,17 @@ class Assigner:
         return df
     
     def splitByField(self, nBins, bName, fieldName, data=None, bLabels=None):
+        print('fieldName',fieldName)
+        print('data',data)
         """
         Applies splitInBins groupwise on a specified field to ensure
         proportions of the field are maintained.
         """
         if not isinstance(data,pd.DataFrame):
             data = self.df
+            print('in if data')
+            print(data)
+        
         data = (data.groupby(fieldName)
                 .apply(lambda x: 
                     self.splitInBins(
@@ -71,7 +80,8 @@ class Assigner:
         )
         return data
 
-        
+        print('self.df')
+        print(self.df)
         groups = self.df.groupby(fieldName)
         print(groups.size())
         return groups

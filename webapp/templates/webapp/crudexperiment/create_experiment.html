@@ -361,14 +361,7 @@ var checkbox_id_dict={};
 
 // When the page will this will be the first javascript function that will be called. 
 $(document).ready(function () {
- var blockList = JSON.parse(window.localStorage.getItem("blockList")); 
- if ( blockList===null){
-        console.log('block list empty');
-    }
-else{
-     table_blocks=draw_block_table(blockList)
-     display_blocktable(table_blocks);
-}
+ 
    
 
 // This Will hide all the divs with class=innerchecksboxdivs
@@ -406,58 +399,84 @@ if(exp_id===""){
          localStorage.removeItem("blockList");
          localStorage.removeItem("checkbox_id_dict");
          localStorage.removeItem("feat_dict");
+         $('#feat_lvl_div').hide();
+         // ajax call to remove pickle data
+        //  $.ajax({
+        //         type: 'POST',
+        //         dataType: "json",
+        //         'data': {
+
+        //         'csrfmiddlewaretoken': '{{ csrf_token }}',
+        //         },
+        // // the ajax call is sent to subdetails url name in the post function.  
+        //         url: "{% url 'remove_session_obj' %}",
+        //         success: function(data){
+                        
+        //             }
+        //         }); 
+
 
      }else{
-         showExpWIP()
+        showExpWIP();
+
+        // TESTING 
+        dict=JSON.parse(window.localStorage.getItem("feat_dict")); 
+        checkbox_id_dict=JSON.parse(window.localStorage.getItem("checkbox_id_dict")); 
+        var blockList = JSON.parse(window.localStorage.getItem("blockList")); 
+
+        if ( blockList===null){
+                alert('block list empty');
+            }
+        else{
+            table_blocks=draw_block_table(blockList)
+            display_blocktable(table_blocks);
+        }
+
+
+
+        if (dict==null ){
+            dict={};
+
+        //     dict['I']=['I.1'];
+        //     dict['R']=['R.1'];
+        //     dict['W']=['W.direct'];
+        //     dict['A']=['A.all','A.user']
+        //     dict['C']=['C.full']
+        }
+        else {
+            displayfeaturelevelTable();
+        }
+        if (checkbox_id_dict==null){
+            checkbox_id_dict={};
+
+            // checkbox_id_dict[1]=['1-innercheckbox-1'];
+            // checkbox_id_dict[2]=['1-innercheckbox-2'];
+            // checkbox_id_dict[3]=['0-innercheckbox-3'];
+            // checkbox_id_dict[4]=['0-innercheckbox-4','3-innercheckbox-4'];
+            // checkbox_id_dict[5]=['0-innercheckbox-5'];
+        }
+
+        console.log('dict',dict);console.log('checkbox_id_dict',checkbox_id_dict);
+
+        // Filling outer checkboxes when the page is loaded. 
+            // LOGIC TO BE IMPLEMENTED. 
+            // First Check if checbox_id_dict is empty if not then run following, else do nothing. 
+            // Then Run a SEPERATE OUTERCHECKBOX function that generates checkboxes exactly like the original one, but doesnt store data in dict.
+            // Which will run a seperate showinnerbox function to populate the innerchecboxes. 
+        if (checkbox_id_dict!={}){
+        for (var key in checkbox_id_dict){
+            console.log('cheCKebox value',checkbox_id_dict[key]);
+            console.log('key',key);
+            var outercheckbox = document.getElementById(key);
+            outercheckbox.checked = true; 
+            outerCheckBox_Stored( outercheckbox.getAttribute('value') ,key )
+        }
+        }
 
 
      }
 }
-// TESTING 
-dict=JSON.parse(window.localStorage.getItem("feat_dict")); 
-checkbox_id_dict=JSON.parse(window.localStorage.getItem("checkbox_id_dict")); 
 
-
-
-
-if (dict==null ){
-    dict={};
-
-//     dict['I']=['I.1'];
-//     dict['R']=['R.1'];
-//     dict['W']=['W.direct'];
-//     dict['A']=['A.all','A.user']
-//     dict['C']=['C.full']
- }
-else {
-    displayfeaturelevelTable();
-}
-if (checkbox_id_dict==null){
-    checkbox_id_dict={};
-
-    // checkbox_id_dict[1]=['1-innercheckbox-1'];
-    // checkbox_id_dict[2]=['1-innercheckbox-2'];
-    // checkbox_id_dict[3]=['0-innercheckbox-3'];
-    // checkbox_id_dict[4]=['0-innercheckbox-4','3-innercheckbox-4'];
-    // checkbox_id_dict[5]=['0-innercheckbox-5'];
-}
-
-console.log('dict',dict);console.log('checkbox_id_dict',checkbox_id_dict);
-
-// Filling outer checkboxes when the page is loaded. 
-    // LOGIC TO BE IMPLEMENTED. 
-    // First Check if checbox_id_dict is empty if not then run following, else do nothing. 
-    // Then Run a SEPERATE OUTERCHECKBOX function that generates checkboxes exactly like the original one, but doesnt store data in dict.
-    // Which will run a seperate showinnerbox function to populate the innerchecboxes. 
-if (checkbox_id_dict!={}){
-for (var key in checkbox_id_dict){
-    console.log('cheCKebox value',checkbox_id_dict[key]);
-    console.log('key',key);
-    var outercheckbox = document.getElementById(key);
-    outercheckbox.checked = true; 
-    outerCheckBox_Stored( outercheckbox.getAttribute('value') ,key )
-}
-}
 
 });
 
@@ -927,6 +946,7 @@ function assignToBlocks(){
         type: 'POST',
         dataType: "json",
         'data': {
+
             'csrfmiddlewaretoken': '{{ csrf_token }}',
         },
         // the ajax call is sent to subdetails url name in the post function.  
@@ -986,26 +1006,9 @@ function assignToBlocks(){
                 var newCell  = newRow.insertCell(-1);
                  newCell.innerHTML= blocks['Total'][cells];
             }
-            $('#blocksBreakUpDiv').html(block_table_extended)
-            // for (var row_num  in blocks){
-            //     console.log('row_num',row_num);
-            //     // th.append(col_name);
-            //     var tr
-            //     console.log('blocks[row_num]',blocks[row_num]);
-            //     for (var col_name in blocks[row_num]){
-                   
-            //         console.log('col_name',col_name)
-            //         if (col_list.includes(col_name)){
-                        
-            //         }
-            //         else{
-            //             col_list.push(col_name);
-            //             th.append(col_name);
-            //         }
-            //         console.log('blocks[col_name][row]',blocks[col_name][row]);
-            //     }
-            // }
-            // $('#blocksBreakUpDiv').html(data['blocks'])
+            // $('#blocks_table').DataTable({"pageLength": 5 });
+            $('#blocks_table').appendTo('#blocksBreakUpDiv')
+           
 
             if(data['blocks']!=="Empty"){
                 alert('TODO@MUDABIR: MERGE INTO ONE TABLE')
@@ -1038,6 +1041,7 @@ function hideSelfBarButton(){
         $('#batchlabel_name').empty();
         $('#batchlabel_input').empty();
         $('#self-assignbuttondiv').empty();
+        // $('.batchsize_div').empty();
         var filedt=getFileDataList();
         console.log('filedata');
         console.log(filedt);
@@ -1100,6 +1104,7 @@ function hideSelfBarButton(){
 
 }
 function postExpData(){
+    
     var custom_id=$('#s1').children('option:selected').text();
     var email=$('#s2').children('option:selected').text() ;
     var batch_field=$('#s3').children('option:selected').text();
@@ -1108,7 +1113,7 @@ function postExpData(){
 
        
         var self_permission_text_div=document.createElement('Label');
-        self_permission_text_div.append('If you want to continue with custom self-defined then press yes else press no ')
+        self_permission_text_div.append('<b>Would you like to create new batches now?</b><br><i>(if not, then by default the subjects will be considered as \"Batch 1\")</i>')
         $('#self_permission_text_div').append(self_permission_text_div);
         var self_button_yes=document.createElement('BUTTON');
         self_button_yes.setAttribute('id','self_button_yes');
@@ -1127,7 +1132,7 @@ function postExpData(){
    }
     else{
     var filedat=getFileDataList();
-    console.log();
+    console.log('before setting filedata',filedat);
     if (proceedbtncount!==0){
         filedat.pop();
         filedat.pop();
@@ -1135,7 +1140,9 @@ function postExpData(){
     }
     filedat.push(custom_id);
     filedat.push(email);
-    filedat.push(batch_field);    
+    filedat.push(batch_field); 
+    console.log('afer setting filedata',filedat);
+   
     proceedbtncount++;
 
     refreshFileDataList();
@@ -1244,7 +1251,22 @@ function postExpData(){
     
     
 }
-
+function batchNumFunc(obj){
+        console.log(obj.val())
+        var bat_num=parseInt(obj.val());
+        console.log(bat_num)
+        console.log(typeof(bat_num))
+        var labels=[]
+        console.log(bat_num.len+1)
+        console.log(bat_num.length+1)
+        for (var i=1;i<bat_num+1;i++){
+             i=i.toString()
+             console.log(i)
+             labels.push(i)
+           
+        }
+        $('#selfbatchlabelid').val(labels);
+}
 // Switch Function to show and hide self and pre defined divs. 
 function switchVisible(obj,header) {
     if (obj) {
@@ -1253,10 +1275,11 @@ function switchVisible(obj,header) {
         console.log('id',obj.is("#self-defined") )
         if (obj.attr("id") === "self-defined" &&  obj.is(":hidden")) {
             console.log("in if");
+            
             var batchtitlename=$('<label>Batch Name:</label>');
-            var batchtitleinput = $('<input class="crtinput" type="text" name="batchtitle" value="Batch" placeholder="Batch" id="selfbatchtitleid">');
+            var batchtitleinput = $('<input class="crtinput" type="text" name="batchtitle" value="Batch"  id="selfbatchtitleid">');
             var batchnumname=$('<label>Num of Batches:</label>');
-            var batchnuminput = $('<input type="text" class="crtinput" name="batchnum" value="2" placeholder="2"  id="selfbatchnumid" >');
+            var batchnuminput = $('<input type="text" class="crtinput" name="batchnum" value="2"   id="selfbatchnumid" onkeyup="batchNumFunc($(this))" >');
             var batchlabelname=$('<label>Label Batches:</label>');
             var batchlabelinput = $('<input type="text" class="crtinput" name="batchlabel"  id="selfbatchlabelid" >');
             var selfassignbutton= $('<button id="selfassignbutton"onclick=selfAssignBatch()>Make Batch</button>') ;
@@ -1341,7 +1364,14 @@ function switchVisible(obj,header) {
     }
 }
 //  
+var globalbatchtable=null;
 function selfAssignBatch(){
+    // $('.batchsize_div').empty();
+    // if (globalbatchtable!=null){
+    //     $('#subj_split_batch').empty();
+    //     (globalbatchtable).destroy();
+        
+    // }
     var filedata=getFileDataList();
     // filedata.pop();
     // filedata.pop();
@@ -1397,7 +1427,7 @@ function selfAssignBatch(){
                         $('#mytable').DataTable({
                            
                             "bLengthChange": false,
-                            "bFilter": false,
+                            // "bFilter": false,
                             "pageLength": 5
                             });
                         // hiding the csv file data.
@@ -1515,6 +1545,17 @@ function preAssignBatch(sel1T,sel2T,sel3T){
 function makeTable (mydata,tableid) {
     
     var table = $('<table  id='+tableid+' class="table table-bordred table-striped">');
+    var colgroup= $('<colgroup>')
+    var colg1=$('<col>')
+    var colg2=$('<col>')
+    var colg3=$('<col>')
+
+    var colg4=$('<col style="background-color:yellow">')
+    $(colg1).appendTo(colgroup);
+    $(colg2).appendTo(colgroup);
+    $(colg3).appendTo(colgroup);
+    $(colg4).appendTo(colgroup);
+    $(colgroup).appendTo(table);
     var thead = $('<thead>');
 
     var tblHeader = "<tr>";

@@ -217,9 +217,12 @@ class ExperimentController:
 
     def setIdField(self, idFName):
         self.idField = idFName
+        print('outside if condition of not empty')
         if not self.subjData.empty:
+            print('if subjdata not empty')
             self.subjData[idFName] = self.subjData[idFName].astype(str)
-
+            print('self.subjData[idFName]:')
+            print(self.subjData[idFName])
     def getSubColNames(self):
         cols = self.subjData.columns
         return cols
@@ -279,13 +282,22 @@ class ExperimentController:
         blockCount = self.exp.block_set.count()
         blockBinName = 'block__serial_no'
         batchField = self.exp.batches_title
+        print('batch Field',batchField)
+        print('batch Field type',type(batchField))
         #GET batches for this experiment
-        if batchField:            
+        if batchField: 
+            print('in BatchField')  
+            print('blockCount',blockCount)  
+            print('blockBinName',blockBinName) 
+            print('batchField',batchField) 
             self.dSubByBlock = self.assigner.splitByField(
                         nBins=blockCount,
                         bName=blockBinName,
                         fieldName=batchField,
+                        
             )
+            print('self.dSubByBlock')
+            print(self.dSubByBlock)
             #PERCENTAGE BREAKUP AFTER ASSIGNMENT
             print(self.dSubByBlock.groupby([blockBinName,
                                     batchField])
@@ -299,6 +311,7 @@ class ExperimentController:
             dfBatchPc = dfBatchPc.reset_index()
             print(dfBatchPc)
         else:
+            print('in splitin bins field')
             self.dSubByBlock = self.assigner.splitInBins(
                 no_bins=blockCount,
                 binName=blockBinName
@@ -341,6 +354,11 @@ class ExperimentController:
         self.subjData.to_excel(writer, sheet_name='Subjects')
         writer.save()
             
+    def deleteAllSubjects(self):
+        self.exp.subject_set.all().delete()
+        self.exp.batches_title = None
+        self.saveExperiment()
+        
     def saveSubjects(self, dSub=None, writeXL=False, fName=None):
         if isinstance(dSub,pd.DataFrame):
             self.subjData = dSub
