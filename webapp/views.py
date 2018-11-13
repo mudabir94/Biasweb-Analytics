@@ -1057,11 +1057,16 @@ def assignToBlocks(request):
         #create to_json dictionary of blocks (by batches, ie. index-wise, then row-wise)
         return JsonResponse(data, safe=False)
 def removeSessionObj(request):
-    filepath = Path("E:/bias/expCont2.p")
-    if filepath:
-        os.remove('E:/bias/expCont2.p')
-    if request.session['sess_expId']:
-        del request.session['sess_expId']
+    try:
+        filepath = Path("E:/bias/expCont2.p")
+    except FileNotFoundError:
+        filepath=None
+    else:
+        if filepath.exists():
+            os.remove('E:/bias/expCont2.p')
+        if request.session['sess_expId']:
+            del request.session['sess_expId']
+        return HttpResponse()
 
 
 def importExcel(request):
@@ -1081,6 +1086,20 @@ def importExcel(request):
             }
             
     return HttpResponse()
+def saveExperiment(request):
+    if request.method == 'POST':
+        if request.is_ajax:
+            data = request.POST.get('ftDict_chkbxDict_blkLst')
+            
+            #print('d',d)
+            json_data = json.loads(data)
+            print(json_data['feat_dict'])
+            print(json_data['checbox_id_dict'])
+            print(json_data['blockList_temp'])
+            data={
+                'status':'success'
+            }
+    return JsonResponse(data)
 
 class createExperiment(TemplateView): 
 

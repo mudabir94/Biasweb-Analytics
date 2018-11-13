@@ -54,10 +54,7 @@ urlpatterns = [
     url(r'^deleteallsubjects/',views.deleteAllSubjects,  name='deleteallsubjects'),
     url(r'^get_saved_subject_data_expcont/',views.getSavedSubjectDataExpCont,  name='get_saved_subject_data_expcont'),
     url(r'^import_excel/',views.importExcel,  name='import_excel'),
-
-    
-
-   
+    url(r'^saveexperiment/',views.saveExperiment,  name='saveexperiment'),
     url(r'^datadefinded/',views.datadefined.as_view(), name='datadefined'),
 
 #---------------------------------------------------------------------------------------------   
