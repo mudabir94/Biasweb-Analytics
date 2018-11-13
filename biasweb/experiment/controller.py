@@ -355,9 +355,14 @@ class ExperimentController:
         writer.save()
             
     def deleteAllSubjects(self):
+        print('subject set',self.exp.subject_set.all())
         self.exp.subject_set.all().delete()
         self.exp.batches_title = None
+        print('subject set',self.exp.subject_set.all())
+        print('self.exp.batches_title',self.exp.batches_title)
+
         self.saveExperiment()
+        
         
     def saveSubjects(self, dSub=None, writeXL=False, fName=None):
         if isinstance(dSub,pd.DataFrame):

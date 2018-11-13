@@ -7,7 +7,7 @@ new XL file (linked TODO: implement import of XL file)
 1. DONE! CONTINUE PREVIOUS DESIGN SESSION:
 *(done)a. Pre-populate features to enable input checkboxes, if user wishes 
 to continue with previous design session.
-b. import subjects (UNPICKLE) after javascript prompt. 
+*(done )b. import subjects (UNPICKLE) after javascript prompt. 
 
 (BACK-END COMPLETE, FRONT-END VERIFICATION TODO)
 2. IF FEATURES NOT SELECTED: need to set defaults (TODO: Shazib needs to define these and
@@ -25,12 +25,12 @@ Mudabir will implement)
 
 5. IF PREVIOUS SESSION EXISTS, GIVE OPTION TO DISCARD OR SAVE WHERE IT WAS, AND THEN START A NEW SESSION:
 5.1- [DONE] at Refresh button/after back button.
-5.2- When exiting the "Create/Exit Experiment" use case, should simply clear the session, must have saved experiment already before that.
+5.2- [partially done]When exiting the "Create/Exit Experiment" use case, should simply clear the session, must have saved experiment already before that.
 
 6. [PENDING - LOW PRIORITY] Replace expCont.idField calls with expCont.setCustomIdField()
 [TODO: Shazib needs to implement and migrate this change in the Experiment Model - CHECK PULL shaz BEFORE TESTING.
 
-7. Allow Exp Admin to be able to change their mind about how they want batches after seeing the summary
+7.[done] Allow Exp Admin to be able to change their mind about how they want batches after seeing the summary
 [REFER TO #3 & #12 ABOVE: should be able to switch from one to the other after seeing summary result]
 
 8. Should also be able to change mind about blocks (especially after changing batches in #7, or changing feature levels)

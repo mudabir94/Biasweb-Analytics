@@ -37,7 +37,7 @@
             <!--FEATURES LEVELS ROW DIV -->
             <div class='row-fluid' style="background:peru;" id='feat_lvl_div'>
                 <div class='row'>
-                    <div class='col-md-4'>
+                    <div class='col-md-3'>
                             <p1><b>Select features to enable:</b></p1>
                     {% for feature in platformfeatobj%}
                         <div class='row-fluid'>
@@ -61,8 +61,12 @@
     
                         </div> 
                     </div>
-
-                    <div class='col-md-6' style='background: green'  >
+                    <div class=col-md-3  style='background: rgb(7, 193, 240)' >
+                        <div id='defaultfeatLevel_tablediv'>
+                            
+                        </div>
+                    </div>
+                    <div class='col-md-5' style='background: green'  >
                         <div class='row'>
                             <div class='col-md-12'>
                             </div>
@@ -76,11 +80,10 @@
 
                     </div>
                     
-                    <div class='col-md-2' style='background: lightgray'>
+                    <div class='col-md-1' style='background: lightgray'>
                         <div class='row'>
-                            <div class='col-md-3'></div>
-                            <div class='col-md-3'></div>
-                            <div class='col-md-6'>  <button style="float: right;"onclick='showImportSubdiv()'>NEXT</button></div>
+                       
+                            <div class='col-md-12'>  <button onclick='showImportSubdiv()'>NEXT</button></div>
 
                             
                         </div>
@@ -97,12 +100,42 @@
                         </div>
                         <div class='col-md-5'>
                             <!-- Import Subjects Div -->
-                            <div class=row>
-                                    <label>Import Subjects</label>
-                                    <br>
-                                    <input type="file"  id="fileUpload" onclick="chooseFileFunc()"/>
-                                    <input type="button" id="upload" value="Upload" />
-                            </div>
+                            <div class='row-fluid'>
+                                    <div class='row'>
+                                        <div class='col-md-12'>
+                                        <label>Import Subjects</label>
+                                        </div>
+                                    </div>
+                                <br>
+                             
+                                    <div class='row'>
+                                            <div class='col-md-2'>
+                                                <label>Import CSV File</label>
+                                            </div>
+                                            <div class='col-md-5'>
+                                                <input type="file"  id="fileUpload" onclick="chooseFileFunc()"/>
+                                            </div>
+                                            <div class='col-md-5'>
+                                                <input type="button" id="upload" value="Upload" /> 
+                                            </div>
+                                
+                                    </div>
+                                <br>
+                                    <div class='row'>
+                                        <div class='col-md-2'>
+                                            <label>Import Excel File</label>
+                                        </div>
+                                        <div class='col-md-5'>
+                                                <input type="file"  id="excelFile" />
+                                        </div>
+                                        <div class='col-md-5'>
+                                                <input type="button" id="excelFileUpload" value="Upload" /> 
+                                        </div>
+
+                                       
+                                       
+                                    </div>
+                                </div>
                             <hr />
                             <!--SET COLUMN LABELS SELECTORS-->
                             <div class='row'>
@@ -163,17 +196,17 @@
                                             <div class='col-md-12'  id='self-defined'>
                                                     <hr/>
                                                     <div class='row'>
-                                                        <div class='col-md-6' id='batchtitle_name'></div>
-                                                        <div class='col-md-6' id='batchtitle_input'></div>
+                                                        <div class='col-md-6'><div class='self-defined-inputs' id='batchtitle_name'></div></div>
+                                                        <div class='col-md-6'><div class='self-defined-inputs'  id='batchtitle_input'></div></div>
 
                                                     </div>
                                                     <div class='row'>
-                                                        <div class='col-md-6' id='batchnum_name'></div>
-                                                        <div class='col-md-6' id='batchnum_input'></div>
+                                                        <div class='col-md-6' ><div class='self-defined-inputs'  id='batchnum_name'></div></div>
+                                                        <div class='col-md-6' ><div class='self-defined-inputs'  id='batchnum_input'></div></div>
                                                     </div>
                                                     <div class='row'>
-                                                        <div class='col-md-6' id='batchlabel_name'></div>
-                                                        <div class='col-md-6' id='batchlabel_input'></div>
+                                                        <div class='col-md-6'><div class='self-defined-inputs'  id='batchlabel_name'></div></div>
+                                                        <div class='col-md-6'><div class='self-defined-inputs'  id='batchlabel_input'></div></div>
                                                     </div>
                                                     <div class='row'>
                                                         <div class='col-md-6' ></div>
@@ -271,7 +304,10 @@
             <div class='row-fluid' id='dataDiv' style="background:lawngreen" >
                   
                             <div class='row-fluid'>
-                                <label> Uploaded data from file. </label>
+                                <div id='dataDiv-label'>  
+                                    <label> Uploaded data from file. </label>
+                                </div>
+                              
                             </div>
                              <!--DATA & DETAILS EDITING DISPLAY SECTION-->
                             <div class='row-fluid' >
@@ -287,10 +323,12 @@
                                     
                     <div class='col-md-12'>
                             <div class='row-fluid'>
+                                <div id='subj_split_batch_rowdiv_batch_label'>
                                 <label>Subject Split to Batches</label>
+                                </div>
                             </div>
                             <div class='row-fluid'>
-                                <div id='subj_split_batch' class=" table-bordered">
+                                <div id='subj_split_batch_tabel' class=" table-bordered">
                                 </div>
                             </div>
                     </div>
@@ -358,6 +396,8 @@ var header = document.getElementById("custom_nav_div");
 var btns = header.getElementsByClassName("custom_nav_btn");
 // variable to save outer and inner check box div info. for pre populating. 
 var checkbox_id_dict={};
+window.row_filedata=null;
+
 
 // When the page will this will be the first javascript function that will be called. 
 $(document).ready(function () {
@@ -382,6 +422,7 @@ $('#block_assign_row_div').hide();
 
 $('#batchmngprvbtn').hide();
 $('#dataDiv').hide();
+//defaultFeatLevel_Table();
 //TODO@MUDABIR:
 if(exp_id===""){
     $('#feat_lvl_div').hide();
@@ -416,13 +457,15 @@ if(exp_id===""){
         //         }); 
 
 
-     }else{
+     }
+     else{
         showExpWIP();
-
+       
         // TESTING 
         dict=JSON.parse(window.localStorage.getItem("feat_dict")); 
         checkbox_id_dict=JSON.parse(window.localStorage.getItem("checkbox_id_dict")); 
         var blockList = JSON.parse(window.localStorage.getItem("blockList")); 
+
 
         if ( blockList===null){
                 alert('block list empty');
@@ -431,8 +474,6 @@ if(exp_id===""){
             table_blocks=draw_block_table(blockList)
             display_blocktable(table_blocks);
         }
-
-
 
         if (dict==null ){
             dict={};
@@ -473,13 +514,40 @@ if(exp_id===""){
         }
         }
 
+        // Showing saved subject data. 
+        // send an ajax call and get the expCont.subjData of the current Exp Object. 
+        getSavedSubjectDataExpCont();
 
      }
 }
 
 
 });
+function getSavedSubjectDataExpCont(){
+    $.ajax({
+        type: 'POST',
+        dataType: "json",
+        'data': {
 
+            'csrfmiddlewaretoken': '{{ csrf_token }}',
+        },
+        // the ajax call is sent to subdetails url name in the post function.  
+        url: "{% url 'get_saved_subject_data_expcont' %}",
+        success: function(data){
+        console.log("data['subject_data']",data['subject_data'])
+        
+        // console.log('keys',Object.keys(data['subject_data'])[0])
+        // console.log(Object.keys(data['subject_data'][Object.keys(data['subject_data'])[0]]).length);
+        //  for (var i=0;i<Object.keys(data['subject_data'][Object.keys(data['subject_data'])[0]]).length;i++){
+
+        //  }
+        
+          
+         
+         }
+                     
+    }); 
+}
 function outerCheckBox_Stored(outercheckval,outercheckid) {
 console.log("checkbox");
 console.log(outercheckval);
@@ -597,6 +665,144 @@ for (var o in data){
     console.log('All innercheck boxid added to checkbox dict',checkbox_id_dict);
 }
 
+function defaultFeatLevel_Table(){
+    var defaultdic={};
+    defaultdic['I']=['I.1'];
+    defaultdic['R']=['R.1'];
+    defaultdic['W']=['W.direct'];
+    defaultdic['A']=['A.all','A.user']
+    defaultdic['C']=['C.full']
+    var table=document.createElement('TABLE');
+    table.setAttribute('class','table table-striped table-bordered')
+    var thead=document.createElement('THEAD');
+    table.appendChild(thead);
+    var tbody=document.createElement('TBODY');
+    table.appendChild(tbody);
+    var trh=document.createElement('TR');
+    var th=document.createElement('TH')
+    thead.appendChild(trh)
+    th.append('Feature Symbol')
+    trh.appendChild(th)
+    var th=document.createElement('TH')
+    th.append('Feature Levels')
+    trh.appendChild(th)
+    if (defaultdic==='{}'){
+        console.log('empty table');
+    }
+    else{
+        for (var row in defaultdic){
+      
+        var tr=document.createElement('TR');
+        tbody.appendChild(tr)
+        var td=document.createElement('TD')
+        td.append(row)
+        tr.appendChild(td)
+        var td=document.createElement('TD')
+        td.append(defaultdic[row])
+        tr.appendChild(td)
+        }
+    }
+    
+    console.log(table)
+    $(table).appendTo('#defaultfeatLevel_tablediv');
+    //dict=default_dic;
+}
+
+ $(function () {
+    $("#excelFileUpload").bind("click", function () {
+    var fileUpload = $("#excelFile")[0];
+
+   
+ //Validate whether File is valid Excel file.
+ console.log('k',fileUpload);
+ var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.xls|.xlsx)$/;
+ if (regex.test(fileUpload.value.toLowerCase())) {
+     if (typeof (FileReader) != "undefined") {
+         var reader = new FileReader();
+
+         //For Browsers other than IE.
+         if (reader.readAsBinaryString) {
+             reader.onload = function (e) {
+                 
+                 ProcessExcel(e.target.result);
+             };
+             reader.readAsBinaryString(fileUpload.files[0]);
+         } else {
+             //For IE Browser.
+             reader.onload = function (e) {
+                 var data = "";
+                 var bytes = new Uint8Array(e.target.result);
+                 for (var i = 0; i < bytes.byteLength; i++) {
+                     data += String.fromCharCode(bytes[i]);
+                 }
+                 ProcessExcel(data);
+             };
+             reader.readAsArrayBuffer(fileUpload.files[0]);
+         }
+     } else {
+         alert("This browser does not support HTML5.");
+     }
+ } else {
+     alert("Please upload a valid Excel file.");
+ }
+
+
+    });
+});
+function ProcessExcel(data) {
+        //Read the Excel File data.
+        var workbook = XLSX.read(data, {
+            type: 'binary'
+        });
+ 
+        //Fetch the name of First Sheet.
+        var firstSheet = workbook.SheetNames[0];
+ 
+        //Read all rows from First Sheet into an JSON array.
+        // var excelRows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[firstSheet]);
+        var excelRows = XLSX.utils.sheet_to_csv(workbook.Sheets[firstSheet]);
+       console.log('excel rows',excelRows)
+       console.log('excel row type',typeof(excelRows))
+        //Add the data rows from Excel file.
+
+        $.ajax({
+        type: 'POST',
+        dataType: "json",
+        'data': {
+            'excel_data':JSON.stringify(excelRows),
+            'csrfmiddlewaretoken': '{{ csrf_token }}',
+        },
+        // the ajax call is sent to subdetails url name in the post function.  
+        url: "{% url 'import_excel' %}",
+        success: function(data){
+          
+        }
+                     
+    }); 
+ 
+       
+};
+
+// document.getElementById('excelFileUpload').addEventListener("change", function(e) {
+//   var files = e.target.files,file;
+//   if (!files || files.length == 0) return;
+//   file = files[0];
+//   var fileReader = new FileReader();
+//   fileReader.onload = function (e) {
+//     var filename = e.target.result;
+//     // pre-process data
+//     var binary = "";
+//     var bytes = new Uint8Array(e.target.result);
+//     var length = bytes.byteLength;
+//     for (var i = 0; i < length; i++) {
+//       binary += String.fromCharCode(bytes[i]);
+//     }
+//     // call 'xlsx' to read the file
+//     var oFile = XLSX.read(binary, {type: 'binary', cellDates:true, cellStyles:true});
+//         console.log(oFile);
+//   };
+//   fileReader.readAsArrayBuffer(file);
+//  });
 
 // Code for changing the background colour of the custom_nav_bt
 for (var i = 0; i < btns.length; i++) {
@@ -657,7 +863,6 @@ function makeFeatureLvldicTable(){
     var th=document.createElement('TH')
     th.append('Feature Levels')
     trh.appendChild(th)
-    console.log('amsdkmakdmakmdkamskmdkamsd')
     if (dict==='{}'){
         console.log('emoty tabel');
     }
@@ -732,7 +937,8 @@ $(function () {
                     var reader = new FileReader();
                     reader.onload = function (e) {
                     console.log(e);
-                    // var table = $("<table  id='showfiledataTable'/>");
+                   
+                    var table = $("<table  id='showfiledataTable'/>");
                     var rows = e.target.result.split("\n");
                     console.log('rows'); 
                     console.log(typeof(rows)); 
@@ -745,8 +951,10 @@ $(function () {
                         filedatalist.push(rows[row]);
                         }
                     }
-                   setFileDataList(filedatalist);
+                    console.log('filedatalist',filedatalist);
 
+                    setFileDataList(filedatalist);
+                    showFileDataTable(rows);
 
                 
                     
@@ -800,33 +1008,10 @@ $(function () {
                             "pagingType": "full_numbers"
                             });
                             $('#dataDiv').show();
-                    // $('#dispFileFeatLvldiv').show();
-
-                    // for (var i = 0; i < rows.length; i++) {
-                       
-                    //     console.log(rows[i]);
-                    //     filedatalist.push(rows[i]);
- 
-                        
-                    //     // var row = $("<tr />");
-                    //     // var cells = rows[i].split(",");
-                    //     // for (var j = 0; j < cells.length; j++) {
-                    //     //     var cell = $("<td />");
-                    //     //     cell.html(cells[j]);
-                    //     //     row.append(cell);
-                    //     // }
-                    //     //  table.append(row);
-                    //      console.log($(this))
-                         
-                    // }
-                        $('#upload').prop('disabled',true);
+            
+                         $('#upload').prop('disabled',true);
                           
-                        // var table = makeTable(filedatalist,"showfiledataTable");
-                        // transposeTable(table)
                         
-                       
-                        //$('#showfiledatadiv').html('');
-                        //$('#showfiledatadiv').append(table);
                         
                       
 
@@ -866,28 +1051,12 @@ $(function () {
                         $('.show_select_tag').show();
                        //$('.show_select_tag').html('');
                        //$('.show_select_tag').append(select_tag);
-                       
-                    // for (var i = 0; i < header.length; i++) {
-                    //     var radioBtn = $('<input type="radio" name="'+header[i]+'" value="'+header[i]+'"\
-                    //      onclick=radioBtnFunc($(this).attr("value"),'+JSON.stringify(arrlist)+')>'+header[i]+'</input>');
-                    //     //radioBtn.appendTo('#RadioDiv');
 
-                    //     $("#RadioDiv").append(radioBtn);
-
-                    // }
-
-// 
-//                      console.log("arr",arrlist);
-//                      console.log("arr",typeof(arrlist)); 
-
-                    
-                     
-                     
-                     
-
-   
                 }
+                
+                // reader.readAsBinaryString($("#fileUpload")[0].files[0]);
                 reader.readAsText($("#fileUpload")[0].files[0]);
+
             }
              else {
                 alert("This browser does not support HTML5.");
@@ -898,7 +1067,96 @@ $(function () {
         }
     });
 });    
+function  showFileDataTable(){
+    var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.csv|.txt)$/;
 
+if (regex.test($("#fileUpload").val().toLowerCase())) {
+    
+    if (typeof (FileReader) != "undefined") {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+          
+            var rows = e.target.result.split("\n");
+            var filedatalist=[];
+
+                for (var i = 0; i < rows.length; i++) {
+                    console.log(rows[i]);
+                    filedatalist.push(rows[i]);
+                }  
+            setFileDataList(filedatalist); 
+            window.row_filedata=rows;
+            console.log('rows[0]',row_filedata[0])
+            console.log('header',rows[0]);
+                    header=rows[0];
+                    header=header.split(',');
+                    console.log('header',header[0]);
+                    console.log('header',typeof(header));
+                    var table=document.createElement('TABLE');
+                    table.setAttribute('id','showfiledataTable')
+                    table.setAttribute('class',"display table table-striped table-bordered ")    
+                    var thead=document.createElement('THEAD')
+                    table.appendChild(thead)
+                    var tbdoy=document.createElement('TBODY');
+                    table.appendChild(tbdoy);
+                   
+                    for (var rowindex in rows){
+                     if (rowindex==0){
+                        var trh=document.createElement('TR');
+                        thead.appendChild(trh);
+                        console.log(rows[rowindex])
+                        var rowcols=rows[rowindex].split(',')
+                        for (var j=0;j<rowcols.length;j++){
+                            var th=document.createElement('TH');
+                            th.append(rowcols[j])
+                            trh.appendChild(th)
+                            
+                            }
+                     }
+                     else{
+                        var tr=document.createElement('TR');
+                        tbdoy.appendChild(tr);
+                     
+                        console.log(rows[rowindex])
+                        var rowcols=rows[rowindex].split(',')
+                        for (var j=0;j<rowcols.length;j++){
+                            var td=document.createElement('TD');
+                            td.append(rowcols[j])
+                            tr.appendChild(td)
+                            
+                            }
+                     } 
+                    }
+                    console.log(table)
+                    $("#showfiledatadiv").html('');
+                    $(table).appendTo("#showfiledatadiv");
+                    $('#showfiledataTable').DataTable({
+                            "bLengthChange": false,
+                            "bFilter": false,
+                            "pageLength": 5,
+                            "pagingType": "full_numbers"
+                            });
+                    $('#dataDiv').show();
+
+        }
+
+        // reader.readAsText($("#fileUpload")[0].files[0]);
+       
+    }
+     else {
+        alert("This browser does not support HTML5.");
+    }
+} 
+else {
+    alert("Please upload a valid CSV file.");
+}
+
+
+                    
+}
+
+function showBatchSummaryDiv(){
+    $('.batchsize_div').show();
+}
 function hideBatchSummaryDiv(){
     $('.batchsize_div').hide();
 }
@@ -918,9 +1176,14 @@ function onS3Select(select) {
      //alert(select.options[select.selectedIndex].text);
      if (select.options[select.selectedIndex].text==='None'){
         $('#selfbtnid').prop('disabled',false);
+        emptySelfBatchTable();
+        emptyPreBatchTable();
+        emptyOneBatchTable();
+
      }
      else{
         $('#selfbtnid').prop('disabled',true);
+
         $('#selfbuttondiv').empty();
         $('#self-defined').hide( 1000 );
         $('#batchtitle_name').empty();
@@ -933,8 +1196,12 @@ function onS3Select(select) {
         $('#self_permission_text_div').empty();
         $('#self_button_yes_div').empty();
         $('#self_button_no_div').empty();
-        $('#subj_split_batch').empty();
+        // hideBatchSummaryDiv();
         emptySelfBatchTable();
+        emptyPreBatchTable();
+        emptyOneBatchTable();
+        $('#subj_split_batch_tabel').empty();
+        
         $('#subj_split_batch_rowdiv').hide();
         refreshFileDataList();
      }
@@ -1031,7 +1298,7 @@ function showSelfBarButton(){
         $('#selfbuttondiv').append(selfbutton).slideDown(1000).fadeIn(1000);
 }
 function hideSelfBarButton(){
-    $('#selfbtnid').prop('disabled',true);
+        $('#selfbtnid').prop('disabled',true);
         $('#selfbuttondiv').empty();
         $('#self-defined').hide( 1000 );
         $('#batchtitle_name').empty();
@@ -1041,7 +1308,12 @@ function hideSelfBarButton(){
         $('#batchlabel_name').empty();
         $('#batchlabel_input').empty();
         $('#self-assignbuttondiv').empty();
-        // $('.batchsize_div').empty();
+        $('#subj_split_batch_rowdiv').hide();
+        $('#subj_split_batch_tabel').empty();
+        $('.batchsize_div').empty();
+        emptyOneBatchTable();
+        emptyPreBatchTable();
+        emptySelfBatchTable();
         var filedt=getFileDataList();
         console.log('filedata');
         console.log(filedt);
@@ -1110,8 +1382,17 @@ function postExpData(){
     var batch_field=$('#s3').children('option:selected').text();
    
     if (batch_field=='None'){
+        emptyOneBatchTable();
+        emptyPreBatchTable();
+        emptySelfBatchTable();
+        $('.batchsize_div').empty();
+        $('#self_permission_text_div').empty();
+        $('#self_button_yes_div').empty();
+        $('#self_button_no_div').empty();
 
-       
+        // rows=refreshFileDataList();
+        // showFileDataTable(rows);
+
         var self_permission_text_div=document.createElement('Label');
         self_permission_text_div.append('<b>Would you like to create new batches now?</b><br><i>(if not, then by default the subjects will be considered as \"Batch 1\")</i>')
         $('#self_permission_text_div').append(self_permission_text_div);
@@ -1131,125 +1412,123 @@ function postExpData(){
 
    }
     else{
-    var filedat=getFileDataList();
-    console.log('before setting filedata',filedat);
-    if (proceedbtncount!==0){
-        filedat.pop();
-        filedat.pop();
-        filedat.pop();
-    }
-    filedat.push(custom_id);
-    filedat.push(email);
-    filedat.push(batch_field); 
-    console.log('afer setting filedata',filedat);
-   
-    proceedbtncount++;
-
-    refreshFileDataList();
-    $.ajax({
-                    type: 'POST',
-                    dataType: "json",
-                    'data': {
-                    'csvfiledata': JSON.stringify(filedat),
-                    'csrfmiddlewaretoken': '{{ csrf_token }}',
-                    },
-                    // the ajax call is sent to subdetails url name in the post function.  
-                    // HAVE TO REMOVE IT LATER   
-                    // >>url: "{% url 'postexp' %}",
-                    url: "{% url 'import_subjects' %}",
-                    success: function(data){
-                        console.log("<<---SUBJECT IMPORT POST WAS GREAT!--->>");
-                        console.log(data)
-                        for(var i in data){
-                            console.log("data:",i,data[i]);
-                        }
-                        if(exp_id===""){
-                            exp_id=data['exp_id'];
-                            custom_exp_id=data['custom_exp_id'];
-                            showExpWIP();
-                        }
-                       if(data['batches']!==""){ 
-                             groups=data['batches']; 
-                       
-                            var batch_size_table=document.createElement('TABLE'); 
-                            batch_size_table.setAttribute('id','pre_batch_size_summary')
-                            batch_size_table.setAttribute('class','table table-striped table-bordered ') 
-                            var b_thead=document.createElement('THEAD');
-                            batch_size_table.appendChild(b_thead);
-                            var b_tbdoy=document.createElement('TBODY');
-                            batch_size_table.appendChild(b_tbdoy);
-                            var trh=document.createElement('TR');
-                            b_thead.appendChild(trh);
-                            var th=document.createElement('TH');
-                            trh.appendChild(th);
-                            th.append('Batch');
-                            var th=document.createElement('TH');
-                            th.append('Batch Size');
-                            trh.appendChild(th);
-                            var total=0;
-
-                            for (var rowindex in groups){
-                                var tr=document.createElement('TR');
-                                b_tbdoy.appendChild(tr);
-                                var td=document.createElement('TD');
-                                console.log('rowindex',rowindex);
-                                td.append(rowindex);
-                                tr.appendChild(td);
-                                var td=document.createElement('TD')
-                                console.log('groups[rowindex]',groups[rowindex])
-                                td.append(groups[rowindex]);
-                                tr.appendChild(td);
-                                var num=parseInt(groups[rowindex])
-                                total=total+num;
+        emptyOneBatchTable();
+        emptyPreBatchTable();
+        emptySelfBatchTable();
+        $('.batchsize_div').empty();
+        // refreshFileDataList();
+        var filedat=getFileDataList();
+        console.log('before setting filedata',filedat);
+        // if (proceedbtncount!==0){
+        //     filedat.pop();
+        //     filedat.pop();
+        //     filedat.pop();
+        // }
+        filedat.push(custom_id);
+        filedat.push(email);
+        filedat.push(batch_field); 
+        console.log('afer setting filedata',filedat);
+        // proceedbtncount++;
+        refreshFileDataList();
+        $.ajax({
+                        type: 'POST',
+                        dataType: "json",
+                        'data': {
+                        'csvfiledata': JSON.stringify(filedat),
+                        'csrfmiddlewaretoken': '{{ csrf_token }}',
+                        },
+                        // the ajax call is sent to subdetails url name in the post function.  
+                        // HAVE TO REMOVE IT LATER   
+                        // >>url: "{% url 'postexp' %}",
+                        url: "{% url 'import_subjects' %}",
+                        success: function(data){
+                            console.log("<<---SUBJECT IMPORT POST WAS GREAT!--->>");
+                            console.log(data)
+                            for(var i in data){
+                                console.log("data:",i,data[i]);
                             }
-                                var tr=document.createElement('TR');
-                                b_tbdoy.appendChild(tr);
-                                var td=document.createElement('TD');
-                                td.append('Total');
-
-                                tr.appendChild(td);
-                                var td=document.createElement('TD');
-                                td.append(total);
-                                tr.appendChild(td);
-                            console.log(batch_size_table);
-                            $(batch_size_table).appendTo('.batchsize_div') 
-                            // hiding uploaded data from user.
                             if(exp_id===""){
-                            exp_id=data['exp_id'];
-                            custom_exp_id=data['custom_exp_id'];
-                            showExpWIP();
-                        }
-                        // console.log(JSON.parse(data[1]))
-                        // dataframe_table=JSON.parse(data[1])
-                        // var mydata = dataframe_table;
-                        // var table = makeTable(mydata,"mytable");
-                        // transposeTable(table)
+                                exp_id=data['exp_id'];
+                                custom_exp_id=data['custom_exp_id'];
+                                showExpWIP();
+                            }
+                        if(data['batches']!==""){ 
+                                groups=data['batches']; 
                         
-                        // $(table).appendTo("#subj_split_batch");
-                        // $('#mytable').DataTable({
-                           
-                        //     "bLengthChange": false,
-                        //     "bFilter": false,
-                        //     "pageLength": 5
-                        //     });
-                        // // hiding the csv file data.
-                        // $('#dataDiv').hide();
-                        // $('#subj_split_batch_rowdiv').show(); 
-                           
+                                var batch_size_table=document.createElement('TABLE'); 
+                                batch_size_table.setAttribute('id','pre_batch_size_summary')
+                                batch_size_table.setAttribute('class','table table-striped table-bordered ') 
+                                var b_thead=document.createElement('THEAD');
+                                batch_size_table.appendChild(b_thead);
+                                var b_tbdoy=document.createElement('TBODY');
+                                batch_size_table.appendChild(b_tbdoy);
+                                var trh=document.createElement('TR');
+                                b_thead.appendChild(trh);
+                                var th=document.createElement('TH');
+                                trh.appendChild(th);
+                                th.append('Batch');
+                                var th=document.createElement('TH');
+                                th.append('Batch Size');
+                                trh.appendChild(th);
+                                var total=0;
 
-                       } 
-                       
+                                for (var rowindex in groups){
+                                    var tr=document.createElement('TR');
+                                    b_tbdoy.appendChild(tr);
+                                    var td=document.createElement('TD');
+                                    console.log('rowindex',rowindex);
+                                    td.append(rowindex);
+                                    tr.appendChild(td);
+                                    var td=document.createElement('TD')
+                                    console.log('groups[rowindex]',groups[rowindex])
+                                    td.append(groups[rowindex]);
+                                    tr.appendChild(td);
+                                    var num=parseInt(groups[rowindex])
+                                    total=total+num;
+                                }
+                                    var tr=document.createElement('TR');
+                                    b_tbdoy.appendChild(tr);
+                                    var td=document.createElement('TD');
+                                    td.append('Total');
+
+                                    tr.appendChild(td);
+                                    var td=document.createElement('TD');
+                                    td.append(total);
+                                    tr.appendChild(td);
+                                console.log(batch_size_table);
+                                $(batch_size_table).appendTo('.batchsize_div') 
+                                showBatchSummaryDiv();
+                                // hiding uploaded data from user.
+                                if(exp_id===""){
+                                exp_id=data['exp_id'];
+                                custom_exp_id=data['custom_exp_id'];
+                                showExpWIP();
+                            }
+                            // console.log(JSON.parse(data[1]))
+                            // dataframe_table=JSON.parse(data[1])
+                            // var mydata = dataframe_table;
+                            // var table = makeTable(mydata,"mytable");
+                            // transposeTable(table)
+                            
+                            // $(table).appendTo("#subj_split_batch");
+                            // $('#mytable').DataTable({
+                            
+                            //     "bLengthChange": false,
+                            //     "bFilter": false,
+                            //     "pageLength": 5
+                            //     });
+                            // // hiding the csv file data.
+                            // $('#dataDiv').hide();
+                            // $('#subj_split_batch_rowdiv').show(); 
+                            
+
+                        } 
                         
-                    }
-                     
-                    }); 
-    }
-    
-    
-        
-                   
-    
-    
+                            
+                        }
+                        
+                        }); 
+        }
 }
 function batchNumFunc(obj){
         console.log(obj.val())
@@ -1372,6 +1651,10 @@ function selfAssignBatch(){
     //     (globalbatchtable).destroy();
         
     // }
+    emptyOneBatchTable();
+    emptyPreBatchTable();
+    emptySelfBatchTable();
+    $('.batchsize_div').empty();
     var filedata=getFileDataList();
     // filedata.pop();
     // filedata.pop();
@@ -1423,7 +1706,7 @@ function selfAssignBatch(){
                         var table = makeTable(mydata,"mytable");
                         transposeTable(table)
                         
-                        $(table).appendTo("#subj_split_batch");
+                        $(table).appendTo("#subj_split_batch_tabel");
                         $('#mytable').DataTable({
                            
                             "bLengthChange": false,
@@ -1533,7 +1816,7 @@ function preAssignBatch(sel1T,sel2T,sel3T){
                         var mydata = eval(data);
                         var table = makeTable(mydata);
                         transposeTable(table)
-                        $(table).appendTo("#subj_split_batch");
+                        $(table).appendTo("#subj_split_batch_tabel");
                       
                 
                        }
@@ -1615,10 +1898,12 @@ function getFileDataList(){
     return globalfiledatalist;
    
 }
+
 function refreshFileDataList (){
-  var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.csv|.txt)$/;
+var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.csv|.txt)$/;
 
 if (regex.test($("#fileUpload").val().toLowerCase())) {
+    
     if (typeof (FileReader) != "undefined") {
             var reader = new FileReader();
             reader.onload = function (e) {
@@ -1626,18 +1911,17 @@ if (regex.test($("#fileUpload").val().toLowerCase())) {
             var rows = e.target.result.split("\n");
             var filedatalist=[];
 
-            for (var i = 0; i < rows.length; i++) {
-               
-                console.log(rows[i]);
-                filedatalist.push(rows[i]);
-
-            }
-            
-            setFileDataList(filedatalist);
-            
-
+                for (var i = 0; i < rows.length; i++) {
+                    console.log(rows[i]);
+                    filedatalist.push(rows[i]);
+                }  
+            setFileDataList(filedatalist); 
+            window.row_filedata=rows;
+            console.log('rows[0]',row_filedata[0])
         }
+
         reader.readAsText($("#fileUpload")[0].files[0]);
+       
     }
      else {
         alert("This browser does not support HTML5.");
@@ -1646,11 +1930,58 @@ if (regex.test($("#fileUpload").val().toLowerCase())) {
 else {
     alert("Please upload a valid CSV file.");
 }
+
+}
+function hide_emptyAllDivs_ImportSubjects(){
+    $('.map_select_label').hide();
+    $('.show_select_tag').empty();
+    $('#proceedbtndiv').empty();
+    $('#self_permission_text_div').empty();
+    $('#self_button_yes_div').empty();
+    $('#self_button_no_div').empty();
+    $('#selfbuttondiv').empty();
+    $('#self-defined ').hide();
+    $('#self-assignbuttondiv').empty();
+    $('.self-defined-inputs').empty();
+    hideBatchSummaryDiv();
+    emptySelfBatchTable();
+    emptyPreBatchTable();
+    emptyOneBatchTable();
+    // $('.batchsize_div').empty();
+    $('#dataDiv').hide();
+    // $('#dataDiv-label').hide();
+    $('#subj_split_batch_rowdiv_batch_label').hide();
+    $('#subj_split_batch_tabel').empty();
+    $('#showfiledatadiv').empty();
 }
 function chooseFileFunc(){
-  $('#upload').prop('disabled',false);
+  
+  
+  if ($('#fileUpload').val()===''){
+      alert('val empty')
+     $('#upload').prop('disabled',false);
+  }
+  else{
+    $('#upload').prop('disabled',false);
+    alert('val not empty')
+    // Empty all possible divs that are displayed. 
+    hide_emptyAllDivs_ImportSubjects();
+    // send an ajax call that will delete the exsisting subjects from the database of that experiment. 
+    // check
+    $.ajax({
+            type: 'POST',
+            dataType: "json",
+            'data': {
+            'csrfmiddlewaretoken': '{{ csrf_token }}',
+            },
+            // the ajax call is sent to deleteallsubjects url name in the post function.  
+            url: "{% url 'deleteallsubjects' %}",
+            success: function(data){
+            console.log("success");
+            }
+        }); 
+    }
 }
-
 // Outercheckbox function 
 // This function gets 2 arguments when called val and id attribute of input type=checkbox
 // having id based on the feature.id.
@@ -2052,4 +2383,9 @@ function sendFilePath(id){
     };
    
 </script>
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/jszip.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/xlsx.js"></script> -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
 {%endblock%}

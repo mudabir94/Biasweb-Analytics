@@ -50,7 +50,12 @@ urlpatterns = [
     url(r'^import_subjects/',views.importSubjects, name='import_subjects'),
     url(r'^assign_blocks/',views.assignToBlocks, name='assign_blocks'),
     url(r'^selfdefault/',views.selfDefault,  name='selfdefault'),
-    url(r'^ removesessionobj/',views. removeSessionObj,  name='remove_session_obj'),
+    url(r'^removesessionobj/',views.removeSessionObj,  name='remove_session_obj'),
+    url(r'^deleteallsubjects/',views.deleteAllSubjects,  name='deleteallsubjects'),
+    url(r'^get_saved_subject_data_expcont/',views.getSavedSubjectDataExpCont,  name='get_saved_subject_data_expcont'),
+    url(r'^import_excel/',views.importExcel,  name='import_excel'),
+
+    
 
    
     url(r'^datadefinded/',views.datadefined.as_view(), name='datadefined'),

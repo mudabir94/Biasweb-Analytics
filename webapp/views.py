@@ -16,7 +16,7 @@ from django.core import serializers
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.db import connection
 from django.db.models import Q
-#---------------------------------------------------------------
+#------------------------------------------------------------------------------------------
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 from django.utils import timezone
@@ -24,6 +24,8 @@ from django.views.generic import TemplateView
 
 import numpy as np
 import pandas as pd
+from pandas.compat import StringIO
+#--------------------------------------------------------------------------------------
 from biasweb.experiment.controller import ExperimentController
 from biasweb.pythonscripts.experiment_admin import Experiment_Admin
 from biasweb.pythonscripts.getdata import get
@@ -38,7 +40,6 @@ from .models import Role, User, blog
 from .models import experiment as exp
 from .models import (mobile_phone, phone, platform_feature, prunedmobilephones,
                      samsung_phone, sort_feature, userscoreRecord)
-
 from.models import template_roles as tr 
 from. models import templates as tpl
 
@@ -749,8 +750,8 @@ def selfDefault(request):
             expCont.idField='ROLLNO'
             batchesTitle = 'BATCHES'
             defaultNo=1
-            pickleExpController(expCont)
-            expCont=getExpController(request)
+            # pickleExpController(expCont)
+            # expCont=getExpController(request)
            
             
             expCont.subjData = expCont.assigner.splitInBins(defaultNo, batchesTitle)
@@ -915,6 +916,14 @@ def postExp(request):
             print(expCont.subjData.groupby(batch_field_name).size())
         return HttpResponse()
 
+def deleteAllSubjects(request):
+    expCont=getExpController(request)
+    expCont.deleteAllSubjects()
+    
+    pickleExpController(expCont)
+    data = {}
+    return JsonResponse(data)
+
 def getExpController(request):
     try:
         sess_expId = request.session['sess_expId']
@@ -960,6 +969,17 @@ def getExpController(request):
 
 def pickleExpController(expCont):
     pickle.dump(expCont, open('expCont2.p','wb'))
+
+def getSavedSubjectDataExpCont(request):
+    if request.method == 'POST':
+        if request.is_ajax:
+            pickleExpCont=pickle.load( open("expCont2.p", "rb") )
+            subject_data=pickleExpCont.subjData
+            subject_data=subject_data.to_dict()
+            data={
+                'subject_data':subject_data
+            }
+            return JsonResponse(data)
 
 def importSubjects(request):
     expCont = getExpController(request)
@@ -1042,13 +1062,31 @@ def removeSessionObj(request):
         os.remove('E:/bias/expCont2.p')
     if request.session['sess_expId']:
         del request.session['sess_expId']
-    
-    
+
+
+def importExcel(request):
+    if request.method == 'POST':
+        if request.is_ajax:
+            data = request.POST.get('excel_data')
+            #print('d',d)
+            json_data = json.loads(data)
+            print(json_data)
+
+            print(type(json_data))
+            #This module implements a file-like class, StringIO, that reads and writes a string buffer (also known as memory files).
+            df = pd.read_csv(StringIO(json_data))
+            print(df)
+            data={
+                'data':'success'
+            }
+            
+    return HttpResponse()
+
 class createExperiment(TemplateView): 
 
     
     def get(self,request):       
-        #removeSessionObj(request)
+        # removeSessionObj(request)
         platformfeatobj=platform_feature.objects.all()
         
         try:
@@ -1100,8 +1138,6 @@ class createExperiment(TemplateView):
                 }
                 return JsonResponse(data) #, safe=False)
         #return render(request,'webapp/crudexperiment/create_experiment.html',data)
-    
-
 class datadefined(TemplateView):
     def get(self,request):
         return render(request,'webapp/crudexperiment/datadefined.html')

@@ -40,7 +40,7 @@ feature_editing = False
 #%% 1. RETRIEVE AN EXISTING EXPERIMENT
 
 admin_id = "ses-007" #USING THE CUSTOM-ID OF SUPERUSER #1
-init_expid = 119
+init_expid = 146
 texp = ExperimentController(a_id=admin_id, e_id=init_expid) #9) #9 is prompt-based testing and #11 is web-based
 print("Exp Custom Id:",texp.exp.custom_exp_id)
 print("The following features are set to be enabled:")
@@ -132,6 +132,7 @@ texp.updateAllBatches() #MAKE SURE TO CALL IF YOU CHANGED THE BATCHES
 
 
 texp.saveSubjects()
+texp.deleteAllSubjects()
 
 breakUp = texp.assignToBlocks() #retruns a dataframe of groupby sizes (unstacked for batchwise breakup)
 breakUp.to_json(orient='index') #FOR ROW-WISE printing in HTML as json object
