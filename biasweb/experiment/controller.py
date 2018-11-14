@@ -53,7 +53,7 @@ class ExperimentController:
             exp_id = self.exp.id
             exp_id = '-' + str(exp_id).zfill(4)  #ensuring the id is now a 4 digit numeric string
             self.exp.custom_exp_id += exp_id
-            self.fSet = self.exp.experiment_feature_set
+            self.fSet = None #self.exp.experiment_feature_set
             self.saveExperiment()
 
     def saveExperiment(self):
@@ -73,8 +73,12 @@ class ExperimentController:
         self.exp.save()
         print("Batches Title set to: ",self.exp.batches_title)
 
-    def getFSet(self):
-        return list(self.fSet.all())
+    def getFSetList(self):
+        if not self.fSet:
+            fS = list(self.exp.experiment_feature_set.all())
+        else:
+            fS = list(self.fSet.all())
+        return fS
     
     """
     setFSet
@@ -82,6 +86,8 @@ class ExperimentController:
             OR newFLevels (dictionary with symbols as key pointing to chosen list of levels)
     """
     def setFSet(self, newFSet=None, newFLevels=None, prompt = False):
+        if not self.fSet:
+            self.fSet = self.exp.experiment_feature_set
         #check whether FSet or FLevels
         if newFLevels:
             print("New Levels have been supplied - extracting FSet...")
@@ -225,7 +231,7 @@ class ExperimentController:
         self.assigner.getLocalDToAssign(iFile)
         self.subjData = self.assigner.df
         if self.idField:
-            setIdField(self.idField)
+            self.setIdField(self.idField)
 
     def setIdField(self, idFName):
         self.idField = idFName

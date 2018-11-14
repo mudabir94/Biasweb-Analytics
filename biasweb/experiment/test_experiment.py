@@ -35,20 +35,20 @@ def setPreDefinedBatches():
     pass
 
 OUT_PATH="biasweb/data/output/"
-interactive = True #Make True if you want this test to ask for field names mapping
-feature_editing = False
+interactive = False #Make True if you want this test to ask for field names mapping
+feature_editing = True
 #%% 1. RETRIEVE AN EXISTING EXPERIMENT
 
-admin_id = "ses-007" #USING THE CUSTOM-ID OF SUPERUSER #1
-init_expid = 146
+admin_id = "ses-001" #USING THE CUSTOM-ID OF SUPERUSER #1 ses-007 for Mudabir
+init_expid = 42 #Using 42 for Shazib and 146 for Mudabir
 texp = ExperimentController(a_id=admin_id, e_id=init_expid) #9) #9 is prompt-based testing and #11 is web-based
 print("Exp Custom Id:",texp.exp.custom_exp_id)
 print("The following features are set to be enabled:")
 print(list(texp.fSet.all()))
 
 #%% 2. CREATE A NEW EXPERIMENT
-# texp = ExperimentController(a_id=admin_id)
-# print("NEW Exp Custom Id:",texp.exp.custom_exp_id)
+texp = ExperimentController(a_id=admin_id)
+print("NEW Exp Custom Id:",texp.exp.custom_exp_id)
 #%% 3. TEST INDIV FEATURE MODIFICATION
 if feature_editing:
     fSymbol = 'W' #JUST TO test individual feature handling

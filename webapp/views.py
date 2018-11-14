@@ -731,7 +731,7 @@ def selfDefault(request):
             data = request.POST.get('csvfiledata')
             #print('d',d)
             json_data = json.loads(data)
-            print("file",json_data)
+            print("CHECKING FILE:\n",json_data)
             json_data=[i.replace('\r','') for i in json_data]  
             print('head',type(json_data[0]))
             filefields = json_data[0].split(",")
@@ -819,32 +819,32 @@ def uploadSampleFile(request):
                 print(arr_filebody)
                 dataframe= pd.DataFrame.from_records(arr_filebody,columns=filefields)
                 print('dataframe')
-                print(dataframe.head())
-                expCont.subjData=dataframe
-                
-                print('subdata head')
+                #ORDER CORRECTION:
+                #FIRST DECLARE ID FIELD - ELSE USER SAVING WILL BE INCORRECT
+                if customid_field!='None':
+                    expCont.setIdField(customid_field)
+                    print('ExpCont.idField')
+                    print(expCont.idField)
+                if batch_title_field=='None':
+                    expCont.setBatchesTitle(batch_name)
+                    selfDefBatches = True
+                #pickleExpController(expCont)
+                #expCont=getExpController(request)
+                print('>>>BEFORE subjdata head')
                 print(expCont.subjData.head())
-                # expCont.idField=customid_field
-                print('custom id field')
-                print(customid_field)
-                expCont.setIdField(customid_field)
-                print('ExpCont.idField')
-                print(expCont.idField)
-                expCont.setBatchesTitle(batch_name)
-                print('expContsubjdatafield')
+                expCont.subjData=expCont.assigner.splitInBins(
+                    no_bins = batch_num,
+                    binName = batch_name,
+                    df = dataframe, #PREVIOUSLY MISSING LINE IN ASSIGNER LOGIC NO NEED TO PICKLE!
+                    binLabels = customlabels
+                )
+                print('AFTER >>>> Newly BATCHED: ExpCont_SubjData')
                 print(expCont.subjData.head())
+                #expCont.fSet = None  #Needed before pickling
                 pickleExpController(expCont)
-                expCont=getExpController(request)
-
-
-                expCont.subjData=expCont.assigner.splitInBins(batch_num,batch_name,customlabels)
-                print('ExpCont_SubjData')
-                print(expCont.subjData.head())
-                print('Exp assigner df')
-                print(expCont.assigner.df.head())
+                
                 expCont.saveSubjects()
                 dSubBatches=expCont.subjData
-                pickleExpController(expCont)
 
                 print("controller df")
                 # print(dSubBatches)
@@ -865,6 +865,8 @@ def uploadSampleFile(request):
 
                 dict_all['1']=dataframe
                 dict_all['batches']=groupby_batch_name_size
+                dict_all['exp_id']= expCont.exp.id
+                dict_all['custom_exp_id']=expCont.exp.custom_exp_id
                 
                 # dict_all['2']=groupsize
                 print('dictionary all')
@@ -960,13 +962,14 @@ def getExpController(request):
             print('in else cond to save obj in pickle')
             pickleExpController(expCont)
     else: #CREATE
-        print('in else create Exp obj  ')
+        print('CREATING NEW EXPERIMENT  ')
         expAdminId = request.user.custom_id
         expCont = ExperimentController(a_id=expAdminId)
-        print('Exp id',expCont.exp.id)
+        print('NEW Exp id',expCont.exp.id)
         request.session['sess_expId'] = expCont.exp.id
         request.session['sess_custExpId'] = expCont.exp.custom_exp_id
         print("SAVED NEW EXPERIMENT TO SESSION---->>>>>>")
+
     return expCont
 
 def pickleExpController(expCont):

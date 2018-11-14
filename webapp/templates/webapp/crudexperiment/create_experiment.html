@@ -1476,8 +1476,9 @@ function postExpData(){
         showFileDataTable(global_rows);
 
         var self_permission_text_div=document.createElement('Label');
-        self_permission_text_div.append('<b>Would you like to create new batches now?</b><br><i>(if not, then by default the subjects will be considered as \"Batch 1\")</i>')
-        $('#self_permission_text_div').append(self_permission_text_div);
+        $('#self_permission_text_div').append('<br><b>Would you like to create new batches now?</b><br><i>(if not, then by default the subjects will be considered as \"Batch 1\")</i><br>')
+        //self_permission_text_div.append('<b>Would you like to create new batches now?</b><br><i>(if not, then by default the subjects will be considered as \"Batch 1\")</i>')
+        //$('#self_permission_text_div').append(self_permission_text_div);
         var self_button_yes=document.createElement('BUTTON');
         self_button_yes.setAttribute('id','self_button_yes');
         self_button_yes.setAttribute('onclick','showSelfBarButton()');
@@ -1491,6 +1492,7 @@ function postExpData(){
         var notext = document.createTextNode("NO");
         self_button_no.appendChild(notext);
         $('#self_button_no_div').append(self_button_no);
+        $('#self_button_no_div').append("<br/>");
 
    }
     else{
