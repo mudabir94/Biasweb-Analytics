@@ -7,10 +7,14 @@ import json
 import os
 import pickle
 from pathlib import Path
-
+#--------------------------------------------------------------------------
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+
+
 #--------------------------------------------------------------------------------------------------
 from django.core import serializers
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
@@ -1101,6 +1105,7 @@ def saveExperiment(request):
                 'status':'success'
             }
     return JsonResponse(data)
+@method_decorator(login_required, name='dispatch')
 
 class createExperiment(TemplateView): 
     template_name='webapp/crudexperiment/create_experiment.html'
