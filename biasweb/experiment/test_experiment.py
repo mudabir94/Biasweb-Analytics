@@ -35,19 +35,20 @@ def setPreDefinedBatches():
     pass
 
 OUT_PATH="biasweb/data/output/"
-interactive = False #Make True if you want this test to ask for field names mapping
+interactive = True #Make True if you want this test to ask for field names mapping
 feature_editing = False
 #%% 1. RETRIEVE AN EXISTING EXPERIMENT
-admin_id = "ses-001" #USING THE CUSTOM-ID OF SUPERUSER #1
-init_expid = 42
+
+admin_id = "ses-007" #USING THE CUSTOM-ID OF SUPERUSER #1
+init_expid = 146
 texp = ExperimentController(a_id=admin_id, e_id=init_expid) #9) #9 is prompt-based testing and #11 is web-based
 print("Exp Custom Id:",texp.exp.custom_exp_id)
 print("The following features are set to be enabled:")
 print(list(texp.fSet.all()))
 
 #%% 2. CREATE A NEW EXPERIMENT
-#nexp = ExperimentController(a_id=admin_id)
-#print("NEW Exp Custom Id:",nexp.exp.custom_exp_id)
+# texp = ExperimentController(a_id=admin_id)
+# print("NEW Exp Custom Id:",texp.exp.custom_exp_id)
 #%% 3. TEST INDIV FEATURE MODIFICATION
 if feature_editing:
     fSymbol = 'W' #JUST TO test individual feature handling
@@ -76,7 +77,7 @@ if feature_editing:
     blocks = texp.generateBlocks()
 
 #%%TEST ASSIGNMENT TO BATCHES AND BLOCKS
-fPath = "biasweb/data/input/SampleExpData_oneSheet.xlsx"
+fPath = "biasweb/data/input/MBA_RCM1_SampleData.csv"
 texp.importSujbectData(fPath)
 #TODO@SHAZIB: for now assuming no appending to existing users
 #print(texp.subjData)
@@ -103,7 +104,7 @@ if interactive:
         print("[",i,"]",fields[i])
     inputNo = eval(input("No of Batch Column?  "))
 else:
-    inputNo = 1 #Col 1 is assumed SECTION
+    inputNo = 999 #Col 1 is assumed SECTION
 print("INPUT NO:", inputNo)
 #%%IF SELF-DEFINED BATCHING VS. PRE-DEFINED
 if inputNo == 999:
@@ -111,7 +112,7 @@ if inputNo == 999:
         batchesTitle = setSelfDefinedBatches(texp)
     else:
         batchesTitle = setSelfDefinedBatches(texp, defaultNo=3)
-    print(texp.assigner.df.head())
+    print(texp.subjData.head())
 elif inputNo:
     print(fields[inputNo], ": Setting  as BATCH TITLE")
     texp.setBatchesTitle(fields[inputNo])
@@ -131,6 +132,7 @@ texp.updateAllBatches() #MAKE SURE TO CALL IF YOU CHANGED THE BATCHES
 
 
 texp.saveSubjects()
+texp.deleteAllSubjects()
 
 breakUp = texp.assignToBlocks() #retruns a dataframe of groupby sizes (unstacked for batchwise breakup)
 breakUp.to_json(orient='index') #FOR ROW-WISE printing in HTML as json object

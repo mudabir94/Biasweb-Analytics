@@ -5,7 +5,7 @@ from .models import User
 from .models import signup_table,blog,mobile_phone,phone,experiment
 from .models import samsung_phone,sort_feature,userscoreRecord,Role,platform_feature
 from .models import template_roles,templates
-from .models import Subject,experiment_feature,Batch,Block
+from .models import Subject,experiment_feature,Batch,Block,prunedmobilephones
 
 class MyUserChangeForm(UserChangeForm):
     class Meta(UserChangeForm.Meta):
@@ -55,3 +55,4 @@ admin.site.register(Subject)
 admin.site.register(experiment_feature)
 admin.site.register(Batch)
 admin.site.register(Block)
+admin.site.register(prunedmobilephones)
