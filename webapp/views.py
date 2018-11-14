@@ -575,6 +575,7 @@ class mobile_phone_view(TemplateView):
         #form=mobile_phone_form(request.POST)
         querry_array=[]
         querry=''
+        # These check have to be changed in future..... 
         if not request.user.is_superuser:
             if request.user.is_student:
                 
@@ -598,7 +599,7 @@ class mobile_phone_view(TemplateView):
                 print(querry)
                 mobiles=samsung_phone.objects.raw(querry)
                 return render(request,'webapp/cart.html',{'mobiles':mobiles})
-            
+        # as above check will  be changed in future we might not need the above code. . 
         else:
             mobiles= samsung_phone.objects.all() 
             paginator = Paginator(mobiles,9)
@@ -671,7 +672,7 @@ class  BiasTestFeature(TemplateView):
         role=userobj.role_id_id
         roleobj=Role.objects.get(pk=role)
         role=roleobj.role_name
-        print('ikoko',role)
+        print('role',role)
         if role=='Super_Admin':
             template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
             expadm_maincontent_temp='webapp/main_content_temps/biaswebfeature/main_cont_temp_expadmin.html'
@@ -1102,12 +1103,33 @@ def saveExperiment(request):
     return JsonResponse(data)
 
 class createExperiment(TemplateView): 
-
+    template_name='webapp/crudexperiment/create_experiment.html'
     
     def get(self,request):       
         # removeSessionObj(request)
         platformfeatobj=platform_feature.objects.all()
+        userobj=User.objects.get(pk=request.user.id)
+        role=userobj.role_id_id
+        roleobj=Role.objects.get(pk=role)
+        role=roleobj.role_name
+        samsung_phones=''
+        if role=='Super_Admin':
+            samsung_phones= samsung_phone.objects.all() 
+            paginator = Paginator(samsung_phones,9)
+            page = request.GET.get('page')
+            samsung_phones = paginator.get_page(page)
+            print(samsung_phones)
         
+            creat_exp_template_sidebar='webapp/sidebartemplates/createExpSideBars/crtExpsidebartemp_exp.html'
+        elif role=='Experimental_Admin':
+            samsung_phones= samsung_phone.objects.all() 
+            paginator = Paginator(samsung_phones,9)
+            page = request.GET.get('page')
+            samsung_phones = paginator.get_page(page)
+            print(samsung_phones)
+            creat_exp_template_sidebar='webapp/sidebartemplates/createExpSideBars/crtExpsidebartemp_exp.html'
+        elif role=='Platform_Admin':
+            pass
         try:
             sess_expId = request.session['sess_expId']
             print("sesid",sess_expId)
@@ -1117,10 +1139,13 @@ class createExperiment(TemplateView):
             sess_custExpId = request.session['sess_custExpId']
         except KeyError:
             sess_custExpId = "123"
-        return render(request,'webapp/crudexperiment/create_experiment.html',
-                                        {'platformfeatobj':platformfeatobj,
-                                         'sess_expId':sess_expId,
-                                         'sess_custExpId':sess_custExpId
+        
+        return render(request,self.template_name,
+         {  'creat_exp_template_sidebar':creat_exp_template_sidebar,
+            'platformfeatobj':platformfeatobj,
+            'sess_expId':sess_expId,
+            'sess_custExpId':sess_custExpId,
+            'samsung_phones':samsung_phones
                                         }
         )
                                         

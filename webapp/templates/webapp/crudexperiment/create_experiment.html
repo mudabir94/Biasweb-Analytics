@@ -5,7 +5,12 @@
     <!-- MAIN ROW CONTENT DIV  -->
     <div class="row content">
         <!-- 1st SIDEBAR COL DIV -->
-        <div class="col-sm-2 sidenav" style='background:teal'></div>
+        <div class="col-sm-2 sidenav" style='background:teal'>
+                {% with creat_exp_template_sidebar=creat_exp_template_sidebar %}
+                {% include creat_exp_template_sidebar %}
+                {% endwith %}
+        
+        </div>
         <div class="col-sm-9  col-md-9 col-lg-9 col-xs-9 text-left" > 
             <!-- CREATE EXP ROW DIV  -->
             <div class ="row-fluid">     
@@ -368,7 +373,7 @@
                         </div>
             </div> 
             <!-- Previous Btn -->
-            <div class='row' id='batchmngprvbtn'>
+            <div class='row' id='batchmngprvbtn_div'>
                     <div class='col-md-1'>
                         <div id='prev_btn_div'>
                         <button onclick="showFeatLvlDiv()">Previous</button>
@@ -381,6 +386,70 @@
                         </div>
                     </div>
             </div>
+            <!-- Mobile Catalog Div -->
+            <div class='row-fluid' id='mobile_catalog_div'>
+                <div class='row'>
+                    <div class='col-md-12'>
+                            <div class="latest-product-section"> 
+                                    {%  for mob in samsung_phones  %}
+                
+                                    {% if forloop.counter0|divisibleby:3 %} 
+                                    <div class="row text-center"> {%  endif %}
+                                        
+                                            <div class="col-md-4 col-lg-4 col-xs-12 sm-margin-b-50 pull-left">
+                                                    <div class="margin-b-20" >
+                                                    <!-- <h4>Compare</h4> -->
+                                                    <input type="checkbox" value={{mob.id}} id={{mob.id}} name={{mob.id}}-{{mob.Mobile_Name}}  onchange="toggleCheckbox(this)"> 
+                                                    <img class="img-responsive" src="{% static mob.imagepath1 %}"  alt="Latest Products Image"  title=""/>
+                                                        </div>
+                                                <h4> <span class="text-uppercase margin-l-20">{{mob.Mobile_Name}}</span></h4>
+                                        <!--
+                                                    <h4><a href="{% url 'mobileinfo' id=mob.id %}">{{mob.Mobile_Companny}}</a> <span class="text-uppercase margin-l-20">{{mob.Mobile_Name}}</span></h4>
+                                                    <h4><a href = "{% url 'mobileinfo' id=mob.id %}"> Price </a><span class="text-uppercase margin-l-20">{{mob.price}}</span></h4>
+                                                    <h4>{{mob.os}}</h4>
+                                                    <h4><a href = "{% url 'mobileinfo' id=mob.id %}"> Size </a><span class="text-uppercase margin-l-20">{{mob.Size}}-Inch</span></h4>
+                                                    <h4><a href = "{% url 'mobileinfo' id=mob.id %}"> Color </a><span class="text-uppercase margin-l-20">{{mob.Colors}}</span></h4>
+                                                    <h4><a href = "{% url 'mobileinfo' id=mob.id %}"> Cpu </a><span class="text-uppercase margin-l-20">{{mob.Cpu}}</span></h4>
+                                                                                        <h4><a href = "{% url 'mobileinfo' id=mob.id %}"> OS </a><span class="text-uppercase margin-l-20">{{mob.OS}}</span></h4>
+                                                -->
+                                                    <a class="link btn btn-success" href="{% url 'mobileinfo' id=mob.id %}">
+                                                        {% filter upper %}
+                                                            Read More
+                                                        {% endfilter %}</a>
+                                                
+                                            </div>
+                                {%  if forloop.counter|divisibleby:3 or forloop.last %}
+                                    </div><!-- row closing --><hr>
+                                    {%  endif %}
+                                {%  endfor %}
+                                
+                            </div>                    
+                    </div>
+                </div>
+                <!-- Pagination row -->
+                <div class='row'>
+                    <div class='col-md-12'>
+                        
+                            <div class="pagination" >
+                                    <span class="step-links">
+                                        {% if samsung_phones.has_previous %}
+                                            <a href="?page=1">&laquo; first</a>
+                                            <a href="?page={{ samsung_phones.previous_page_number }}">previous</a>
+                                        {% endif %}
+                                        
+                                        <span class="current">
+                                            Page {{ samsung_phones.number }} of {{ samsung_phones.paginator.num_pages }}.
+                                        </span>
+                                    
+                                        {% if mobiles.has_next %}
+                                            <a href="?page={{ samsung_phones.next_page_number }}">next</a>
+                                            <a href="?page={{ samsung_phones.paginator.num_pages }}">last &raquo;</a>
+                                        {% endif %}
+                                    </span>
+                            </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="col-sm-1 sidenav" style='background:yellow'>side bar</div>   
     </div>
@@ -391,6 +460,9 @@
               <p><a href="#" target="blank">Contact</a> | <a href="#" target="blank">LinkedIn1</a> | <a href="#" target="blank">Twitter</a> | <a href="#" target="blank">Google+</a></p>
           </div>
      </footer>	 -->
+
+
+
 <script>
 
 //Global Variable
@@ -419,7 +491,6 @@ $(document).ready(function () {
 $('.innerchecksboxdivs').hide();
 $('.map_select_label').hide();
 $('.show_select_tag').hide();
-
 $('#self-defined').hide();
 $('#pre-defined').hide();
 $('#selfbuttondiv').hide();
@@ -429,8 +500,8 @@ $('#importSubdiv').hide();
 $('#dispFileFeatLvldiv').hide();
 $('#subj_split_batch_rowdiv').hide();
 $('#block_assign_row_div').hide();
-
-$('#batchmngprvbtn').hide();
+$('#blkoutputsDiv').hide();
+$('#batchmngprvbtn_div').hide();
 $('#dataDiv').hide();
 //defaultFeatLevel_Table();
 //TODO@MUDABIR:
@@ -519,14 +590,9 @@ if(exp_id===""){
             // First Check if checbox_id_dict is empty if not then run following, else do nothing. 
             // Then Run a SEPERATE OUTERCHECKBOX function that generates checkboxes exactly like the original one, but doesnt store data in dict.
             // Which will run a seperate showinnerbox function to populate the innerchecboxes. 
+      
         if (checkbox_id_dict!={}){
-        for (var key in checkbox_id_dict){
-            console.log('cheCKebox value',checkbox_id_dict[key]);
-            console.log('key',key);
-            var outercheckbox = document.getElementById(key);
-            outercheckbox.checked = true; 
-            outerCheckBox_Stored( outercheckbox.getAttribute('value') ,key )
-        }
+             showcheckboxes_stored();
         }
 
         // Showing saved subject data. 
@@ -538,6 +604,15 @@ if(exp_id===""){
 
 
 });
+function showcheckboxes_stored(){
+    for (var key in checkbox_id_dict){
+            console.log('cheCKebox value',checkbox_id_dict[key]);
+            console.log('key',key);
+            var outercheckbox = document.getElementById(key);
+            outercheckbox.checked = true; 
+            outerCheckBox_Stored( outercheckbox.getAttribute('value') ,key )
+        }
+}
 function getSavedSubjectDataExpCont(){
     $.ajax({
         type: 'POST',
@@ -796,27 +871,6 @@ function ProcessExcel(data) {
        
 };
 
-// document.getElementById('excelFileUpload').addEventListener("change", function(e) {
-//   var files = e.target.files,file;
-//   if (!files || files.length == 0) return;
-//   file = files[0];
-//   var fileReader = new FileReader();
-//   fileReader.onload = function (e) {
-//     var filename = e.target.result;
-//     // pre-process data
-//     var binary = "";
-//     var bytes = new Uint8Array(e.target.result);
-//     var length = bytes.byteLength;
-//     for (var i = 0; i < length; i++) {
-//       binary += String.fromCharCode(bytes[i]);
-//     }
-//     // call 'xlsx' to read the file
-//     var oFile = XLSX.read(binary, {type: 'binary', cellDates:true, cellStyles:true});
-//         console.log(oFile);
-//   };
-//   fileReader.readAsArrayBuffer(file);
-//  });
-
 // Code for changing the background colour of the custom_nav_bt
 for (var i = 0; i < btns.length; i++) {
       btns[i].addEventListener("click", function() {
@@ -835,7 +889,7 @@ function showImportSubdiv(){
     
     $('#feat_lvl_div').hide();
     $('#importSubdiv').show(1000);
-    $('#batchmngprvbtn').show();
+    $('#batchmngprvbtn_div').show();
 
 
 }
@@ -845,10 +899,9 @@ function showFeatLvlDiv(){
     $('#importSubdiv').hide();
     $('#block_assign_row_div').hide();
     $('#dataDiv').hide();
-    $('#batchmngprvbtn').hide();
+    $('#batchmngprvbtn_div').hide();
     $('#dataDiv').hide();
     $('#feat_lvl_div').show( 1000);
-    
     var current=$('#btchmng')
     current.prop('class',current.attr('class').replace('active',""));
     $('#ftlvl').prop('class', 'custom_nav_btn active');
@@ -909,10 +962,11 @@ function showFeatureLvls(){
     $('#importSubdiv').hide();
     $('#block_assign_row_div').hide();
     $('#dataDiv').hide();
-    $('#batchmngprvbtn').hide();
+    $('#batchmngprvbtn_div').hide();
     $('#dataDiv').hide();
     $('#feat_lvl_div').slideDown(500);  
     $('#dispFileFeatLvldiv').show();
+    
 
 }
 
@@ -921,7 +975,7 @@ function showBatchManagement(){
     $('#block_assign_row_div').hide();
 
     $('#importSubdiv').slideDown();
-    $('#batchmngprvbtn').show();
+    $('#batchmngprvbtn_div').show();
     $('#dispFileFeatLvldiv').show();
 
    
@@ -933,7 +987,7 @@ function showBlockManagement(){
     $('#dispFileFeatLvldiv').hide();
     $('#subj_split_batch_rowdiv').hide();
     $('#dataDiv').hide();
-    $('#batchmngprvbtn').hide();
+    $('#batchmngprvbtn_div').hide();
     $('#block_assign_row_div').show();
     // $('#blkoutputsDiv').show();
 }
@@ -981,7 +1035,6 @@ function saveExperiment(){
 
                     }
                 }); 
-
 
 }
 $(function () {
@@ -1137,7 +1190,9 @@ function  showFileDataTable(rows){
                             console.log(rows[rowindex])
                             var rowcols=rows[rowindex].split(',')
                                 for (var j=0;j<rowcols.length;j++){
+
                                     var th=document.createElement('TH');
+                                    // th.setAttribute('class','success')
                                     th.append(rowcols[j])
                                     trh.appendChild(th)
                                     
@@ -1441,9 +1496,9 @@ function postExpData(){
 
         // refreshFileDataList();
 
-        showFileDataTable(global_rows);
+        
         var filedat=getFileDataList();
-
+        
         console.log('before setting filedata',filedat);
         // if (proceedbtncount!==0){
         //     filedat.pop();
@@ -1453,6 +1508,7 @@ function postExpData(){
         filedat.push(custom_id);
         filedat.push(email);
         filedat.push(batch_field); 
+        showFileDataTable(global_rows);
         console.log('afer setting filedata',filedat);
         // proceedbtncount++;
         refreshFileDataList();
@@ -2420,4 +2476,36 @@ function sendFilePath(id){
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/xlsx.js"></script> -->
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
+<script>
+        $(document).ready(function () {
+            $('#mobile_catalog_div').hide();
+        });
+    function mobileCatalog(){
+        $('#mobile_catalog_div').show();
+        $('#importSubdiv').hide();
+        $('#dispFileFeatLvldiv').hide();
+        $('#subj_split_batch_rowdiv').hide();
+        $('#block_assign_row_div').hide();
+        $('#feat_lvl_div').hide();
+        $('#batchmngprvbtn_div').hide();
+        $('#dataDiv').hide();
+        $('#blkoutputsDiv').hide();
+        
+        $('.custom_nav_btn active').prop('class',current.attr('class').replace('active',""));
+
+        $('#').prop('class', 'custom_nav_btn active');
+        // $('.innerchecksboxdivs').hide();
+        // $('.map_select_label').hide();
+        // $('.show_select_tag').hide();
+        // $('#self-defined').hide();
+        // $('#pre-defined').hide();
+        // $('#selfbuttondiv').hide();
+        // $('#prebuttondiv').hide();
+        // $('#upload').prop('disabled',true);
+       
+    }
+    function toggleCheckbox(){}
+    
+    </script>
+
 {%endblock%}
