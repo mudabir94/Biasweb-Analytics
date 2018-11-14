@@ -474,8 +474,9 @@ var custom_exp_id='{{sess_custExpId}}';
 var block_list = [];
 var global_rows=[];
 
-var header = document.getElementById("custom_nav_div");
-var btns = header.getElementsByClassName("custom_nav_btn");
+// var header = document.getElementById("custom_nav_div");
+var btns = document.getElementsByClassName("custom_nav_btn");
+
 // variable to save outer and inner check box div info. for pre populating. 
 var checkbox_id_dict={};
 window.row_filedata=null;
@@ -483,8 +484,7 @@ window.row_filedata=null;
 
 // When the page will this will be the first javascript function that will be called. 
 $(document).ready(function () {
- 
-   
+   console.log('btrn',btns)
 
 // This Will hide all the divs with class=innerchecksboxdivs
 
@@ -877,38 +877,41 @@ for (var i = 0; i < btns.length; i++) {
     var current = document.getElementsByClassName("active");
     current[0].className = current[0].className.replace(" active", "");
     this.className += " active";
+    console.log('classname',this.className);
   });
+}
 // Uploading file Function . 
 function showImportSubdiv(){
     // setting current active btn.
-    var current=$('#ftlvl')
+    // var current=$('#ftlvl')
+    var current=$(".active");
     current.prop('class',current.attr('class').replace('active',""));
     $('#btchmng').prop('class', 'custom_nav_btn active');
-    
-    $('btchmng').className += " active";
+
     
     $('#feat_lvl_div').hide();
+    $('#mobile_catalog_div').hide();
     $('#importSubdiv').show(1000);
     $('#batchmngprvbtn_div').show();
 
 
 }
 function showFeatLvlDiv(){
-  
-   
     $('#importSubdiv').hide();
     $('#block_assign_row_div').hide();
     $('#dataDiv').hide();
     $('#batchmngprvbtn_div').hide();
     $('#dataDiv').hide();
+    $('#mobile_catalog_div').hide();
     $('#feat_lvl_div').show( 1000);
-    var current=$('#btchmng')
+    // var current=$('#btchmng')
+    var current=$(".active");
     current.prop('class',current.attr('class').replace('active',""));
     $('#ftlvl').prop('class', 'custom_nav_btn active');
-}
 
 
 }
+
 function displayfeaturelevelTable(){
     $('#dispFileFeatLvldiv').show();
     makeFeatureLvldicTable();
@@ -965,6 +968,8 @@ function showFeatureLvls(){
     $('#batchmngprvbtn_div').hide();
     $('#dataDiv').hide();
     $('#feat_lvl_div').slideDown(500);  
+    $('#mobile_catalog_div').hide();
+
     $('#dispFileFeatLvldiv').show();
     
 
@@ -973,10 +978,12 @@ function showFeatureLvls(){
 function showBatchManagement(){
     $('#feat_lvl_div').hide();
     $('#block_assign_row_div').hide();
-
+    $('#mobile_catalog_div').hide();
     $('#importSubdiv').slideDown();
     $('#batchmngprvbtn_div').show();
     $('#dispFileFeatLvldiv').show();
+  
+
 
    
 }
@@ -988,6 +995,7 @@ function showBlockManagement(){
     $('#subj_split_batch_rowdiv').hide();
     $('#dataDiv').hide();
     $('#batchmngprvbtn_div').hide();
+    $('#mobile_catalog_div').hide();
     $('#block_assign_row_div').show();
     // $('#blkoutputsDiv').show();
 }
@@ -2477,7 +2485,10 @@ function sendFilePath(id){
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/xlsx.full.min.js"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.5/jszip.js"></script>
 <script>
+    // var btns = document.getElementsByClassName("custom_nav_btn");
+
         $(document).ready(function () {
+            // console.log('btns',btns)
             $('#mobile_catalog_div').hide();
         });
     function mobileCatalog(){
@@ -2491,9 +2502,6 @@ function sendFilePath(id){
         $('#dataDiv').hide();
         $('#blkoutputsDiv').hide();
         
-        $('.custom_nav_btn active').prop('class',current.attr('class').replace('active',""));
-
-        $('#').prop('class', 'custom_nav_btn active');
         // $('.innerchecksboxdivs').hide();
         // $('.map_select_label').hide();
         // $('.show_select_tag').hide();
