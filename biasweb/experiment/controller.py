@@ -183,6 +183,18 @@ class ExperimentController:
     #                 self.fLevels[f] = self.clarifyFeature(enquiry)
     #     print(self.fLevels[f])
 
+    
+    def getSubject(self, subj_CID):
+        #tables to traverse
+        #-user
+        #-subject
+        #-block
+        #-
+        #return dictionary of field:value
+        pass
+
+    def getSubjectDataFrame(self):
+        pass
     def generateBlocks(self):
         self.blocks = list(
             itertools.product(
@@ -219,10 +231,12 @@ class ExperimentController:
         self.idField = idFName
         print('outside if condition of not empty')
         if not self.subjData.empty:
+            #ensure the subjData column is a string before write to DB
             print('if subjdata not empty')
             self.subjData[idFName] = self.subjData[idFName].astype(str)
             print('self.subjData[idFName]:')
             print(self.subjData[idFName])
+
     def getSubColNames(self):
         cols = self.subjData.columns
         return cols
