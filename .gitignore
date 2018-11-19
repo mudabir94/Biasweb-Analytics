@@ -9,3 +9,4 @@ webapp/migrations/0002_auto_20181030_0032.py
 webapp/migrations/0001_initial.bk
 webapp/migrations/0001_initial.py
 node_modules
+package_lock.json
