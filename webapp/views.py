@@ -179,7 +179,12 @@ def cart(request):
     #query = 'SELECT * FROM webapp_samsung_phone WHERE id=1 or id=2 or id=3'
     #mobiles=samsung_phone.objects.raw(query)
     print(mobiles)
-    
+    # if one by one then load cart. 
+    # if 2 by 2 than totally differnt page. based on permissions. 
+    # permissions such as ahp or direct. 
+    # interactivity on or off.
+    #  
+    # template 2by2 cart display.
     return render(request, 'webapp/cart.html',{'mobiles':mobiles,'s':sizeofmob})
 def ind(request):
    

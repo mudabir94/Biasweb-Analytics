@@ -14,14 +14,23 @@ alternatives_list=['MobileA','MobileB','MobileC']
 criteria_list=['price', 'Resolution', 'Size'];
 ahpContext.addItems(alternatives_list);
 ahpContext.addCriteria(criteria_list);
-dict={
-    preferredItem: alternatives_list[0],
-    comparingItem: alternatives_list[1],
+ahpContext.rankCriteria(
+    [{
+            preferredCriterion: 'experience',
+            comparingCriterion: 'education',
+            scale: 4
+        }
+    ]
+);
+
+ahpContext.rankCriteriaItem('experience', [{
+    preferredItem: 'dick',
+    comparingItem: 'tom',
     scale: 4
 }
-dict_in_list=[dict];
 
-ahpContext.rankCriteriaItem(criteria_list[0],dict_in_list );
+]);
+
 
 let output = ahpContext.debug();
 console.log(output.log);
