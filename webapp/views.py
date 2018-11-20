@@ -184,6 +184,9 @@ def compareMobileSpecs(request):
     # interactivity on or off.
     #  
     # template 2by2 compareMobileSpecs display.
+
+
+    
     return render(request, 'webapp/comparemobile_specs.html',{'mobiles':mobiles,'s':sizeofmob})
 def ind(request):
    
