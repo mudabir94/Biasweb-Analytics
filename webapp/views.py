@@ -145,13 +145,13 @@ def showMob(request):
         if request.is_ajax:
         # print("ajax",request.POST.get('data'))
             ####print("PST",request.POST.get('d')) 
-            d = request.POST.get('d')
+            mobiledata = request.POST.get('mobiledata')
         ### print('JSONLOADS',eval(d))
-            b = json.loads(d)
-            print(b[0])
+            mobiledata_json = json.loads(mobiledata)
+            print(mobiledata_json[0])
             query_array=[]
             count=1    
-            for key,value in  enumerate(b):
+            for key,value in  enumerate(mobiledata_json):
                 print("key",key)
                 print ("val", value)
                 query_array.append(' '+ 'id'+ '=' + value )
@@ -159,13 +159,11 @@ def showMob(request):
             global mobiles
             global sizeofmob
             mobiles=samsung_phone.objects.raw(query)
-            som=len(list(mobiles))
-            sizeofmob=som
+            size_of_mobile=len(list(mobiles))
+            sizeofmob=size_of_mobile
             print(mobiles)
-            print("som",som)
-
-            dict = {'som':som}
-    return HttpResponse(json.dumps(dict), content_type='application/json')
+            dict = {'size_of_mobile':size_of_mobile}
+    return HttpResponse(json.dumps(dict))
     #return render_to_response(request,'webapp/showmob.html',{'mobiles':mobiles}) 
     '''
     query = 'SELECT * FROM webapp_samsung_phone WHERE id=1 or id=2'
@@ -175,17 +173,18 @@ def showMob(request):
     '''
     
      
-def cart(request):
+def compareMobileSpecs(request):
     #query = 'SELECT * FROM webapp_samsung_phone WHERE id=1 or id=2 or id=3'
     #mobiles=samsung_phone.objects.raw(query)
     print(mobiles)
-    # if one by one then load cart. 
+    print('sizeof mobile',sizeofmob)
+    # if one by one then load compareMobileSpecs. 
     # if 2 by 2 than totally differnt page. based on permissions. 
     # permissions such as ahp or direct. 
     # interactivity on or off.
     #  
-    # template 2by2 cart display.
-    return render(request, 'webapp/cart.html',{'mobiles':mobiles,'s':sizeofmob})
+    # template 2by2 compareMobileSpecs display.
+    return render(request, 'webapp/comparemobile_specs.html',{'mobiles':mobiles,'s':sizeofmob})
 def ind(request):
    
     if request.is_ajax:
@@ -596,7 +595,7 @@ class mobile_phone_view(TemplateView):
                 querry='SELECT * FROM webapp_samsung_phone WHERE '+ 'or'.join(querry_array)
                 print(querry)
                 mobiles=samsung_phone.objects.raw(querry)
-                return render(request,'webapp/cart.html',{'mobiles':mobiles})
+                return render(request,'webapp/comparemobile_specs.html',{'mobiles':mobiles})
             if request.user.is_prof:
                 obj=prunedmobilephones.objects.filter(roles=2)
                 print("in here")
@@ -607,7 +606,7 @@ class mobile_phone_view(TemplateView):
                 querry='SELECT * FROM webapp_samsung_phone WHERE '+ 'or'.join(querry_array)
                 print(querry)
                 mobiles=samsung_phone.objects.raw(querry)
-                return render(request,'webapp/cart.html',{'mobiles':mobiles})
+                return render(request,'webapp/comparemobile_specs.html',{'mobiles':mobiles})
         # as above check will  be changed in future we might not need the above code. . 
         else:
             mobiles= samsung_phone.objects.all() 

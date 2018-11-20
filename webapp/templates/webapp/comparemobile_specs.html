@@ -249,11 +249,11 @@ $(document).ready(function () {
     var p="pricepara";
 
 	for (var i=1;i<=num;i++){
-		//console.log(i);
+		console.log(i);
 
 		var priceinput=parseInt(document.getElementById('priceinput-'+i).value);
 		document.getElementById(p+i).innerHTML=priceinput.toLocaleString('en-IN');
-		console.log(p+i,priceinput.toLocaleString('en-IN'));
+		// console.log(p+i,priceinput.toLocaleString('en-IN'));
 		
 	}
 	$('#highchart').append("<div id='container'style='min-width: 210px; height: 240px; margin: 0 auto;position:fixed;'></div>");

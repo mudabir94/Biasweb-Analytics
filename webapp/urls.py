@@ -18,13 +18,6 @@ urlpatterns = [
 
 
 
-
-
-
-
-
-
-
 #----------------------------------------------------------------------------------------------------------
     url(r'^admin_setup/' , views.adminSetup , name='admin_setup') ,
     url(r'^mobile/',views.mobile_phone_view.as_view(),name='mobileview'),
@@ -32,8 +25,8 @@ urlpatterns = [
     url(r'^filter/',views.filter.as_view(), name='filter'),
     
     
-    url(r'^cart/',views.cart, name='cart'),
-    url(r'^showmob/',views.showMob, name='sm'),
+    url(r'^comparemobile_specs/',views.compareMobileSpecs, name='comparemobile_specs'),
+    url(r'^showmob/',views.showMob, name='showmobile'),
     url(r'^showScore/',views.showScore, name='showscore'),
 
 
