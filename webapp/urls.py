@@ -2,6 +2,10 @@ from django.conf.urls import url, include
 from django.urls import path
 from . import views 
 urlpatterns = [
+   url(r'^index_ahp/',views.indexAhp, name='index_ahp'),   
+   
+   
+   
     # These urls doesn't have templates. These functions are
     # called  through ajax. They are either used to retrieve  
     # data from model and render the data to some other template.         

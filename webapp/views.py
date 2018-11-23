@@ -52,6 +52,10 @@ role=1   #global variable used in adminsetup and globalFunc function.
 mobiles=samsung_phone.objects.raw('SELECT * FROM webapp_samsung_phone WHERE id=1 or id=2') # making mobiles object global.
 sizeofmob=0 # global variable assigned in filter class.
 #-------------------------------------------------------------------------------------------------
+def indexAhp(request):
+    return render (request,'webapp/index-ahp.html')
+
+
 class Home(TemplateView):
     template_name='webapp/home.html'
     def get(self,request):
@@ -154,11 +158,15 @@ def showMob(request):
             for key,value in  enumerate(mobiledata_json):
                 print("key",key)
                 print ("val", value)
-                query_array.append(' '+ 'id'+ '=' + value )
-            query = 'SELECT * FROM webapp_samsung_phone WHERE '+ ' or ' .join(query_array)
+                # query_array.append(' '+ 'id'+ '=' + value )
+                query_array.append(value)
+            query=samsung_phone.objects.filter(id__in=(query_array))
+            
+            # query = 'SELECT * FROM webapp_samsung_phone WHERE '+ ' or ' .join(query_array)
             global mobiles
             global sizeofmob
-            mobiles=samsung_phone.objects.raw(query)
+            # mobiles=samsung_phone.objects.raw(query)
+            mobiles=query
             size_of_mobile=len(list(mobiles))
             sizeofmob=size_of_mobile
             print(mobiles)
@@ -174,20 +182,41 @@ def showMob(request):
     
      
 def compareMobileSpecs(request):
-    #query = 'SELECT * FROM webapp_samsung_phone WHERE id=1 or id=2 or id=3'
-    #mobiles=samsung_phone.objects.raw(query)
-    print(mobiles)
-    print('sizeof mobile',sizeofmob)
+    
+    if request.method=="POST":
+
+        if request.is_ajax: 
+            mobile={}
+            allmobile={}
+            for m in mobiles:
+              
+                
+                mobile['imagepath1']=m.imagepath1
+                mobile['price']=m.price_in_pkr
+                print(mobile)
+                allmobile[m.Mobile_Name]=mobile
+                print(allmobile)
+                mobile={}
+               
+            features=['price','resolution','size']
+            if allmobile:
+                return JsonResponse(allmobile)
+ 
+    
+    
     # if one by one then load compareMobileSpecs. 
     # if 2 by 2 than totally differnt page. based on permissions. 
     # permissions such as ahp or direct. 
     # interactivity on or off.
     #  
     # template 2by2 compareMobileSpecs display.
-
-
+    # for 2 by 2 load 2by2compareMobileSpecs html. 
     
-    return render(request, 'webapp/comparemobile_specs.html',{'mobiles':mobiles,'s':sizeofmob})
+
+    return render(request,'webapp/2by2comparemobilespecs.html',{
+        'mobiles':mobiles,
+        's':sizeofmob
+        })
 def ind(request):
    
     if request.is_ajax:
