@@ -19,7 +19,7 @@ ahpArrayHelper._setUpSquareArray = function(size){
 	for(i = 0; i < size; i++){
 		result[i][i] = 1;
 	}
-	
+	console.log('result',result);
 	return result;
 };
 
@@ -57,7 +57,9 @@ ahpCalc.consistencyIndex = [0, 0, 0.58, 0.9, 1.12, 1.24, 1.32, 1.41, 1.45, 1.49 
 ahpCalc.calculateResults = function(resultArray){
 	var _sumRow 			= this._calculateSumRow(resultArray);
 	var _normalizedResults 	= this._normalizeResults(resultArray, _sumRow); 
+	
 	var _resultColumn 		= this._calculateResultAverages(_normalizedResults);
+	
 	var _consistencyRatio 	= this._calcConsistencyRatio(resultArray, _resultColumn);
 	
 	return {resultColumn: _resultColumn, consistencyRatio: _consistencyRatio.cr, eigen: _consistencyRatio.eigen};
@@ -78,9 +80,9 @@ ahpCalc._calculateSumRow = function(resultArray){
 		sumArray[j] = 0;
 		for(var i = 0; i < size; i++){
 			sumArray[j] += resultArray[i][j];
+			
 		}
 	}
-	
 	return sumArray;
 };
 
@@ -102,7 +104,6 @@ ahpCalc._normalizeResults = function(resultArray, sumRow){
 			resultArrayNormalized[i][j] = resultArray[i][j] / sumRow[j];
 		}
 	}
-	
 	return resultArrayNormalized;
 	
 };
@@ -121,10 +122,12 @@ ahpCalc._calculateResultAverages = function(resultArrayNormalized){
 		resultColumn[i] = 0;
 		for(var j = 0; j < size; j++){
 			resultColumn[i] += resultArrayNormalized[i][j];
+			// console.log('resultColumn_inner_inner',resultColumn)
 		}
 		resultColumn[i] = resultColumn[i] / size;
+		// console.log('resultColumn_outer',resultColumn)
 	}
-	
+	// console.log('resultColumn',resultColumn)
 	return resultColumn;
 };
 

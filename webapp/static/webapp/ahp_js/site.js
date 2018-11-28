@@ -231,7 +231,7 @@ ahp.optionArray = [];
 /**
  * the score values
  */
-ahp.scores = {eq: 1, low: 2, high: 4};
+ahp.scores = {};
 
 /**
  * the index of the current pair with respect to the total number of questions that will be asked
@@ -356,6 +356,7 @@ ahp._bindVoteEvents = function(nextQuestionArr){
  */
 ahp._bindSimpleVoteEvents = function(leftpair, rightpair){
 	$('.simplePollButtons #L_MuchMore').click(function(){
+		console.log('ahp.scores.high',ahp.scores.high)
 		ahp.recordVote(leftpair, ahp.scores.high);
 	});
 
@@ -382,6 +383,7 @@ ahp._bindSimpleVoteEvents = function(leftpair, rightpair){
 ahp._bindDetailedVoteEvents = function(leftpair, rightpair){
 	$('.detailedPollButtons input[type="button"].leftMore').each(function(){
 		$(this).click(function(){
+			console.log('parseInt($(this).val(), 10)',parseInt($(this).val(), 10))
 			ahp.recordVote(leftpair, parseInt($(this).val(), 10));
 		});
 	});
@@ -405,8 +407,9 @@ ahp._bindDetailedVoteEvents = function(leftpair, rightpair){
  * @param Integer score the value of the vote
  */
 ahp.recordVote = function (pair, score){
+	// console.log('ahp.resultArray',ahp.resultArray)
+	console.log("pairscore");
 	console.log(pair, score);
-
 	// record the scores
 	ahp.resultArray[pair[0]][pair[1]] = score;
 	ahp.resultArray[pair[1]][pair[0]] = 1/score;
@@ -429,7 +432,7 @@ ahp._calculateResult = function(){
 
 	// calc results
 	var calcResults = ahpCalc.calculateResults(this.resultArray);
-	
+	console.log("calcResults",calcResults)
 	// display the results
 	ahp._displayResults(calcResults);
 	
@@ -633,7 +636,9 @@ ahp._retryPoll = function(resultId){
  * purpose: setup the result array
  */
 ahp._setUpResultArray = function(){
+	console.log('this.optionArray.length',this.optionArray.length)
 	this.resultArray = ahpArrayHelper._setUpSquareArray(this.optionArray.length);
+	console.log('this.resultArray',this.resultArray)
 };
 
 /**

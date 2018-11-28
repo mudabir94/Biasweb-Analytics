@@ -18,7 +18,14 @@
         <link rel="stylesheet" href="{% static 'webapp/bootstrap-4.1.3-dist/css/bootstrap.min.css' %}" type = "text/css"/>
         <script type="text/javascript" src="{% static 'webapp/bootstrap-4.1.3-dist/js/bootstrap.min.js' %}" charset="utf-8"></script>
         <link rel="stylesheet" href="{% static 'webapp/css/2by2tablecss.css' %}" type = "text/css"/>
-    <body>
+        <!-- for arrow icons -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+       <!-- ahp testing -->
+       <script type="text/javascript" src="{% static 'webapp/ahp_js/ahpCalc.obj.js' %}"></script>
+       <script type="text/javascript" src="{% static 'webapp/ahp_js/site.js' %}"></script>
+	
+</head>    
+<body>
         <nav class="navbar navbar-dark bg-dark">
                     <!-- <div class="container-fluid"> -->
                       <!-- <div class="navbar-header" > -->
@@ -51,44 +58,376 @@
 
         <div class='container-fluid'>
             <div class='row'>
-                <div class="col-md-2" style="background:black"></div>
+                <div class="col-md-2" style="background:black">
+                    <div id="prevbtn_div"></div>
+                    <div>
+                        <button onclick="ahptesting()">ahp</button>
+                    </div>
+                </div>
                 <div class="col-md-8">
                     <div class="row">
                         <div class="col-md-12" >
-                            <div id="tablediv"></div>
+                            <div id="tablediv">
+                          
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-2" style="background:hotpink"></div>
+                <div class="col-md-2" style="background:hotpink">
+                    <div id="nextbtn_div"></div>
+                </div>
             </div>
         </div>
         
     </body>
 </html>
 <script >
+// ahp implementation according to requirement. 
+// first cycle.
+    // comparison of criterias. 
+    
+    // store resultColumn in weights list. 
+    // var weightlist=[]
+// Second Cycle
+    // Compare alternatives based on criterias. 
 
-  
+    // After getting the number of selected phones on which ahp would run. 
+    // The alternatives will be set and  _setUpSquareArray(numofmobiles) would be run. 
+    // and hence ahp.resultarray will be initialized. 
+    // 
+
    // Global variable 
-   var allmobile={}
+   var allmobiles={}
+   var prev_compared_mobiles_list=[];
+   var dict_contains_listofCombiations=null;
+   mobiletesting={};
    $(document).ready(function(){
+
+   
     $.ajax({
                 type: 'POST',
                 dataType: "json",
                 'data': {
-
                 'csrfmiddlewaretoken': '{{ csrf_token }}',
                 },
         // the ajax call is sent to subdetails url name in the post function.  
                 url: "{% url 'comparemobile_specs' %}",
                 success: function(data){
-                    console.log(data)
-                    allmobile=data
-                    makeTable(allmobile)
+                    console.log(data['allmobiles'])
+                    console.log(data['numofmobiles']) 
+                    // check num of mobiles.    
+                    if (data['numofmobiles']===2){
+                       allmobile=data['allmobiles'] 
+                    }   
+                    else{
+                        if (dict_contains_listofCombiations===null){
+                            var dict_lst_comb_keynum=0;
+                        }
+                        mobiletesting=data['allmobiles']
+                        processMobileData(dict_lst_comb_keynum);
+
+                        // once the makeTable function is called. 
+                        // Table will me made according to the data.
+                        // check for next button generation. 
+                       
+                        // if not prev_compared_mobiles_list
+                        // PREV BUTTON 
+                        // *previousMobilePair*
+                        // Previous Button would be created this time as prev_compared_mobiles_list is not empty
+                        // ***Its main job is to getting the previous/last updated 
+                        // listofcombination from prev_compared_list and make table according to it.***
+                        // get the last index stored in prev_compared_mobiles_list and pass to the func->
+                        //processMobileData func will be called. 
+                        // 
+                        // 
+                        // }
+                      
+                        // 1st get the next combinations from mainlist
+                        // then access values from data['allmobiles']
+                        // and pass to allmobiles. After which make table 
+                        // will be called. 
+                        // if prev_compared_mobiles_list is empty it will not create previous button
+                        // 
+                       
+
+                    }
+                    //allmobile=data
+                    //makeTable(allmobile)
+
                     }
 
                 }); 
    });
-function makeTable(allmobile){
+
+
+function ahptesting(){
+     var dict_test={};
+     dict_test[[0,1]]=1;
+     dict_test[[0,2]]=2;
+     console.log(dict_test)
+    // ahp.question = "os";
+    // ahp.resultArray = ahpArrayHelper._setUpSquareArray(3);
+    //  myrecord([0,1],6)
+    //  myrecord([0,2],8)
+    //  myrecord([1,2],5)
+    //  var calcResults = ahpCalc.calculateResults(ahp.resultArray);
+    
+    // console.log('calcRes',calcResults.resultColumn)
+    // weights=[0.7263184843830004, 0.20835466803208738, 0.0653268475849121]
+    // os=[0.1399,0.5535,0.2610,0.0955]
+    // ss=[0.1226,0.2852,0.3461,0.2459]
+    // cam=[0.556,0.2776,0.00549,0.6461]
+    // var crit_dict={};
+    // crit_dict['os']=os;
+    // crit_dict['ss']=ss;
+    // crit_dict['cam']=cam;
+    // crit_list=['os','ss','cam']
+    // var weight_alt_product_dict={};
+    // var product_list_main=[]
+    // for (var i=0;i<3;i++){
+    //     for (var j=i;j==i;j++){
+    //         console.log('kkkkkkkkkkk',j)
+    //         console.log(crit_dict[crit_list[j]])
+    //         var product_list=[]
+    //         for (var k=0;k<4;k++){
+    //             console.log("asd",weights[i]);
+    //             console.log("ole",crit_dict[crit_list[j]][k])
+    //             var product=weights[i]*crit_dict[crit_list[j]][k]
+    //             product_list.push(product);
+              
+                
+    //             // weight_alt_product_dict[crit_list[j]]=product_list;
+
+    //         }
+    //         product_list_main.push(product_list)
+    //         // var squares = product_list.map((a, i) => a + arr2[i]);
+    //         console.log('product_list',product_list)
+    //     }
+       
+    //     console.log('product_list_main',product_list_main)
+
+    // }
+    // var finalresult_list=[]
+    // finalresult_list=product_list_main[0]
+    // for (var w=0;w<product_list_main.length;w++){
+    //     if(product_list_main[w+1]!=undefined){
+    //         finalresult_list = product_list_main[w+1].map((a, i) => a + finalresult_list[i]);
+            
+    //     }
+    // }
+    // console.log(finalresult_list)
+    // console.log(weight_alt_product_dict)
+
+    //myrecord([0,1],1/7)
+    //  myrecord([0,2],1)
+    //  myrecord([0,3],1/8)
+    //  myrecord([1,2],8)
+    //  myrecord([1,3],1/6)
+    //  myrecord([2,3],1/8)
+    //  myrecord([0,1],6)
+    //  myrecord([0,2],8)
+    //  myrecord([1,2],5)
+    //  var calcResults = ahpCalc.calculateResults(ahp.resultArray);
+    
+    // console.log('calcRes',calcResults.resultColumn)
+}
+function myrecord(pair,score){
+    console.log('pair0',pair[0])
+    console.log('pair1',pair[1])
+    ahp.resultArray[pair[0]][pair[1]] = score;
+	ahp.resultArray[pair[1]][pair[0]] = 1/score;
+  
+}
+   function k_combinations(set, k) {
+	var i, j, combs, head, tailcombs;
+	
+	// There is no way to take e.g. sets of 5 elements from
+	// a set of 4.
+	if (k > set.length || k <= 0) {
+		return [];
+	}
+	
+	// K-sized set has only one K-sized subset.
+	if (k == set.length) {
+		return [set];
+	}
+	
+	// There is N 1-sized subsets in a N-sized set.
+	if (k == 1) {
+		combs = [];
+		for (i = 0; i < set.length; i++) {
+			combs.push([set[i]]);
+		}
+		return combs;
+	}
+	
+	// Assert {1 < k < set.length}
+	
+	// Algorithm description:
+	// To get k-combinations of a set, we want to join each element
+	// with all (k-1)-combinations of the other elements. The set of
+	// these k-sized sets would be the desired result. However, as we
+	// represent sets with lists, we need to take duplicates into
+	// account. To avoid producing duplicates and also unnecessary
+	// computing, we use the following approach: each element i
+	// divides the list into three: the preceding elements, the
+	// current element i, and the subsequent elements. For the first
+	// element, the list of preceding elements is empty. For element i,
+	// we compute the (k-1)-computations of the subsequent elements,
+	// join each with the element i, and store the joined to the set of
+	// computed k-combinations. We do not need to take the preceding
+	// elements into account, because they have already been the i:th
+	// element so they are already computed and stored. When the length
+	// of the subsequent list drops below (k-1), we cannot find any
+	// (k-1)-combs, hence the upper limit for the iteration:
+	combs = [];
+	for (i = 0; i < set.length - k + 1; i++) {
+		// head is a list that includes only our current element.
+		head = set.slice(i, i + 1);
+		// We take smaller combinations from the subsequent elements
+		tailcombs = k_combinations(set.slice(i + 1), k - 1);
+		// For each (k-1)-combination we join it with the current
+		// and store it to the set of k-combinations.
+		for (j = 0; j < tailcombs.length; j++) {
+			combs.push(head.concat(tailcombs[j]));
+		}
+	}
+	return combs;
+}
+
+function  makeCombinations(mobiles){
+        // Get the keys from data['allmobiles']
+            var keys = Object.keys(mobiles)
+            console.log('keys',keys);
+            var list1=['Samsung Galaxy A3 2017','Samsung galaxy S7']
+            var list2=['Samsung Galaxy A3 2017','Samsung galaxy A5']
+            var list3=['Samsung galaxy S7','Samsung galaxy A5']
+            var dict={}
+            dict[0]=list1;
+            dict[1]=list2;
+            dict[2]=list3;
+            console.log("dict",dict)
+            var k_combs=k_combinations(keys, 2);
+            console.log('k_combs',k_combs);
+            return k_combs;
+            // make combinations of the keys.
+                // store different combinations in lists and all
+                // of the lists in dict.
+    }
+ function processMobileData(keynum){
+                           
+    if (dict_contains_listofCombiations===null){
+        dict_contains_listofCombiations=makeCombinations(mobiletesting)
+        console.log('dict_contains_listofCombiations',dict_contains_listofCombiations)
+    }
+
+    // if (prev_compared_mobiles_list==[]) {
+        if (prev_compared_mobiles_list.length===0){
+        var listofcomb=dict_contains_listofCombiations[keynum];
+                
+                 allmobiles[listofcomb[0]]=mobiletesting[listofcomb[0]];
+                 allmobiles[listofcomb[1]]=mobiletesting[listofcomb[1]];
+                 console.log('processmobiledata_allmobiles',allmobiles)
+                 makeTable(allmobiles,keynum);
+                 allmobiles={};
+            } 
+            else{
+                console.log("processmobiledata_keynum",keynum)
+                var listofcomb=dict_contains_listofCombiations[keynum];
+                allmobiles[listofcomb[0]]=mobiletesting[listofcomb[0]];
+                allmobiles[listofcomb[1]]=mobiletesting[listofcomb[1]];
+                makeTable(allmobiles,keynum);
+                allmobiles={};
+            }
+             // processMobileData(mobiles){
+                            // store different combinations in lists and all
+                            // of the lists in dict...
+                            // if not dict_contains_listofCombiations
+                             //    dict_contains_listofCombiations=makeCombinations(mobiles)
+                            
+                        //    
+                              // check if prev_compared_mobiles_list is empty
+                              // if empty then get the first key from dict_contains_listofCombiations
+                        //              then get the values/combination
+                        //              values will be keys of mobile dict. 
+                        //              so get the values of that keys
+                        //              allmobiles[]=mobiles[]
+                        //              allmobiles[]=mobiles[]
+                        //              also pass the index/key num of dict_contains_listofCombiations to 
+                        //              makeTable func
+                        //              finally call makeTable(allmobiles,keynum) function. 
+                                //else
+                                // based on  new index/keynum/
+                                //get the value from dict_contains_listofCombiations
+                                // repeat accessing process from mobiles and storing in allmobiles.
+                                // and sending makeTable allmobiles dict with the new increment keynum. 
+                        // }
+}
+function nextMobilePair(currentKeycombination){
+       
+        console.log('currentKeycombination',currentKeycombination);
+   
+        // key num increment
+        var keynum=currentKeycombination+1;
+        // // dict_contains_listofCombiations will be accessed 
+        // var comb_list_check=dict_contains_listofCombiations[keynum]
+        // // if value would contain null then there would be nothing to compare and no table will be generated
+        // console.log('comb_list_check',comb_list_check)
+        // if (comb_list_check==undefined){
+        //     $('#nextbtn_div').empty();
+        //     console.log("dont process the data")
+        // }
+        // else {
+            
+            $('#tablediv').empty();
+            $('#prevbtn_div').empty();
+            // store index/keynum in prev_compared_mobiles_list
+            prev_compared_mobiles_list.push(currentKeycombination);
+            console.log('prev_compared_mobiles_list_push',prev_compared_mobiles_list)
+        // call the processMobileData function 
+            processMobileData(keynum); 
+        // }
+
+ // NEXT BUTTON 
+                        // *nextMobilePair()* 
+                        // nextMobilePair(currentKeycombination){
+                            // store index/keynum in prev_compared_mobiles_list
+
+                        //    // nextMobilePAir function will be passed an index/keynumber/currentKeycombination
+                              // on the basis of which an increment will be made. 
+                              // according to the incremented num value of 
+                              // dict_contains_listofCombiations will be accessed 
+                              // if value would contain null then there would be nothing to compare and no table will be generated
+                        // else 
+                        // call the processMobileData function 
+                        // this time processMobileData will already have couple of things such as
+                        // * dict_contains_listofCombiations
+                        // * prev_compared_mobiles_list
+                        // * index/keynum/ for accessing value from  dict_contains_listofCombiations
+                        // so we would simply get the value from dict_contains_listofCombiations on the basis of index/keynum. 
+                        // without runing makecombinations function. 
+                        // After getting values from dict_contains_listofCombiations 
+                        // we would simply store the newly fetched values from mobiles in allmobiles
+                        // and pass to makeTable with the indexnum. 
+                        // prev_compared_mobiles_list would already been updated. 
+}
+function previousMobilePair(){
+                $('#tablediv').empty();
+                if ($('#prevbtn_div').empty()===true){
+                    $('#prevbtn_div').empty();
+                }
+                        // Previous Button would be created this time as prev_compared_mobiles_list is not empty
+                        // ***Its main job is to getting the previous/last updated 
+                        // listofcombination from prev_compared_list and make table according to it.***
+                        // get the last index stored in prev_compared_mobiles_list and pass to the func->
+                        var keynum=prev_compared_mobiles_list.pop();
+                        console.log('prev_compared_mobiles_list_pop',prev_compared_mobiles_list)
+                        //processMobileData func will be called. 
+                        processMobileData(keynum)
+                        // 
+                        // 
+                        }
+function makeTable(allmobile,keynum){
     features=['Model','price']
     var table=document.createElement("TABLE");
     table.setAttribute('class','table-bordered')
@@ -99,6 +438,7 @@ function makeTable(allmobile){
     var trh=document.createElement("TR");
     thead.appendChild(trh);
     var th=document.createElement('TH')
+    th.setAttribute("style","padding-right:1pc")
     trh.appendChild(th);
     th.append("Criteria");
     var count=0;
@@ -107,9 +447,10 @@ function makeTable(allmobile){
     for (var namekey  in allmobile){
         
         mobilename.push(namekey)
-        console.log("namekey",namekey)
-        console.log('allmobile[namekey]',allmobile[namekey])
+        // console.log("namekey",namekey)
+        // console.log('allmobile[namekey]',allmobile[namekey])
         var th=document.createElement('TH')
+        th.setAttribute("style","padding-right:1pc")
         trh.appendChild(th);
         th.append(namekey)
         if (count==0){
@@ -122,21 +463,21 @@ function makeTable(allmobile){
                 tr.setAttribute('id','imagepath1'+rowcount)
                 tbody.appendChild(tr);
                 var td=document.createElement('TD');
-               
+                td.setAttribute("align","center")
                 tr.appendChild(td);
-                td.append('imagepath1');
+                td.append('Models');
                 var td=document.createElement('TD');
-                
+                td.setAttribute("align","center")
                 tr.appendChild(td);
                 var img=document.createElement('img');
                 img.setAttribute('class','img-responsive')
                 var im=allmobile[namekey][mobilespec]
-                console.log("hhbjn",im)
+                // console.log("hhbjn",im)
                 img.src="/static/"+im;
                 img.style="height: 154px;"
                 td.append(img);
-                console.log('mobilespec',mobilespec)
-                console.log('allmobile[namekey][mobilespec]',allmobile[namekey][mobilespec])
+                // console.log('mobilespec',mobilespec)
+                // console.log('allmobile[namekey][mobilespec]',allmobile[namekey][mobilespec])
                 
                 rowcount++;
                 $('#tablediv').append(table) 
@@ -148,14 +489,15 @@ function makeTable(allmobile){
                 tr.setAttribute('id',mobilespec+rowcount)
                 tbody.appendChild(tr);
                 var td=document.createElement('TD');
+                td.setAttribute("align","center")
                 tr.appendChild(td);
                 td.append(mobilespec);
                 var td=document.createElement('TD');
-                
+                td.setAttribute("align","center")
                 tr.appendChild(td);
                 td.append(allmobile[namekey][mobilespec]);
-                console.log('mobilespec',mobilespec)
-                console.log('allmobile[namekey][mobilespec]',allmobile[namekey][mobilespec])
+                // console.log('mobilespec',mobilespec)
+                // console.log('allmobile[namekey][mobilespec]',allmobile[namekey][mobilespec])
                 
                 rowcount++;
                 $('#tablediv').append(table) 
@@ -170,11 +512,12 @@ function makeTable(allmobile){
                     var img=document.createElement('img');
                 img.setAttribute('class','img-responsive')
                 var im=allmobile[namekey][mobilespec]
-                console.log("hhbjn",im)
+                // console.log("hhbjn",im)
                 img.src="/static/"+im;
                 img.style="height: 154px;"
                     var extendrow=document.getElementById(mobilespec+rowcount)
                      td_cell=extendrow.insertCell(-1);
+                     td_cell.setAttribute("align","center")
                     td_cell.append(img)
                 rowcount++;
                  
@@ -182,6 +525,7 @@ function makeTable(allmobile){
                 else{
                 var extendrow=document.getElementById(mobilespec+rowcount)
                 td_cell=extendrow.insertCell(-1);
+                td_cell.setAttribute('align',"center")
                 td_cell.innerHTML=allmobile[namekey][mobilespec]
                 rowcount++;
                 }
@@ -190,21 +534,25 @@ function makeTable(allmobile){
         }
         count++;
     }
-    console.log(specs)
+
+
+/// adding sliderss...
+    console.log("specs",specs)
     var rowcount=0;
     for (var mbs in specs){
-       
-        console.log("mbs",specs[mbs])
-        
+               
     var refrow =document.getElementById(specs[mbs]+rowcount);
 
     if (refrow!=null){
         var newrow = document.createElement("TR");
-        newrow.setAttribute('id','imageSlider-'+mobilename)
+        newrow.setAttribute('align','center')
+        newrow.setAttribute('id',specs[mbs]+'-'+mobilename)
+        // var td=document.createElement('TD');
+        // newrow.appendChild(td);
+        // td.append("Slider ");
         var td=document.createElement('TD');
-        newrow.appendChild(td);
-        td.append("Slider ");
-        var td=document.createElement('TD');
+        td.setAttribute("align","center")
+
         newrow.appendChild(td);
         var input = document.createElement("input");
         input.type = "range";
@@ -215,34 +563,98 @@ function makeTable(allmobile){
         input.value="1"
         input.setAttribute('oninput',"showSliderRangeVal(this)")
         td.append(input)
-        td.setAttribute('colSpan',"2")
+        td.setAttribute('colSpan',"3")
         
         refrow.parentNode.insertBefore(newrow, refrow.nextSibling);
         rowcount++;
         }
     }
+    // Check for next button generation @TODO:
+         //check if combination dict_contains_listofCombiations[key+1]  undefined for next then don't generate next button.  
+    var comb_list_check_maketable=dict_contains_listofCombiations[keynum+1]
+    if (comb_list_check_maketable==undefined){
+        $('#nextbtn_div').empty();
+        var submit_button=document.createElement("BUTTON");
+        submit_button.setAttribute("class","btn btn-success");
+        var text = document.createTextNode("Submit ");
+        submit_button.appendChild(text);
+        $(submit_button).appendTo('#nextbtn_div');
+
+    }
+    else{
+         // Generate Next button
+         $('#nextbtn_div').empty();
+        var nextbutton=document.createElement('button');
+        nextbutton.setAttribute("onclick","nextMobilePair("+keynum+")")
+        nextbutton.setAttribute("class","btn btn-primary");
+        var text = document.createTextNode("Next ");
+        nextbutton.appendChild(text);
+        var itag=document.createElement("I")
+        itag.setAttribute("class","fa fa-arrow-circle-right");
+        nextbutton.appendChild(itag);
+      
+        $(nextbutton).appendTo('#nextbtn_div');
+    }
+    //Check for previous button 
+    console.log('prev_compared_mobiles_list_maketable',prev_compared_mobiles_list)
+    if (prev_compared_mobiles_list.length===0){
+        // dont make the button 
+        // if button exsists then remove it. 
+        console.log("in if condition")
+    }
+    else{
+        var prevbutton=document.createElement('button');
+        prevbutton.setAttribute("onclick","previousMobilePair("+keynum+")");
+        prevbutton.setAttribute("class","btn btn-primary");
+        var itag=document.createElement("I")
+        itag.setAttribute("class","fa fa-arrow-circle-left");
+        prevbutton.appendChild(itag);
+        var text = document.createTextNode("Prev ");
+        prevbutton.appendChild(text);
+       
+        $(prevbutton).appendTo('#prevbtn_div');
+    }
 }
 
 function showSliderRangeVal(element){
     console.log(element.value)
-    
+    // when slider is changed
+    // * The criteria is extracted.*
+    // info about no of phones is stored. 
+    // on the basis of which ahp.resultarray is initialized
+    // in case of 2 phones. 
+    // [1 0
+    //  0 1
+    //  ]
+    // matrix is made. 
+    // after 
+    // myrecord function 
+    // myrecord args
+    // *args*=> the index list of combinationlist generated
+    // e.g 
+    // ['mobA','mobB']
+    // ['mobA','mobC']
+    // ['MobB','mobC']
+    // the matrix will look like
+    // [1   2
+    // 1/2  1
+    //  ]
+    console.log("parentid",$(element).parent().parent().attr('id'));
+    var parent_id=$(element).parent().parent().attr('id');
+    var split_arr=parent_id.split('-');
+    var criteria=split_arr[0]
+    var rawphoneslist=split_arr[1]
+    var phones=rawphoneslist.split(',');
+    console.log(phones);
+    ahp.question =criteria;
+    ahp.resultArray = ahpArrayHelper._setUpSquareArray(2);
+    myrecord([0,1],element.value)
+    var calcResults = ahpCalc.calculateResults(ahp.resultArray);
+    console.log('calcRes',calcResults.resultColumn)
+
+
 }
-// for (var i in features){
-    //     if (features[i]===mobilespec){
-    //         var td=document.createElement('TD');
-    //         console.log("mobilespec",mobilespec)
-    //         tr.appendChild(td);
-    //         td.append(features[i]);
-            
-    //      }           
-    //     else if (features[i]==="imagepath1")
-    //     {
-    //         var td=document.createElement('TD');
-    //         tr.appendChild(td);
-    //         td.append(features[i]);
-    //         console.log('asdasdasd')
-    //     }
-    // }
+
 </script>
 
 

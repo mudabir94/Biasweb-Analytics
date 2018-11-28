@@ -196,11 +196,17 @@ def compareMobileSpecs(request):
                 print(mobile)
                 allmobile[m.Mobile_Name]=mobile
                 print(allmobile)
+                numofmobiles=len(allmobile)
                 mobile={}
+                features=['price','resolution','size']
+                data={
+                    'allmobiles':allmobile,
+                    'numofmobiles':numofmobiles,
+                    'features':features
+                }
                
-            features=['price','resolution','size']
             if allmobile:
-                return JsonResponse(allmobile)
+                return JsonResponse(data)
  
     
     
