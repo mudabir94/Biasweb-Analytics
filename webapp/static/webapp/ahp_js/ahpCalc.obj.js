@@ -13,13 +13,16 @@ ahpArrayHelper._setUpSquareArray = function(size){
 	var i;
 	for(i = 0; i < size; i++){
 		result[i] = this._getInitializedArray(size);
+		
 	}
 	
 	// set diagonal values to 1
 	for(i = 0; i < size; i++){
-		result[i][i] = 1;
+		for (var j=0;j<size;j++){
+			result[i][j] = 1;
+		}
+		
 	}
-	console.log('result',result);
 	return result;
 };
 

@@ -10,6 +10,9 @@
         e.g. [Price, OS, Screen]
 1.2. Alternatives List
     - Exp_Admin pre-defined set of phones
+    - Search on the basis of price ranges... 
+    - User given options based on Experiment Saved Catalog. 
+    - Create Model Exp_Phone
     - User selects from catalog
     [Samsung, QMobile, Huawei] no = j
 2. Initialize Level_0 comparison matrix (criteria comparisons)

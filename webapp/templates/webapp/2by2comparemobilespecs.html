@@ -5,25 +5,42 @@
 		<meta charset="utf-8" >
 		<meta name="viewport" content = "width=device-width, initial-scale=1.0">
         {% load staticfiles %}
+        <!-- Google API Script -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <!-- Jquerry Scripts -->
         <script type="text/javascript" src="{% static 'webapp/js/jquery-ui.js' %}" charset="utf-8" ></script>
         <script type="text/javascript" src="{% static 'webapp/js/jquery.js' %}" charset="utf-8" ></script>
-        <link rel="stylesheet" href="{% static 'webapp/css/jquery-ui.css' %}" type="text/css" />
-        <link rel="stylesheet" href="{% static 'webapp/css/jquery-ui.structure.css' %}" type="text/css" />
-        <link rel="stylesheet" href="{% static 'webapp/css/jquery-ui.theme.css' %}" type="text/css" />
-        <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-        <script src="//code.jquery.com/jquery-1.10.2.js"></script>
-        <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-		<script type="text/javascript" src="{% static 'webapp/js/one_mobile.js' %}" charset="utf-8"></script>
+       <!-- <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+        <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script> -->
+        <!-- <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>     -->
+       <!-- One MobileJS -->
+       <script type="text/javascript" src="{% static 'webapp/js/one_mobile.js' %}" charset="utf-8"></script>
+       <!-- Bootstrap 4 js -->
+       <script type="text/javascript" src="{% static 'webapp/bootstrap-4.1.3-dist/js/bootstrap.min.js' %}" charset="utf-8"></script>
+       <!-- Ahp Testing JS -->
+       <script type="text/javascript" src="{% static 'webapp/ahp_js/ahpCalc.obj.js' %}"></script>
+       <script type="text/javascript" src="{% static 'webapp/ahp_js/site.js' %}"></script>
+       <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
+       <!-- Jquerry style sheet -->
+       <link rel="stylesheet" href="{% static 'webapp/css/jquery-ui.css' %}" type="text/css" />
+       <link rel="stylesheet" href="{% static 'webapp/css/jquery-ui.structure.css' %}" type="text/css" />
+       <link rel="stylesheet" href="{% static 'webapp/css/jquery-ui.theme.css' %}" type="text/css" />
+       <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+        <!-- BootStrap sytleSheet -->
         <link rel="stylesheet" href="{% static 'webapp/bootstrap-4.1.3-dist/css/bootstrap.min.css' %}" type = "text/css"/>
-        <script type="text/javascript" src="{% static 'webapp/bootstrap-4.1.3-dist/js/bootstrap.min.js' %}" charset="utf-8"></script>
+        <!-- 2by2 tablecss syle -->
         <link rel="stylesheet" href="{% static 'webapp/css/2by2tablecss.css' %}" type = "text/css"/>
         <!-- for arrow icons -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-       <!-- ahp testing -->
-       <script type="text/javascript" src="{% static 'webapp/ahp_js/ahpCalc.obj.js' %}"></script>
-       <script type="text/javascript" src="{% static 'webapp/ahp_js/site.js' %}"></script>
-	
+    
+
+
+       <script src="{% static 'webapp/js/rslider/rSlider.min.js' %}"></script>
+       <link rel="stylesheet" href="{% static 'webapp/css/rslider/rSlider.min.css' %}">
+     <!-- chart js -->
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
 </head>    
 <body>
         <nav class="navbar navbar-dark bg-dark">
@@ -60,50 +77,176 @@
             <div class='row'>
                 <div class="col-md-2" style="background:black">
                     <div id="prevbtn_div"></div>
-                    <div>
-                        <button onclick="ahptesting()">ahp</button>
-                    </div>
+                    
+                   
                 </div>
                 <div class="col-md-8">
                     <div class="row">
-                        <div class="col-md-12" >
-                            <div id="tablediv">
-                          
-                            </div>
+                        <div class="col-md-7" >
+                            <div id="tablediv">   </div>
+                        </div>
+                       <div class='col-md-5'>
+                            <!-- <div id="chartContainer" style="height: 300px; width: 100%;"></div> -->
+                             <canvas id="bar_chart" width="400"height="200" style="background:black"></canvas>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-2" style="background:hotpink">
-                    <div id="nextbtn_div"></div>
+                    <div class="row"> <div id="nextbtn_div"></div></div>
+                   
+
+
                 </div>
             </div>
         </div>
         
     </body>
 </html>
-<script >
-// ahp implementation according to requirement. 
-// first cycle.
-    // comparison of criterias. 
-    
-    // store resultColumn in weights list. 
-    // var weightlist=[]
-// Second Cycle
-    // Compare alternatives based on criterias. 
 
-    // After getting the number of selected phones on which ahp would run. 
-    // The alternatives will be set and  _setUpSquareArray(numofmobiles) would be run. 
-    // and hence ahp.resultarray will be initialized. 
-    // 
+<script >
+  
+function containsArray (obj1, obj2,temp_list) {
+  
+   for (key in obj1){
+  
+    
+      if (JSON.stringify(obj1[key]) == JSON.stringify(obj2)){
+                   var index_array=[]
+            for (var k in obj2){
+
+                index_array.push(temp_list.indexOf(obj2[k]));
+                    }
+         return index_array;        
+      }
+    }
+      
+}
 
    // Global variable 
    var allmobiles={}
    var prev_compared_mobiles_list=[];
    var dict_contains_listofCombiations=null;
-   mobiletesting={};
-   $(document).ready(function(){
-
+   var mobiletesting={};
+   let test_rank_matrix={
+       'criteria': [[0,1],[1,0]],
+    //    'imagepath1':[[1,0,0],[0,1,0],[0,0,1]],
+    //    'price':[[1,0,0],[0,1,0],[0,0,1]]
+   }
+   let  all_rank_matrix_dict= new Object();;
    
+   var crit_rank_matrix_dict={};
+   var alt_rank_matrix_dict= {};
+   // HAVE TO MAKE DYNAMIC IN Future. 
+   var criteria_list=[ 'price', 'imagepath1' ];
+   var alternatives_list=["Samsung galaxy S7", "Samsung Galaxy A3", "Samsung galaxy A5"];
+   var final_result_dict={};
+   var crit_combs=[];
+   var alt_combs=[];
+   var flag=true;
+   var label1=[];
+   $(document).ready(function(){
+    // console.log(test_rank_matrix);
+    
+    for (var i in alternatives_list){
+        if (alternatives_list[i].length>5){
+            var k=alternatives_list[i].split(' ');
+            console.log(k)
+             label1.push(k[k.length-1]);
+        }
+    }
+
+     var critrankmat= ahpArrayHelper._setUpSquareArray(criteria_list.length);
+     all_rank_matrix_dict['criteria']=critrankmat;
+      
+     let alt_mat= ahpArrayHelper._setUpSquareArray(alternatives_list.length);
+   
+     var calcResults = ahpCalc.calculateResults(alt_mat);
+   
+    //  all_rank_matrix_dict['price']=alt_mat;
+    //  let alt_mat2= ahpArrayHelper._setUpSquareArray(alternatives_list.length);
+    //  console.log(alt_mat2);
+    //  all_rank_matrix_dict['imagepath1']=alt_mat2;
+
+    //  return false;
+    if(flag==true){
+     for (var crit in criteria_list){
+          //test_rank_matrix[criteria_list[crit]]=[[1,0,0],[0,1,0],[0,0,1]];
+          let alt_mat= ahpArrayHelper._setUpSquareArray(alternatives_list.length);
+   
+        all_rank_matrix_dict[criteria_list[crit]]=alt_mat;
+         flag=false;
+     }
+    }
+    // combination pairs for the comparison of criterias. 
+    crit_combs=k_combinations(criteria_list, 2);
+    // combination pairs for the comparison of alternatives. 
+    alt_combs=k_combinations(alternatives_list, 2);
+    //////////////////////////////////////////////////////////////////////////////////////////
+// This Code will go for the comparison of criterias.... 
+    // each of these funcs will go to slider functions in future.... 
+    // var pair=containsArray(crit_combs,[ 'price', 'imagepath1' ],criteria_list)
+    // var rankmat=myrecord(pair,1,'criteria');
+    // var calcResults = ahpCalc.calculateResults(rankmat);
+    // console.log("criteria",calcResults)
+    //-----------------------------------------------------
+    // var pair=containsArray(crit_combs,['price','size'],criteria_list)
+    // var rankmat=myrecord(pair,2,'criteria');
+    // var calcResults = ahpCalc.calculateResults(rankmat);
+    // console.log(calcResults);
+    // //-----------------------------------------------------
+    // var pair=containsArray(crit_combs,['resolution', 'size'],criteria_list)
+    // var rankmat=myrecord(pair,3,'criteria');  
+    // var calcResults = ahpCalc.calculateResults(rankmat);
+    // console.log(calcResults)
+    //-----------------------------------------------------
+///////////////////////////////////////////////////////////////////////////////////////////
+// This Code will go for the comparison of alts.... 
+
+    // // each of these funcs will go to slider functions in future.... 
+    // var pair=containsArray(alt_combs,["Samsung galaxy S7", "Samsung Galaxy A3 2017"],alternatives_list)
+    // var criteria='price';
+    // var rankmat=myrecord(pair,2,criteria);
+    // var calcResults = ahpCalc.calculateResults(rankmat);
+    // console.log(all_rank_matrix_dict)
+    // console.log(test_rank_matrix);
+    // //-----------------------------------------------------
+    // var pair=containsArray(alt_combs,["Samsung galaxy S7","Samsung galaxy A5"],alternatives_list)
+    // var rankmat=myrecord(pair,3,'imagepath1');
+    // var calcResults = ahpCalc.calculateResults(rankmat);
+    // console.log(test_rank_matrix)
+
+    // console.log(all_rank_matrix_dict)    //-----------------------------------------------------
+    // var pair=containsArray(alt_combs, "Samsung Galaxy A3 2017", "Samsung galaxy A5",alternatives_list)
+    // var rankmat=myrecord(pair,3,criteria);  
+    // var calcResults = ahpCalc.calculateResults(rankmat);
+    // console.log(calcResults)
+    //-----------------------------------------------------
+
+    // console.log(all_rank_matrix_dict['price'])
+    // // var calcResults = ahpCalc.calculateResults(critMatrix);
+    // // console.log(calcResults)
+
+    //************************************************** failed test of tables//////////////////////////////////////////////////////////////////
+    // var resulttable2by2=document.createElement('TABLE');
+    // resulttable2by2.setAttribute('id','resulttable2by2');
+    // var thead=document.createElement('THEAD');
+    // resulttable2by2.appendChild(thead);
+    // var tbody=document.createElement('TBODY');
+    
+    // resulttable2by2.appendChild(tbody);
+    // var trh=document.createElement('TR');
+    // thead.appendChild(trh);
+    // var th=document.createElement('TH')
+    // trh.appendChild(th);
+    // th.append('HEAd');
+    // for (var i in alternatives_list){
+    //     var tr=document.createElement('TR');
+    //     tbody.appendChild(tr);
+    
+    // }
+    // console.log(resulttable2by2)
+    //  $(resulttable2by2).appendTo('#resulttable2by2_div');
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     $.ajax({
                 type: 'POST',
                 dataType: "json",
@@ -113,8 +256,6 @@
         // the ajax call is sent to subdetails url name in the post function.  
                 url: "{% url 'comparemobile_specs' %}",
                 success: function(data){
-                    console.log(data['allmobiles'])
-                    console.log(data['numofmobiles']) 
                     // check num of mobiles.    
                     if (data['numofmobiles']===2){
                        allmobile=data['allmobiles'] 
@@ -126,33 +267,10 @@
                         mobiletesting=data['allmobiles']
                         processMobileData(dict_lst_comb_keynum);
 
-                        // once the makeTable function is called. 
-                        // Table will me made according to the data.
-                        // check for next button generation. 
-                       
-                        // if not prev_compared_mobiles_list
-                        // PREV BUTTON 
-                        // *previousMobilePair*
-                        // Previous Button would be created this time as prev_compared_mobiles_list is not empty
-                        // ***Its main job is to getting the previous/last updated 
-                        // listofcombination from prev_compared_list and make table according to it.***
-                        // get the last index stored in prev_compared_mobiles_list and pass to the func->
-                        //processMobileData func will be called. 
-                        // 
-                        // 
-                        // }
-                      
-                        // 1st get the next combinations from mainlist
-                        // then access values from data['allmobiles']
-                        // and pass to allmobiles. After which make table 
-                        // will be called. 
-                        // if prev_compared_mobiles_list is empty it will not create previous button
-                        // 
-                       
-
                     }
-                    //allmobile=data
-                    //makeTable(allmobile)
+                    // right now code only works for 3 mobiles not 2
+                    // allmobile=data
+                    // makeTable(allmobile)
 
                     }
 
@@ -161,84 +279,89 @@
 
 
 function ahptesting(){
-     var dict_test={};
-     dict_test[[0,1]]=1;
-     dict_test[[0,2]]=2;
-     console.log(dict_test)
-    // ahp.question = "os";
-    // ahp.resultArray = ahpArrayHelper._setUpSquareArray(3);
-    //  myrecord([0,1],6)
-    //  myrecord([0,2],8)
-    //  myrecord([1,2],5)
-    //  var calcResults = ahpCalc.calculateResults(ahp.resultArray);
-    
-    // console.log('calcRes',calcResults.resultColumn)
+    // for final ahp result....
+    var weights=test_result_vecs['criteria'];
+    var crit_dict={};
+
+    for (criteria in criteria_list){
+        console.log(criteria);
+        console.log(criteria_list[criteria]);
+        console.log(test_result_vecs[criteria_list[criteria]])
+        if (test_result_vecs[criteria_list[criteria]]==undefined){
+
+            crit_dict[criteria_list[criteria]]=[0,0,0];
+        }
+        else{
+            crit_dict[criteria_list[criteria]]=test_result_vecs[criteria_list[criteria]];
+        }
+    }
     // weights=[0.7263184843830004, 0.20835466803208738, 0.0653268475849121]
     // os=[0.1399,0.5535,0.2610,0.0955]
     // ss=[0.1226,0.2852,0.3461,0.2459]
     // cam=[0.556,0.2776,0.00549,0.6461]
-    // var crit_dict={};
-    // crit_dict['os']=os;
-    // crit_dict['ss']=ss;
-    // crit_dict['cam']=cam;
-    // crit_list=['os','ss','cam']
-    // var weight_alt_product_dict={};
-    // var product_list_main=[]
-    // for (var i=0;i<3;i++){
-    //     for (var j=i;j==i;j++){
-    //         console.log('kkkkkkkkkkk',j)
-    //         console.log(crit_dict[crit_list[j]])
-    //         var product_list=[]
-    //         for (var k=0;k<4;k++){
-    //             console.log("asd",weights[i]);
-    //             console.log("ole",crit_dict[crit_list[j]][k])
-    //             var product=weights[i]*crit_dict[crit_list[j]][k]
-    //             product_list.push(product);
+//     if (price==undefined){
+//         crit_dict['price']=[0,0,0];
+//     }
+//     else{
+//         crit_dict['price']=price;
+//     }
+//    if (imagepath1==undefined){
+//     crit_dict['imagepath1']=[0,0,0];
+//    }else{
+//     crit_dict['imagepath1']=imagepath1;
+//    }
+    
+    
+    var product_list_main=[]
+    for (var i=0;i<weights.length;i++){
+        for (var j=i;j==i;j++){
+            
+          
+            var product_list=[]
+            for (var k=0;k<alternatives_list.length;k++){
+            
+                var product=weights[i]*crit_dict[criteria_list[j]][k]
+                product_list.push(product);
               
                 
-    //             // weight_alt_product_dict[crit_list[j]]=product_list;
+                // weight_alt_product_dict[crit_list[j]]=product_list;
 
-    //         }
-    //         product_list_main.push(product_list)
-    //         // var squares = product_list.map((a, i) => a + arr2[i]);
-    //         console.log('product_list',product_list)
-    //     }
+            }
+            product_list_main.push(product_list)
+            // var squares = product_list.map((a, i) => a + arr2[i]);
+         
+        }
        
-    //     console.log('product_list_main',product_list_main)
+       
 
-    // }
-    // var finalresult_list=[]
-    // finalresult_list=product_list_main[0]
-    // for (var w=0;w<product_list_main.length;w++){
-    //     if(product_list_main[w+1]!=undefined){
-    //         finalresult_list = product_list_main[w+1].map((a, i) => a + finalresult_list[i]);
+    }
+    var finalresult_list=[]
+    finalresult_list=product_list_main[0]
+    for (var w=0;w<product_list_main.length;w++){
+        if(product_list_main[w+1]!=undefined){
+            finalresult_list = product_list_main[w+1].map((a, i) => a +finalresult_list[i]);
             
-    //     }
-    // }
-    // console.log(finalresult_list)
-    // console.log(weight_alt_product_dict)
+        }
+    }
+    console.log('final',finalresult_list)
+    final_result_dict['final']=finalresult_list;
 
-    //myrecord([0,1],1/7)
-    //  myrecord([0,2],1)
-    //  myrecord([0,3],1/8)
-    //  myrecord([1,2],8)
-    //  myrecord([1,3],1/6)
-    //  myrecord([2,3],1/8)
-    //  myrecord([0,1],6)
-    //  myrecord([0,2],8)
-    //  myrecord([1,2],5)
-    //  var calcResults = ahpCalc.calculateResults(ahp.resultArray);
+   
+}
+function myrecord(pair,score,criteria){
+   console.log(score)
+   console.log(criteria)
+    // var rankmat=    test_rank_matrix[criteria]
+    let rankmat=    all_rank_matrix_dict[criteria]
     
-    // console.log('calcRes',calcResults.resultColumn)
+    rankmat[pair[0]][pair[1]] = score;
+   
+
+    rankmat[pair[1]][pair[0]] = 1/score;
+      
+  return rankmat;
 }
-function myrecord(pair,score){
-    console.log('pair0',pair[0])
-    console.log('pair1',pair[1])
-    ahp.resultArray[pair[0]][pair[1]] = score;
-	ahp.resultArray[pair[1]][pair[0]] = 1/score;
-  
-}
-   function k_combinations(set, k) {
+function k_combinations(set, k) {
 	var i, j, combs, head, tailcombs;
 	
 	// There is no way to take e.g. sets of 5 elements from
@@ -294,11 +417,10 @@ function myrecord(pair,score){
 	}
 	return combs;
 }
-
 function  makeCombinations(mobiles){
         // Get the keys from data['allmobiles']
             var keys = Object.keys(mobiles)
-            console.log('keys',keys);
+           
             var list1=['Samsung Galaxy A3 2017','Samsung galaxy S7']
             var list2=['Samsung Galaxy A3 2017','Samsung galaxy A5']
             var list3=['Samsung galaxy S7','Samsung galaxy A5']
@@ -306,19 +428,16 @@ function  makeCombinations(mobiles){
             dict[0]=list1;
             dict[1]=list2;
             dict[2]=list3;
-            console.log("dict",dict)
             var k_combs=k_combinations(keys, 2);
-            console.log('k_combs',k_combs);
             return k_combs;
             // make combinations of the keys.
                 // store different combinations in lists and all
                 // of the lists in dict.
     }
- function processMobileData(keynum){
+function processMobileData(keynum){
                            
     if (dict_contains_listofCombiations===null){
         dict_contains_listofCombiations=makeCombinations(mobiletesting)
-        console.log('dict_contains_listofCombiations',dict_contains_listofCombiations)
     }
 
     // if (prev_compared_mobiles_list==[]) {
@@ -327,45 +446,23 @@ function  makeCombinations(mobiles){
                 
                  allmobiles[listofcomb[0]]=mobiletesting[listofcomb[0]];
                  allmobiles[listofcomb[1]]=mobiletesting[listofcomb[1]];
-                 console.log('processmobiledata_allmobiles',allmobiles)
                  makeTable(allmobiles,keynum);
                  allmobiles={};
             } 
             else{
-                console.log("processmobiledata_keynum",keynum)
                 var listofcomb=dict_contains_listofCombiations[keynum];
                 allmobiles[listofcomb[0]]=mobiletesting[listofcomb[0]];
                 allmobiles[listofcomb[1]]=mobiletesting[listofcomb[1]];
                 makeTable(allmobiles,keynum);
                 allmobiles={};
             }
-             // processMobileData(mobiles){
-                            // store different combinations in lists and all
-                            // of the lists in dict...
-                            // if not dict_contains_listofCombiations
-                             //    dict_contains_listofCombiations=makeCombinations(mobiles)
-                            
-                        //    
-                              // check if prev_compared_mobiles_list is empty
-                              // if empty then get the first key from dict_contains_listofCombiations
-                        //              then get the values/combination
-                        //              values will be keys of mobile dict. 
-                        //              so get the values of that keys
-                        //              allmobiles[]=mobiles[]
-                        //              allmobiles[]=mobiles[]
-                        //              also pass the index/key num of dict_contains_listofCombiations to 
-                        //              makeTable func
-                        //              finally call makeTable(allmobiles,keynum) function. 
-                                //else
-                                // based on  new index/keynum/
-                                //get the value from dict_contains_listofCombiations
-                                // repeat accessing process from mobiles and storing in allmobiles.
-                                // and sending makeTable allmobiles dict with the new increment keynum. 
-                        // }
+            
 }
+var input_range_id_list=[];
+var input_range_val_list=[];
 function nextMobilePair(currentKeycombination){
-       
-        console.log('currentKeycombination',currentKeycombination);
+    
+
    
         // key num increment
         var keynum=currentKeycombination+1;
@@ -383,33 +480,10 @@ function nextMobilePair(currentKeycombination){
             $('#prevbtn_div').empty();
             // store index/keynum in prev_compared_mobiles_list
             prev_compared_mobiles_list.push(currentKeycombination);
-            console.log('prev_compared_mobiles_list_push',prev_compared_mobiles_list)
         // call the processMobileData function 
             processMobileData(keynum); 
         // }
 
- // NEXT BUTTON 
-                        // *nextMobilePair()* 
-                        // nextMobilePair(currentKeycombination){
-                            // store index/keynum in prev_compared_mobiles_list
-
-                        //    // nextMobilePAir function will be passed an index/keynumber/currentKeycombination
-                              // on the basis of which an increment will be made. 
-                              // according to the incremented num value of 
-                              // dict_contains_listofCombiations will be accessed 
-                              // if value would contain null then there would be nothing to compare and no table will be generated
-                        // else 
-                        // call the processMobileData function 
-                        // this time processMobileData will already have couple of things such as
-                        // * dict_contains_listofCombiations
-                        // * prev_compared_mobiles_list
-                        // * index/keynum/ for accessing value from  dict_contains_listofCombiations
-                        // so we would simply get the value from dict_contains_listofCombiations on the basis of index/keynum. 
-                        // without runing makecombinations function. 
-                        // After getting values from dict_contains_listofCombiations 
-                        // we would simply store the newly fetched values from mobiles in allmobiles
-                        // and pass to makeTable with the indexnum. 
-                        // prev_compared_mobiles_list would already been updated. 
 }
 function previousMobilePair(){
                 $('#tablediv').empty();
@@ -421,16 +495,15 @@ function previousMobilePair(){
                         // listofcombination from prev_compared_list and make table according to it.***
                         // get the last index stored in prev_compared_mobiles_list and pass to the func->
                         var keynum=prev_compared_mobiles_list.pop();
-                        console.log('prev_compared_mobiles_list_pop',prev_compared_mobiles_list)
                         //processMobileData func will be called. 
                         processMobileData(keynum)
                         // 
                         // 
-                        }
+                }
 function makeTable(allmobile,keynum){
     features=['Model','price']
     var table=document.createElement("TABLE");
-    table.setAttribute('class','table-bordered')
+    // table.setAttribute('class','table-bordered')
     var thead=document.createElement("THEAD");
     table.appendChild(thead)
     var tbody=document.createElement("TBODY");
@@ -442,8 +515,8 @@ function makeTable(allmobile,keynum){
     trh.appendChild(th);
     th.append("Criteria");
     var count=0;
-    var mobilename=[]
-    var specs=[]
+    var mobilename=[];
+    var specs=[];
     for (var namekey  in allmobile){
         
         mobilename.push(namekey)
@@ -537,8 +610,8 @@ function makeTable(allmobile,keynum){
 
 
 /// adding sliderss...
-    console.log("specs",specs)
     var rowcount=0;
+    
     for (var mbs in specs){
                
     var refrow =document.getElementById(specs[mbs]+rowcount);
@@ -551,24 +624,79 @@ function makeTable(allmobile,keynum){
         // newrow.appendChild(td);
         // td.append("Slider ");
         var td=document.createElement('TD');
+        td.setAttribute('id',specs[mbs]+'-'+mobilename+'-td')
         td.setAttribute("align","center")
-
-        newrow.appendChild(td);
-        var input = document.createElement("input");
-        input.type = "range";
-        input.id='range1'
-        input.min="1"
-        input.max="9"
-        input.step="1"
-        input.value="1"
-        input.setAttribute('oninput',"showSliderRangeVal(this)")
-        td.append(input)
         td.setAttribute('colSpan',"3")
+        newrow.appendChild(td);
+        // var input = document.createElement("input");
+        // input.type = "range";
+        // input.id=specs[mbs]+'range';
+        // input.min="-9";
+        // input.max="9";
+        // input.step="1";
+        // input.value=[-9,-8,-7,-6,-5,-4,-3,-2,1,2,3,4,5,6,7,8,9];
+        // // input.value=['-9','-8','-7','-6','-5','-4','-3','-2','1','2','3','4','5','6','7','8','9'];
+        // console.log('input vale',input.value)
+        // // input.style='margin-left:38px;';
+        // input.setAttribute('oninput',"showSliderRangeVal(this)")
+        var div_row=document.createElement('div')
+        div_row.setAttribute('class','row');
+        td.append(div_row);
+        var div_col=document.createElement('div');
+        div_col.setAttribute('class','col-md-2')
+        div_row.append(div_col);
+        var div_col1=document.createElement('div');
+        div_col1.setAttribute('class','col-md-8');
+        div_row.append(div_col1);
         
+        var input = document.createElement("input");
+        input.type = "text";
+        input.id=specs[mbs]+'-'+mobilename+'-td'+'_'+specs[mbs]+'-slider';
+        input.setAttribute('class','slider')
+        div_col1.append(input);
+       
+      
+        var span=document.createElement('span');
+        span.id=specs[mbs]+'span';
+        span.innerHTML=1;
+        
+        var div_col2=document.createElement('div');
+        div_col2.setAttribute('class','col-md-2');
+        div_col2.append(span)
+        div_row.append(div_col2);
+
+        td.append(div_row);
         refrow.parentNode.insertBefore(newrow, refrow.nextSibling);
         rowcount++;
+       
+  
+      
+       
+        var slider2 = new rSlider({
+                    target: specs[mbs]+'-'+mobilename+'-td'+'_'+specs[mbs]+'-slider',
+                    
+                    values: [-9,-8,-7,-6,-5,-4,-3,-2,1,2,3,4,5,6,7,8,9],
+                    widget:false,
+                    // labels:[9,8,7,6,5,4,3,2,1,2,3,4,5,6,7,8,9],
+                    
+                    labels:false,
+                    set: [1],
+                    tooltip:false,
+                    
+                  
+                    onChange: function (event) {
+                        // console.log(this.target);
+                        var split_arr=this.target.split('_');
+                        var parent_id=document.getElementById(split_arr[0]).parentNode;
+
+                        showSliderRangeVal(parent_id,event)
+                    }
+        });
+       
+
         }
     }
+
     // Check for next button generation @TODO:
          //check if combination dict_contains_listofCombiations[key+1]  undefined for next then don't generate next button.  
     var comb_list_check_maketable=dict_contains_listofCombiations[keynum+1]
@@ -596,7 +724,6 @@ function makeTable(allmobile,keynum){
         $(nextbutton).appendTo('#nextbtn_div');
     }
     //Check for previous button 
-    console.log('prev_compared_mobiles_list_maketable',prev_compared_mobiles_list)
     if (prev_compared_mobiles_list.length===0){
         // dont make the button 
         // if button exsists then remove it. 
@@ -615,47 +742,178 @@ function makeTable(allmobile,keynum){
         $(prevbutton).appendTo('#prevbtn_div');
     }
 }
+// temparay lsit
+var checkheader=[];
+var checkalts=[];
+var test_result_vecs={
+    'criteria':[1,1]
+};
+function conversionFunction(score){
+    if (score<0){
+        console.log('score-left-before',score)
+        var score=-(-score)+10;
+        console.log('score_left',score)
+    }
+    else{
+        // score =-score
+        // var score=score-8;
+        console.log('score_right-before',score)
+        score=1/score;
+        console.log('score-right-after',score)
 
-function showSliderRangeVal(element){
-    console.log(element.value)
-    // when slider is changed
-    // * The criteria is extracted.*
-    // info about no of phones is stored. 
-    // on the basis of which ahp.resultarray is initialized
-    // in case of 2 phones. 
-    // [1 0
-    //  0 1
-    //  ]
-    // matrix is made. 
-    // after 
-    // myrecord function 
-    // myrecord args
-    // *args*=> the index list of combinationlist generated
-    // e.g 
-    // ['mobA','mobB']
-    // ['mobA','mobC']
-    // ['MobB','mobC']
-    // the matrix will look like
-    // [1   2
-    // 1/2  1
-    //  ]
-    console.log("parentid",$(element).parent().parent().attr('id'));
-    var parent_id=$(element).parent().parent().attr('id');
-    var split_arr=parent_id.split('-');
-    var criteria=split_arr[0]
-    var rawphoneslist=split_arr[1]
-    var phones=rawphoneslist.split(',');
-    console.log(phones);
-    ahp.question =criteria;
-    ahp.resultArray = ahpArrayHelper._setUpSquareArray(2);
-    myrecord([0,1],element.value)
-    var calcResults = ahpCalc.calculateResults(ahp.resultArray);
-    console.log('calcRes',calcResults.resultColumn)
-
-
+    }
+    
+    return score;
 }
 
-</script>
+function showSliderRangeVal(parent_id,value){
+     //console.log('element',element.id);
+     console.log(';mlm',parent_id.id)
+    // var objele=$(element);
+    // console.log('objele',objele)
+    var val=parseInt(value);
+    var score=val;
+    
+    score=conversionFunction(score);
+    console.log('score',score);
+    //console.log("parentid",objele.parent().attr('id'));
+    //var parent_id=$('#'+parent_id).attr('id')//objele.parent().parent().attr('id');
+    // console.log("parentid",$(element).parent().parent().attr('id'));
+    // var parent_id=$(element).parent().parent().attr('id');
+    var split_arr=parent_id.id.split('-');
+    var criteria=split_arr[0];
+    var rawphoneslist=split_arr[1];
+    var phones=rawphoneslist.split(',');
+     // each of these funcs will go to slider functions in future.... 
+    
+    var pair=containsArray(alt_combs,phones,alternatives_list);
+    console.log('pair',pair)
+    var mat=[];
+    mat=myrecord(pair,score,criteria);
+    var calcResults = ahpCalc.calculateResults(mat);
+    console.log(test_rank_matrix);
+    console.log('all',all_rank_matrix_dict);
+    console.log(calcResults);
+    test_result_vecs[criteria]=calcResults.resultColumn;
 
+    ahptesting();
+    console.log(criteria+'span');
+    if (val<0){
+        val=-val;
+    }
+    document.getElementById(criteria+'span').innerHTML=val;
+ 
+    
+    showchart_final();
+    // showchart_price();
+}
+function showchart_price(){
+    //     var pricelist=test_result_vecs['price'];
+    //     var datapoint_list=[];
+    //     for (var alts in alternatives_list){
+            
+    //         var temp_final_dic={y:pricelist[alts],label:alternatives_list[alts]}
+    //         datapoint_list.push(temp_final_dic);
+
+    //     }
+    //     var chart = new CanvasJS.Chart("chartContainer", {
+    //     animationEnabled: true,
+    //     theme: "dark1", // "light1", "light2", "dark1", "dark2"
+    //     title:{
+    //         text: "Price Comparison"
+    //     },
+    //     axisY: {
+    //         title: "Times"
+    //     },
+    //     data: [{        
+    //         type: "column",  
+    //         showInLegend: true, 
+    //         legendMarkerColor: "grey",
+    //         legendText: "Mobiles",
+    //         dataPoints:datapoint_list
+    //         // dataPoints: [      
+    //         //     { y: 30,  label: "MA" },
+    //         //     { y: 60,  label: "MB" },
+    //         //     { y: 10,  label: "MC" },
+    //         // ]
+    //     }]
+    // });
+    // chart.render();
+}
+function showchart_final(){
+
+    var main_data={};
+    var dataset=[];
+    var dataset_dic={};
+    console.log(label1);
+    var labels=label1;
+    var label='Final Score';
+    var data_per=[];
+    for (var t in final_result_dict['final']){
+       
+        data_per.push( 100* final_result_dict['final'][t])
+    }
+    var data=data_per;
+    var backgroundColor=[ 'rgba(255, 99, 132, 0.2)','rgba(54, 162, 235, 0.2)','rgba(255, 206, 86, 0.2)',]
+    var borderColor=['rgba(255,99,132,1)','rgba(54, 162, 235, 1)','rgba(255, 206, 86, 1)',]
+    var canvas=document.getElementById('bar_chart')
+    var borderWidth=0.5;
+
+    dataset_dic['label']=label;
+    dataset_dic['data']=data;
+    dataset_dic['backgroundColor']=backgroundColor;
+    dataset_dic['borderColor']=borderColor;
+    dataset_dic['borderWidth']=borderWidth;
+    dataset.push(dataset_dic);
+    main_data['labels']=labels;
+    main_data['datasets']=dataset;
+    console.log(main_data);
+    var myChart = new Chart(canvas, {
+    type: 'bar',
+    data: main_data,
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                }
+            }]
+        }
+    }
+});
+    //     var finallist=final_result_dict['final'];
+    //     var datapoint_list=[];
+    //     for (var alts in alternatives_list){
+            
+    //         var temp_final_dic={y:finallist[alts]*100,label:alternatives_list[alts]}
+    //         datapoint_list.push(temp_final_dic);
+
+    //     }
+    //     console.log(datapoint_list)
+    //     var chart = new CanvasJS.Chart("chartContainer", {
+    //     animationEnabled: true,
+    //     theme: "dark1", // "light1", "light2", "dark1", "dark2"
+    //     title:{
+    //         text: "Final Score"
+    //     },
+    //     axisY: {
+    //         title: "Times/%"
+    //     },
+    //     data: [{        
+    //         type: "column",  
+    //         showInLegend: true, 
+    //         legendMarkerColor: "grey",
+    //         legendText: "Mobiles",
+    //         dataPoints:datapoint_list
+    //         // dataPoints: [      
+    //         //     { y: 30,  label: "MA" },
+    //         //     { y: 60,  label: "MB" },
+    //         //     { y: 10,  label: "MC" },
+    //         // ]
+    //     }]
+    // });
+    // chart.render();
+}
+</script>
 
 

@@ -878,7 +878,7 @@ class AHP {
             }
             weightedMatrix.push(row);
         }
-
+// TODO@:Mudabir
         for (let i = 0; i < matrix.length; i++) {
             let colWeightFactor = 1 / math.sum(matrix.map((row) => row[i]));
             for (let j = 0; j < matrix.length; j++) {

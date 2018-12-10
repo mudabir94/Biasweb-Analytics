@@ -410,7 +410,7 @@
                                                     <h4><a href = "{% url 'mobileinfo' id=mob.id %}"> Size </a><span class="text-uppercase margin-l-20">{{mob.Size}}-Inch</span></h4>
                                                     <h4><a href = "{% url 'mobileinfo' id=mob.id %}"> Color </a><span class="text-uppercase margin-l-20">{{mob.Colors}}</span></h4>
                                                     <h4><a href = "{% url 'mobileinfo' id=mob.id %}"> Cpu </a><span class="text-uppercase margin-l-20">{{mob.Cpu}}</span></h4>
-                                                                                        <h4><a href = "{% url 'mobileinfo' id=mob.id %}"> OS </a><span class="text-uppercase margin-l-20">{{mob.OS}}</span></h4>
+                                                    <h4><a href = "{% url 'mobileinfo' id=mob.id %}"> OS </a><span class="text-uppercase margin-l-20">{{mob.OS}}</span></h4>
                                                 -->
                                                     <a class="link btn btn-success" href="{% url 'mobileinfo' id=mob.id %}">
                                                         {% filter upper %}
@@ -418,10 +418,10 @@
                                                         {% endfilter %}</a>
                                                 
                                             </div>
-                                {%  if forloop.counter|divisibleby:3 or forloop.last %}
-                                    </div><!-- row closing --><hr>
-                                    {%  endif %}
-                                {%  endfor %}
+                                                    {%  if forloop.counter|divisibleby:3 or forloop.last %}
+                                                        </div><!-- row closing --><hr>
+                                                        {%  endif %}
+                                                    {%  endfor %}
                                 
                             </div>                    
                     </div>
@@ -2512,7 +2512,10 @@ function sendFilePath(id){
         // $('#upload').prop('disabled',true);
        
     }
-    function toggleCheckbox(){}
+    function toggleCheckbox(element){
+        console.log(element.value);
+
+    }
     
     </script>
 
