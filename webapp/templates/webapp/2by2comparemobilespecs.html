@@ -256,7 +256,8 @@ function containsArray (obj1, obj2,temp_list) {
         // the ajax call is sent to subdetails url name in the post function.  
                 url: "{% url 'comparemobile_specs' %}",
                 success: function(data){
-                    // check num of mobiles.    
+                    // check num of mobiles. 
+                    console.log('data',data)   
                     if (data['numofmobiles']===2){
                        allmobile=data['allmobiles'] 
                     }   

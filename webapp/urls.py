@@ -53,7 +53,8 @@ urlpatterns = [
     url(r'^import_excel/',views.importExcel,  name='import_excel'),
     url(r'^saveexperiment/',views.saveExperiment,  name='saveexperiment'),
     url(r'^datadefinded/',views.datadefined.as_view(), name='datadefined'),
-
+    url(r'^store_selected_admin_phones/',views.storeSelectedAdminPhones, name='store_selected_admin_phones'),
+    
 #---------------------------------------------------------------------------------------------   
     ## Pages that are not currently used. 
     #url(r'^blog/', views.blogview.as_view(), name='blog'), 

@@ -43,16 +43,20 @@ class ExperimentController:
             self.fSet = self.exp.experiment_feature_set.select_related('p_feature')
             self.fLevels = self.retrieveFLevels()
         else:
+            print("In else")
             self.exp.status = DESIGN_MODE
             self.exp.owner = User.objects.get(custom_id=a_id)      #TODO@MUDABIR - NEED TO MODIFY EXPERIMENT ADMIN IMPLEMENTATION
-            
+            print(" self.exp.owner", self.exp.owner)
             self.exp.custom_exp_id = 'TBA' #can only be created after Experient table assigns an id
             self.exp.capacity = cap            #Capacity to budget for experiment
             self.saveExperiment()
             self.exp.custom_exp_id = a_id
+            print('self.exp.custom_exp_id',self.exp.custom_exp_id)
             exp_id = self.exp.id
+            print(exp_id)
             exp_id = '-' + str(exp_id).zfill(4)  #ensuring the id is now a 4 digit numeric string
             self.exp.custom_exp_id += exp_id
+           
             self.fSet = self.exp.experiment_feature_set
             self.saveExperiment()
 

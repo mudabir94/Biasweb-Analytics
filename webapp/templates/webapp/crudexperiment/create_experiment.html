@@ -2514,6 +2514,27 @@ function sendFilePath(id){
     }
     function toggleCheckbox(element){
         console.log(element.value);
+        var mob_id=element.value;
+        // get user and exp id. 
+        // store the selected phone id. 
+        // in future the phone company as well.
+        // the ajax request will save the info to selected admin phones model. 
+        // 
+        $.ajax({
+        type: 'POST',
+        dataType: "json",
+        'data': {
+        'mobiledata': JSON.stringify(mob_id),
+        'csrfmiddlewaretoken': '{{ csrf_token }}',
+        },
+        // the ajax call is sent to subdetails url name in the post function.  
+        url: "{% url 'store_selected_admin_phones' %}",
+        success: function(data){
+
+            console.log('Successfully inserted in model');
+        }
+        
+        }); 
 
     }
     

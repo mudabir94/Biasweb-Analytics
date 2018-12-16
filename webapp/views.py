@@ -47,6 +47,8 @@ from .models import (mobile_phone, phone, platform_feature, prunedmobilephones,
 from.models import template_roles as tr 
 from. models import templates as tpl
 
+from .models import selectedAdminPhones
+
 #--------------------------------------------------------------------------------------------------
 role=1   #global variable used in adminsetup and globalFunc function. 
 mobiles=samsung_phone.objects.raw('SELECT * FROM webapp_samsung_phone WHERE id=1 or id=2') # making mobiles object global.
@@ -75,12 +77,14 @@ class Home(TemplateView):
         if role=='Super_Admin':
             
             template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
-        
+            return render(request,'webapp/2by2comparemobilespecs.html')
         elif role=='Experiment_Admin':
+
             roleobj=Role.objects.get(pk=role)
             role_name=roleobj.role_name
             print(role_name)
             template_sidebar='webapp/sidebartemplates/sidebartemp_expadm.html'
+            
         elif role=='Platform_Admin':
             roleobj=Role.objects.get(pk=role)
             role_name=roleobj.role_name
@@ -142,6 +146,24 @@ def showScore(request):
             dict = {'mobiles':'mobile info'}
             
     return HttpResponse(json.dumps(dict), content_type='application/json')
+def storeSelectedAdminPhones(request):
+    expCont = getExpController(request)
+    print('expContid',expCont.idField)
+    print('user_id',request.user.id)
+    if request.method == 'POST':
+        if request.is_ajax:
+            mobiledata = request.POST.get('mobiledata')
+            mobiledata_json = json.loads(mobiledata)
+            print('mobiledata_json',mobiledata_json)
+            mobiledata_json=int(mobiledata_json)
+
+           
+            userobj=User.objects.get(pk=request.user.id)
+            expobj=exp.objects.get(pk=178)
+            smgphone=samsung_phone.objects.get(pk=mobiledata_json)
+            selphones=selectedAdminPhones(user=userobj,exp=expobj,mob=smgphone)
+            selphones.save()
+            return JsonResponse({'data':'success'})
 
 
 def showMob(request):
@@ -183,14 +205,24 @@ def showMob(request):
      
 def compareMobileSpecs(request):
     
+
     if request.method=="POST":
 
         if request.is_ajax: 
             mobile={}
             allmobile={}
-            for m in mobiles:
-              
-                
+            # for m in mobiles:
+            print('user id',request.user.id)
+            test_obj=selectedAdminPhones.objects.filter(user=request.user.id)
+            print('test_obj')
+            test_list=[]
+            for tb in test_obj:
+                print(tb.mob.id)
+                test_list.append(tb.mob.id)
+            test_mobiles = samsung_phone.objects.filter(id__in=test_list)
+            
+            for m in test_mobiles:
+
                 mobile['imagepath1']=m.imagepath1
                 mobile['price']=m.price_in_pkr
                 print(mobile)
@@ -207,7 +239,10 @@ def compareMobileSpecs(request):
                
             if allmobile:
                 return JsonResponse(data)
- 
+    
+
+        
+
     
     
     # if one by one then load compareMobileSpecs. 
@@ -1007,10 +1042,12 @@ def getExpController(request):
     else: #CREATE
         print('in else create Exp obj  ')
         expAdminId = request.user.custom_id
+        print('expAdminId',expAdminId)
         expCont = ExperimentController(a_id=expAdminId)
         print('Exp id',expCont.exp.id)
         request.session['sess_expId'] = expCont.exp.id
         request.session['sess_custExpId'] = expCont.exp.custom_exp_id
+        print('request.session',request.session['sess_custExpId'] )
         print("SAVED NEW EXPERIMENT TO SESSION---->>>>>>")
     return expCont
 

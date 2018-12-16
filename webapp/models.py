@@ -278,3 +278,7 @@ class prunedmobilephones(models.Model):
 class userroles(models.Model):
     userrole=models.CharField(max_length=200,null=True)
 
+class selectedAdminPhones(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    exp = models.ForeignKey(experiment, on_delete=models.CASCADE)
+    mob = models.ForeignKey(samsung_phone, on_delete=models.CASCADE)
