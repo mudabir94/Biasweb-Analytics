@@ -87,7 +87,23 @@
                         </div>
                        <div class='col-md-5'>
                             <!-- <div id="chartContainer" style="height: 300px; width: 100%;"></div> -->
-                             <canvas id="bar_chart" width="400"height="200" style="background:black"></canvas>
+                            <div class='row'>
+                                <div class='col-md-12'>
+                                    <canvas id="bar_chart" width="400"height="200" style="background:black"></canvas>
+                                </div>
+                            </div>
+                            <div class='row'>
+                                <div class='col-md-12'>
+                                    <button onclick="ToggleCriteriaChart()" >Show/Hide Criteria</button>
+                                </div>
+                            </div>
+                                <div class='row'>
+                                    <div class='col-md-12'>
+                                        <canvas id="bar_chart_criteria" width="400"height="200" style="background:wheat"></canvas>
+                                    </div>
+                                </div>
+                            
+                           
                         </div>
                     </div>
                 </div>
@@ -104,24 +120,6 @@
 </html>
 
 <script >
-  
-function containsArray (obj1, obj2,temp_list) {
-  
-   for (key in obj1){
-  
-    
-      if (JSON.stringify(obj1[key]) == JSON.stringify(obj2)){
-                   var index_array=[]
-            for (var k in obj2){
-
-                index_array.push(temp_list.indexOf(obj2[k]));
-                    }
-         return index_array;        
-      }
-    }
-      
-}
-
    // Global variable 
    var allmobiles={}
    var prev_compared_mobiles_list=[];
@@ -138,13 +136,23 @@ function containsArray (obj1, obj2,temp_list) {
    var alt_rank_matrix_dict= {};
    // HAVE TO MAKE DYNAMIC IN Future. 
    var criteria_list=[ 'price', 'imagepath1' ];
-   var alternatives_list=["Samsung galaxy S7", "Samsung Galaxy A3", "Samsung galaxy A5"];
+//    var alternatives_list=["Samsung galaxy S7", "Samsung Galaxy A3", "Samsung galaxy A5"];
+   var alternatives_list=["Samsung galaxy S7", "Samsung Galaxy A3", "samsung galaxy j1 ace"];
    var final_result_dict={};
    var crit_combs=[];
    var alt_combs=[];
    var flag=true;
    var label1=[];
-   $(document).ready(function(){
+
+   // temparay lsit
+    var checkheader=[];
+    var checkalts=[];
+    var test_result_vecs={
+        'criteria':[0.33,0.33]
+    };
+    var input_range_id_list=[];
+    var input_range_val_list=[];
+$(document).ready(function(){
     // console.log(test_rank_matrix);
     
     for (var i in alternatives_list){
@@ -154,7 +162,7 @@ function containsArray (obj1, obj2,temp_list) {
              label1.push(k[k.length-1]);
         }
     }
-
+    // initialization of matrix for ahp... 
      var critrankmat= ahpArrayHelper._setUpSquareArray(criteria_list.length);
      all_rank_matrix_dict['criteria']=critrankmat;
       
@@ -177,7 +185,7 @@ function containsArray (obj1, obj2,temp_list) {
          flag=false;
      }
     }
-    // combination pairs for the comparison of criterias. 
+    // combination pairs for the comparison of criterias.  
     crit_combs=k_combinations(criteria_list, 2);
     // combination pairs for the comparison of alternatives. 
     alt_combs=k_combinations(alternatives_list, 2);
@@ -262,11 +270,14 @@ function containsArray (obj1, obj2,temp_list) {
                        allmobile=data['allmobiles'] 
                     }   
                     else{
+                        //check
                         if (dict_contains_listofCombiations===null){
                             var dict_lst_comb_keynum=0;
+                            console.log('dict_lst_comb_keynum',dict_lst_comb_keynum)
                         }
-                        mobiletesting=data['allmobiles']
+                        mobiletesting=data['allmobiles'];
                         processMobileData(dict_lst_comb_keynum);
+                       
 
                     }
                     // right now code only works for 3 mobiles not 2
@@ -346,6 +357,7 @@ function ahptesting(){
     }
     console.log('final',finalresult_list)
     final_result_dict['final']=finalresult_list;
+    final_result_dict['criteria']=test_result_vecs['criteria'];
 
    
 }
@@ -441,7 +453,6 @@ function processMobileData(keynum){
         dict_contains_listofCombiations=makeCombinations(mobiletesting)
     }
 
-    // if (prev_compared_mobiles_list==[]) {
         if (prev_compared_mobiles_list.length===0){
         var listofcomb=dict_contains_listofCombiations[keynum];
                 
@@ -459,8 +470,7 @@ function processMobileData(keynum){
             }
             
 }
-var input_range_id_list=[];
-var input_range_val_list=[];
+var slider_id_val_check_list=[]
 function nextMobilePair(currentKeycombination){
     
 
@@ -476,12 +486,29 @@ function nextMobilePair(currentKeycombination){
         //     console.log("dont process the data")
         // }
         // else {
-            
+            var input_class=document.getElementsByClassName('slider')
+            console.log('input_class',input_class);
+            var temp_slider_id_val_check_list=[];
+            for (var i=0;i<input_class.length;i++){
+                temp_slider_id_val_check_list.push(input_class[i].id) 
+
+                temp_slider_id_val_check_list.push(input_class[i].value)  
+                console.log(temp_slider_id_val_check_list)
+             slider_id_val_check_list.push(temp_slider_id_val_check_list);
+               temp_slider_id_val_check_list=[];
+            }
+           
+            // slider_id_val_check_list=temp_slider_id_val_check_list;
+            // store the id and value in a list. 
             $('#tablediv').empty();
             $('#prevbtn_div').empty();
             // store index/keynum in prev_compared_mobiles_list
             prev_compared_mobiles_list.push(currentKeycombination);
-        // call the processMobileData function 
+            console.log("prev_compared_mobiles_list",prev_compared_mobiles_list);
+            // call the processMobileData function
+            // get all the slider ids from the current page and store in 
+            // a list. 
+           
             processMobileData(keynum); 
         // }
 
@@ -590,9 +617,9 @@ function makeTable(allmobile,keynum){
                 img.src="/static/"+im;
                 img.style="height: 154px;"
                     var extendrow=document.getElementById(mobilespec+rowcount)
-                     td_cell=extendrow.insertCell(-1);
-                     td_cell.setAttribute("align","center")
-                    td_cell.append(img)
+                    td_cell=extendrow.insertCell(-1);
+                    td_cell.setAttribute("align","center")
+                    td_cell.append(img);
                 rowcount++;
                  
                 }
@@ -610,7 +637,7 @@ function makeTable(allmobile,keynum){
     }
 
 
-/// adding sliderss...
+/// ADDING Sliderss...
     var rowcount=0;
     
     for (var mbs in specs){
@@ -629,17 +656,7 @@ function makeTable(allmobile,keynum){
         td.setAttribute("align","center")
         td.setAttribute('colSpan',"3")
         newrow.appendChild(td);
-        // var input = document.createElement("input");
-        // input.type = "range";
-        // input.id=specs[mbs]+'range';
-        // input.min="-9";
-        // input.max="9";
-        // input.step="1";
-        // input.value=[-9,-8,-7,-6,-5,-4,-3,-2,1,2,3,4,5,6,7,8,9];
-        // // input.value=['-9','-8','-7','-6','-5','-4','-3','-2','1','2','3','4','5','6','7','8','9'];
-        // console.log('input vale',input.value)
-        // // input.style='margin-left:38px;';
-        // input.setAttribute('oninput',"showSliderRangeVal(this)")
+        // creating style divs ... 
         var div_row=document.createElement('div')
         div_row.setAttribute('class','row');
         td.append(div_row);
@@ -671,8 +688,24 @@ function makeTable(allmobile,keynum){
         rowcount++;
        
   
-      
+      // on creation check if the comparison is already done or not ? 
+      // if already done then load the values of ranges selected earlier 
+      // into the slider value ... THATS it.   
+       // if target id matched the stored slider id then get value
+      var value=[1];
+      if(slider_id_val_check_list.length!=0){
+        console.log("slider_id_val_check_list",slider_id_val_check_list[mbs][0])
+        console.log(specs[mbs]+'-'+mobilename+'-td'+'_'+specs[mbs]+'-slider')
+            if (slider_id_val_check_list[mbs][0]===specs[mbs]+'-'+mobilename+'-td'+'_'+specs[mbs]+'-slider'){
+                 value=[slider_id_val_check_list[mbs][1]];
+               alert(value)  
+            }
+            else{
+                value=[1]
+            }
+      }
        
+   
         var slider2 = new rSlider({
                     target: specs[mbs]+'-'+mobilename+'-td'+'_'+specs[mbs]+'-slider',
                     
@@ -681,7 +714,7 @@ function makeTable(allmobile,keynum){
                     // labels:[9,8,7,6,5,4,3,2,1,2,3,4,5,6,7,8,9],
                     
                     labels:false,
-                    set: [1],
+                    set:[1],
                     tooltip:false,
                     
                   
@@ -689,7 +722,6 @@ function makeTable(allmobile,keynum){
                         // console.log(this.target);
                         var split_arr=this.target.split('_');
                         var parent_id=document.getElementById(split_arr[0]).parentNode;
-
                         showSliderRangeVal(parent_id,event)
                     }
         });
@@ -743,16 +775,11 @@ function makeTable(allmobile,keynum){
         $(prevbutton).appendTo('#prevbtn_div');
     }
 }
-// temparay lsit
-var checkheader=[];
-var checkalts=[];
-var test_result_vecs={
-    'criteria':[1,1]
-};
+
 function conversionFunction(score){
     if (score<0){
         console.log('score-left-before',score)
-        var score=-(-score)+10;
+        var score=-(score) //+10;
         console.log('score_left',score)
     }
     else{
@@ -767,13 +794,30 @@ function conversionFunction(score){
     return score;
 }
 
+// Function to check if the templist contains comparison objects array
+function containsArray (obj1, obj2,temp_list) {
+  
+  for (key in obj1){ 
+     if (JSON.stringify(obj1[key]) == JSON.stringify(obj2)){
+                  var index_array=[]
+           for (var k in obj2){
+
+               index_array.push(temp_list.indexOf(obj2[k]));
+                   }
+        return index_array;        
+     }
+   }
+}
+
+
 function showSliderRangeVal(parent_id,value){
      //console.log('element',element.id);
-     console.log(';mlm',parent_id.id)
+     console.log('parent id',parent_id.id);
     // var objele=$(element);
     // console.log('objele',objele)
     var val=parseInt(value);
     var score=val;
+    console.log('score_first',score)
     
     score=conversionFunction(score);
     console.log('score',score);
@@ -806,6 +850,7 @@ function showSliderRangeVal(parent_id,value){
  
     
     showchart_final();
+    showchart_criteria();
     // showchart_price();
 }
 function showchart_price(){
@@ -882,38 +927,51 @@ function showchart_final(){
         }
     }
 });
-    //     var finallist=final_result_dict['final'];
-    //     var datapoint_list=[];
-    //     for (var alts in alternatives_list){
-            
-    //         var temp_final_dic={y:finallist[alts]*100,label:alternatives_list[alts]}
-    //         datapoint_list.push(temp_final_dic);
+  
+}
+function showchart_criteria(){
+    var main_data={};
+    var dataset=[];
+    var dataset_dic={};
+    console.log(label1);
+    var labels=label1;
+    var label='Criteria';
+    var data_per=[];
+    for (var t in final_result_dict['criteria']){
+       
+        data_per.push( 100* final_result_dict['criteria'][t])
+    }
+    var data=data_per;
+    var backgroundColor=[ 'rgba(255, 99, 132, 0.2)','rgba(54, 162, 235, 0.2)','rgba(255, 206, 86, 0.2)',]
+    var borderColor=['rgba(255,99,132,1)','rgba(54, 162, 235, 1)','rgba(255, 206, 86, 1)',]
+    var canvas=document.getElementById('bar_chart_criteria');
+    var borderWidth=0.5;
 
-    //     }
-    //     console.log(datapoint_list)
-    //     var chart = new CanvasJS.Chart("chartContainer", {
-    //     animationEnabled: true,
-    //     theme: "dark1", // "light1", "light2", "dark1", "dark2"
-    //     title:{
-    //         text: "Final Score"
-    //     },
-    //     axisY: {
-    //         title: "Times/%"
-    //     },
-    //     data: [{        
-    //         type: "column",  
-    //         showInLegend: true, 
-    //         legendMarkerColor: "grey",
-    //         legendText: "Mobiles",
-    //         dataPoints:datapoint_list
-    //         // dataPoints: [      
-    //         //     { y: 30,  label: "MA" },
-    //         //     { y: 60,  label: "MB" },
-    //         //     { y: 10,  label: "MC" },
-    //         // ]
-    //     }]
-    // });
-    // chart.render();
+    dataset_dic['label']=label;
+    dataset_dic['data']=data;
+    dataset_dic['backgroundColor']=backgroundColor;
+    dataset_dic['borderColor']=borderColor;
+    dataset_dic['borderWidth']=borderWidth;
+    dataset.push(dataset_dic);
+    main_data['labels']=['Model','Price'];
+    main_data['datasets']=dataset;
+    console.log(main_data);
+    var myChart = new Chart(canvas, {
+    type: 'bar',
+    data: main_data,
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                }
+            }]
+        }
+    }
+});
+}
+function ToggleCriteriaChart(){
+    $("#bar_chart_criteria").toggle();
 }
 </script>
 

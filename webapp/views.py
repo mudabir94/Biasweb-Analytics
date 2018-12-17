@@ -159,7 +159,7 @@ def storeSelectedAdminPhones(request):
 
            
             userobj=User.objects.get(pk=request.user.id)
-            expobj=exp.objects.get(pk=178)
+            expobj=exp.objects.get(pk=175)
             smgphone=samsung_phone.objects.get(pk=mobiledata_json)
             selphones=selectedAdminPhones(user=userobj,exp=expobj,mob=smgphone)
             selphones.save()
