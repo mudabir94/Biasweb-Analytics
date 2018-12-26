@@ -201,6 +201,7 @@ class ExperimentController:
 
     def getSubjectDataFrame(self):
         pass
+        
     def generateBlocks(self):
         self.blocks = list(
             itertools.product(
