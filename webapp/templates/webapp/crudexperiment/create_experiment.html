@@ -5,17 +5,21 @@
     <!-- MAIN ROW CONTENT DIV  -->
     <div class="row content">
         <!-- 1st SIDEBAR COL DIV -->
-        <div class="col-sm-2 sidenav" style='background:teal'>
+        <div class="col-sm-3 sidenav" style='background:teal'>
+            <div class='container-fluid'>
                 {% with creat_exp_template_sidebar=creat_exp_template_sidebar %}
                 {% include creat_exp_template_sidebar %}
                 {% endwith %}
-        
+            </div>
+            
         </div>
         <div class="col-sm-9  col-md-9 col-lg-9 col-xs-9 text-left" > 
+
             <!-- CREATE EXP ROW DIV  -->
             <div class ="row-fluid">     
                     <div class ="row">   
                         <div class='col-md-12' >
+                            <div id='testresponse'>sdfsdf</div>
                         <!-- <p1>Create Experiment </p1> Show Experiment Id here e.g. ses-007 (admin id) + experiment no. (5 digits) -->
                         </div>  
                     </div>
@@ -390,7 +394,7 @@
             <div class='row-fluid' id='mobile_catalog_div'>
                 <div class='row'>
                     <div class='col-md-12'>
-                            <div class="latest-product-section"> 
+                            <div class="latest-product-section" > 
                                     {%  for mob in samsung_phones  %}
                 
                                     {% if forloop.counter0|divisibleby:3 %} 
@@ -451,7 +455,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-sm-1 sidenav" style='background:yellow'>side bar</div>   
+        <!-- <div class="col-sm-1 sidenav" style='background:yellow'>side bar</div>    -->
     </div>
 </div>
       <!-- <footer>
@@ -2464,7 +2468,7 @@ function sendFilePath(id){
 
       }
 </script>
-<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<!-- <script src="https://code.jquery.com/jquery-3.3.1.js"></script> -->
 <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
 
 
@@ -2490,6 +2494,64 @@ function sendFilePath(id){
         $(document).ready(function () {
             // console.log('btns',btns)
             $('#mobile_catalog_div').hide();
+
+
+        // $( function() {
+        //     $( "#priceslider" ).slider({
+        //      range:true,
+        //      min:10,
+        //      max:20,
+        //     values:[10,20],
+        //     "ui-slider": "highlight",
+        //      scale:true,
+        //      step:1,
+        //      slide: function( event, ui ) {
+        //         var values = $( "#priceslider" ).slider( "option", "values" );
+        //          console.log('values',values);
+        //      }
+        //      });
+         
+        //  });
+        var slider2 = new rSlider({
+                    target: '#price_slider',
+                    
+                    values: {min:10000,max:70000},
+                    range: true,
+                    tooltip: true,
+                    scale: false,
+                    labels: false,
+                    set: [50000, 70000],
+                    step:10000,
+                    onChange:function (values) { 
+                        var values=values.split(',');
+                        console.log(values)
+                 
+                        $.ajax({
+                             // Ajax call to getrange of phones ...  
+                                url: "{% url 'createexp' %}",
+                                type:'GET',
+                                'data': {
+                                'price_range_values':JSON.stringify(values),
+                                // 'csrfmiddlewaretoken': '{{ csrf_token }}',
+                                },
+                                dataType: "json",
+                                
+                                
+                                success: function(data){
+                                    console.log(data)// location.reload();
+                                var main_div=document.createElement('div')
+                                main_div.setAttribute('class','latest-product-section');
+                                
+                                
+                                
+                                // $().appendTo('#testresponse')
+                                }
+                                
+                         }); 
+                       
+                    }
+        });
+
         });
     function mobileCatalog(){
         $('#mobile_catalog_div').show();

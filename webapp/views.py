@@ -54,8 +54,30 @@ role=1   #global variable used in adminsetup and globalFunc function.
 mobiles=samsung_phone.objects.raw('SELECT * FROM webapp_samsung_phone WHERE id=1 or id=2') # making mobiles object global.
 sizeofmob=0 # global variable assigned in filter class.
 #-------------------------------------------------------------------------------------------------
+# IT IS NOT USED ANYWARE
 def indexAhp(request):
     return render (request,'webapp/index-ahp.html')
+# priceRangeRetrieve
+def priceRangeRetrieve(request):
+    if request.method=="POST":
+        if request.is_ajax:
+            price_range_values = request.POST.get('price_range_values')
+            price_range_values = json.loads(price_range_values)
+            print('price_range_values',price_range_values[0])
+            print('price_range_values1',price_range_values[1])
+
+            mobiles_retrieved=samsung_phone.objects.filter(price_in_pkr__range=(price_range_values[0], price_range_values[1]))
+            print(mobiles_retrieved) 
+            mobiles_retrieved = list(mobiles_retrieved.values())
+            
+            
+            # for att in dir(mobiles_retrieved):
+            #     print (att, getattr(mobiles_retrieved,att))
+            data={
+                'samsung_phones': mobiles_retrieved
+            }
+            return JsonResponse(data)
+            
 
 
 class Home(TemplateView):
@@ -76,13 +98,14 @@ class Home(TemplateView):
 
         if role=='Super_Admin':
             
-            template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
-            return render(request,'webapp/2by2comparemobilespecs.html')
+            # template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
+             return render(request,'webapp/2by2comparemobilespecs.html')
+            # return render(request,template_sidebar)
         elif role=='Experiment_Admin':
-
-            roleobj=Role.objects.get(pk=role)
-            role_name=roleobj.role_name
-            print(role_name)
+            print('herereerer')
+            # roleobj=Role.objects.get(pk=role)
+            # role_name=roleobj.role_name
+            # print(role_name)
             template_sidebar='webapp/sidebartemplates/sidebartemp_expadm.html'
             
         elif role=='Platform_Admin':
@@ -211,6 +234,10 @@ def compareMobileSpecs(request):
         if request.is_ajax: 
             mobile={}
             allmobile={}
+            # 
+            alternative_list=[]
+            criteria_list=['imagepath1','price_in_pkr',"Chip","Cpu"]
+            #@TODO: Create test for feature level if c.pruned. Then add other to the criteria list. 
             # for m in mobiles:
             print('user id',request.user.id)
             test_obj=selectedAdminPhones.objects.filter(user=request.user.id)
@@ -222,21 +249,30 @@ def compareMobileSpecs(request):
             test_mobiles = samsung_phone.objects.filter(id__in=test_list)
             
             for m in test_mobiles:
+                print('m objest',m)
+                for crit in criteria_list:
+                    print(crit)
+                    mobile[crit]=getattr(m, crit)
+                # mobile['imagepath1']=getattr(m,criteria_list[0])
+                # mobile['price_in_pkr']=getattr(m,criteria_list[1])
+               
 
-                mobile['imagepath1']=m.imagepath1
-                mobile['price']=m.price_in_pkr
-                print(mobile)
+                # mobile['imagepath1']=m.imagepath1
+                # mobile['price']=m.price_in_pkr
+                # print(mobile)
+                alternative_list.append(m.Mobile_Name)
                 allmobile[m.Mobile_Name]=mobile
-                print(allmobile)
+                # print(allmobile)
                 numofmobiles=len(allmobile)
                 mobile={}
-                features=['price','resolution','size']
+                # features=['price','resolution','size']
                 data={
                     'allmobiles':allmobile,
                     'numofmobiles':numofmobiles,
-                    'features':features
+                    'criteria_list':criteria_list,
+                    'alternative_list':alternative_list
                 }
-               
+            # code returns on this one. 
             if allmobile:
                 return JsonResponse(data)
     
@@ -253,7 +289,7 @@ def compareMobileSpecs(request):
     # template 2by2 compareMobileSpecs display.
     # for 2 by 2 load 2by2compareMobileSpecs html. 
     
-
+    # this is not working.. 
     return render(request,'webapp/2by2comparemobilespecs.html',{
         'mobiles':mobiles,
         's':sizeofmob
@@ -611,7 +647,7 @@ class filter(TemplateView):
                 mobiles=samsung_phone.objects.raw(query)
                 sizeofmob=len(list(mobiles))
                 print(sizeofmob)
-            print("ssssa",sizeofmob)
+            print("sizeofmob",sizeofmob)
             
           
             
@@ -1196,42 +1232,74 @@ class createExperiment(TemplateView):
         role=userobj.role_id_id
         roleobj=Role.objects.get(pk=role)
         role=roleobj.role_name
+        
         samsung_phones=''
-        if role=='Super_Admin':
+        if request.is_ajax():
+            print('Ajax')
+            price_range_values = request.GET.get('price_range_values')
+            print(price_range_values)
+           
+            print("in if ")
+            print('price_range_values',price_range_values)
+            price_range_values = json.loads(price_range_values)
+            print('price_range_values1',price_range_values[0])
+            print('price_range_values2',price_range_values[1])
+            mobiles_retrieved=samsung_phone.objects.filter(price_in_pkr__range=(price_range_values[0], price_range_values[1]))
+            # else: 
+            #     mobiles_retrieved=samsung_phone.objects.filter(price_in_pkr__range=(10000, 30000))
+
+            # print(mobiles_retrieved) 
+            mobiles_retrieved = list(mobiles_retrieved.values())
+            samsung_phones=mobiles_retrieved
+           
+        
+            return JsonResponse(
+            {  'samsung_phones':samsung_phones}
+            )
+            
+        else:
+            print("NOT AJAX")
             samsung_phones= samsung_phone.objects.all() 
             paginator = Paginator(samsung_phones,9)
             page = request.GET.get('page')
             samsung_phones = paginator.get_page(page)
-            print(samsung_phones)
+
         
-            creat_exp_template_sidebar='webapp/sidebartemplates/createExpSideBars/crtExpsidebartemp_exp.html'
-        elif role=='Experimental_Admin':
-            samsung_phones= samsung_phone.objects.all() 
-            paginator = Paginator(samsung_phones,9)
-            page = request.GET.get('page')
-            samsung_phones = paginator.get_page(page)
-            print(samsung_phones)
-            creat_exp_template_sidebar='webapp/sidebartemplates/createExpSideBars/crtExpsidebartemp_exp.html'
-        elif role=='Platform_Admin':
-            pass
-        try:
-            sess_expId = request.session['sess_expId']
-            print("sesid",sess_expId)
-        except KeyError:
-            sess_expId = ""
-        try:
-            sess_custExpId = request.session['sess_custExpId']
-        except KeyError:
-            sess_custExpId = "123"
-        
-        return render(request,self.template_name,
-         {  'creat_exp_template_sidebar':creat_exp_template_sidebar,
-            'platformfeatobj':platformfeatobj,
-            'sess_expId':sess_expId,
-            'sess_custExpId':sess_custExpId,
-            'samsung_phones':samsung_phones
-                                        }
-        )
+            if role=='Super_Admin':
+                # samsung_phones= samsung_phone.objects.all() 
+                # paginator = Paginator(samsung_phones,9)
+                # page = request.GET.get('page')
+                # samsung_phones = paginator.get_page(page)
+                print("samsung_phones",samsung_phones)
+            
+                creat_exp_template_sidebar='webapp/sidebartemplates/createExpSideBars/crtExpsidebartemp_exp.html'
+            elif role=='Experimental_Admin':
+                # samsung_phones= samsung_phone.objects.all() 
+                # paginator = Paginator(samsung_phones,9)
+                # page = request.GET.get('page')
+                # samsung_phones = paginator.get_page(page)
+                print(samsung_phones)
+                creat_exp_template_sidebar='webapp/sidebartemplates/createExpSideBars/crtExpsidebartemp_exp.html'
+            elif role=='Platform_Admin':
+                pass
+            try:
+                sess_expId = request.session['sess_expId']
+                print("sesid",sess_expId)
+            except KeyError:
+                sess_expId = ""
+            try:
+                sess_custExpId = request.session['sess_custExpId']
+            except KeyError:
+                sess_custExpId = "123"
+            
+            return render(request,self.template_name,
+            {  'creat_exp_template_sidebar':creat_exp_template_sidebar,
+                'platformfeatobj':platformfeatobj,
+                'sess_expId':sess_expId,
+                'sess_custExpId':sess_custExpId,
+                'samsung_phones':samsung_phones
+                                            }
+            )
                                         
                                     
     def post(self,request):
@@ -1241,6 +1309,7 @@ class createExperiment(TemplateView):
 
             if request.is_ajax:
                 d = request.POST.get('dict')
+                print(request.POST.get('price_range_values'))
                 #print('d',d)
                 postedFLevels = json.loads(d)
                 print('b',type(postedFLevels),postedFLevels)
@@ -1267,9 +1336,52 @@ class createExperiment(TemplateView):
                 return JsonResponse(data) #, safe=False)
         #return render(request,'webapp/crudexperiment/create_experiment.html',data)
 class datadefined(TemplateView):
+    template_name='webapp/crudexperiment/create_experiment.html'
     def get(self,request):
-        return render(request,'webapp/crudexperiment/datadefined.html')
-
+        pass
     def post(self,request):  
-      
-        return render(request,'webapp/crudexperiment/datadefined.html')     
+        platformfeatobj=platform_feature.objects.all()
+        userobj=User.objects.get(pk=request.user.id)
+        role=userobj.role_id_id
+        roleobj=Role.objects.get(pk=role)
+        role=roleobj.role_name
+        samsung_phones=''
+        if request.is_ajax():
+            price_range_values = request.POST.get('price_range_values')
+            print(price_range_values)
+            if price_range_values:
+                print("in if ")
+                print('price_range_values',price_range_values)
+                price_range_values = json.loads(price_range_values)
+                print('price_range_values',price_range_values[0])
+                print('price_range_values1',price_range_values[1])
+                mobiles_retrieved=samsung_phone.objects.filter(price_in_pkr__range=(price_range_values[0], price_range_values[1]))
+            print(mobiles_retrieved) 
+            mobiles_retrieved = list(mobiles_retrieved.values())
+            samsung_phones=mobiles_retrieved
+        if role=='Super_Admin':
+            print("samsung_phones",samsung_phones)
+            creat_exp_template_sidebar='webapp/sidebartemplates/createExpSideBars/crtExpsidebartemp_exp.html'
+        elif role=='Experimental_Admin':
+            print(samsung_phones)
+            creat_exp_template_sidebar='webapp/sidebartemplates/createExpSideBars/crtExpsidebartemp_exp.html'
+        elif role=='Platform_Admin':
+            pass
+        try:
+            sess_expId = request.session['sess_expId']
+            print("sesid",sess_expId)
+        except KeyError:
+            sess_expId = ""
+        try:
+            sess_custExpId = request.session['sess_custExpId']
+        except KeyError:
+            sess_custExpId = "123"
+        
+        return render(request,self.template_name,
+        {  'creat_exp_template_sidebar':creat_exp_template_sidebar,
+            'platformfeatobj':platformfeatobj,
+            'sess_expId':sess_expId,
+            'sess_custExpId':sess_custExpId,
+            'samsung_phones':samsung_phones
+                                        }
+        )   
