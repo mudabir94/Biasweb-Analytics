@@ -204,6 +204,7 @@ class phone(models.Model):
     
     def __str__(self):
         return self.Mobile_Name
+    
     class Meta:
         verbose_name_plural="phone"
         
@@ -231,6 +232,8 @@ class samsung_phone(models.Model):
 
     def __str__(self):
         return self.Mobile_Name
+    def __unicode__(self):
+        return self.name
     class Meta:
         verbose_name_plural="samsungphone"
 class sort_feature(models.Model):
