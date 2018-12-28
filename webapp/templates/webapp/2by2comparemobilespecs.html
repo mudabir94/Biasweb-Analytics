@@ -960,7 +960,7 @@ function showchart_final(){
     
     
      myChart = new Chart(canvas, {
-    type: 'pie',
+    type: 'horizontalBar',
     
     data: main_data,
     showTooltips: true,
@@ -992,6 +992,7 @@ function showchart_criteria(){
     var data=data_per;
     var backg_col=[];
     var bor_col=[];
+    // #@TODO: Color Pallete, distinct colors..
         var red=100;
         var green=255;
         var blue=40;
@@ -1032,20 +1033,20 @@ function showchart_criteria(){
 
     var canvas_crit=document.getElementById('bar_chart_criteria').getContext('2d');
     myChart_crit = new Chart(canvas_crit, {
-    type: 'horizontalBar',
+    type: 'pie',
     showTooltips: false,
     data: main_data,
     
-    options: {
-        scales: {
-            xAxes: [{
-                ticks: {
-                    beginAtZero:true,
-                    max: 100
-                }
-            }]
-        }
-    }
+    // options: {
+    //     scales: {
+    //         yAxes: [{
+    //             ticks: {
+    //                 beginAtZero:true,
+    //                 // max: 100
+    //             }
+    //         }]
+    //     }
+    // }
 });
 }
 function ToggleCriteriaChart(){

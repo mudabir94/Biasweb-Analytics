@@ -18,7 +18,7 @@
             <div class ="row-fluid">     
                     <div class ="row">   
                         <div class='col-md-12' >
-                            <div id='testresponse'>sdfsdf</div>
+                          
                         <!-- <p1>Create Experiment </p1> Show Experiment Id here e.g. ses-007 (admin id) + experiment no. (5 digits) -->
                         </div>  
                     </div>
@@ -510,10 +510,13 @@ $('#block_assign_row_div').hide();
 $('#blkoutputsDiv').hide();
 $('#batchmngprvbtn_div').hide();
 $('#dataDiv').hide();
+$('#feat_lvl_div').show();
 //defaultFeatLevel_Table();
 //TODO@MUDABIR:
 if(exp_id===""){
-    $('#feat_lvl_div').hide();
+    // $('#feat_lvl_div').hide();
+    
+    
     //test to see if session exp empty
     //if not, then alert that session exists
     //if ok, load the experiment details as were
@@ -2597,6 +2600,12 @@ function sendFilePath(id){
 
                                     margin_b_20.append(input_checkb);
                                     margin_b_20.append(img);
+                                    var mobile_name_p=document.createElement('p')
+                                    mobile_name_p.innerHTML=json_data_mobiles[i]['Mobile_Name']
+                                    col_md_4_post.append(mobile_name_p)
+                                    var mobile_price_p=document.createElement('p')
+                                    mobile_price_p.innerHTML=json_data_mobiles[i]['price_in_pkr']
+                                    col_md_4_post.append(mobile_price_p)
                                     var link=document.createElement('a');
                                     link.setAttribute('class','link btn btn-success');
                                     // took alot of time finding this solution...
@@ -2622,7 +2631,7 @@ function sendFilePath(id){
 
                                 $("#mobile_catalog_div").cPager({
                                     // how many items per page
-                                    pageSize: 1,
+                                    pageSize: 6,
                                     // container ID
                                     pageid: "pager",
                                     // item class
