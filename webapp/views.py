@@ -236,7 +236,10 @@ def compareMobileSpecs(request):
             allmobile={}
             # 
             alternative_list=[]
-            criteria_list=['imagepath1','price_in_pkr',"Chip","Cpu"]
+            criteria_list=['imagepath1','price_in_pkr',"Chip"]
+            # "Cpu","OS",
+            # "battery","back_camera",
+            # "Resolution"]
             #@TODO: Create test for feature level if c.pruned. Then add other to the criteria list. 
             # for m in mobiles:
             print('user id',request.user.id)
