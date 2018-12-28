@@ -110,7 +110,7 @@
                                 </div>
                                 <div class='row'>
                                     <div class="col-md-12">
-                                        <button onclick="showCritTable(this)">Show/Hide</button>
+                                        <button onclick="showCritTable(this)">Show Weights</button>
                                      
                                     </div>
                                 </div>
@@ -155,7 +155,8 @@
     // var criteria_list=[ 'price_in_pkr', 'imagepath1' ];
     var criteria_list=[];
 //    var alternatives_list=["Samsung galaxy S7", "Samsung Galaxy A3", "Samsung galaxy A5"];
-   var alternatives_list=["Samsung galaxy S7", "Samsung Galaxy A3", "samsung galaxy j1 ace"];
+
+   var alternatives_list=[];
    var final_result_dict={};
    var crit_combs=[];
    var alt_combs=[];
@@ -284,6 +285,7 @@ $(document).ready(function(){
                         
                        
                         processMobileData(dict_lst_comb_keynum);
+                        showchart_criteria();
                     }
                     // right now code only works for 3 mobiles not 2
                     // allmobile=data
@@ -473,9 +475,10 @@ function processMobileData(keynum){
                 makeTable(allmobiles,keynum);
                 allmobiles={};
             }
+
             
 }
-var slider_id_val_check_list=[]
+var slider_id_val_check_dict=null;
 function nextMobilePair(currentKeycombination){
     
 
@@ -492,17 +495,23 @@ function nextMobilePair(currentKeycombination){
         // }
         // else {
             var input_class=document.getElementsByClassName('slider')
-            console.log('input_class',input_class);
+            console.log('input_class',input_class.length);
             var temp_slider_id_val_check_list=[];
+            var temp_final_list=[];
             for (var i=0;i<input_class.length;i++){
-                temp_slider_id_val_check_list.push(input_class[i].id) 
-
-                temp_slider_id_val_check_list.push(input_class[i].value)  
-                console.log(temp_slider_id_val_check_list)
-             slider_id_val_check_list.push(temp_slider_id_val_check_list);
-               temp_slider_id_val_check_list=[];
+                
+                 temp_slider_id_val_check_list.push(input_class[i].id) 
+                 temp_slider_id_val_check_list.push(input_class[i].value)  
+                 temp_final_list.push(temp_slider_id_val_check_list);
+              
+                 temp_slider_id_val_check_list=[];
             }
-           
+            if (slider_id_val_check_dict==null){
+                slider_id_val_check_dict={};
+            }
+            slider_id_val_check_dict[dict_contains_listofCombiations[keynum-1]]=temp_final_list;
+            temp_final_list=[]
+            console.log("slider_id_val_check_dict",slider_id_val_check_dict)
             // slider_id_val_check_list=temp_slider_id_val_check_list;
             // store the id and value in a list. 
             $('#tablediv').empty();
@@ -510,19 +519,47 @@ function nextMobilePair(currentKeycombination){
             // store index/keynum in prev_compared_mobiles_list
             prev_compared_mobiles_list.push(currentKeycombination);
             console.log("prev_compared_mobiles_list",prev_compared_mobiles_list);
+            console.log("dict_contains_listofCombiations",dict_contains_listofCombiations)
             // call the processMobileData function
             // get all the slider ids from the current page and store in 
             // a list. 
            
-            processMobileData(keynum); 
+            processMobileData(keynum);
+           
         // }
 
 }
-function previousMobilePair(){
-                $('#tablediv').empty();
+function previousMobilePair(currentKeycombination){
+
+                
+                // this logic doesnt make any sense..lol but it is required.....
                 if ($('#prevbtn_div').empty()===true){
                     $('#prevbtn_div').empty();
                 }
+                if ($('#nextbtn_div').children().text()==='Submit'){
+                    // alert("Coming in it ")
+                    keynum=currentKeycombination;
+                    // get current sliders 
+                        var input_class=document.getElementsByClassName('slider');
+                        console.log("input_class<--",input_class)
+                        var temp_slider_id_val_check_list=[];
+                        var temp_final_list=[];
+                    for (var i=0;i<input_class.length;i++){
+                    
+                        temp_slider_id_val_check_list.push(input_class[i].id) 
+                        temp_slider_id_val_check_list.push(input_class[i].value)  
+                        temp_final_list.push(temp_slider_id_val_check_list);
+                        temp_slider_id_val_check_list=[];
+                    }
+                    if (slider_id_val_check_dict==null){
+                        slider_id_val_check_dict={};
+                    }
+                    console.log("temp_final_list<--",temp_final_list)
+                    slider_id_val_check_dict[dict_contains_listofCombiations[keynum]]=temp_final_list;
+                    temp_final_list=[]
+                    console.log("slider_id_val_check_dict<--",slider_id_val_check_dict)
+                }
+                $('#tablediv').empty();
                         // Previous Button would be created this time as prev_compared_mobiles_list is not empty
                         // ***Its main job is to getting the previous/last updated 
                         // listofcombination from prev_compared_list and make table according to it.***
@@ -532,6 +569,7 @@ function previousMobilePair(){
                         processMobileData(keynum)
                         // 
                         // 
+                        
                 }
 function makeTable(allmobile,keynum){
     // features=['Model','price']
@@ -696,19 +734,26 @@ function makeTable(allmobile,keynum){
       // on creation check if the comparison is already done or not ? 
       // if already done then load the values of ranges selected earlier 
       // into the slider value ... THATS it.   
-       // if target id matched the stored slider id then get value
-      var value=[1];
-      if(slider_id_val_check_list.length!=0){
-        console.log("slider_id_val_check_list",slider_id_val_check_list[mbs][0])
-        console.log(specs[mbs]+'-'+mobilename+'-td'+'__'+specs[mbs]+'-slider')
-            if (slider_id_val_check_list[mbs][0]===specs[mbs]+'-'+mobilename+'-td'+'__'+specs[mbs]+'-slider'){
-                 value=[slider_id_val_check_list[mbs][1]];
-            //    alert(value)  
+      // if target id matched the stored slider id then get value
+      
+      // GEt the  current pair of mobile in comparison
+      // search in dict if the pair already exsists. 
+      // if it exsists then get the values of slider one by one, which is based on the loop. 
+
+        var current_slider_comb=mobilename;
+        current_slider_comb=current_slider_comb.join(',')
+        console.log("current_slider_comb",mbs)
+        console.log(slider_id_val_check_dict);
+        var value=[1];
+        if (slider_id_val_check_dict!=null){
+            if (slider_id_val_check_dict[current_slider_comb]!=undefined){
+                console.log("slider_id_val_check_dict-->",slider_id_val_check_dict[current_slider_comb][mbs][1]);
+                value=[parseInt(slider_id_val_check_dict[current_slider_comb][mbs][1])];
             }
-            else{
-                value=[1]
-            }
-      }
+          
+            
+        }
+        
        
     
         var slider2 = new rSlider({
@@ -719,7 +764,7 @@ function makeTable(allmobile,keynum){
                     // labels:[9,8,7,6,5,4,3,2,1,2,3,4,5,6,7,8,9],
                     
                     labels:false,
-                    set:[1],
+                    set:value,
                     tooltip:false,
                     
                   
@@ -742,7 +787,7 @@ function makeTable(allmobile,keynum){
         $('#nextbtn_div').empty();
         var submit_button=document.createElement("BUTTON");
         submit_button.setAttribute("class","btn btn-success");
-        var text = document.createTextNode("Submit ");
+        var text = document.createTextNode("Submit");
         submit_button.appendChild(text);
         $(submit_button).appendTo('#nextbtn_div');
 
@@ -876,9 +921,25 @@ function showchart_final(){
     }
     var data=data_per;
     // change color. 
+    // var backg_col=[];
+    // var bor_col=[];
+    //     var red=100;
+    //     var green=255;
+    //     var blue=40;
+    //     var alpha=0.6;
+    // for (var c=0;c<alternatives_list.length;c++){
+        
+    //     var rgba='rgba('+red+','+ green+','+blue+','+ alpha+')'
+    //     red=red+50;
+    //     green=green-20;
+    //     blue=blue+50;
+    //     backg_col.push(rgba)
+    //     bor_col.push(rgba)
+    // }
     var backgroundColor=[ 'rgba(255, 99, 132, 0.6)','rgba(54, 162, 235, 0.6)','rgba(255, 206, 86, 0.6)',]
     var borderColor=['rgba(255,99,132,1)','rgba(54, 162, 235, 1)','rgba(255, 206, 86, 1)',]
-    
+    // var backgroundColor=backg_col;
+    // var borderColor=bor_col;
     var borderWidth=0.5;
 
     dataset_dic['label']=label;
@@ -990,7 +1051,7 @@ function showchart_criteria(){
 function ToggleCriteriaChart(){
     $("#bar_chart_criteria").toggle();
 }
-
+var crit_val_check_dict={};
 function showCritTable(element){
 
 $('#crittable_div').empty();
@@ -1003,9 +1064,35 @@ $('#crittable_div').dialog({
     hide: { effect: "highlight", duration: 1000 },
     buttons: [
     {
-      text: "Ok",
+      text: "Save",
       
       click: function() {
+           ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            var input_class=document.getElementsByClassName('slider2')
+            console.log('input_class',input_class.length);
+            var temp_slider_id_val_check_list=[];
+            var temp_final_list=[];
+            for (var i=0;i<input_class.length;i++){
+                var comb_slider_id_split=input_class[i].id.split('-')[0];
+                 temp_slider_id_val_check_list.push(input_class[i].id.split('-')[0]) 
+                 temp_slider_id_val_check_list.push(input_class[i].value)  
+                 temp_final_list.push(temp_slider_id_val_check_list);
+              
+                 temp_slider_id_val_check_list=[];
+            }
+            console.log("temp_final_list<-->",temp_final_list)
+            if (crit_val_check_dict==null){
+                crit_val_check_dict={};
+            }
+            for (var i in temp_final_list){
+               
+                crit_val_check_dict[temp_final_list[i][0]]=temp_final_list[i][1];
+                
+            }
+            console.log("crit_val_check_dict_ok",crit_val_check_dict)
+            temp_final_list=[]
+
+        
         $( this ).dialog( "close" );
       }
  
@@ -1022,7 +1109,7 @@ $('#crittable_div').dialog("open"); // Open popup
 
 // update criteira rank on each slider change/ 
 // criteria list. 
-console.log("crit_comb",crit_combs)
+
 
 var div = document.createElement('div');
 div.setAttribute('class','row');
@@ -1065,14 +1152,23 @@ for (var i=0;i<crit_combs.length;i++){
             comb_div.append(input_row_div)
             div.append(comb_div);   
     $('#crittable_div').append(div);
-   
+    
+    var dict_key_join=crit_combs[i].join(',');
+    console.log("<--",crit_val_check_dict)
+        // check if the crit_check_dict contains the value for the crit combinations if so, then replace the value... 
+    var value=[1];
+    if (crit_val_check_dict[dict_key_join]!=undefined){
+        // crit_val_check_dict[crit_combs[i]][i][0]
+        console.log("crit_val_check_dict[dict_key_join]",crit_val_check_dict[dict_key_join]);
+        value=[parseInt(crit_val_check_dict[dict_key_join])]
+    }
 var slider = new rSlider({
                     target: crit_combs[i]+'-slider22',
                     values: [-9,-8,-7,-6,-5,-4,-3,-2,1,2,3,4,5,6,7,8,9],
                     widget:false,
                     // labels:[9,8,7,6,5,4,3,2,1,2,3,4,5,6,7,8,9],
                     labels:false,
-                    set:[1],
+                    set:value,
                     tooltip:false,
                     onChange: function (event) {
                         // showSliderRangeVal_crit()
@@ -1092,24 +1188,21 @@ var slider = new rSlider({
                         mat=myrecord(pair2,score,'criteria');
 
                         all_rank_matrix_dict['criteria']=mat;
-                        console.log("criteria matrix",all_rank_matrix_dict['criteria'])
+                       
                         var calcResults = ahpCalc.calculateResults(all_rank_matrix_dict['criteria']);
                         test_result_vecs['criteria']=calcResults.resultColumn;
                         final_result_dict['criteria']=test_result_vecs['criteria'];
-                        console.log('mat',mat);
-                        console.log("final_result_dict['criteria']",final_result_dict['criteria']);
                         ahptesting();
-                        console.log("final_result_dict['criteria']",final_result_dict['criteria']);
-                        
                         showchart_criteria();
                         showchart_final();
 
                     }
         });
 
+      
+
 }
-
-
+ 
 
 }
 
