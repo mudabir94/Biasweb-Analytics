@@ -8,7 +8,8 @@
 		<link rel="stylesheet" href="{% static 'webapp/css/bootstrap.min.css' %}" type = "text/css"/>
 		<link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600' rel='stylesheet' type='text/css'>
 		<link rel="stylesheet" href="{% static 'webapp/css/reset.css' %}"  type="text/css"/> <!-- CSS reset -->
-		<link rel="stylesheet" href="{% static 'webapp/css/style1.css' %}"  type="text/css"/> <!-- Resource style -->
+		<!-- In future change style1 name to cart table style. -->
+		<link rel="stylesheet" href="{% static 'webapp/css/style1.css' %}"  type="text/css"/>
 		<script src="{% static 'webapp/js/modernizr.js' %}"></script> <!-- Modernizr -->
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -64,170 +65,171 @@
  </style>
 </head>
 <body>
-
-		<nav class="navbar navbar-inverse">
-				<div class="container-fluid">
-				  <div class="navbar-header">
-					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-					  <span class="icon-bar"></span>
-					  <span class="icon-bar"></span>
-					  <span class="icon-bar"></span>                        
-					</button>
-					<a class="navbar-brand" href="#">Mobile Analytics</a>
-				  </div>
-				  <div class="collapse navbar-collapse" id="myNavbar">
-					<ul class="nav navbar-nav">
-					 
-					  <li><a href="{%url 'mobileview'%}">Home </a></li>
-					  <li><a href="#" >About</a></li>
-					  {% if  user.is_authenticated %}
-					  <li id="username">{{ user.get_username }}</li>
-					  <li><a href="{% url 'logout'%}">Logout</a></li>   
-					  {% else %}
-					  <li><a href="{% url 'login'%}?next={{request.path}}">Login</a></li>   
-					  {% endif %}  
-					</ul>
-					<!--<ul class="nav navbar-nav navbar-right">
-					  <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-					</ul>-->
-				  </div>
-				</div>
-			  </nav>
-			  <br><br>
-<div class="container-fluid" >    
-  <div class="container  content  equal">
-	  <div class="col-sm-12">
-    <div class="col-sm-9 "> 
-			 
-		<section class="cd-products-comparison-table">
-			<header>
-				
-
-			  
-						 
-							<div class="col-sm-4" > 
-									<h3>Compare Models</h3>	
-							</div>
-							 
-						 
-							 <div class="col-sm-4 mt25" > 
-								<button class="btn btn-success" onclick="submitScore(this)" >Submit Score </button>
-							</div>
-					 	<div class="col-sm-4 mt30"> 	
-								<div class="actions">
-										<a href="#0" class="reset">Reset</a>
-										<a href="#0" class="filter">Filter</a>
-								</div>
-							</div> 
-									 
-							 
-
-
-									 
-			</header>
-									
-										<div class="cd-products-table">
-											<div class="features">
-												<div class="top-info">Models</div>
-												<input type="hidden" id="mobsize" value="{{s}}" />
-												<ul class="cd-features-list">
-												
-													<li>Price in PKR</li>
-													<li>Resolution</li>
-													<li>Display Size</li>
-													<li>Color</li>
-													<li>OS</li>
-													<li>Cpu</li>
-													
-												</ul>
-											</div> <!-- .features -->
-											
-											<div class="cd-products-wrapper">
-												
-												<ul class="cd-products-columns" id="myul">
-												
-												{%for m in mobiles%}
-													<li class="product" id="{{forloop.counter}}">
-														<div class="top-info">
-															<div class="check"></div>
-														<img src="{% static m.imagepath1 %}" alt="product image">
-															<!--<h3>Score:<span id=score-{{forloop.counter}}></span></h3>-->
-															
-								
-														</div> <!-- .top-info -->
-														<ul class="cd-features-list">
-															<li id="price-{{m.id}}">
-															<div id="price{{ forloop.counter }}">
-																<p id="pricepara{{forloop.counter}}"></p> 
-															</div>
-															
-															<input type="hidden" id="priceinput-{{ forloop.counter }}" value="{{m.price_in_pkr}}" />
-															
-															<div class="slidecontainer">
-																<input type="range" id="price-{{ forloop.counter }}" min="1" max="10" step="1"  oninput="showVal(this)">
-																<span id="Boxprice-{{ forloop.counter }}"></span><span>/10</span>
-															</div>
-															</li>
-															<li id="resolution-{{m.id}}">
-																<div id="resolution-{{forloop.counter}}">{{m.Resolution}}</div>
-																<div class="slidecontainer">
-																	<input type="range" id="resolution-{{ forloop.counter }}" min="1" max="10" step="1"   oninput="showVal(this)">
-																	<span id="Boxresolution-{{ forloop.counter }}"></span><span>/10</span>
-																</div>
-															</li>
-															<li id="size-{{m.id}}">
-																<div id="size-{{forloop.counter}}">{{m.Size}}"</div>
-																<div class="slidecontainer">
-																	<input type="range" id="size-{{ forloop.counter }}" min="1" max="10" step="1"  oninput="showVal(this)">
-																	<span id="Boxsize-{{ forloop.counter }}"></span><span>/10</span>
-																</div>
-															</li>
-															<li id="color-{{m.id}}">
-																	<div id="color-{{forloop.counter}}">{{m.Colors}}</div>
-																	<div class="slidecontainer">
-																		<input type="range" id="color-{{ forloop.counter }}" min="1" max="10" step="1" oninput="showVal(this)">
-																		<span id="Boxcolor-{{ forloop.counter }}"></span><span>/10</span>
-																	</div>
-															</li>
-															<li id="os-{{m.id}}">
-																	<div id="os-{{forloop.counter}}">{{m.OS}}</div>
-																	<div class="slidecontainer">
-																		<input type="range" id="os-{{ forloop.counter }}" min="1" max="10" step="1"  oninput="showVal(this)">
-																		<span id="Boxos-{{ forloop.counter }}"></span><span>/10</span>
-																	</div>
-															</li>
-															<li id="cpu-{{m.id}}">
-																	<div id="cpu-{{forloop.counter}}">{{m.Cpu}}</div>
-																	<div class="slidecontainer">
-																		<input type="range" id="cpu-{{ forloop.counter }}" min="1" max="10" step="1" oninput="showVal(this)">
-																		<span id="Boxcpu-{{ forloop.counter }}"></span><span>/10</span>
-																	</div>
-															</li>
-														</ul>
-													</li> <!-- .product -->
-													
-													{% endfor %}
-													
-												</ul> <!-- .cd-products-columns -->
-											</div> <!-- .cd-products-wrapper -->
-											<ul class="cd-table-navigation">
-												<li><a href="#0" class="prev inactive">Prev</a></li>
-												<li><a href="#0" class="next">Next</a></li>
-											</ul>
-										</div> <!-- .cd-products-table -->
-									</section> <!-- .cd-products-comparison-table-->
-					</div>
-
-
-					<div class="col-sm-3 sidenav " id="highchart" >  </div>
-
-
-
-				</div>
-			</div>	 
-
+     <!-- in Future this navbar is ought to be changed.  -->
+	<nav class="navbar navbar-inverse">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>                        
+				</button>
+				<a class="navbar-brand" href="#">Mobile Analytics</a>
+			</div>
+			<div class="collapse navbar-collapse" id="myNavbar">
+				<ul class="nav navbar-nav">
+					<li><a href="{%url 'mobileview'%}">Home </a></li>
+					<li><a href="#" >About</a></li>
+					{% if  user.is_authenticated %}
+					<li id="username">{{ user.get_username }}</li>
+					<li><a href="{% url 'logout'%}">Logout</a></li>   
+					{% else %}
+					<li><a href="{% url 'login'%}?next={{request.path}}">Login</a></li>   
+					{% endif %}  
+				</ul>
+				<!--<ul class="nav navbar-nav navbar-right">
+				<li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+				</ul>-->
+			</div>
 		</div>
- 
+	</nav>
+	<br><br>
+	<div class="container-fluid" >   
+		<div class="col-md-2"></div>
+		<div class="col-md-10"> 
+				<div class="row">	
+					<div class="col-md-8 "> 
+						<div class="row">
+							<div class="col-md-12">	
+								 <!-- .cd-products-comparison-table-->				
+								<section class="cd-products-comparison-table">
+									<header>
+													<div class="col-md-4" > 
+															<h3>Compare Models</h3>	
+													</div>
+
+													<div class="col-md-4 mt25" > 
+														<button class="btn btn-success" onclick="submitScore(this)" >Submit Score </button>
+													</div>
+													<div class="col-md-4 mt30"> 	
+														<div class="actions">
+																<a href="#0" class="reset">Reset</a>
+																<a href="#0" class="filter">Filter</a>
+														</div>
+													</div> 	 
+									</header>
+									<!-- .cd-products-table -->						
+									<div class="cd-products-table">
+										<!-- .features -->
+										<div class="features">
+											<div class="top-info">Models</div>
+											<input type="hidden" id="mobsize" value="{{s}}" />
+											<ul class="cd-features-list">
+												<!-- have to make it dynamic according to admin selection. -->
+												 
+												<li>Price in PKR</li>
+												<li>Resolution</li>
+												<li>Display Size</li>
+												<li>Color</li>
+												<li>OS</li>
+												<li>Cpu</li>
+												
+											</ul>
+										</div> 
+										 <!-- .cd-products-wrapper -->
+										<div class="cd-products-wrapper">
+											<!-- .cd-products-columns -->
+											<ul class="cd-products-columns" id="myul">
+											
+											{%for m in mobiles%}
+												<li class="product" id="{{forloop.counter}}">
+													<div class="top-info"><!-- .top-info -->
+														<div class="check"></div>
+													<img src="{% static m.imagepath1 %}" alt="product image">
+														<!--<h3>Score:<span id=score-{{forloop.counter}}></span></h3>-->
+													</div> 
+													<ul class="cd-features-list">
+														 <!-- .product -->
+														<li id="price-{{m.id}}">
+														<div id="price{{ forloop.counter }}">
+															<p id="pricepara{{forloop.counter}}"></p> 
+														</div>
+														
+														<input type="hidden" id="priceinput-{{ forloop.counter }}" value="{{m.price_in_pkr}}" />
+														
+														
+														<div class="slidecontainer">
+															<input type="range" id="price-{{ forloop.counter }}" min="1" max="10" step="1"  oninput="showVal(this)">
+															<span id="Boxprice-{{ forloop.counter }}"></span><span>/10</span>
+														</div>
+														
+														</li>
+														<li id="resolution-{{m.id}}">
+															<div id="resolution-{{forloop.counter}}">{{m.Resolution}}</div>
+															<!-- {% if forloop.counter < 2 %}	 -->
+															<div class="slidecontainer">
+																<input type="range" id="resolution-{{ forloop.counter }}" min="1" max="10" step="1"   oninput="showVal(this)">
+																<span id="Boxresolution-{{ forloop.counter }}"></span><span>/10</span>
+															</div>
+															<!-- {%endif%} -->
+														</li>
+														<li id="size-{{m.id}}">
+															<div id="size-{{forloop.counter}}">{{m.Size}}"</div>
+															{% if forloop.counter < 2 %}
+															<div class="slidecontainer">
+																<input type="range" id="size-{{ forloop.counter }}" min="1" max="10" step="1"  oninput="showVal(this)">
+																<span id="Boxsize-{{ forloop.counter }}"></span><span>/10</span>
+															</div>
+															{%endif%}
+														</li>
+														<li id="color-{{m.id}}">
+																<div id="color-{{forloop.counter}}">{{m.Colors}}</div>
+																{% if forloop.counter < 2 %}
+																<div class="slidecontainer">
+																	<input type="range" id="color-{{ forloop.counter }}" min="1" max="10" step="1" oninput="showVal(this)">
+																	<span id="Boxcolor-{{ forloop.counter }}"></span><span>/10</span>
+																</div>
+																{%endif%}
+														</li>
+														<li id="os-{{m.id}}">
+																<div id="os-{{forloop.counter}}">{{m.OS}}</div>
+																{% if forloop.counter < 2 %}
+																<div class="slidecontainer">
+																	<input type="range" id="os-{{ forloop.counter }}" min="1" max="10" step="1"  oninput="showVal(this)">
+																	<span id="Boxos-{{ forloop.counter }}"></span><span>/10</span>
+																</div>
+																{%endif%}
+														</li>
+														<li id="cpu-{{m.id}}">
+																<div id="cpu-{{forloop.counter}}">{{m.Cpu}}</div>
+																{% if forloop.counter < 2 %}
+																<div class="slidecontainer">
+																	<input type="range" id="cpu-{{ forloop.counter }}" min="1" max="10" step="1" oninput="showVal(this)">
+																	<span id="Boxcpu-{{ forloop.counter }}"></span><span>/10</span>
+																</div>
+																{%endif%}
+														</li>
+													</ul>
+												</li>
+												
+												{% endfor %}
+												
+											</ul> 
+										</div>
+										<ul class="cd-table-navigation">
+											<li><a href="#0" class="prev inactive">Prev</a></li>
+											<li><a href="#0" class="next">Next</a></li>
+										</ul>
+									</div> 
+								</section>
+							</div>	
+						</div>
+					</div>
+					<div class="col-md-4 sidenav " id="highchart" >  </div>
+				</div>	 
+		</div>		
+	</div>
+	
  
 			
 
@@ -257,14 +259,15 @@ var num=parseInt(document.getElementById('mobsize').value);
 
 $(document).ready(function () {
 	var num =parseInt(document.getElementById('mobsize').value);
-    var p="pricepara";
+	console.log(num)
+	var p="pricepara";
 
-	for (var i=1;i<=num;i++){
-		//console.log(i);
+	for (var i=1;i<=2;i++){
+		console.log(i);
 
 		var priceinput=parseInt(document.getElementById('priceinput-'+i).value);
 		document.getElementById(p+i).innerHTML=priceinput.toLocaleString('en-IN');
-		console.log(p+i,priceinput.toLocaleString('en-IN'));
+		// console.log(p+i,priceinput.toLocaleString('en-IN'));
 		
 	}
 	$('#highchart').append("<div id='container'style='min-width: 210px; height: 240px; margin: 0 auto;position:fixed;'></div>");

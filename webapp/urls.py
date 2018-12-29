@@ -2,6 +2,10 @@ from django.conf.urls import url, include
 from django.urls import path
 from . import views 
 urlpatterns = [
+   url(r'^index_ahp/',views.indexAhp, name='index_ahp'),   
+   
+   
+   
     # These urls doesn't have templates. These functions are
     # called  through ajax. They are either used to retrieve  
     # data from model and render the data to some other template.         
@@ -18,13 +22,6 @@ urlpatterns = [
 
 
 
-
-
-
-
-
-
-
 #----------------------------------------------------------------------------------------------------------
     url(r'^admin_setup/' , views.adminSetup , name='admin_setup') ,
     url(r'^mobile/',views.mobile_phone_view.as_view(),name='mobileview'),
@@ -32,8 +29,8 @@ urlpatterns = [
     url(r'^filter/',views.filter.as_view(), name='filter'),
     
     
-    url(r'^cart/',views.cart, name='cart'),
-    url(r'^showmob/',views.showMob, name='sm'),
+    url(r'^comparemobile_specs/',views.compareMobileSpecs, name='comparemobile_specs'),
+    url(r'^showmob/',views.showMob, name='showmobile'),
     url(r'^showScore/',views.showScore, name='showscore'),
 
 
@@ -56,7 +53,8 @@ urlpatterns = [
     url(r'^import_excel/',views.importExcel,  name='import_excel'),
     url(r'^saveexperiment/',views.saveExperiment,  name='saveexperiment'),
     url(r'^datadefinded/',views.datadefined.as_view(), name='datadefined'),
-
+    url(r'^store_selected_admin_phones/',views.storeSelectedAdminPhones, name='store_selected_admin_phones'),
+    url(r'^price_range_retrieve/',views.priceRangeRetrieve, name='price_range_retrieve'),
 #---------------------------------------------------------------------------------------------   
     ## Pages that are not currently used. 
     #url(r'^blog/', views.blogview.as_view(), name='blog'), 

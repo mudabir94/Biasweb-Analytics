@@ -4,7 +4,7 @@ from django.contrib.auth.forms import UserChangeForm
 from .models import User
 from .models import signup_table,blog,mobile_phone,phone,experiment
 from .models import samsung_phone,sort_feature,userscoreRecord,Role,platform_feature
-from .models import template_roles,templates
+from .models import template_roles,templates,feature,selectedAdminPhones
 from .models import Subject,experiment_feature,Batch,Block,prunedmobilephones
 
 class MyUserChangeForm(UserChangeForm):
@@ -56,3 +56,5 @@ admin.site.register(experiment_feature)
 admin.site.register(Batch)
 admin.site.register(Block)
 admin.site.register(prunedmobilephones)
+admin.site.register(feature)
+admin.site.register(selectedAdminPhones)
