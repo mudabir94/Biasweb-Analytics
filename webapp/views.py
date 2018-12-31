@@ -412,17 +412,48 @@ def globalFunc(request):
     
 
 def adminSetup(request):
-    global  role
+    # global  role
     
-    feat=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role).order_by('position')
-    ft=sort_feature.objects.filter(Q(sh_hd = 0),roles=role).order_by('position')
     colors=['black','white','gold']
     size=['0','1','3','4','4.1','4.2','4.3','4.4','4.5','4.6','4.7','4.8','4.9','5','5.1','5.2','5.3','5.4','5.5','5.6','5.7','5.8','5.9','6','6.1','6.2','6.3','6.4','6.5','6.6','6.7','6.8','6.9','7']
     role_name=['']
-    if role==1:
-       role_name=['Student']
-    elif role==2:
-        role_name=['Professor']
+    print(request.user.id)
+    userobj=User.objects.get(pk=request.user.id)
+    print("user object",userobj.role_id_id)
+    role_id=userobj.role_id_id
+    roleobj=Role.objects.get(pk=role_id)
+    role=roleobj.role_name
+    print(role)
+
+    if role=='Super_Admin':
+        print("role",role)
+        
+        feat=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role_id).order_by('position')
+        ft=sort_feature.objects.filter(Q(sh_hd = 0),roles=role_id).order_by('position')    
+      
+    elif role=='Experiment_Admin':
+        print('herereerer')
+        feat=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role).order_by('position')
+        ft=sort_feature.objects.filter(Q(sh_hd = 0),roles=role).order_by('position')    
+        # roleobj=Role.objects.get(pk=role)
+        # role_name=roleobj.role_name
+        # print(role_name)
+        
+    elif role=='Platform_Admin':
+        feat=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role).order_by('position')
+        ft=sort_feature.objects.filter(Q(sh_hd = 0),roles=role).order_by('position')    
+
+        roleobj=Role.objects.get(pk=role)
+        role_name=roleobj.role_name
+        print(role_name)
+        
+
+    #*****************************************************
+
+    # if role==1:
+    #    role_name=['Student']
+    # elif role==2:
+    #     role_name=['Professor']
     return render(request, 'webapp/admin_setup.html',{'feat':feat,'colors':colors,'role_name':role_name,'size':size,'ft':ft})
     '''
     if request.user.is_authenticated:
