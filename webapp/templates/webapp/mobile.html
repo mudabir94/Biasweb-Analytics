@@ -193,14 +193,14 @@
                     dataType: "json",
                    
                     'data': {
-                    'd': JSON.stringify(arr),
+                    'mobiledata': JSON.stringify(arr),
                     'csrfmiddlewaretoken': '{{ csrf_token }}',
                     
                     },
-                    url: "{% url 'sm' %}",
+                    url: "{% url 'showmobile' %}",
                     success: function(response){
-                        console.log(response);
-                        window.location="{%url 'cart'%}"
+                        console.log("size_of_mobile",response['som']);
+                        window.location="{%url 'comparemobile_specs'%}"
                      
                     
                     }
@@ -215,27 +215,27 @@
                 // alert(JSON.stringify(arr));
                
                 if(arr.length>1){
-                var elem=document.getElementById('l');
+                var elem=document.getElementById('comparebtn_id');
                     if (elem===null)  {
                        
                         var btn = document.createElement("BUTTON");
-                        btn.id="l";
+                        btn.id="comparebtn_id";
                         var t = document.createTextNode("Compare");  
                         btn.appendChild(t);
                         btn.onclick=myfunc;
                         document.getElementById('lc').appendChild(btn);     
-                         $('#l').addClass('btn'); 
-                         $('#l').addClass('btn-success');   
-                        $('#l').addClass('btn-success-edit');        
+                         $('#comparebtn_id').addClass('btn'); 
+                         $('#comparebtn_id').addClass('btn-success');   
+                        $('#comparebtn_id').addClass('btn-success-edit');        
                         
                     }
                 }
                 else if (arr.length <=1 ){
                     console.log("in condition");
-                    var elem=document.getElementById('l');
+                    var elem=document.getElementById('comparebtn_id');
                     
                    if (elem!==null){
-                    document.getElementById('l').remove();
+                    document.getElementById('comparebtn_id').remove();
                    }
                 }
         });

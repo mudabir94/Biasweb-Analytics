@@ -1,0 +1,14 @@
+{
+  "name": "ahptesting",
+  "version": "1.0.0",
+  "description": "ahp testing ",
+  "main": "mudabirtesting2ahp.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "mudabir",
+  "license": "ISC",
+  "dependencies": {
+    "node": "^11.1.0"
+  }
+}

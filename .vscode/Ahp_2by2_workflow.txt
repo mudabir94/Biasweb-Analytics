@@ -1,0 +1,54 @@
+1 Pre-requisities (INPUTS)
+1.1. Criteria List
+    Possible scenarios
+    - [PENDING #3 - only 2 showing anyway , need X crit then "Other"]
+        Exp_Admin has fixed the criteria + other (pruning)
+    - ["" #1 - show all] Exp_Admin has fixed all criteria (full)
+    - [LAST PRIORITY] Exp_Admin has allowed user to choose and even extend =
+        Subject can choose a sub-set of existing criteria in the database
+        AND also add their own new criteria (e.g. Custom Bloatware, Easy of Rooting)
+        [FOR NOW JUST CREATE A PLACEHOLDER IF CONDITION TO SEE IF EMPTY]
+        e.g. [Price, OS, Screen]
+1.2. Alternatives List [TODO: DATABASE OF ALL PHONES NOT LINKED]
+    - [FRONT-END DONE: Awaiting Controller changes]
+        Exp_Admin pre-defined set of phones
+    - [TODO - PENDING #2] Search on the basis of price ranges... 
+    - [Awaiting Controller] User given options based on Experiment Saved Catalog. 
+    - [DONE] Create Model Exp_Phone
+    - [AVAILABLE BUT SWITCHED OFF - BKGROUND USE DEPENDS ON CONTROLLER IMPLEMENTATION]
+        User selects from catalog
+    [Samsung, QMobile, Huawei] no = j
+2. [DONE] Initialize Level_0 comparison matrix (criteria comparisons)
+e.g. Level_0_matrix = [ [1,1,1], //price
+                        [1,1,1], //os
+                        [1,1,1]  //screen
+                       ]
+3. [DONE] Generate initial "Level_0_Weights" e.g. = [0.333, 0.333, 0.333] (1/n = equally distributed across number of alternatives)
+
+4. [DONE] Initialize Level_1 dictionary of comparison matrices
+e.g. Level_1_compDict = {
+                            criteria_list[0]: [...jxj Matrix...]
+                            criteria_list[1]: ...jxj Matrix
+                            ...
+                            criteria_list[n]: [...jxj Matrix...]
+                        }
+
+5. [MORE THAN DONE - AT 3X3 RIGHT NOW AND ACCEPTS n ALTERNATIVES]
+ Display table of alternatives and criteria list in 2 by 2 format
+
+
+5.1 FOR CRITERIA COMPARISONs explore 2 visualization options:
+ a. Constantly show a ranking graph for the criteria (initialized at all are equal);
+ but give an option to change with a button on/close to/undedr the graph
+ b. [DONE - but CRITERIA RATING PENDING #1.5] Hideable div, with show/hide option under/near the heading "Criteria", labelled "Show Weights"
+RESULT: an uptodate weights matrix for criteria
+e.g. Level_0_matrix = [ [1,2,2], //price
+                        [0.5,1,2], //os
+                        [0.5,0.5,1]  //screen
+                       ]
+5.2 [TO BE IMPROVED - LOCK & NOT DARK, AND BIGGER] DISPLAY OVERALL PHONE RANKING CHART based on uptodate comparison matrices
+
+6 [DONE] USER/SUBJECT goes through each pair of phones, and goes through slide bars for each
+criteria, and chart updates based on recalculation of dictionary of matrices.
+
+7. [TODO #4] before User can leave the page, prompt if there are incomplete rankings

@@ -2,7 +2,7 @@
 """
 Created on Mon Oct  8 15:57:03 2018
 
-@author: Dr. Shazib Sh
+@author: Dr. Shazib Shaikh
 """
 
 #from biasweb.experiment import Experiment
@@ -16,6 +16,8 @@ from webapp.models import platform_feature as PFeature
 from webapp.models import User, Subject
 from webapp.forms import SubjectCreationForm as scf
 
+# WHERE SAVED FILES WILL BE STORED
+OUT_PATH="biasweb/data/output/"
 
 #    STATUS LEVELS:
 DESIGN_MODE = 'DESIGN_MODE' #Under Construction
@@ -34,21 +36,28 @@ class ExperimentController:
         self.fLevels = {}
         self.subjData = pd.DataFrame()
         self.subjects = Subject()
+        self.idField = None
+        self.assigner = Assigner()
         if e_id:
             self.exp = Experiment.objects.get(id=e_id)
             self.fSet = self.exp.experiment_feature_set.select_related('p_feature')
             self.fLevels = self.retrieveFLevels()
         else:
+            print("In else")
             self.exp.status = DESIGN_MODE
             self.exp.owner = User.objects.get(custom_id=a_id)      #TODO@MUDABIR - NEED TO MODIFY EXPERIMENT ADMIN IMPLEMENTATION
-            
+            print(" self.exp.owner", self.exp.owner)
             self.exp.custom_exp_id = 'TBA' #can only be created after Experient table assigns an id
             self.exp.capacity = cap            #Capacity to budget for experiment
             self.saveExperiment()
             self.exp.custom_exp_id = a_id
+            print('self.exp.custom_exp_id',self.exp.custom_exp_id)
             exp_id = self.exp.id
+            print(exp_id)
             exp_id = '-' + str(exp_id).zfill(4)  #ensuring the id is now a 4 digit numeric string
             self.exp.custom_exp_id += exp_id
+           
+            self.fSet = self.exp.experiment_feature_set
             self.saveExperiment()
 
     def saveExperiment(self):
@@ -70,6 +79,7 @@ class ExperimentController:
 
     def getFSet(self):
         return list(self.fSet.all())
+    
     """
     setFSet
     Inputs: Either newFSet (list of feature_symbols for features to be set)
@@ -126,8 +136,10 @@ class ExperimentController:
     def delFeature(self,fSymbol):
         expF = self.getFeature(fSymbol)
         if expF:
+            fName = expF.p_feature.feature_name
             expF.delete()
             del self.fLevels[fSymbol]
+            print("DELETED",fName)
 
     def getFeature(self,fSymbol):
         expF = self.fSet.filter(p_feature__feature_symbol=fSymbol)
@@ -182,9 +194,13 @@ class ExperimentController:
             )
         )
         self.saveBlocks()
+        return self.exp.block_set
     
     def saveBlocks(self):
-        print("List of blocks is as follows:")
+        if self.exp.block_set.exists():
+            print("Deleting pre-existing blocks")
+            self.exp.block_set.all().delete()
+        print("List of blocks to GENERATE is as follows:")
         blocksInDb = list()
         for i,b in enumerate(self.blocks):
             newBlock = Block()
@@ -192,21 +208,66 @@ class ExperimentController:
             newBlock.serial_no = i+1
             newBlock.levels_set = list(b)
             blocksInDb.append(newBlock)
-        print(blocksInDb)
+        print(*blocksInDb, sep="\n")
+        #print(list(blocksInDb))
         self.exp.block_set.bulk_create(blocksInDb)
+        
 
     def importSujbectData(self,iFile):
-        self.assigner = Assigner()
         self.assigner.getLocalDToAssign(iFile)
         self.subjData = self.assigner.df
-        #Ask to set custom_id_field
+        if self.idField:
+            setIdField(self.idField)
 
     def setIdField(self, idFName):
         self.idField = idFName
-
+        print('outside if condition of not empty')
+        if not self.subjData.empty:
+            print('if subjdata not empty')
+            self.subjData[idFName] = self.subjData[idFName].astype(str)
+            print('self.subjData[idFName]:')
+            print(self.subjData[idFName])
     def getSubColNames(self):
         cols = self.subjData.columns
         return cols
+    
+    def updateOneBatch(self, subjId=None, subjC_Id=None):
+        batchField = self.exp.batches_title
+        
+        if batchField:
+            #retrieve based on subjId,
+            if subjId:
+                subj = self.exp.subject_set.get(id=str(subjId))
+            #or based on subjC_id
+            elif subjC_Id:
+                subj = self.exp.subject_set.get(user__custom_id=str(subjC_Id))
+            if subj:
+                print("Going to update:",subj,"having batch",subj.batch)
+                subjNewBatch = self.subjData[
+                    self.subjData[self.idField] == subj.user.custom_id
+                ]
+                print("Will use this record to update: ")
+                print(subjNewBatch)
+                subj.batch = subjNewBatch[batchField].iloc[0]
+                subj.save()
+            #else print error and pass
+            else:
+                print("NOT FOUND: subject to update appears to not exist.")
+        else:
+            print("NO BATCH FIELD assigned for experiment")
+    
+    def updateAllBatches(self, newBatchTitle=None):
+        """
+        Update the existing batch allocations, 
+        or nominate a new (self-defined) batch column.
+        Assumes the batches are to be updated based on
+        current state in self.subjData
+        """
+        #Check if we need to reset the batchTitle
+        if newBatchTitle:
+            self.setBatchesTitle(newBatchTitle)
+        for i, sub in self.subjData.iterrows():
+            self.updateOneBatch(subjC_Id=sub[self.idField])
 
     def assignToBlocks(self, blockSet = None):
         """
@@ -216,48 +277,103 @@ class ExperimentController:
         blockSet: List of tuples in the order of the features defined.
             This is an optional argument.  By default the blocks in self.blocks will
             be used, assuming that generateBlocks and saveBlocks have been called.
+        Returns
+        -------
+        blocksBreakUp: a DataFrame with size statistics. If subjects have been assigned,
+            it provides a batch-wise breakup count.
         """
         #GET blocks number and labels
         blockCount = self.exp.block_set.count()
         blockBinName = 'block__serial_no'
-
+        batchField = self.exp.batches_title
+        print('batch Field',batchField)
+        print('batch Field type',type(batchField))
         #GET batches for this experiment
-        if self.exp.batches_title:            
-            #Calculate the proportions of each batch
-            #For now working with default
-            dfBatchCount = self.subjData.groupby(self.exp.batches_title).size().to_frame(name = 'split_edges')
-            dfBatchPc = dfBatchCount.apply(lambda x: x / x.sum())
-            dfBatchPc = dfBatchPc.reset_index()
+        if batchField: 
+            print('in BatchField')  
+            print('blockCount',blockCount)  
+            print('blockBinName',blockBinName) 
+            print('batchField',batchField) 
             self.dSubByBlock = self.assigner.splitByField(
                         nBins=blockCount,
-                        bName='block__serial_no',
-                        fieldName=self.exp.batches_title,
+                        bName=blockBinName,
+                        fieldName=batchField,
+                        
             )
-            print(self.dSubByBlock.groupby(['block__serial_no',
-                                    self.exp.batches_title])
+            print('self.dSubByBlock')
+            print(self.dSubByBlock)
+            #PERCENTAGE BREAKUP AFTER ASSIGNMENT
+            print(self.dSubByBlock.groupby([blockBinName,
+                                    batchField])
                     .size()
                     .groupby(level=0)
                     .apply(lambda x: x/float(x.sum())))
+            #'SHOULD BE' PERCENTAGE
             print("SHOULD BE:")
+            dfBatchCount = self.subjData.groupby(batchField).size().to_frame(name = 'split_edges')
+            dfBatchPc = dfBatchCount.apply(lambda x: x / x.sum())
+            dfBatchPc = dfBatchPc.reset_index()
             print(dfBatchPc)
-            blockDict = dict(self.exp.block_set.values_list('serial_no','id'))
-            self.dSubByBlock['block_id'] = self.dSubByBlock.block__serial_no.map(blockDict)
-            subjSet = self.exp.subject_set
-            for index, subj in self.dSubByBlock.iterrows():
-                c_id=subj[self.idField]
-                b_id=subj['block_id']
-                subjSet.filter(user__custom_id=c_id).update(block_id=b_id)
-            print(pd.DataFrame(list(subjSet.values()))
-                    .groupby(['block_id','batch'])
-                    .size().unstack())
-            self.subjData = self.dSubByBlock
+        else:
+            print('in splitin bins field')
+            self.dSubByBlock = self.assigner.splitInBins(
+                no_bins=blockCount,
+                binName=blockBinName
+            )
+        
+        #ADD BLOCK_IDs from database (mapped to their serial_no)
+        blockDict = dict(self.exp.block_set.values_list('serial_no','id'))
+        self.dSubByBlock['block_id'] = self.dSubByBlock.block__serial_no.map(blockDict)
+        subjSet = self.exp.subject_set
+        for index, subj in self.dSubByBlock.iterrows():
+            c_id=subj[self.idField]
+            b_id=subj['block_id']
+            subjSet.filter(user__custom_id=c_id).update(block_id=b_id)
+        subjSetList = list(self.exp.subject_set.values()) #just to refresh subject_set in cache
+        # if self.exp.batches_title:
+        #     print(pd.DataFrame(subjSetList)
+        #             .groupby(['block_id','batch'])
+        #             .size().unstack())
+        self.subjData = self.dSubByBlock
+        blocksBreakUp = pd.pivot_table(
+                self.subjData,
+                index=blockBinName,
+                columns=batchField,
+                aggfunc='count',
+                values=['ROLLNO'],
+                margins=True,
+                margins_name='Total'
+            )
+        blocksBreakUp.columns = blocksBreakUp.columns.droplevel(0)
+        blocksBreakUp = blocksBreakUp.rename(
+            columns={
+                blocksBreakUp.columns[-1]:'Block Total'
+            }
+        )
+        blocksBreakUp = blocksBreakUp.rename_axis("Block No.")
+        return blocksBreakUp
+
+    def saveSubjToXL(self, fName):
+        writer = pd.ExcelWriter(OUT_PATH + fName + '.xlsx')
+        self.subjData.to_excel(writer, sheet_name='Subjects')
+        writer.save()
             
-    def saveSubjects(self, dSub=None, fName=None):
+    def deleteAllSubjects(self):
+        print('subject set',self.exp.subject_set.all())
+        self.exp.subject_set.all().delete()
+        self.exp.batches_title = None
+        print('subject set',self.exp.subject_set.all())
+        print('self.exp.batches_title',self.exp.batches_title)
+
+        self.saveExperiment()
+        
+        
+    def saveSubjects(self, dSub=None, writeXL=False, fName=None):
         if isinstance(dSub,pd.DataFrame):
             self.subjData = dSub
         #WRITE TO DATABASE
         #obtain set of existing users
-        currUsers = User.objects.all()
+        currUsers = User.objects.values_list('custom_id', flat=True)
         print(currUsers)
         #check if subjects exist for this exp object
         if not self.subjects.pk:
@@ -265,24 +381,39 @@ class ExperimentController:
             #for every entry in the DataFrame
             for index, subj in self.subjData.iterrows():
                 c_id = str(subj[self.idField])
-                #TODO: check custom_id against existing user
-                if(currUsers.filter(custom_id=c_id).exists()):
+                if c_id in currUsers:
                     print("User already exists - re-using existing user")
-                    subjUser = currUsers.get(custom_id=c_id)
+                    subj_id = User.objects.get(custom_id=c_id).id
                 else:
-                    print(index,": Custom id will be -->",c_id)
+                    print(index,": New User! Custom id will be -->",c_id)
                     subjUser = scf().save(commit=False, pwd=c_id)
                     subjUser.username = c_id
                     subjUser.custom_id = c_id
                     subjUser.save()
-                subject = Subject()
-                subject.user = subjUser
-                subject.exp = self.exp
-                if self.exp.batches_title:
-                    subject.batch = subj[self.exp.batches_title]
-                subject.status = DESIGN_MODE
-                subjForDb.append(subject)
+                    subj_id = subjUser.id
+                #TODO@SHAZIB: CHECK IF SUBJECT USER EXISTS IN EXPERIMENT
+                oldSubj = self.exp.subject_set.filter(user_id = subj_id)
+                if oldSubj.exists():
+                    print("Subject is already enrolled on the experiment")
+                    print(oldSubj[0])
+                    subject = oldSubj[0]
+                    #IF EXISTS STILL UPDATE WITH BATCH/BLOCK - TODO SEE DJANGO BULK UPDATE PACKAGE
+                else:
+                    subject = Subject()
+                    subject.user_id = subj_id
+                    subject.exp = self.exp
+                    if self.exp.batches_title:
+                        subject.batch = subj[self.exp.batches_title]
+                    subject.status = DESIGN_MODE
+                    subjForDb.append(subject)
             print(subjForDb)
             self.exp.subject_set.bulk_create(subjForDb)
-        #WRITE TO FILE AS WELL, IF GIVEN
-        #ELSE DEFAULT TO CUSTOM-ID WITH CERTAIN SWITCHES
+        if writeXL:
+            if not fName:
+                fName = self.exp.custom_exp_id
+            self.saveSubjToXL(fName)
+
+
+    
+    def toString():
+        print("This class is the Controler Class");

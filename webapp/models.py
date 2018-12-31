@@ -148,6 +148,12 @@ class experiment_feature(models.Model):
         fName = self.p_feature.feature_name
         return fName
     
+class exp_fLevel(models.Model):
+    e_feature = models.ForeignKey(experiment_feature, on_delete=models.CASCADE)
+    chosen_level = models.CharField(max_length=100)
+    def __str__(self):
+        fLevel = self.chosen_level 
+        return fLevel
 
 class signup_table(models.Model):
     username=models.CharField(max_length=200)
@@ -198,6 +204,7 @@ class phone(models.Model):
     
     def __str__(self):
         return self.Mobile_Name
+    
     class Meta:
         verbose_name_plural="phone"
         
@@ -225,6 +232,8 @@ class samsung_phone(models.Model):
 
     def __str__(self):
         return self.Mobile_Name
+    def __unicode__(self):
+        return self.name
     class Meta:
         verbose_name_plural="samsungphone"
 class sort_feature(models.Model):
@@ -272,3 +281,7 @@ class prunedmobilephones(models.Model):
 class userroles(models.Model):
     userrole=models.CharField(max_length=200,null=True)
 
+class selectedAdminPhones(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    exp = models.ForeignKey(experiment, on_delete=models.CASCADE)
+    mob = models.ForeignKey(samsung_phone, on_delete=models.CASCADE)
