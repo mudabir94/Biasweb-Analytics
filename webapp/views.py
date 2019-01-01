@@ -78,7 +78,7 @@ def priceRangeRetrieve(request):
             }
             return JsonResponse(data)
             
-
+@method_decorator(login_required, name='dispatch')
 
 class Home(TemplateView):
     template_name='webapp/home.html'
@@ -237,7 +237,7 @@ def compareMobileSpecs(request):
             # 
             alternative_list=[]
             criteria_list=['imagepath1','price_in_pkr',"Chip"]
-            # "Cpu","OS",
+             
             # "battery","back_camera",
             # "Resolution"]
             #@TODO: Create test for feature level if c.pruned. Then add other to the criteria list. 

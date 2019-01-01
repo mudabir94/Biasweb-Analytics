@@ -81,9 +81,7 @@
             <div class='row'>
                 <div class="col-md-2" style="background:black">
                     <div id="prevbtn_div"></div>
-                    
-                   
-                </div>
+              </div>
                 <div class="col-md-9">
                     <div class="row">
                         <div class="col-md-7" >
@@ -126,19 +124,15 @@
                     </div>
                 </div>
                 <div class="col-md-1" style="background:hotpink">
-                    <div class="row"> <div id="nextbtn_div"></div></div>
-                   
-
-
+                    <div class="row"> <div id="nextbtn_div"></div>
+                </div>
                 </div>
             </div>
         </div>
-        
     </body>
 </html>
 
 <script >
- 
    // Global variable 
    var allmobiles={}
    var prev_compared_mobiles_list=[];
@@ -150,11 +144,9 @@
    
    var crit_rank_matrix_dict={};
    var alt_rank_matrix_dict= {};
-   // HAVE TO MAKE DYNAMIC IN Future. 
-   // **
-    // var criteria_list=[ 'price_in_pkr', 'imagepath1' ];
-    var criteria_list=[];
-//    var alternatives_list=["Samsung galaxy S7", "Samsung Galaxy A3", "Samsung galaxy A5"];
+  
+   var criteria_list=[];
+   var other_criteria_list=['SIZE',"RESOLUTION"];
 
    var alternatives_list=[];
    var final_result_dict={};
@@ -236,6 +228,8 @@ $(document).ready(function(){
                         }
                         alternatives_list=data['alternative_list'];
                         criteria_list=data['criteria_list'];
+                        // FOR OTHERS TESTING @DATE 1/JAN/2019
+                            criteria_list.push("Others")
                          // IN future also assign alternative list from data 
                          for (var i in alternatives_list){
                                 if (alternatives_list[i].length>5){
@@ -272,7 +266,6 @@ $(document).ready(function(){
                             if(flag==true){
                             for (var crit in criteria_list){
                                 let alt_mat= ahpArrayHelper._setUpSquareArray(alternatives_list.length);
-                        
                                 all_rank_matrix_dict[criteria_list[crit]]=alt_mat;
                                 flag=false;
                             }
@@ -281,18 +274,14 @@ $(document).ready(function(){
                         crit_combs=k_combinations(criteria_list, 2);
                      // combination pairs for the comparison of alternatives. 
                         alt_combs=k_combinations(alternatives_list, 2);
-                        mobiletesting=data['allmobiles'];
-                        
-                       
+                        mobiletesting=data['allmobiles'];     
                         processMobileData(dict_lst_comb_keynum);
                         showchart_criteria();
                     }
                     // right now code only works for 3 mobiles not 2
                     // allmobile=data
                     // makeTable(allmobile)
-
                     }
-
                 }); 
    });
 
@@ -301,10 +290,10 @@ function ahptesting(){
     // for final ahp result....
     
     // console.log("test_result_vecs['criteria']22",test_result_vecs['criteria'])
-    var weights=test_result_vecs['criteria']
+    var weights=test_result_vecs['criteria'];
  
     // var weights=[0.125, 0.875];
-    console.log("weights",weights)
+    console.log("weights",weights);
     var crit_dict={};
 
     for (criteria in criteria_list){
