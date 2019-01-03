@@ -1200,7 +1200,7 @@ def assignToBlocks(request):
             print(blocksBreakUp.index)
             #blocksBreakUp=blocksBreakUp[['A','B']]
             blocksBreakUp = blocksBreakUp.to_json(orient='index')#to_html(table_id="blocksBreakUp") #
-            print(blocksBreakUp)
+            print("blocksBreakUp",blocksBreakUp)
         else:
             blocksBreakUp = "Empty"
 
