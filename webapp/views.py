@@ -256,6 +256,9 @@ def compareMobileSpecs(request):
                 for crit in criteria_list:
                     print(crit)
                     mobile[crit]=getattr(m, crit)
+                mobile['Others']=m.Mobile_Name
+
+
                 # mobile['imagepath1']=getattr(m,criteria_list[0])
                 # mobile['price_in_pkr']=getattr(m,criteria_list[1])
                
