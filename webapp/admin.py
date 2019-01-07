@@ -87,6 +87,14 @@ class sort_featureAdmin(ImportExportActionModelAdmin):
 
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>    
 #----------------------------------------------------------------------------
+class phoneResource(resources.ModelResource):
+    class meta:
+        model=phone
+class phoneAdmin(ImportExportActionModelAdmin):
+    pass
+
+#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>    
+#----------------------------------------------------------------------------
 
 
 admin.site.register(User, MyUserAdmin)
@@ -99,12 +107,12 @@ admin.site.register(templates,templateAdmin)
 admin.site.register(template_roles,templateRoleAdmin)
 admin.site.register(selectedAdminPhones,selectedAdminPhones_Admin)
 admin.site.register(sort_feature,sort_featureAdmin)
-
+admin.site.register(phone,phoneAdmin)
 admin.site.register(userscoreRecord)
 admin.site.register(signup_table)
 admin.site.register(blog)
 admin.site.register(mobile_phone)
-admin.site.register(phone)
+
 admin.site.register(Subject)
 admin.site.register(experiment_feature)
 admin.site.register(Batch)

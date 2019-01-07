@@ -236,7 +236,9 @@ def compareMobileSpecs(request):
             allmobile={}
             # 
             alternative_list=[]
-            criteria_list=['imagepath1','price_in_pkr',"Chip","back_camera"]
+            criteria_list=['imagepath1','price_in_pkr',"Resolution"]
+            # "back_camera","Resolution","battery","price_in_usd",
+            # "rating","Weight","Gpu","Dimensions","Cpu"]
              
             # "battery","back_camera",
             # "Resolution"]
