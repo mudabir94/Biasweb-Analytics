@@ -195,10 +195,10 @@ class phone(models.Model):
     price_in_usd=models.IntegerField( null= True)
     rating=models.FloatField(null= True)
     OS=models.CharField(max_length=300, null= True)
-    imagepath1 = models.ImageField(null=True, blank=True, upload_to="webapp/img/sampleimages/")
-    imagepath2=  models.ImageField(null=True, blank=True, upload_to="webapp/img/sampleimages/")
-    #imagepath1=models.CharField(max_length=300,null=True)
-    #imagepath2=models.CharField(max_length=300,null=True)
+    # imagepath1 = models.ImageField(null=True, blank=True, upload_to="webapp/img/sampleimages/")
+    # imagepath2=  models.ImageField(null=True, blank=True, upload_to="webapp/img/sampleimages/")
+    imagepath1=models.CharField(max_length=300,null=True)
+    imagepath2=models.CharField(max_length=300,null=True)
     battery=models.CharField(max_length=400,null=True)
     back_camera=models.CharField(max_length=400,null=True)
     
@@ -241,7 +241,9 @@ class sort_feature(models.Model):
     feature=models.CharField(max_length=200,null=True)
     position=models.IntegerField(null=True)
     sh_hd=models.IntegerField(null=True)
-    roles=models.IntegerField(null=True)
+    # roles=models.IntegerField(null=True)
+    roles = models.ForeignKey(Role, on_delete=models.CASCADE,default=None,null=True)
+
 
     def __str__(self):
         return self.feature

@@ -43,7 +43,7 @@
             </div>
             <br>
             <!--FEATURES LEVELS ROW DIV -->
-            <div class='row-fluid' style="background:peru;" id='feat_lvl_div'>
+            <div class='row-fluid' id='feat_lvl_div'>
                 <div class='row'>
                     <div class='col-md-3'>
                             <p1><b>Select features to enable:</b></p1>
@@ -69,12 +69,12 @@
     
                         </div> 
                     </div>
-                    <div class=col-md-3  style='background: rgb(7, 193, 240)' >
+                    <div class=col-md-3   >
                         <div id='defaultfeatLevel_tablediv'>
                             
                         </div>
                     </div>
-                    <div class='col-md-5' style='background: green'  >
+                    <div class='col-md-5'  >
                         <div class='row'>
                             <div class='col-md-12'>
                             </div>
@@ -101,7 +101,7 @@
             <br>
            
             <!-- IMPORT SUBJECT DIV ROW DIV-->
-            <div class='row-fluid' style="background: rgb(209, 91, 150)" id='importSubdiv'> 
+            <div class='row-fluid' id='importSubdiv'> 
                     <div class='row'>
                         <div class='col-md-1'>
                             <div class='row-fluid'></div>
@@ -2527,12 +2527,12 @@ function sendFilePath(id){
         var slider2 = new rSlider({
                     target: '#price_slider',
                     
-                    values: {min:10000,max:70000},
+                    values: {min:5000,max:70000},
                     range: true,
                     tooltip: true,
                     scale: false,
                     labels: false,
-                    set: [10000, 70000],
+                    set: [5000, 70000],
                     step:10000,
                     onChange:function (values) { 
                         var values=values.split(',');
@@ -2631,7 +2631,7 @@ function sendFilePath(id){
 
                                 $("#mobile_catalog_div").cPager({
                                     // how many items per page
-                                    pageSize: 6,
+                                    pageSize: 10,
                                     // container ID
                                     pageid: "pager",
                                     // item class
