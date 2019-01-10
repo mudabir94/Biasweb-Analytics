@@ -1283,7 +1283,8 @@ class createExperiment(TemplateView):
             price_range_values = json.loads(price_range_values)
             print('price_range_values1',price_range_values[0])
             print('price_range_values2',price_range_values[1])
-            mobiles_retrieved=samsung_phone.objects.filter(price_in_pkr__range=(price_range_values[0], price_range_values[1]))
+            # mobiles_retrieved=samsung_phone.objects.filter(price_in_pkr__range=(price_range_values[0], price_range_values[1]))
+            mobiles_retrieved=phone.objects.filter(price_in_pkr__range=(price_range_values[0], price_range_values[1]))
             # else: 
             #     mobiles_retrieved=samsung_phone.objects.filter(price_in_pkr__range=(10000, 30000))
 
