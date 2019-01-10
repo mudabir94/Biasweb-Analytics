@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from .models import blog,signup_table,mobile_phone,phone,samsung_phone,sort_feature
+from .models import blog,signup_table,mobile_phone,mobilephones,samsung_phone,sort_feature
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User

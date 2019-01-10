@@ -6,7 +6,7 @@ from import_export.admin import ImportExportModelAdmin
 from import_export.admin import ImportExportActionModelAdmin
 
 from .models import User
-from .models import signup_table,blog,mobile_phone,phone,experiment
+from .models import signup_table,blog,mobile_phone,mobilephones,experiment
 from .models import samsung_phone,sort_feature,userscoreRecord,Role,platform_feature
 from .models import template_roles,templates,feature,selectedAdminPhones
 from .models import Subject,experiment_feature,Batch,Block,prunedmobilephones
@@ -87,10 +87,10 @@ class sort_featureAdmin(ImportExportActionModelAdmin):
 
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>    
 #----------------------------------------------------------------------------
-class phoneResource(resources.ModelResource):
+class mobilephonesResource(resources.ModelResource):
     class meta:
-        model=phone
-class phoneAdmin(ImportExportActionModelAdmin):
+        model=mobilephones
+class mobilephonesAdmin(ImportExportActionModelAdmin):
     pass
 
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>    
@@ -107,7 +107,7 @@ admin.site.register(templates,templateAdmin)
 admin.site.register(template_roles,templateRoleAdmin)
 admin.site.register(selectedAdminPhones,selectedAdminPhones_Admin)
 admin.site.register(sort_feature,sort_featureAdmin)
-admin.site.register(phone,phoneAdmin)
+admin.site.register(mobilephones,mobilephonesAdmin)
 admin.site.register(userscoreRecord)
 admin.site.register(signup_table)
 admin.site.register(blog)

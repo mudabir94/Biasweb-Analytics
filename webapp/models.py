@@ -179,7 +179,7 @@ class mobile_phone(models.Model):
     class Meta:
         verbose_name_plural="mobile_phone"
         
-class phone(models.Model):
+class mobilephones(models.Model):
     Mobile_Companny= models.CharField(max_length=200, null= True)
     Mobile_Name= models.CharField(max_length=300, null= True)
     Whats_new= models.TextField( null= True)
@@ -206,7 +206,7 @@ class phone(models.Model):
         return self.Mobile_Name
     
     class Meta:
-        verbose_name_plural="phone"
+        verbose_name_plural="mobilephones"
         
 
 class samsung_phone(models.Model):

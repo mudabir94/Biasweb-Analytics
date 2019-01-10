@@ -398,7 +398,7 @@
                 <div class='row'>
                     <div class='col-md-12'>
                             <div class="latest-product-section" > 
-                                    {%  for mob in samsung_phones  %}
+                                    {%  for mob in mobilephones  %}
                 
                                     {% if forloop.counter0|divisibleby:3 %} 
                                     <div class="row text-center">
@@ -432,18 +432,19 @@
                         
                             <div class="pagination" >
                                     <span class="step-links">
-                                        {% if samsung_phones.has_previous %}
+                                      
+                                        {% if mobilephones.has_previous %}
                                             <a href="?page=1">&laquo; first</a>
-                                            <a href="?page={{ samsung_phones.previous_page_number }}">previous</a>
+                                            <a href="?page={{ mobilephones.previous_page_number }}">previous</a>
                                         {% endif %}
                                         
                                         <span class="current">
-                                            Page {{ samsung_phones.number }} of {{ samsung_phones.paginator.num_pages }}.
+                                            Page {{ mobilephones.number }} of {{ mobilephones.paginator.num_pages }}.
                                         </span>
                                     
                                         {% if mobiles.has_next %}
-                                            <a href="?page={{ samsung_phones.next_page_number }}">next</a>
-                                            <a href="?page={{ samsung_phones.paginator.num_pages }}">last &raquo;</a>
+                                            <a href="?page={{ mobilephones.next_page_number }}">next</a>
+                                            <a href="?page={{ mobilephones.paginator.num_pages }}">last &raquo;</a>
                                         {% endif %}
                                     </span>
                             </div>
@@ -2548,12 +2549,13 @@ function sendFilePath(id){
                                 },
                                 dataType: "json",
                                 
-                                
                                 success: function(data){
                                 console.log("data",data)// location.reload();
                                 $('#mobile_catalog_div').empty();
                                 $('#pager').hide();
-                                var json_data_mobiles=data['samsung_phones']
+                                // var json_data_mobiles=data['samsung_phones']
+                                var json_data_mobiles=data['mobilephones']
+                                
                                 // var row_fluid=document.createElement('div');
                                 // row_fluid.setAttribute('class','row-fluid');
                                 // row_fluid.setAttribute('id','mobile_catalog_div');
