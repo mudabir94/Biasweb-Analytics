@@ -5,7 +5,7 @@
     <!-- MAIN ROW CONTENT DIV  -->
     <div class="row content">
         <!-- 1st SIDEBAR COL DIV -->
-        <div class="col-sm-3 sidenav" style='background:teal'>
+        <div class="col-sm-3 sidenav" style='background:#920000e3'>
             <div class='container-fluid'>
                 {% with creat_exp_template_sidebar=creat_exp_template_sidebar %}
                 {% include creat_exp_template_sidebar %}
@@ -65,7 +65,7 @@
                     
                         <div class='row-fluid'>
 
-                            <button onclick='sendFeatureLevels()'> Set Feature Levels </button>
+                            <button style="background: #1f8c6e;box-shadow: 0 0 0.5px 0.5px #1f8c6e;border: none;" onclick='sendFeatureLevels()'> Set Feature Levels </button>
     
                         </div> 
                     </div>
@@ -88,10 +88,10 @@
 
                     </div>
                     
-                    <div class='col-md-1' style='background: lightgray'>
+                    <div class='col-md-1' >
                         <div class='row'>
                        
-                            <div class='col-md-12'>  <button onclick='showImportSubdiv()'>NEXT</button></div>
+                            <div class='col-md-12'>  <button style="background: #105796;box-shadow: 0 0 0.5px 0.5px #105796;border: none;" onclick='showImportSubdiv()'>NEXT</button></div>
 
                             
                         </div>
@@ -344,7 +344,7 @@
             </div>
 
              <!--BLOCK ASSIGNMENT ROW DIV-->
-            <div class='row-fluid' id='block_assign_row_div' style="background: rgb(255, 105, 6)">
+            <div class='row-fluid' id='block_assign_row_div' >
                     <div class='row'>
                         <div class="col-md-6" >
                                 <br>
@@ -354,7 +354,7 @@
                                         <p1><b><i>Assign subjects to latest set of feature blocks?</b></i></p1>
                                         <br>
                                         <br>
-                                        <button onclick='assignToBlocks()'> Assign to Blocks </button>
+                                        <button style="background: #1f8c6e;box-shadow: 0 0 0.5px 0.5px #1f8c6e;border: none;" onclick='assignToBlocks()'> Assign to Blocks </button>
                                     </div>
                         </div>
                     </div>
@@ -379,7 +379,7 @@
             <div class='row' id='batchmngprvbtn_div'>
                     <div class='col-md-1'>
                         <div id='prev_btn_div'>
-                        <button onclick="showFeatLvlDiv()">Previous</button>
+                        <button style="background: #105796;box-shadow: 0 0 0.5px 0.5px #105796;border: none;" onclick="showFeatLvlDiv()">Previous</button>
                         </div>
                     </div>
                     <div class='col-md-5'></div>
@@ -398,7 +398,7 @@
                 <div class='row'>
                     <div class='col-md-12'>
                             <div class="latest-product-section" > 
-                                    {%  for mob in samsung_phones  %}
+                                    {%  for mob in mobilephones  %}
                 
                                     {% if forloop.counter0|divisibleby:3 %} 
                                     <div class="row text-center">
@@ -432,18 +432,19 @@
                         
                             <div class="pagination" >
                                     <span class="step-links">
-                                        {% if samsung_phones.has_previous %}
+                                      
+                                        {% if mobilephones.has_previous %}
                                             <a href="?page=1">&laquo; first</a>
-                                            <a href="?page={{ samsung_phones.previous_page_number }}">previous</a>
+                                            <a href="?page={{ mobilephones.previous_page_number }}">previous</a>
                                         {% endif %}
                                         
                                         <span class="current">
-                                            Page {{ samsung_phones.number }} of {{ samsung_phones.paginator.num_pages }}.
+                                            Page {{ mobilephones.number }} of {{ mobilephones.paginator.num_pages }}.
                                         </span>
                                     
                                         {% if mobiles.has_next %}
-                                            <a href="?page={{ samsung_phones.next_page_number }}">next</a>
-                                            <a href="?page={{ samsung_phones.paginator.num_pages }}">last &raquo;</a>
+                                            <a href="?page={{ mobilephones.next_page_number }}">next</a>
+                                            <a href="?page={{ mobilephones.paginator.num_pages }}">last &raquo;</a>
                                         {% endif %}
                                     </span>
                             </div>
@@ -1169,6 +1170,7 @@ $(function () {
                         $('#show_s2').append(select_tag2);
                         $('#show_s3').append(select_tag3);
                         var proceedbtn= document.createElement("BUTTON");
+                        proceedbtn.setAttribute("style","background: #1f8c6e;box-shadow: 0 0 0.5px 0.5px #1f8c6e;border: none;")
                         var proceedStr="Process Import"
                         var text = document.createTextNode(proceedStr);
                         proceedText = proceedbtn.appendChild(text)
@@ -1369,11 +1371,11 @@ function assignToBlocks(){
                  newCell.innerHTML= blocks['Total'][cells];
             }
             // $('#blocks_table').DataTable({"pageLength": 5 });
-            $('#blocks_table').appendTo('#blocksBreakUpDiv')
-           
-
+            // $('#blocks_table').appendTo('#blocksBreakUpDiv')
+            $('#blocksBreakUpDiv').append('#blocks_table');
+            $("#block_assign_row_div").hide();
             if(data['blocks']!=="Empty"){
-                alert('TODO@MUDABIR: MERGE INTO ONE TABLE')
+                alert('Blocks Created in Feature LEVELS')
                  
             } else {
                 alert('PLEASE IMPORT SUBJECTS FIRST')
@@ -1489,11 +1491,10 @@ function postExpData(){
         $('#showfiledatadiv').empty();
 
         showFileDataTable(global_rows);
-
+        // '<b>Would you like to create new batches now?</b><br><i>(if not, then by default the subjects will be considered as \"Batch 1\")</i>
         var self_permission_text_div=document.createElement('Label');
-        $('#self_permission_text_div').append('<br><b>Would you like to create new batches now?</b><br><i>(if not, then by default the subjects will be considered as \"Batch 1\")</i><br>')
-        //self_permission_text_div.append('<b>Would you like to create new batches now?</b><br><i>(if not, then by default the subjects will be considered as \"Batch 1\")</i>')
-        //$('#self_permission_text_div').append(self_permission_text_div);
+        self_permission_text_div.append('Would you like to create new batches now?(if not, then by default the subjects will be considered as Batch 1)')
+        $('#self_permission_text_div').append(self_permission_text_div);
         var self_button_yes=document.createElement('BUTTON');
         self_button_yes.setAttribute('id','self_button_yes');
         self_button_yes.setAttribute('onclick','showSelfBarButton()');
@@ -2404,7 +2405,7 @@ success: function(data){
         console.log("Hi:",i,data[i])
       
     }
-    alert(exp_id);
+    // alert(exp_id);
     if(exp_id===""){
         exp_id = data['exp_id'];
         custom_exp_id = data['custom_exp_id'];
@@ -2550,12 +2551,13 @@ function sendFilePath(id){
                                 },
                                 dataType: "json",
                                 
-                                
                                 success: function(data){
                                 console.log("data",data)// location.reload();
                                 $('#mobile_catalog_div').empty();
                                 $('#pager').hide();
-                                var json_data_mobiles=data['samsung_phones']
+                                // var json_data_mobiles=data['samsung_phones']
+                                var json_data_mobiles=data['mobilephones']
+                                
                                 // var row_fluid=document.createElement('div');
                                 // row_fluid.setAttribute('class','row-fluid');
                                 // row_fluid.setAttribute('id','mobile_catalog_div');
@@ -2576,16 +2578,14 @@ function sendFilePath(id){
                                 lps.append(rtc);
                                 for (var i=0;i<json_data_mobiles.length;i++){
                                    
-                                    if (i%2===0 && i!==0){
+                                    if (i%3===0 && i!==0){
                                         console.log("asd",i)
                                         var hr=document.createElement('hr');
                                         lps.append(hr); 
                                         var rtc=document.createElement('DIV');
                                         rtc.setAttribute("class","row text-center");
                                         lps.append(rtc);
-                                        
-                                        
-                                        
+                                      
                                     }
                                     var col_md_4_post=document.createElement('DIV');
                                     col_md_4_post.setAttribute("class","col-md-4 sm-margin-b-50 pull-left post");
@@ -2631,16 +2631,16 @@ function sendFilePath(id){
                                 }
                                 
 
-                                $("#mobile_catalog_div").cPager({
-                                    // how many items per page
-                                    pageSize: 10,
-                                    // container ID
-                                    pageid: "pager",
-                                    // item class
-                                    itemClass: "post",
-                                    pageIndex: 1
+                                // $("#mobile_catalog_div").cPager({
+                                //     // how many items per page
+                                //     pageSize: 10,
+                                //     // container ID
+                                //     pageid: "pager",
+                                //     // item class
+                                //     itemClass: "post",
+                                //     pageIndex: 1
 
-                                    });
+                                //     });
 
                                 
                                 

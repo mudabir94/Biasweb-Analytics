@@ -459,11 +459,12 @@ function processMobileData(keynum){
 }
 var slider_id_val_check_dict=null;
 function nextMobilePair(currentKeycombination){
-    
+       console.log("currentKeycombination",currentKeycombination)
 
-   
+        // console.log("prev_compared_mobiles_list_NEXT ",prev_compared_mobiles_list)
         // key num increment
         var keynum=currentKeycombination+1;
+
         // // dict_contains_listofCombiations will be accessed 
         // var comb_list_check=dict_contains_listofCombiations[keynum]
         // // if value would contain null then there would be nothing to compare and no table will be generated
@@ -473,6 +474,8 @@ function nextMobilePair(currentKeycombination){
         //     console.log("dont process the data")
         // }
         // else {
+      
+      
             var input_class=document.getElementsByClassName('slider')
             var temp_slider_id_val_check_list=[];
             var temp_final_list=[];
@@ -489,24 +492,59 @@ function nextMobilePair(currentKeycombination){
             }
             slider_id_val_check_dict[dict_contains_listofCombiations[keynum-1]]=temp_final_list;
             temp_final_list=[]
-            // slider_id_val_check_list=temp_slider_id_val_check_list;
-            // store the id and value in a list. 
+            prev_compared_mobiles_list.push(currentKeycombination);
             $('#tablediv').empty();
             $('#prevbtn_div').empty();
+            processMobileData(keynum);
+            // work under construction
+                                                            // if (currentKeycombination===0 && prev_compared_mobiles_list.length!==0){
+                                                            //     prev_compared_mobiles_list.unshift(currentKeycombination);
+                                                            //     console.log("prev_compared_mobiles_list----",prev_compared_mobiles_list)
+                                                            //     keynum=prev_compared_mobiles_list.pop();
+                                                            //     console.log("keynum<<<<",keynum)
+                                                            //     console.log("slider_id_val_check_dict>>>>",slider_id_val_check_dict)
+                                                            //     $('#tablediv').empty();
+                                                            //     $('#prevbtn_div').empty();
+                                                            //     processMobileData(keynum);
+                                                            // }
+        
+                        // var input_class=document.getElementsByClassName('slider')
+                        // var temp_slider_id_val_check_list=[];
+                        // var temp_final_list=[];
+                        // for (var i=0;i<input_class.length;i++){
+                            
+                        //      temp_slider_id_val_check_list.push(input_class[i].id) 
+                        //      temp_slider_id_val_check_list.push(input_class[i].value)  
+                        //      temp_final_list.push(temp_slider_id_val_check_list);
+                        
+                        //      temp_slider_id_val_check_list=[];
+                        // }
+                        // if (slider_id_val_check_dict==null){
+                        //     slider_id_val_check_dict={};
+                        // }
+                        // slider_id_val_check_dict[dict_contains_listofCombiations[keynum-1]]=temp_final_list;
+                        // temp_final_list=[]
+            // slider_id_val_check_list=temp_slider_id_val_check_list;
+            // store the id and value in a list. 
+                        // $('#tablediv').empty();
+                        // $('#prevbtn_div').empty();
             // store index/keynum in prev_compared_mobiles_list
-            prev_compared_mobiles_list.push(currentKeycombination);
+         
+            
             // call the processMobileData function
             // get all the slider ids from the current page and store in 
             // a list. 
-           
-            processMobileData(keynum);
+             console.log("prev_compared_mobiles_list_NEXT",prev_compared_mobiles_list)
+
+                        // processMobileData(keynum);
            
         // }
 
 }
 function previousMobilePair(currentKeycombination){
 
-                
+                // console.log("prev_compared_mobiles_list_prev before",prev_compared_mobiles_list)
+                console.log("currentKeycombination-precv",currentKeycombination);
                 // this logic doesnt make any sense..lol but it is required.....
                 if ($('#prevbtn_div').empty()===true){
                     $('#prevbtn_div').empty();
@@ -531,18 +569,61 @@ function previousMobilePair(currentKeycombination){
                     slider_id_val_check_dict[dict_contains_listofCombiations[keynum]]=temp_final_list;
                     temp_final_list=[]
                 }
-                $('#tablediv').empty();
-                        // Previous Button would be created this time as prev_compared_mobiles_list is not empty
-                        // ***Its main job is to getting the previous/last updated 
-                        // listofcombination from prev_compared_list and make table according to it.***
-                        // get the last index stored in prev_compared_mobiles_list and pass to the func->
-                        var keynum=prev_compared_mobiles_list.pop();
-                        //processMobileData func will be called. 
-                        processMobileData(keynum)
-                        // 
-                        // 
-                        
-                }
+                // work under construction
+                                        // if ($('#nextbtn_div').children().text()==='Next '){
+                                        //         keynum=currentKeycombination+1;
+                                        //         // get current sliders 
+                                        //             var input_class=document.getElementsByClassName('slider');
+                                        //             var temp_slider_id_val_check_list=[];
+                                        //             var temp_final_list=[];
+                                        //         for (var i=0;i<input_class.length;i++){
+                                                
+                                        //             temp_slider_id_val_check_list.push(input_class[i].id) 
+                                        //             temp_slider_id_val_check_list.push(input_class[i].value)  
+                                        //             temp_final_list.push(temp_slider_id_val_check_list);
+                                        //             temp_slider_id_val_check_list=[];
+                                        //         }
+                                        //         if (slider_id_val_check_dict==null){
+                                        //             slider_id_val_check_dict={};
+                                        //         }
+                                        //         slider_id_val_check_dict[dict_contains_listofCombiations[keynum]]=temp_final_list;
+                                        //         temp_final_list=[]
+                                        //         temp_final_list=[]
+                                        //         // slider_id_val_check_list=temp_slider_id_val_check_list;
+                                        //         // store the id and value in a list. 
+                                        //         $('#tablediv').empty();
+                                        //         $('#prevbtn_div').empty();
+                                        //         // store index/keynum in prev_compared_mobiles_list
+                                        //         console.log("prev_compared_mobiles_list_prev nextbefore",prev_compared_mobiles_list)
+                                        //         prev_compared_mobiles_list.push(currentKeycombination);
+                                        //         var keynum=prev_compared_mobiles_list.shift();
+                                        //         console.log("prev_compared_mobiles_list_prev nextafter",prev_compared_mobiles_list)
+                                                
+                                        //         //processMobileData func will be called. 
+                                        //         processMobileData(keynum)
+                                        // }
+                                        // else{
+                    $('#tablediv').empty();
+                    // Previous Button would be created this time as prev_compared_mobiles_list is not empty
+                    // ***Its main job is to getting the previous/last updated 
+                    // listofcombination from prev_compared_list and make table according to it.***
+                    // get the last index stored in prev_compared_mobiles_list and pass to the func->
+                    // console.log("prev_compared_mobiles_list",prev_compared_mobiles_list)
+                    // console.log("prev_compared_mobiles_list-secondl",prev_compared_mobiles_list.reverse()[1]);
+                    var keynum=prev_compared_mobiles_list.pop();
+                    // console.log("prev_compared_mobiles_list_prev after",prev_compared_mobiles_list)
+
+                    //processMobileData func will be called. 
+                    processMobileData(keynum)
+                    // 
+                    // 
+                
+                   
+                
+                
+                   
+                
+            }
 function makeTable(allmobile,keynum){
     // features=['Model','price']
     var table=document.createElement("TABLE");
@@ -774,12 +855,10 @@ function makeTable(allmobile,keynum){
       
         $(nextbutton).appendTo('#nextbtn_div');
     }
-    //Check for previous button 
-    if (prev_compared_mobiles_list.length===0){
-        // dont make the button 
-        // if button exsists then remove it. 
-        console.log("prev_compared_mobiles_list in if condition")
-        
+   
+    if (prev_compared_mobiles_list.length===0 ){
+        // console.log("prev_compared_mobiles_list.length",prev_compared_mobiles_list)
+        $('#prevbtn_div').empty(); 
     }
     else{
         var prevbutton=document.createElement('button');
@@ -827,7 +906,7 @@ function containsArray (obj1, obj2,temp_list) {
 
 function showSliderRangeVal(parent_id,value){
      //console.log('element',element.id);
-     console.log('parent id',parent_id.id);
+    
     // var objele=$(element);
     // console.log('objele',objele)
     var val=parseInt(value);
@@ -928,7 +1007,7 @@ function showchart_final(){
     options: {
         responsive: true,
         scales: {
-            yAxes: [{
+            xAxes: [{
                 ticks: {
                     beginAtZero:true,
                      max:100
