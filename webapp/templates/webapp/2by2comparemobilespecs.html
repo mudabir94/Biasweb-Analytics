@@ -5,12 +5,13 @@
 		<meta charset="utf-8" >
 		<meta name="viewport" content = "width=device-width, initial-scale=1.0">
         {% load staticfiles %}
+        
+        <!-- Google API Script -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
           <!-- Bootstrap 4 js -->
        <script type="text/javascript" src="{% static 'webapp/bootstrap-4.1.3-dist/js/bootstrap.min.js' %}" charset="utf-8"></script>
        <!-- BootStrap sytleSheet -->
        <link rel="stylesheet" href="{% static 'webapp/bootstrap-4.1.3-dist/css/bootstrap.min.css' %}" type = "text/css"/>
-        <!-- Google API Script -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <!-- Jquerry Scripts -->
         <script type="text/javascript" src="{% static 'webapp/js/jquery-ui.js' %}" charset="utf-8" ></script>
         <script type="text/javascript" src="{% static 'webapp/js/jquery.js' %}" charset="utf-8" ></script>
@@ -81,9 +82,7 @@
             <div class='row'>
                 <div class="col-md-2" style="background:black">
                     <div id="prevbtn_div"></div>
-                    
-                   
-                </div>
+              </div>
                 <div class="col-md-9">
                     <div class="row">
                         <div class="col-md-7" >
@@ -110,7 +109,10 @@
                                 </div>
                                 <div class='row'>
                                     <div class="col-md-12">
-                                        <button onclick="showCritTable(this)">Show Weights</button>
+                                    <button onclick="showCritTable(this)" 
+                                        style="border: transparent;color: white;background: brown;">
+                                        Show Weights
+                                    </button>
                                      
                                     </div>
                                 </div>
@@ -125,20 +127,16 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-1" style="background:hotpink">
-                    <div class="row"> <div id="nextbtn_div"></div></div>
-                   
-
-
+                <div class="col-md-1" style="background:black">
+                    <div class="row"> <div id="nextbtn_div"></div>
+                </div>
                 </div>
             </div>
         </div>
-        
     </body>
 </html>
 
 <script >
- 
    // Global variable 
    var allmobiles={}
    var prev_compared_mobiles_list=[];
@@ -150,11 +148,9 @@
    
    var crit_rank_matrix_dict={};
    var alt_rank_matrix_dict= {};
-   // HAVE TO MAKE DYNAMIC IN Future. 
-   // **
-    // var criteria_list=[ 'price_in_pkr', 'imagepath1' ];
-    var criteria_list=[];
-//    var alternatives_list=["Samsung galaxy S7", "Samsung Galaxy A3", "Samsung galaxy A5"];
+  
+   var criteria_list=[];
+   var other_criteria_list=['SIZE',"RESOLUTION"];
 
    var alternatives_list=[];
    var final_result_dict={};
@@ -224,7 +220,6 @@ $(document).ready(function(){
                 url: "{% url 'comparemobile_specs' %}",
                 success: function(data){
                     // check num of mobiles. 
-                    console.log('data',data)   
                     if (data['numofmobiles']===2){
                        allmobile=data['allmobiles'] 
                     }   
@@ -236,12 +231,12 @@ $(document).ready(function(){
                         }
                         alternatives_list=data['alternative_list'];
                         criteria_list=data['criteria_list'];
+                        // FOR OTHERS TESTING @DATE 1/JAN/2019
+                            criteria_list.push("Others")
                          // IN future also assign alternative list from data 
                          for (var i in alternatives_list){
                                 if (alternatives_list[i].length>5){
                                     var k=alternatives_list[i].split(' ');
-                                    console.log('k',k);
-                                    console.log('k[k.length-1]',k[k.length-1])
                                     // change the name of alt_labels_chart to something relate able. IN FUTURE
                                     alt_labels_chart.push(k[k.length-1]);
                                 }
@@ -255,7 +250,6 @@ $(document).ready(function(){
                             
                             for (var ct in criteria_list){
                                 init_weigts.push(0.333);
-                                console.log("criteria_list[ct][0]",criteria_list[ct][0])
                                 crit_labels.push(criteria_list[ct][0]+criteria_list[ct][1])
                             }
                             test_result_vecs['criteria']=init_weigts
@@ -272,27 +266,21 @@ $(document).ready(function(){
                             if(flag==true){
                             for (var crit in criteria_list){
                                 let alt_mat= ahpArrayHelper._setUpSquareArray(alternatives_list.length);
-                        
                                 all_rank_matrix_dict[criteria_list[crit]]=alt_mat;
                                 flag=false;
                             }
                          }
-                        console.log("all_rank_matrix_dict",all_rank_matrix_dict) 
                         crit_combs=k_combinations(criteria_list, 2);
                      // combination pairs for the comparison of alternatives. 
                         alt_combs=k_combinations(alternatives_list, 2);
-                        mobiletesting=data['allmobiles'];
-                        
-                       
+                        mobiletesting=data['allmobiles'];     
                         processMobileData(dict_lst_comb_keynum);
                         showchart_criteria();
                     }
                     // right now code only works for 3 mobiles not 2
                     // allmobile=data
                     // makeTable(allmobile)
-
                     }
-
                 }); 
    });
 
@@ -301,17 +289,13 @@ function ahptesting(){
     // for final ahp result....
     
     // console.log("test_result_vecs['criteria']22",test_result_vecs['criteria'])
-    var weights=test_result_vecs['criteria']
+    var weights=test_result_vecs['criteria'];
  
     // var weights=[0.125, 0.875];
-    console.log("weights",weights)
     var crit_dict={};
 
     for (criteria in criteria_list){
-        console.log("test_result_vecs",test_result_vecs);
 
-        console.log("test_result_vecs[criteria_list[criteria]]",test_result_vecs[criteria_list[criteria]]);
-        console.log("weights",weights)
         if (test_result_vecs[criteria_list[criteria]]==undefined){
 
             crit_dict[criteria_list[criteria]]=[0,0,0];
@@ -364,14 +348,10 @@ function ahptesting(){
             finalresult_list = product_list_main[w+1].map((a, i) => a +finalresult_list[i]);
         }
     }
-    console.log('final',finalresult_list)
     final_result_dict['final']=finalresult_list;
     final_result_dict['criteria']=test_result_vecs['criteria'];
 }
 function myrecord(pair,score,criteria){
-   console.log(score)
-   console.log(criteria)
-   console.log( '  all_rank', all_rank_matrix_dict[criteria])
     let rankmat=    all_rank_matrix_dict[criteria];
     
     rankmat[pair[0]][pair[1]] = score;
@@ -462,7 +442,6 @@ function processMobileData(keynum){
 
         if (prev_compared_mobiles_list.length===0){
         var listofcomb=dict_contains_listofCombiations[keynum];
-                 console.log("listofcomb",listofcomb)
                  allmobiles[listofcomb[0]]=mobiletesting[listofcomb[0]];
                  allmobiles[listofcomb[1]]=mobiletesting[listofcomb[1]];
                  makeTable(allmobiles,keynum);
@@ -495,7 +474,6 @@ function nextMobilePair(currentKeycombination){
         // }
         // else {
             var input_class=document.getElementsByClassName('slider')
-            console.log('input_class',input_class.length);
             var temp_slider_id_val_check_list=[];
             var temp_final_list=[];
             for (var i=0;i<input_class.length;i++){
@@ -511,15 +489,12 @@ function nextMobilePair(currentKeycombination){
             }
             slider_id_val_check_dict[dict_contains_listofCombiations[keynum-1]]=temp_final_list;
             temp_final_list=[]
-            console.log("slider_id_val_check_dict",slider_id_val_check_dict)
             // slider_id_val_check_list=temp_slider_id_val_check_list;
             // store the id and value in a list. 
             $('#tablediv').empty();
             $('#prevbtn_div').empty();
             // store index/keynum in prev_compared_mobiles_list
             prev_compared_mobiles_list.push(currentKeycombination);
-            console.log("prev_compared_mobiles_list",prev_compared_mobiles_list);
-            console.log("dict_contains_listofCombiations",dict_contains_listofCombiations)
             // call the processMobileData function
             // get all the slider ids from the current page and store in 
             // a list. 
@@ -541,7 +516,6 @@ function previousMobilePair(currentKeycombination){
                     keynum=currentKeycombination;
                     // get current sliders 
                         var input_class=document.getElementsByClassName('slider');
-                        console.log("input_class<--",input_class)
                         var temp_slider_id_val_check_list=[];
                         var temp_final_list=[];
                     for (var i=0;i<input_class.length;i++){
@@ -554,10 +528,8 @@ function previousMobilePair(currentKeycombination){
                     if (slider_id_val_check_dict==null){
                         slider_id_val_check_dict={};
                     }
-                    console.log("temp_final_list<--",temp_final_list)
                     slider_id_val_check_dict[dict_contains_listofCombiations[keynum]]=temp_final_list;
                     temp_final_list=[]
-                    console.log("slider_id_val_check_dict<--",slider_id_val_check_dict)
                 }
                 $('#tablediv').empty();
                         // Previous Button would be created this time as prev_compared_mobiles_list is not empty
@@ -616,7 +588,6 @@ function makeTable(allmobile,keynum){
                 var img=document.createElement('img');
                 img.setAttribute('class','img-responsive')
                 var im=allmobile[namekey][mobilespec]
-                console.log("hhbjn","/static/"+im)
                 img.src="/static/"+im;
                 img.style="height: 154px;"
                 td.append(img);
@@ -742,12 +713,9 @@ function makeTable(allmobile,keynum){
 
         var current_slider_comb=mobilename;
         current_slider_comb=current_slider_comb.join(',')
-        console.log("current_slider_comb",mbs)
-        console.log(slider_id_val_check_dict);
         var value=[1];
         if (slider_id_val_check_dict!=null){
             if (slider_id_val_check_dict[current_slider_comb]!=undefined){
-                console.log("slider_id_val_check_dict-->",slider_id_val_check_dict[current_slider_comb][mbs][1]);
                 value=[parseInt(slider_id_val_check_dict[current_slider_comb][mbs][1])];
             }
           
@@ -810,7 +778,8 @@ function makeTable(allmobile,keynum){
     if (prev_compared_mobiles_list.length===0){
         // dont make the button 
         // if button exsists then remove it. 
-        console.log("in if condition")
+        console.log("prev_compared_mobiles_list in if condition")
+        
     }
     else{
         var prevbutton=document.createElement('button');
@@ -828,16 +797,12 @@ function makeTable(allmobile,keynum){
 
 function conversionFunction(score){
     if (score<0){
-        console.log('score-left-before',score)
         var score=-(score) //+10;
-        console.log('score_left',score)
     }
     else{
         // score =-score
         // var score=score-8;
-        console.log('score_right-before',score)
         score=1/score;
-        console.log('score-right-after',score)
 
     }
     
@@ -846,8 +811,7 @@ function conversionFunction(score){
 
 // Function to check if the templist contains comparison objects array
 function containsArray (obj1, obj2,temp_list) {
-  console.log("obj1",obj1);
-  console.log("obj2",obj2);
+  
   for (key in obj1){ 
      if (JSON.stringify(obj1[key]) == JSON.stringify(obj2)){
                   var index_array=[]
@@ -868,34 +832,28 @@ function showSliderRangeVal(parent_id,value){
     // console.log('objele',objele)
     var val=parseInt(value);
     var score=val;
-    console.log('score_first',score)
 
     score=conversionFunction(score);
-    console.log('score',score);
     //console.log("parentid",objele.parent().attr('id'));
     //var parent_id=$('#'+parent_id).attr('id')//objele.parent().parent().attr('id');
     // console.log("parentid",$(element).parent().parent().attr('id'));
     // var parent_id=$(element).parent().parent().attr('id');
     var split_arr=parent_id.id.split('-');
     var criteria=split_arr[0];
-    console.log("split_arr[0]",split_arr[0])
     var rawphoneslist=split_arr[1];
     var phones=rawphoneslist.split(',');
      // each of these funcs will go to slider functions in future.... 
     
     var pair=containsArray(alt_combs,phones,alternatives_list);
-    console.log('pair========',pair)
-    console.log('criteria========',criteria)
+   
     var mat=[];
     mat=myrecord(pair,score,criteria);
     var calcResults = ahpCalc.calculateResults(mat);
-    console.log('all',all_rank_matrix_dict);
-    console.log(calcResults);
+   
     test_result_vecs[criteria]=calcResults.resultColumn;
     // test_result_vecs['criteria']=calcResults.resultColumn;
-    console.log('test_result_vecs[criteria]all',test_result_vecs[criteria]);
+  
     ahptesting();
-    console.log(criteria+'span');
     if (val<0){
         val=-val;
     }
@@ -907,6 +865,10 @@ function showSliderRangeVal(parent_id,value){
    
 }
 var myChart;
+// list for border and background colors. 
+
+var final_backg_col=[];
+var final_bor_col=[];
 function showchart_final(){
 
     var main_data={};
@@ -921,37 +883,36 @@ function showchart_final(){
     }
     var data=data_per;
     // change color. 
-    // var backg_col=[];
-    // var bor_col=[];
-    //     var red=100;
-    //     var green=255;
-    //     var blue=40;
-    //     var alpha=0.6;
-    // for (var c=0;c<alternatives_list.length;c++){
-        
-    //     var rgba='rgba('+red+','+ green+','+blue+','+ alpha+')'
-    //     red=red+50;
-    //     green=green-20;
-    //     blue=blue+50;
-    //     backg_col.push(rgba)
-    //     bor_col.push(rgba)
-    // }
-    var backgroundColor=[ 'rgba(255, 99, 132, 0.6)','rgba(54, 162, 235, 0.6)','rgba(255, 206, 86, 0.6)',]
-    var borderColor=['rgba(255,99,132,1)','rgba(54, 162, 235, 1)','rgba(255, 206, 86, 1)',]
+    if (final_backg_col.length===0 && final_bor_col.length===0){
+        var red = Math.floor(Math.random() * 255);
+        var green = Math.floor(Math.random() * 255);
+        var blue = Math.floor(Math.random() * 255);
+        var alpha=0.8;
+        for (var c=1;c<criteria_list.length+1;c++){
+            
+            var rgba='rgba('+red+','+ green+','+blue+','+ alpha+')'
+            var red = Math.floor(Math.random() * 255);
+            var green = Math.floor(Math.random() * 255);
+            var blue = Math.floor(Math.random() * 255);
+            final_backg_col.push(rgba)
+            final_bor_col.push(rgba)
+            }
+    }
+    // var backgroundColor=[ 'rgba(255, 99, 132, 0.6)','rgba(54, 162, 235, 0.6)','rgba(255, 206, 86, 0.6)',]
+    // var borderColor=['rgba(255,99,132,1)','rgba(54, 162, 235, 1)','rgba(255, 206, 86, 1)',]
     // var backgroundColor=backg_col;
     // var borderColor=bor_col;
     var borderWidth=0.5;
 
     dataset_dic['label']=label;
     dataset_dic['data']=data;
-    dataset_dic['backgroundColor']=backgroundColor;
-    dataset_dic['borderColor']=borderColor;
+    dataset_dic['backgroundColor']=final_backg_col;
+    dataset_dic['borderColor']=final_bor_col;
     dataset_dic['borderWidth']=borderWidth;
     dataset.push(dataset_dic);
     main_data['labels']=labels;
     main_data['datasets']=dataset;
-    console.log(main_data);
-    console.log(crit_combs)
+  
     if(myChart)
     {
         myChart.destroy();
@@ -960,56 +921,95 @@ function showchart_final(){
     
     
      myChart = new Chart(canvas, {
-    type: 'pie',
+    type: 'horizontalBar',
     
     data: main_data,
     showTooltips: true,
-    // options: {
-    //     scales: {
-    //         yAxes: [{
-    //             ticks: {
-    //                 beginAtZero:true,
-    //                  max:100
-    //             }
-    //         }]
-    //     }
-    // }
+    options: {
+        responsive: true,
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true,
+                     max:100
+                }
+            }]
+        },
+        legend: {
+            display: true,
+            labels: {
+                fontColor: 'rgb(255, 99, 132)',
+                fontSize:13,
+                fontFamily:'sans-serif', 
+                padding:5,
+                boxWidth:20
+            }
+        }
+    }
 });
 
 }
 var myChart_crit;
+// list for border and background colors. 
+var crit_backg_col=[];
+var crit_bor_col=[];
 function showchart_criteria(){
     var main_data={};
     var dataset=[];
     var dataset_dic={};
     var label='Criteria';
     var data_per=[];
-    console.log("final_result_dicta--q-w",final_result_dict['criteria'])
     for (var t in final_result_dict['criteria']){
        
         data_per.push( 100* final_result_dict['criteria'][t])
     }
     var data=data_per;
-    var backg_col=[];
-    var bor_col=[];
-        var red=100;
-        var green=255;
-        var blue=40;
-        var alpha=0.6;
-    for (var c=0;c<criteria_list.length;c++){
+   
+    
+    // if (Object.keys(colpallete).length !== 0){
+    //     console.log("COLP",colpallete)
+    //     alert("Not Empty")
+    // }
+    // #@TODO: Color Pallete, distinct colors..
+    if (crit_backg_col.length===0 && crit_bor_col.length===0){
+        var red = Math.floor(Math.random() * 255);
+        var green = Math.floor(Math.random() * 255);
+        var blue = Math.floor(Math.random() * 255);
+    
+        // var colorlist=[];
+        // colorlist.push(red);colorlist.push(green);colorlist.push(blue);
         
-        var rgba='rgba('+red+','+ green+','+blue+','+ alpha+')'
-        red=red+50;
-        green=green-20;
-        blue=blue+50;
-        backg_col.push(rgba)
-        bor_col.push(rgba)
+        // colpallete[0]=colorlist;
+        
+        // colorlist=[];
+            // var red=100;
+            // var green=255;
+            // var blue=40;
+        var alpha=1;
+        for (var c=1;c<criteria_list.length+1;c++){
+            
+            var rgba='rgba('+red+','+ green+','+blue+','+ alpha+')'
+            var red = Math.floor(Math.random() * 255);
+            var green = Math.floor(Math.random() * 255);
+            var blue = Math.floor(Math.random() * 255);
+            // colorlist.push(red);colorlist.push(green);colorlist.push(blue);
+            // colpallete[c]=colorlist;
+            // colorlist=[];
+
+            // red=red+50;
+            // green=green-20;
+            // blue=blue+50;
+            crit_backg_col.push(rgba)
+            crit_bor_col.push(rgba)
+            }
     }
+    
+    // console.log("Colpallete1",colpallete)
     // console.log(backg_col)
     // var backgroundColor=[ 'rgba(255, 99, 132, 0.2)','rgba(54, 162, 235, 0.2)','rgba(255, 206, 86, 0.2)','rgba(255, 100, 86, 0.2)']
     // var borderColor=['rgba(255,99,132,1)','rgba(54, 162, 235, 1)','rgba(255, 206, 86, 1)','rgba(255, 100, 86, 0.2)']
-    var backgroundColor=backg_col;
-    var borderColor=bor_col;
+    var backgroundColor=crit_backg_col;
+    var borderColor=crit_bor_col;
     var borderWidth=0.5;
 
     dataset_dic['label']=label;
@@ -1021,10 +1021,13 @@ function showchart_criteria(){
     // convert labels into dynamic list. 
     // get first ele of crit from criteria list. 
 
-    // main_data['labels']=['M','P','C','Cp','OS'];
-    main_data['labels']=crit_labels
+     main_data['labels']=['Model','Price',"Resolution","Others"]
+    //  'Back_Camera',"Resolution",
+    //  "battery","price_in_usd",'Others',
+    //  "rating","Weight","Gpu","Dimensions","Cpu"];
+    // main_data['labels']=crit_labels
     main_data['datasets']=dataset;
-    console.log("main_data",main_data);
+    
     if(myChart_crit)
     {
         myChart_crit.destroy();
@@ -1032,19 +1035,34 @@ function showchart_criteria(){
 
     var canvas_crit=document.getElementById('bar_chart_criteria').getContext('2d');
     myChart_crit = new Chart(canvas_crit, {
-    type: 'horizontalBar',
+    type: 'pie',
     showTooltips: false,
     data: main_data,
     
     options: {
-        scales: {
-            xAxes: [{
-                ticks: {
-                    beginAtZero:true,
-                    max: 100
-                }
-            }]
+        responsive: true,
+        // scales: {
+        //     yAxes: [{
+        //         ticks: {
+        //             beginAtZero:true,
+        //             // max: 100
+        //         }
+        //     }]
+        // },
+        legend: {
+            display: true,
+            position:'left',
+            labels: {
+                fontColor: 'rgb(255, 99, 132)',
+                fontSize:16,
+                fontFamily:'sans-serif', 
+                padding:5,
+                boxWidth:20
+                
+                
+            }
         }
+        
     }
 });
 }
@@ -1069,7 +1087,6 @@ $('#crittable_div').dialog({
       click: function() {
            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
             var input_class=document.getElementsByClassName('slider2')
-            console.log('input_class',input_class.length);
             var temp_slider_id_val_check_list=[];
             var temp_final_list=[];
             for (var i=0;i<input_class.length;i++){
@@ -1080,7 +1097,6 @@ $('#crittable_div').dialog({
               
                  temp_slider_id_val_check_list=[];
             }
-            console.log("temp_final_list<-->",temp_final_list)
             if (crit_val_check_dict==null){
                 crit_val_check_dict={};
             }
@@ -1089,7 +1105,6 @@ $('#crittable_div').dialog({
                 crit_val_check_dict[temp_final_list[i][0]]=temp_final_list[i][1];
                 
             }
-            console.log("crit_val_check_dict_ok",crit_val_check_dict)
             temp_final_list=[]
 
         
@@ -1114,7 +1129,6 @@ $('#crittable_div').dialog("open"); // Open popup
 var div = document.createElement('div');
 div.setAttribute('class','row');
 for (var i=0;i<crit_combs.length;i++){
-    console.log("crit_comb",crit_combs[i])
     var comb_div=document.createElement('DIV');
     comb_div.setAttribute('class','col-md-12');
                 var p_row_div=document.createElement('DIV');
@@ -1154,12 +1168,10 @@ for (var i=0;i<crit_combs.length;i++){
     $('#crittable_div').append(div);
     
     var dict_key_join=crit_combs[i].join(',');
-    console.log("<--",crit_val_check_dict)
         // check if the crit_check_dict contains the value for the crit combinations if so, then replace the value... 
     var value=[1];
     if (crit_val_check_dict[dict_key_join]!=undefined){
         // crit_val_check_dict[crit_combs[i]][i][0]
-        console.log("crit_val_check_dict[dict_key_join]",crit_val_check_dict[dict_key_join]);
         value=[parseInt(crit_val_check_dict[dict_key_join])]
     }
 var slider = new rSlider({
@@ -1172,17 +1184,14 @@ var slider = new rSlider({
                     tooltip:false,
                     onChange: function (event) {
                         // showSliderRangeVal_crit()
-                        console.log(this.target)
                         var split_arr_critcomb=this.target.split('-');
                         var comb_tob_tested=split_arr_critcomb[0].split(',');
                         var pair2=containsArray(crit_combs,comb_tob_tested,criteria_list);
-                        console.log("pair2",pair2);
                         score=conversionFunction(event);
                         
                          if (event<0){
                             event=-event;
                         }
-                        console.log(split_arr_critcomb[0])
                         document.getElementById(split_arr_critcomb[0]+'-span').innerHTML=event;
                         var mat=[];
                         mat=myrecord(pair2,score,'criteria');

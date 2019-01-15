@@ -78,7 +78,7 @@ def priceRangeRetrieve(request):
             }
             return JsonResponse(data)
             
-
+@method_decorator(login_required, name='dispatch')
 
 class Home(TemplateView):
     template_name='webapp/home.html'
@@ -182,7 +182,7 @@ def storeSelectedAdminPhones(request):
 
            
             userobj=User.objects.get(pk=request.user.id)
-            expobj=exp.objects.get(pk=175)
+            expobj=exp.objects.get(pk=11)
             smgphone=samsung_phone.objects.get(pk=mobiledata_json)
             selphones=selectedAdminPhones(user=userobj,exp=expobj,mob=smgphone)
             selphones.save()
@@ -236,8 +236,10 @@ def compareMobileSpecs(request):
             allmobile={}
             # 
             alternative_list=[]
-            criteria_list=['imagepath1','price_in_pkr',"Chip"]
-            # "Cpu","OS",
+            criteria_list=['imagepath1','price_in_pkr',"Resolution"]
+            # "back_camera","Resolution","battery","price_in_usd",
+            # "rating","Weight","Gpu","Dimensions","Cpu"]
+             
             # "battery","back_camera",
             # "Resolution"]
             #@TODO: Create test for feature level if c.pruned. Then add other to the criteria list. 
@@ -256,6 +258,9 @@ def compareMobileSpecs(request):
                 for crit in criteria_list:
                     print(crit)
                     mobile[crit]=getattr(m, crit)
+                mobile['Others']=m.Mobile_Name
+
+
                 # mobile['imagepath1']=getattr(m,criteria_list[0])
                 # mobile['price_in_pkr']=getattr(m,criteria_list[1])
                
@@ -412,17 +417,48 @@ def globalFunc(request):
     
 
 def adminSetup(request):
-    global  role
+    # global  role
     
-    feat=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role).order_by('position')
-    ft=sort_feature.objects.filter(Q(sh_hd = 0),roles=role).order_by('position')
     colors=['black','white','gold']
     size=['0','1','3','4','4.1','4.2','4.3','4.4','4.5','4.6','4.7','4.8','4.9','5','5.1','5.2','5.3','5.4','5.5','5.6','5.7','5.8','5.9','6','6.1','6.2','6.3','6.4','6.5','6.6','6.7','6.8','6.9','7']
     role_name=['']
-    if role==1:
-       role_name=['Student']
-    elif role==2:
-        role_name=['Professor']
+    print(request.user.id)
+    userobj=User.objects.get(pk=request.user.id)
+    print("user object",userobj.role_id_id)
+    role_id=userobj.role_id_id
+    roleobj=Role.objects.get(pk=role_id)
+    role=roleobj.role_name
+    print(role)
+
+    if role=='Super_Admin':
+        print("role",role)
+        
+        feat=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role_id).order_by('position')
+        ft=sort_feature.objects.filter(Q(sh_hd = 0),roles=role_id).order_by('position')    
+      
+    elif role=='Experiment_Admin':
+        print('herereerer')
+        feat=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role).order_by('position')
+        ft=sort_feature.objects.filter(Q(sh_hd = 0),roles=role).order_by('position')    
+        # roleobj=Role.objects.get(pk=role)
+        # role_name=roleobj.role_name
+        # print(role_name)
+        
+    elif role=='Platform_Admin':
+        feat=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role).order_by('position')
+        ft=sort_feature.objects.filter(Q(sh_hd = 0),roles=role).order_by('position')    
+
+        roleobj=Role.objects.get(pk=role)
+        role_name=roleobj.role_name
+        print(role_name)
+        
+
+    #*****************************************************
+
+    # if role==1:
+    #    role_name=['Student']
+    # elif role==2:
+    #     role_name=['Professor']
     return render(request, 'webapp/admin_setup.html',{'feat':feat,'colors':colors,'role_name':role_name,'size':size,'ft':ft})
     '''
     if request.user.is_authenticated:
@@ -1173,7 +1209,7 @@ def assignToBlocks(request):
             print(blocksBreakUp.index)
             #blocksBreakUp=blocksBreakUp[['A','B']]
             blocksBreakUp = blocksBreakUp.to_json(orient='index')#to_html(table_id="blocksBreakUp") #
-            print(blocksBreakUp)
+            print("blocksBreakUp",blocksBreakUp)
         else:
             blocksBreakUp = "Empty"
 
@@ -1251,7 +1287,8 @@ class createExperiment(TemplateView):
             price_range_values = json.loads(price_range_values)
             print('price_range_values1',price_range_values[0])
             print('price_range_values2',price_range_values[1])
-            mobiles_retrieved=samsung_phone.objects.filter(price_in_pkr__range=(price_range_values[0], price_range_values[1]))
+            # mobiles_retrieved=samsung_phone.objects.filter(price_in_pkr__range=(price_range_values[0], price_range_values[1]))
+            mobiles_retrieved=phone.objects.filter(price_in_pkr__range=(price_range_values[0], price_range_values[1]))
             # else: 
             #     mobiles_retrieved=samsung_phone.objects.filter(price_in_pkr__range=(10000, 30000))
 

@@ -383,19 +383,19 @@ role_data=$('#roles option:selected').val()
 console.log(typeof role_data ); 
 a =JSON.stringify(role_data);
 
-$.ajax({
-       type: 'POST',
-       dataType: "json",
-       'data': {
-       'd': a,
-       'csrfmiddlewaretoken': '{{ csrf_token }}',
-        },
-       url: "{% url 'gf' %}",
-       success: function(response){
-           console.log("success");
-       }
-   });
-      location.reload().delay(800);
+// $.ajax({
+//        type: 'POST',
+//        dataType: "json",
+//        'data': {
+//        'd': a,
+//        'csrfmiddlewaretoken': '{{ csrf_token }}',
+//         },
+//        url: "{% url 'gf' %}",
+//        success: function(response){
+//            console.log("success");
+//        }
+//    });
+//       location.reload().delay(800);
  
  });
 function myFunction(id) {
@@ -513,19 +513,19 @@ function myFunc(id) {
            role_data=$('#roles option:selected').val()
            console.log(typeof role_data ); 
            JSON.stringify(role_data)
-           $.ajax({
-            type: 'POST',
-            dataType: "json",
-            'data': {
-            'd': JSON.stringify(role_data),
-            'csrfmiddlewaretoken': '{{ csrf_token }}',
-            },
-            url: "{% url 'gf' %}",
-            success: function(response){
+        //    $.ajax({
+        //     type: 'POST',
+        //     dataType: "json",
+        //     'data': {
+        //     'd': JSON.stringify(role_data),
+        //     'csrfmiddlewaretoken': '{{ csrf_token }}',
+        //     },
+        //     url: "{% url 'gf' %}",
+        //     success: function(response){
                 
-            console.log("success");
-            }
-        });
+        //     console.log("success");
+        //     }
+        // });
       
        $('ul').sortable({
         axis: 'y',
