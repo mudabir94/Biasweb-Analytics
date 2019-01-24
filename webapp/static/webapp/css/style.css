@@ -186,12 +186,13 @@ button.social-signin.google {
 }
 .custom_nav_btn{
   width:100%;
-  background:lightgreen;
+  background:lightskyblue;
   border: none;
-  box-shadow: 0 0 0.5px 0.5px  green;
+  box-shadow: 0 0 0.5px 0.5px  lightskyblue;
 }
 .active{
-  background:green;
+  background:white;
+  box-shadow: 0 0 0.5px 0.5px #ea0000;
 }
 .barbutton{
   

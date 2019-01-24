@@ -279,6 +279,7 @@ def compareMobileSpecs(request):
                 # print(allmobile)
                 numofmobiles=len(allmobile)
                 mobile={}
+                print("alternative_list",alternative_list)
                 # features=['price','resolution','size']
                 data={
                     'allmobiles':allmobile,
@@ -1304,7 +1305,7 @@ class createExperiment(TemplateView):
             print('price_range_values1',price_range_values[0])
             print('price_range_values2',price_range_values[1])
             # mobiles_retrieved=samsung_phone.objects.filter(price_in_pkr__range=(price_range_values[0], price_range_values[1]))
-            mobiles_retrieved=mobilephones.objects.filter(price_in_pkr__range=(price_range_values[0], price_range_values[1]))
+            mobiles_retrieved=mobilephones.objects.filter(price_in_pkr__range=(price_range_values[0], price_range_values[1])).order_by('price_in_pkr') 
             # else: 
             #     mobiles_retrieved=samsung_phone.objects.filter(price_in_pkr__range=(10000, 30000))
 

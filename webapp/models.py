@@ -286,4 +286,4 @@ class userroles(models.Model):
 class selectedAdminPhones(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     exp = models.ForeignKey(experiment, on_delete=models.CASCADE)
-    mob = models.ForeignKey(samsung_phone, on_delete=models.CASCADE)
+    mob = models.ForeignKey(mobilephones, on_delete=models.CASCADE)
