@@ -129,7 +129,7 @@
                                 
                                     </div>
                                 <br>
-                                    <!-- <div class='row'>
+                                    <div class='row'>
                                         <div class='col-md-2'>
                                             <label>Import Excel File</label>
                                         </div>
@@ -142,7 +142,7 @@
 
                                        
                                        
-                                    </div> -->
+                                    </div>
                                 </div>
                             <hr />
                             <!--SET COLUMN LABELS SELECTORS-->
@@ -359,7 +359,7 @@
                         </div>
                     </div>
             </div>
-               
+          
                 <br>
             <!--MY OUTPUT DIV ROW DIV-->
             <div class='row-fluid' id='blkoutputsDiv' style='background:rgb(252, 227, 8)'>  
@@ -456,12 +456,12 @@
         <!-- <div class="col-sm-1 sidenav" style='background:yellow'>side bar</div>    -->
     </div>
 </div>
-      <!-- <footer>
+      <footer>
 		
           <div class="container-fluid" style='margin-left:15px'>
               <p><a href="#" target="blank">Contact</a> | <a href="#" target="blank">LinkedIn1</a> | <a href="#" target="blank">Twitter</a> | <a href="#" target="blank">Google+</a></p>
           </div>
-     </footer>	 -->
+     </footer>	
 
 
 
@@ -480,6 +480,7 @@ var globalfiledatalist=[];
 var exp_id = '{{sess_expId}}';
 var custom_exp_id='{{sess_custExpId}}';
 var block_list = [];
+// for csv file uploading. 
 var global_rows=[];
 
 // var header = document.getElementById("custom_nav_div");
@@ -858,26 +859,83 @@ function ProcessExcel(data) {
         var firstSheet = workbook.SheetNames[0];
  
         //Read all rows from First Sheet into an JSON array.
-        // var excelRows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[firstSheet]);
+        //  var excelRows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[firstSheet]);
         var excelRows = XLSX.utils.sheet_to_csv(workbook.Sheets[firstSheet]);
+        excelRows=excelRows.split("\n");
+        var filedatalist=[]
+
+        for (var row in excelRows){
+                        if (excelRows[row]==''){
+                            console.log("excelRows[row]",excelRows[row])
+                            excelRows.splice(row, 1)
+                        }else{
+                        filedatalist.push(excelRows[row]);
+                        }
+                    }
+       global_rows=excelRows
        console.log('excel rows',excelRows)
-       console.log('excel row type',typeof(excelRows))
+       setFileDataList(filedatalist);
+             
+       showFileDataTable(excelRows)
+       console.log('header',excelRows[0]);
+       header=excelRows[0];
+       header=header.split(',');
+       console.log('header',header[0]);
+       console.log('header',typeof(header));
+       $('#excelFileUpload').prop('value', 'Uploaded');
+                        
+       $('#excelFileUpload').prop('disabled',true);
+       var select_tag1 = $('<select id="s1"/>');
+                        $('<option />', {value: "", text:"None"}).appendTo(select_tag1);
+                        for(var col in header) {
+
+                            $('<option />', {value: col, text: header[col]}).appendTo(select_tag1);
+                        }
+                        //DEFAULT FOR TESTING
+                        select_tag1.val('0');
+                        var select_tag2 = $('<select id="s2" />');
+                        $('<option />', {value: "", text:"None"}).appendTo(select_tag2);
+                        for(var col in header) {
+                            $('<option />', {value: col, text: header[col]}).appendTo(select_tag2);
+                        }
+                        var select_tag3 = $('<select id="s3" onchange="onS3Select(this)"/>');
+                        $('<option />', {value: "", text:"None"}).appendTo(select_tag3);
+                        for(var col in header) {
+                            $('<option />', {value: col, text: header[col]}).appendTo(select_tag3);
+                        }
+                        //DEFAULT FOR TESTING
+                        select_tag3.val('1');
+                        $('#show_s1').append(select_tag1);
+                        $('#show_s2').append(select_tag2);
+                        $('#show_s3').append(select_tag3);
+                        var proceedbtn= document.createElement("BUTTON");
+                        proceedbtn.setAttribute("style","background: #1f8c6e;box-shadow: 0 0 0.5px 0.5px #1f8c6e;border: none;")
+                        var proceedStr="Process Import"
+                        var text = document.createTextNode(proceedStr);
+                        proceedText = proceedbtn.appendChild(text)
+                        proceedbtn.onclick = function() {postExpData()};
+                       // proceedbtn.classList.add("");
+
+                        $('#proceedbtndiv').append(proceedbtn)
+                        $('.map_select_label').show();
+                        $('.show_select_tag').show();
         //Add the data rows from Excel file.
 
-        $.ajax({
-        type: 'POST',
-        dataType: "json",
-        'data': {
-            'excel_data':JSON.stringify(excelRows),
-            'csrfmiddlewaretoken': '{{ csrf_token }}',
-        },
-        // the ajax call is sent to subdetails url name in the post function.  
-        url: "{% url 'import_excel' %}",
-        success: function(data){
-          
-        }
+        // $.ajax({
+        // type: 'POST',
+        // dataType: "json",
+        // 'data': {
+        //     'excel_data':JSON.stringify(excelRows),
+        //     'csrfmiddlewaretoken': '{{ csrf_token }}',
+        // },
+        // // the ajax call is sent to subdetails url name in the post function.  
+        // url: "{% url 'import_excel' %}",
+        // success: function(data){
+        //   console.log("DATA");
+        //   console.log(data);
+        // }
                      
-    }); 
+    // }); 
  
        
 };
@@ -1064,7 +1122,6 @@ function saveExperiment(){
 $(function () {
     $("#upload").bind("click", function () {
         var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.csv)$/;
-
         if (regex.test($("#fileUpload").val().toLowerCase())) {
             if (typeof (FileReader) != "undefined") {
                     var reader = new FileReader();
@@ -1079,6 +1136,7 @@ $(function () {
                     /// check filedata for empty rows 
                     for (var row in rows){
                         if (rows[row]==''){
+                            console.log("rows[row]",rows[row])
                             rows.splice(row, 1)
                         }else{
                         filedatalist.push(rows[row]);
@@ -1087,6 +1145,7 @@ $(function () {
                     console.log('filedatalist',filedatalist);
 
                     setFileDataList(filedatalist);
+                    console.log('rows>>',rows);
                     console.log('rows type',typeof(rows));
                     showFileDataTable(rows);
 
@@ -1315,6 +1374,7 @@ function assignToBlocks(){
         // the ajax call is sent to subdetails url name in the post function.  
         url: "{% url 'assign_blocks' %}",
         success: function(data){
+            
             console.log("<<---RECEIVED ASSIGN TO BLOCK POST RETURN--->>");
             console.log(data)
             // for(var i in data){
@@ -1332,10 +1392,11 @@ function assignToBlocks(){
             console.log(block_table_extended.tBodies[0].rows.length)
             var block_table_extended_tbody=block_table_extended.tBodies[0];
             var   block_table_extended_tbody_row_length=  block_table_extended.tBodies[0].rows.length;
+            
             const keys = Object.keys(blocks)
             console.log(keys);
-            console.log(block_table_extended_tbody_row_length);
-           
+            console.log("block_table_extended_tbody_row_length",block_table_extended_tbody_row_length);
+            if (block_table_extended.tBodies[0].rows[block_table_extended.tBodies[0].rows.length-1].cells[1].innerHTML!="Batch Totals"){
              var col_list=[]; 
              for (var i=0;i<block_table_extended_tbody_row_length;i++)
              {
@@ -1360,26 +1421,38 @@ function assignToBlocks(){
                  }
 
             }
+
+            console.log('block_table_extended',block_table_extended.tBodies[0].rows[block_table_extended.tBodies[0].rows.length-1].cells[1].innerHTML);
+           
+                    var newRow   = block_table_extended_tbody.insertRow(block_table_extended_tbody_row_length);
+                    var newCell  = newRow.insertCell(0);
+                    newCell.innerHTML='';
+                    var newCell  = newRow.insertCell(1);
+                    newCell.innerHTML='Batch Totals';
+                    for (var cells in blocks['Total']){
+                        var newCell  = newRow.insertCell(-1);
+                        newCell.innerHTML= blocks['Total'][cells];
+                    }
+                    // $('#blocks_table').DataTable({"pageLength": 5 });
+                    // $('#blocks_table').appendTo('#blocksBreakUpDiv')
+                    $('#blocksBreakUpDiv').append('#blocks_table');
+                    // $("#block_assign_row_div").hide();
+                    if(data['blocks']!=="Empty"){
+                        alert('Blocks Created in Feature LEVELS')
+                        
+                    } else {
+                        alert('PLEASE IMPORT SUBJECTS FIRST')
+                    }
+            }
+            showFeatureLvls();
+            var bllmng=document.getElementById('blkmng');
+            var ftlvl=document.getElementById('ftlvl');
+
+            bllmng.setAttribute("class","custom_nav_btn")
+            ftlvl.setAttribute("class","custom_nav_btn active")
+            console.log("block_table_extended_tbody_row_length", block_table_extended.tBodies[0].rows.length);
+
             
-            var newRow   = block_table_extended_tbody.insertRow(block_table_extended_tbody_row_length);
-            var newCell  = newRow.insertCell(0);
-            newCell.innerHTML='';
-            var newCell  = newRow.insertCell(1);
-            newCell.innerHTML='Batch Totals';
-            for (var cells in blocks['Total']){
-                var newCell  = newRow.insertCell(-1);
-                 newCell.innerHTML= blocks['Total'][cells];
-            }
-            // $('#blocks_table').DataTable({"pageLength": 5 });
-            // $('#blocks_table').appendTo('#blocksBreakUpDiv')
-            $('#blocksBreakUpDiv').append('#blocks_table');
-            $("#block_assign_row_div").hide();
-            if(data['blocks']!=="Empty"){
-                alert('Blocks Created in Feature LEVELS')
-                 
-            } else {
-                alert('PLEASE IMPORT SUBJECTS FIRST')
-            }
         }
                      
     }); 
@@ -2013,7 +2086,12 @@ function getFileDataList(){
 
 function refreshFileDataList (){
 var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.csv|.txt)$/;
+var regex_xl = /^([a-zA-Z0-9\s_\\.\-:])+(.xls|.xlsx)$/;
+var fileUpload = $("#excelFile")[0];
+console.log("csv regex",regex.test($("#fileUpload").val().toLowerCase()))
+console.log("xl regex",regex_xl.test(fileUpload.value.toLowerCase()))
 
+// if (regex.test(fileUpload.value.toLowerCase())) {
 if (regex.test($("#fileUpload").val().toLowerCase())) {
     
     if (typeof (FileReader) != "undefined") {
@@ -2039,8 +2117,45 @@ if (regex.test($("#fileUpload").val().toLowerCase())) {
         alert("This browser does not support HTML5.");
     }
 } 
+else if (regex_xl.test(fileUpload.value.toLowerCase())){
+    if (typeof (FileReader) != "undefined") {
+         var reader = new FileReader();
+        reader.onload = function (e) {
+                  //Read the Excel File data.
+        var workbook = XLSX.read(e, {
+            type: 'binary'
+        });
+ 
+        //Fetch the name of First Sheet.
+        var firstSheet = workbook.SheetNames[0];
+ 
+        //Read all rows from First Sheet into an JSON array.
+        //  var excelRows = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[firstSheet]);
+        var excelRows = XLSX.utils.sheet_to_csv(workbook.Sheets[firstSheet]);
+        excelRows=excelRows.split("\n");
+        var filedatalist=[]
+
+        for (var row in excelRows){
+                        if (excelRows[row]==''){
+                            console.log("excelRows[row]",excelRows[row])
+                            excelRows.splice(row, 1)
+                        }else{
+                        filedatalist.push(excelRows[row]);
+                        }
+                    }
+      
+        window.row_filedata=excelRows;            
+       setFileDataList(filedatalist);
+                 
+            };
+             reader.readAsBinaryString(fileUpload.files[0]);
+         
+     } else {
+         alert("This browser does not support HTML5.");
+     }
+}
 else {
-    alert("Please upload a valid CSV file.");
+    alert("Please upload a valid file.");
 }
 
 }

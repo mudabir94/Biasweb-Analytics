@@ -102,8 +102,8 @@ class Home(TemplateView):
 
         if role=='Super_Admin':
             
-            # template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
-             return render(request,'webapp/2by2comparemobilespecs.html')
+            template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
+            # return render(request,'webapp/2by2comparemobilespecs.html')
             # return render(request,template_sidebar)
         elif role=='Experiment_Admin':
             # roleobj=Role.objects.get(pk=role)
@@ -116,6 +116,10 @@ class Home(TemplateView):
             role_name=roleobj.role_name
             print(role_name)
             template_sidebar='webapp/sidebartemplates/sidebartemp_pltfadm.html'
+        elif role=='Subject':
+            # all other conditions of subjects will be done here. 
+            
+             return render(request,'webapp/2by2comparemobilespecs.html')
 
         #*****************************************************
 
@@ -994,7 +998,7 @@ def uploadSampleFile(request):
                 print('arr_filebody')
                 print(arr_filebody)
                 dataframe= pd.DataFrame.from_records(arr_filebody,columns=filefields)
-                print('dataframe')
+                # print('dataframe')
                 print(dataframe.head())
                 expCont.subjData=dataframe
                 
@@ -1117,7 +1121,7 @@ def getExpController(request):
         print(list(expCont.exp.experiment_feature_set.all()))
         try:
             print('in try pickle expCont')
-            pickledExpCont = pickle.load( open("expCont2.p", "rb") )
+            pickledExpCont = pickle.load( open("expCont4.p", "rb") )
             print('pickledExpCont.subjData')
             print(pickledExpCont.subjData)
         except:
@@ -1147,12 +1151,12 @@ def getExpController(request):
     return expCont
 
 def pickleExpController(expCont):
-    pickle.dump(expCont, open('expCont2.p','wb'))
+    pickle.dump(expCont, open('expCont4.p','wb'))
 
 def getSavedSubjectDataExpCont(request):
     if request.method == 'POST':
         if request.is_ajax:
-            pickleExpCont=pickle.load( open("expCont2.p", "rb") )
+            pickleExpCont=pickle.load( open("expCont4.p", "rb") )
             subject_data=pickleExpCont.subjData
             subject_data=subject_data.to_dict()
             data={
@@ -1237,12 +1241,12 @@ def assignToBlocks(request):
         return JsonResponse(data, safe=False)
 def removeSessionObj(request):
     try:
-        filepath = Path("E:/bias/expCont2.p")
+        filepath = Path("C:/biasweb/expCont4.p")
     except FileNotFoundError:
         filepath=None
     else:
         if filepath.exists():
-            os.remove('E:/bias/expCont2.p')
+            os.remove('C:/biasweb/expCont4.p')
         if request.session['sess_expId']:
             del request.session['sess_expId']
         return HttpResponse()
@@ -1261,7 +1265,7 @@ def importExcel(request):
             df = pd.read_csv(StringIO(json_data))
             print(df)
             data={
-                'data':'success'
+                'data':df
             }
             
     return HttpResponse()
@@ -1284,8 +1288,8 @@ def saveExperiment(request):
 class createExperiment(TemplateView): 
     template_name='webapp/crudexperiment/create_experiment.html'
     
-    def get(self,request):       
-        # removeSessionObj(request)
+    def get(self,request):  
+      
         platformfeatobj=platform_feature.objects.all()
         userobj=User.objects.get(pk=request.user.id)
         role=userobj.role_id_id
