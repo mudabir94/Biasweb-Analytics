@@ -313,7 +313,7 @@ def compareMobileSpecs(request):
         'mobiles':mobiles,
         's':sizeofmob
         })
-def ind(request):
+def updateFeaturePosition(request):
    
     if request.is_ajax:
        # print("ajax",request.POST.get('data'))
@@ -328,11 +328,16 @@ def ind(request):
             print(key)
             k=str(int(key)+1)
             print ("test", value,k)
+            sort_feature_selected_obj=sort_feature.objects.get(feature=value,roles=1)
+            sort_feature_selected_obj.position=count
+            sort_feature_selected_obj.save()
             
-            with connection.cursor() as cursor:
-                cursor.execute("UPDATE webapp_sort_feature SET position="+str(count)+" WHERE feature='"+value+"' and roles="+str(role)+";") 
-                print("executed") 
+        #     with connection.cursor() as cursor:
+        #         cursor.execute("UPDATE webapp_sort_feature SET position="+str(count)+" WHERE feature='"+value+"' and roles="+str(role)+";") 
+        #         print("executed") 
             count=count+1
+
+        # not in use
         # UPDATE [Table] SET [Position] = $i WHERE [EntityId] = $value 
         
         #print ("test", d['color'])
@@ -341,7 +346,7 @@ def ind(request):
 
 
 
-def test(request):
+def hideFeature(request):
    
     if request.is_ajax:
        # print("ajax",request.POST.get('data'))
@@ -371,8 +376,8 @@ def test(request):
         #print ("test", d['color'])
         return render(request, 'webapp/admin_setup.html')
     
-def on(request):
-   
+def showFeature(request):
+    print("showFeature")
     if request.is_ajax:
        # print("ajax",request.POST.get('data'))
         ####print("PST",request.POST.get('d')) 
@@ -411,14 +416,9 @@ def globalFunc(request):
        ### print('JSONLOADS',eval(d))
         b = json.loads(d)
 
-        print("in func",b)
-        print(type(b))
-        
-        a=int(b)
-        print(int(b))
-        print(type(a))
-        global  role
-        role=a
+        # print("in func",b)
+        # print(type(b))
+    
 
         
 
@@ -427,10 +427,6 @@ def globalFunc(request):
         #print ("test", d['color'])
           
         return render(request, 'webapp/admin_setup.html')
-
-        
-
-        
     
 feature_to_display=''
 feature_to_hide=''
@@ -482,7 +478,7 @@ class adminSetup(TemplateView):
                 roleobj=Role.objects.get(pk=role)
                 role_name=roleobj.role_name
                 print(role_name)
-            return render(request, 'webapp/admin_setup.html',{'role_name':role,'feature_to_display':feature_to_display,'feature_to_hide':feature_to_hide})
+            return render(request, 'webapp/admin_setup.html',{'role_name':'role','feature_to_display':feature_to_display,'feature_to_hide':feature_to_hide})
 
             
     def post(self,request):

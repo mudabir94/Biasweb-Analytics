@@ -46,12 +46,12 @@
                 </select>
                 <input type="hidden" value="" id="role_value" name="role_value"/>
               
-            <div class="container latest-product-section"> 
+            <div class="container latest-product-section" id="product-section"> 
                 
                     <p>Role :  Exp1 </p>   
-                    <div id="display_feature_div"></div>
+                    <div id="display_feature_div"></div> 
                   
-                    <div class="row">
+                  <div class="row">
                                 <div class="col-md-8" >
                                         <a href="{%url 'filter'%}" class="button">Look up</a>     
                                 </div>     
@@ -62,153 +62,12 @@
                
           </div>
           <div class="col-sm-4 sidenav">
+          
             <div class="well">
 
                 <h2>Hidden Features</h2>
-                <ul id="myList1">
-                {%for fi in ft%}
-                        <li id="{{fi.feature}}_{{fi.position}}">
-                                {%if 'price' in fi.feature%}
-                                        <div class="row">
-                                                <div class="col-md-1" >
-                                                <!-- <p> {{fi.feature}}</p>                -->
-                                                </div>
-                                                <div class="col-md-2">
-                                                        
-                                                <button class="btn btn-primary">price</button>
-                                                </div>
-<button width="200px" class="show_hide" onclick="myFun($(this).parent().parent().attr('id'))">Show</button>
-
-                                        </div>
-
-                                {% elif 'color' in fi.feature %}
-                                        <div class="row">
-                                                <div class="col-md-1">
-                                                  <!-- <p> {{fi.feature}}</p>                -->
-                                                </div>
-                                                <div class="col-md-4">
-                                                  <button class="btn btn-primary">Color</button>
-
-                                                </div>
- <button width="200px" class="show_hide" onclick="myFun($(this).parent().parent().attr('id'))">Show</button>
-
-                                        </div>
-                                {% elif 'os' in fi.feature %}   
-                                        <div class="row">
-                                                <div class="col-md-1" >
-                                                  <!-- <p> {{fi.feature}}</p>                -->
-                                                </div>
-                                                <div class="col-md-4" >
-                                                    <button class="btn btn-primary">Operating System</button> 
-
-                                                </div>
- <button width="200px" class="show_hide" onclick="myFun($(this).parent().parent().attr('id'))">Show</button>
-
-                                        </div>
-                                {% elif 'size' in fi.feature %}   
-                                        <div class="row">
-                                                <div class="col-md-1">
-                                                  <!-- <p> {{fi.feature}}</p>                -->
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <button class="btn btn-primary">Size</button>
-
-                                                </div>
-<button width="200px" class="show_hide" onclick="myFun($(this).parent().parent().attr('id'))">Show</button>
-
-                                        </div>
-                                {% elif 'cpu' in fi.feature %}   
-                                        <div class="row">
-                                                <div class="col-md-1">
-                                                  <!-- <p> {{fi.feature}}</p>                -->
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <button  class="btn btn-primary">CPU</button>
-                                                </div>
-<button width="200px" class="show_hide" onclick="myFun($(this).parent().parent().attr('id'))">Show</button>
-                                        </div>
-                                {% elif 'backcam' in fi.feature%}   
-                                        <div class="row">
-                                                <div class="col-md-1">
-                                                  <!-- <p> {{fi.feature}}</p>                -->
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <button class="btn btn-primary">Back Camera</button>
-                                                </div>
-<button width="200px" class="show_hide" onclick="myFun($(this).parent().parent().attr('id'))">Show</button>
-                                        </div>
-                                {% elif 'battery' in fi.feature%}   
-                                        <div class="row">
-                                                <div class="col-md-1">
-                                                  <!-- <p> {{fi.feature}}</p>                -->
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <button class="btn btn-primary">Battery</button>
-                                                </div>
-<button width="200px" class="show_hide" onclick="myFun($(this).parent().parent().attr('id'))">Show</button>
-
-                                        </div>
-                                {% elif 'mobilecompany' in fi.feature%}   
-                                        <div class="row">
-                                                <div class="col-md-1">
-                                                  <!-- <p> {{fi.feature}}</p>                -->
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <button class="btn btn-primary">Mobile Company</button>
-                                                </div>
-<button width="200px" class="show_hide" onclick="myFun($(this).parent().parent().attr('id'))">Show</button>
-
-                                        </div>
-                                {% elif 'chip' in fi.feature%}   
-                                        <div class="row">
-                                                <div class="col-md-1">
-                                                  <!-- <p> {{fi.feature}}</p>                -->
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <button class="btn btn-primary">Chip</button>
-                                                </div>
-<button width="200px" class="show_hide" onclick="myFun($(this).parent().parent().attr('id'))">Show</button>
-
-                                        </div>
-                                {% elif 'Resolution' in fi.feature%}   
-                                        <div class="row">
-                                                <div class="col-md-1">
-                                                  <!-- <p> {{fi.feature}}</p>                -->
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <button class="btn btn-primary">Resolution</button>
-                                                </div>
-<button width="200px" class="show_hide" onclick="myFun($(this).parent().parent().attr('id'))">Show</button>
-
-                                        </div>
-                                {% elif 'weight' in fi.feature%}   
-                                        <div class="row">
-                                                <div class="col-md-1">
-                                                  <!-- <p> {{fi.feature}}</p>                -->
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <button class="btn btn-primary">weight</button>
-                                                </div>
-<button width="200px" class="show_hide" onclick="myFun($(this).parent().parent().attr('id'))">Show</button>
-
-                                        </div>
-                                {% elif 'dimensions' in fi.feature%}   
-                                        <div class="row">
-                                                <div class="col-md-1">
-                                                  <!-- <p> {{fi.feature}}</p>                -->
-                                                </div>
-                                                <div class="col-md-4">
-                                                    <button class="btn btn-primary">dimensions</button>
-                                                </div>
-<button width="200px" class="show_hide" onclick="myFun($(this).parent().parent().attr('id'))">Show</button>
-
-                                        </div>
-                                {%endif%}
-                                        
-                            
-                         </li>
-                {%endfor%} 
-                </ul>
+                <div id="hide_feature_div"></div>
+               
             </div>
            
             <div class="well">
@@ -224,10 +83,7 @@
       <footer class="container-fluid text-center">
         <p>Footer Text</p>
       </footer>
-
-<script >
-    
-
+<script>
 $(document).ready(function () {
     $.ajax({
                                 url: "{% url 'admin_setup' %}",
@@ -238,38 +94,136 @@ $(document).ready(function () {
                                 dataType: "json",
                                 
                                 success: function(data){
-                                    console.log(data['feature_to_display'])
                                     var feat_dsp=data['feature_to_display']
                                     var disp_feat_div=document.getElementById('display_feature_div');
-                                    var ul_sortable=document.createElement('UL');
+                                    var ul_sortable=document.createElement('ul');
                                     ul_sortable.setAttribute('id','sortable');
                                     disp_feat_div.append(ul_sortable);
                                     for (var i in feat_dsp){
-                                        console.log(feat_dsp[i].feature)
-                                    }
+                                      console.log(feat_dsp[i].feature);
                                     var li_sortable=document.createElement('li');
-                                    li_sortable.id="size"+"_5"
-                                    ul_sortable.appendChild(li_sortable);
-                                    
-                                    var div_row_col_md3=document.createElement('div');
-                                    div_row_col_md3.setAttribute("class",'row');
-                                    li_sortable.append(div_row_col_md3);    
-                                    var div_col_md_3=document.createElement('div');
-                                    div_col_md_3.setAttribute("class","col-md-3");
-                                    div_row_col_md3.append(div_col_md_3);
+                                    li_sortable.id=feat_dsp[i].feature+"_"+feat_dsp[i].position;
+                                    ul_sortable.append(li_sortable);
+                                    var div_row=document.createElement('div');
+                                    div_row.setAttribute("class",'row');
+                                    li_sortable.append(div_row);    
+                                    var div_col_md_6_1=document.createElement('div');
+                                    div_col_md_6_1.setAttribute("class","col-md-6");
+                                    div_row.append(div_col_md_6_1);
                                     var btn_btn_primary=document.createElement('button');
                                     btn_btn_primary.setAttribute("class","btn btn-primary");
-                                    btn_btn_primary.innerHTML="Size";
+                                    btn_btn_primary.innerHTML=feat_dsp[i].feature;
+                                    div_col_md_6_1.appendChild(btn_btn_primary);
+                                    var div_col_md_6_2=document.createElement('div');
+                                    div_col_md_6_2.setAttribute('class',"col-md-6");
+                                    div_row.append(div_col_md_6_2);
                                     var btn_show_hide=document.createElement('button');
                                     btn_show_hide.setAttribute("class","show_hide");
-                                    btn_show_hide.setAttribute("onclick","myFunction($(this).parent().parent().parent().attr('id'))");
-                                    btn_show_hide.innerHTML="Hide"
-                                    div_col_md_3.appendChild(btn_btn_primary)
-                                    div_col_md_3.appendChild(btn_show_hide)
-                                }
+                                    btn_show_hide.setAttribute("onclick","hideFromDisplay($(this).parent().parent().parent().attr('id'))");
+                                    btn_show_hide.innerHTML="Hide";
+                                    div_col_md_6_2.appendChild(btn_show_hide);
 
-    });
+                                  
+
+
+                                  }
+                                    var feat_hide=data['feature_to_hide'];
+                                    var hide_feat_div=document.getElementById('hide_feature_div');
+                                    var ul_hiddenfeat=document.createElement('ul');
+                                    ul_hiddenfeat.setAttribute("id","hiddenfeat");
+                                    hide_feat_div.append(ul_hiddenfeat);
+                                    for (var i in feat_hide){
+
+                                      console.log(feat_hide[i].feature);
+                                      var li_hiddenfeat=document.createElement('li');
+                                      li_hiddenfeat.id=feat_hide[i].feature+"_"+feat_hide[i].position
+                                      ul_hiddenfeat.append(li_hiddenfeat);
+
+                                      // var div_row=document.createElement('div');
+                                      // div_row.setAttribute('class','row');
+                                      // temp.append(div_row);
+                                      // var div_col_md_6_1=document.createElement('div');
+                                      // div_col_md_6_1.setAttribute('class','col-md-6');
+                                      // div_row.append(div_col_md_6_1);
+                                      // var btn_btn_primary=document.createElement('btn');
+                                      // btn_btn_primary.setAttribute('class','btn btn-primary');
+                                      // btn_btn_primary.innerHTML=data[0];
+                                      // div_col_md_6_1.append(btn_btn_primary);
+                                      // var div_col_md_6_2=document.createElement('div');
+                                      // div_col_md_6_2.setAttribute('class','col-md-6');
+                                      // div_row.append(div_col_md_6_2);
+                                      // var btn=document.createElement('button');
+                                      // btn.setAttribute('class','show_hide');
+                                      // btn.setAttribute('onclick','showToDisplay($(this).parent().parent().parent().attr("id"))');
+                                      // btn.innerHTML="show";
+                                      // div_col_md_6_2.append(btn);
+
+
+
+                                      var div_row=document.createElement('div')
+                                      div_row.setAttribute('class','row');
+                                      li_hiddenfeat.append(div_row);
+                                      var div_col_md_6_1=document.createElement('div');
+                                      div_col_md_6_1.setAttribute('class','col-md-6');
+                                      div_row.append(div_col_md_6_1);
+                                      var div_col_md_6_2=document.createElement('div');
+                                      div_col_md_6_2.setAttribute('class','col-md-6');
+                                      div_row.append(div_col_md_6_2);
+                                      var btn_btn_primary=document.createElement('btn');
+                                      btn_btn_primary.setAttribute('class','btn btn-primary');
+                                      btn_btn_primary.innerHTML=feat_hide[i].feature;
+                                      div_col_md_6_1.append(btn_btn_primary);
+                                      var btn_show_hide=document.createElement('button');
+                                      btn_show_hide.setAttribute('class','show_hide');
+                                      btn_show_hide.setAttribute('onclick','showToDisplay($(this).parent().parent().parent().attr("id"))');
+                                      btn_show_hide.innerHTML="show";
+                                      div_col_md_6_2.append(btn_show_hide);
+
+
+
+
+                                    }
+                                  $('ul').sortable({
+                                      axis: 'y',
+                                      stop: function (event, ui) {
+                                      console.log("thus",$(this))
+                                      var data = $(this).sortable('serialize').split("&");
+                                      var arr=[];
+                                      console.log("data",data)
+                                      for (var key in data)
+                                      {   
+                                          console.log("key",key)
+                                          arr.push(data[key].split("=")[0].replace('[]',''));
+
+                                      }
+                                      console.log("arr",arr)
+                                      console.log("jason string",JSON.stringify(arr))
+                                      $('span').text(data);
+                                      $.ajax({
+                                  
+                                            type: 'POST',
+                                            dataType: "json",
+                                            'data': {
+                                            'd': JSON.stringify(arr),
+
+                                            'csrfmiddlewaretoken': '{{ csrf_token }}',
+                                          },
+                                          
+                                            url: "{% url 'updatefeatureposition' %}",
+                                            success: function(response){
+                                            console.log("success");
+                                            }
+                                        });
+                                      }
+                                  });
+                                }
+                            });
 });
+
+</script>
+<script>
+    
+
 function testingfunction(){
     console.log("helloo")
 }
@@ -293,26 +247,59 @@ a =JSON.stringify(role_data);
 //       location.reload().delay(800);
  
  });
-function myFunction(id) {
+function hideFromDisplay(id) {
    var item = $('#'+id);
-   console.log(id)
-   var temp = item;
+   console.log(id);
+   var temp=document.getElementById(id)
+  //  var temp = item;
+  
    item.find(".show_hide").remove();
-   var btn = $('<button>Show</button>').attr('width','200px').addClass('show_hide').attr('onclick', '(myFunc('+id+'))');
-   var data = id.split("_");  
-   var arr=[];
-   for (var key in data)
+  //  var btn = $('<button>Show</button>').attr('width','200px').addClass('show_hide').attr('onclick', '(showToDisplay('+id+'))');
+  // var btn = $('<button>Show</button>').attr('width','200px').addClass('show_hide').attr('onclick', '(showToDisplay($(this).parent().attr("id")))');
+  var btn=document.createElement('button');
+  btn.setAttribute('class','show_hide');
+  btn.setAttribute('onclick','showToDisplay($(this).parent().parent().parent().attr("id"))');
+  btn.innerHTML="show"
+  var data = id.split("_");  
+  console.log("data",data[0])
+  var arr=[];
+  for (var key in data)
             {   
                 console.log("key",key);
                 arr.push(data[key]);
                 break;
             }
-   temp.append(btn);
+   console.log("temp2",temp )
+
+   
    item.remove();
   
-   alert(arr);
    console.log("jason st",JSON.stringify(arr));
-   $("#myList").append(temp);
+      var mylist=document.getElementById('myList');
+      
+      while (temp.firstChild) {
+       temp.removeChild(temp.firstChild);
+    }
+      console.log("lastchild",temp);
+      mylist.append(temp);
+      var div_row=document.createElement('div');
+      div_row.setAttribute('class','row');
+      temp.append(div_row);
+      var div_col_md_6_1=document.createElement('div');
+      div_col_md_6_1.setAttribute('class','col-md-6');
+      div_row.append(div_col_md_6_1);
+      var btn_btn_primary=document.createElement('btn');
+      btn_btn_primary.setAttribute('class','btn btn-primary');
+      btn_btn_primary.innerHTML=data[0];
+      div_col_md_6_1.append(btn_btn_primary);
+      var div_col_md_6_2=document.createElement('div');
+      div_col_md_6_2.setAttribute('class','col-md-6');
+      div_row.append(div_col_md_6_2);
+      div_col_md_6_2.append(btn);
+      // $("#myList").append(temp);
+
+
+  
    $.ajax({
        type: 'POST',
        dataType: "json",
@@ -320,36 +307,65 @@ function myFunction(id) {
        'd': JSON.stringify(arr),
        'csrfmiddlewaretoken': '{{ csrf_token }}',
       },
-       url: "{% url 'test' %}",
+       url: "{% url 'hidefeature' %}",
        success: function(response){
        console.log("success");
        }
    });
  }
 
-function myFunc(id) {
-   
-    var item = $(id);
-    var temp = item;
-
-         item.find(".show_hide").remove();
-         var btn = $('<button>Hide</button>').attr('width', '200px').addClass('show_hide').attr('onclick', '(myFunction($(this).parent().attr("id")))');
-         var data =item.attr('id');
-         var d=data.split("_");
-        
-         var arr=[]; 
-         for (var key in d)
-              {   
+function showToDisplay(id) {
+    console.log("showToDisplayid",id)
+    var item = $("#"+id);
+    //var item=document.getElementById(id)
+    // var item = $(id);
+     var temp = document.getElementById(id);
+        item.find(".show_hide").remove();
+        //  var btn = $('<button>Hide</button>').attr('width', '200px').addClass('show_hide').attr('onclick', '(hideFromDisplay($(this).parent().attr("id")))');
+        var btn=document.createElement('button');btn.setAttribute('class','show_hide');btn.setAttribute('onclick',"hideFromDisplay($(this).parent().parent().parent().attr('id'))");
+        btn.innerHTML="Hide";
+        var data =item.attr('id');
+        console.log("showToDisplay_data",data)
+        var d=data.split("_");
+        var arr=[]; 
+        for (var key in d)
+          {   
                   console.log("key",key);
                   arr.push(d[key]);
                   break;
-              }
-     
-        temp.append(btn);
+        }
         item.remove();
+
+        // temp.append(btn);
+        
+        var ul_sortable=document.getElementById('sortable');
+        ul_sortable.append(temp);
+        while (temp.firstChild) {
+        temp.removeChild(temp.firstChild);
+        }
+
+        var div_row=document.createElement('div');
+        div_row.setAttribute("class",'row');
+        temp.append(div_row);    
+        var div_col_md_6_1=document.createElement('div');
+        div_col_md_6_1.setAttribute("class","col-md-6");
+        div_row.append(div_col_md_6_1);
+        var btn_btn_primary=document.createElement('button');
+        btn_btn_primary.setAttribute("class","btn btn-primary");
+        btn_btn_primary.innerHTML=d[0];
+        div_col_md_6_1.append(btn_btn_primary);
+        var div_col_md_6_2=document.createElement('div');
+        div_col_md_6_2.setAttribute("class","col-md-6");
+        div_row.append(div_col_md_6_2);
+        div_col_md_6_2.appendChild(btn);
        // console.log(arr);
        // console.log("jason st",JSON.stringify(arr));
-        $("#sortable").append(temp);
+        // $("#sortable").append(temp);
+        
+
+
+
+
         $.ajax({
         type: 'POST',
         dataType: "json",
@@ -357,59 +373,52 @@ function myFunc(id) {
         'd': JSON.stringify(arr),
         'csrfmiddlewaretoken': '{{ csrf_token }}',
         },
-        url: "{% url 'on' %}",
+        url: "{% url 'showfeature' %}",
         success: function(response){
         console.log("success");
          }
         });
-        
-        
-        
  }
- function myFun(id) {
+//  function myFun(id) {
          
-        var item = $('#'+id);
-        var temp = item;
+//         var item = $('#'+id);
+//         var temp = item;
          
-        item.find(".show_hide").remove();
-        var btn = $('<button>Hide</button>').attr('width', '200px').addClass('show_hide').attr('onclick', '(myFunction($(this).parent().attr("id")))');
-        var data = id.split("_");
-        var arr=[];
-        for (var key in data)
-              {   
-                  console.log("key",key);
-                  arr.push(data[key]);
-                  break;
-              }
-        temp.append(btn);
-        item.remove();
-        
-        console.log(arr);
-        console.log("jason st",JSON.stringify(arr));
-        $("#sortable").append(temp);
-        $.ajax({
-       type: 'POST',
-       dataType: "json",
-       'data': {
-       'd': JSON.stringify(arr),
-       'csrfmiddlewaretoken': '{{ csrf_token }}',
-      },
-       url: "{% url 'on' %}",
-       success: function(response){
-       console.log("success");
-       }
-       });
-
-        
-        
-      }
+//         item.find(".show_hide").remove();
+//         var btn = $('<button>Hide</button>').attr('width', '200px').addClass('show_hide').attr('onclick', '(hideFromDisplay($(this).parent().attr("id")))');
+//         var data = id.split("_");
+//         var arr=[];
+//         for (var key in data)
+//           {   
+//               console.log("key",key);
+//               arr.push(data[key]);
+//               break;
+//           }
+//         temp.append(btn);
+//         item.remove();
+//         console.log(arr);
+//         console.log("jason st",JSON.stringify(arr));
+//         $("#sortable").append(temp);
+//         $.ajax({
+//           type: 'POST',
+//           dataType: "json",
+//           'data': {
+//           'd': JSON.stringify(arr),
+//           'csrfmiddlewaretoken': '{{ csrf_token }}',
+//           },
+//           url: "{% url 'showfeature' %}",
+//           success: function(response){
+//           console.log("success");
+//           }
+//        });
+//       }
      
-       $(document).ready(function () {
-           
-           role_data=$('#roles option:selected').val()
-           console.log(typeof role_data ); 
-           JSON.stringify(role_data)
-        //    $.ajax({
+      //  $(document).ready(function () {
+        
+      //   role_data=$('#roles option:selected').val()
+      //   console.log(role_data ); 
+      //   JSON.stringify(role_data)
+      //   //    $.ajax({
         //     type: 'POST',
         //     dataType: "json",
         //     'data': {
@@ -423,40 +432,40 @@ function myFunc(id) {
         //     }
         // });
       
-       $('ul').sortable({
-        axis: 'y',
-        stop: function (event, ui) {
-	        var data = $(this).sortable('serialize').split("&");
-            console.log(data);
-            var arr=[];
-            console.log("data",data)
-            for (var key in data)
-            {   
-                console.log("key",key)
-                arr.push(data[key].split("=")[0].replace('[]',''));
+//        $('#sortable').sortable({
+//         axis: 'y',
+//         stop: function (event, ui) {
+//           console.log("thus",$(this))
+// 	        var data = $(this).sortable('serialize').split("&");
+//             var arr=[];
+//             console.log("data",data)
+//             for (var key in data)
+//             {   
+//                 console.log("key",key)
+//                 arr.push(data[key].split("=")[0].replace('[]',''));
 
-            }
-             console.log("arr",arr)
-             console.log("jason string",JSON.stringify(arr))
-            $('span').text(data);
-           $.ajax({
+//             }
+//              console.log("arr",arr)
+//              console.log("jason string",JSON.stringify(arr))
+//             $('span').text(data);
+//            $.ajax({
        
-                type: 'POST',
-                dataType: "json",
-                'data': {
-                'd': JSON.stringify(arr),
+//                 type: 'POST',
+//                 dataType: "json",
+//                 'data': {
+//                 'd': JSON.stringify(arr),
 
-                'csrfmiddlewaretoken': '{{ csrf_token }}',
-               },
+//                 'csrfmiddlewaretoken': '{{ csrf_token }}',
+//                },
                
-                url: "{% url 'ind' %}",
-                success: function(response){
-                console.log("success");
-                    }
-            });
-	}
-    });
-});
+//                 url: "{% url 'updatefeatureposition' %}",
+//                 success: function(response){
+//                 console.log("success");
+//                     }
+//             });
+// 	}
+//     });
+//  });
 
 
      </script>

@@ -9,9 +9,9 @@ urlpatterns = [
     # These urls doesn't have templates. These functions are
     # called  through ajax. They are either used to retrieve  
     # data from model and render the data to some other template.         
-    url(r'^test/',views.test, name='test'),                
-    url(r'^ind/',views.ind, name='ind'),                   
-    url(r'^on/',views.on, name='on'),                       
+    url(r'^hidefeature/',views.hideFeature, name='hidefeature'),                
+    url(r'^updatefeatureposition/',views.updateFeaturePosition, name='updatefeatureposition'),                   
+    url(r'^showfeature/',views.showFeature, name='showfeature'),                       
     url(r'^globalFunc/',views.globalFunc,name='gf'),      
 #----------------------------------------------------------------------------------------------------------    
     # Basic Landing Pages
