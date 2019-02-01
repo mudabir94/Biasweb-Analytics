@@ -1,8 +1,8 @@
-{% extends "webapp/base.html" %}
+{% extends "webapp/newbase.html" %}
 {% block content %}
 {%load static from staticfiles%}
 
-<nav class="navbar navbar-inverse">
+<!-- <nav class="navbar navbar-inverse">
         <div class="container-fluid">
           <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
@@ -19,16 +19,16 @@
               <li><a href="#" >About</a></li>
               
             </ul>
-            <!--<ul class="nav navbar-nav navbar-right">
+            <ul class="nav navbar-nav navbar-right">
               <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-            </ul>-->
+            </ul>
           </div>
         </div>
-      </nav>
-        
+      </nav> -->
+      
       <div class="container-fluid text-center">    
         <div class="row content">
-          <div class="col-sm-2 sidenav">
+          <div class="col-sm-1 sidenav">
                 <ul class="nav nav-pills nav-stacked">
                        
                        <!-- <li ><a href="{%url 'admin_setup'%}">Advance Search Setup</a></li>
@@ -36,178 +36,27 @@
                         
                 </ul><br>
           </div>
-        <div class="col-sm-6 text-left"> 
+        <div class="col-sm-7 text-left"> 
                 <select id="roles" >
+                    <!-- In Future this has to become dynamic -->
                         <option >Please Select</option>
-                        <option  value=1>STUDENT</option>
-                        <option  value=2>PROFESSOR</option>
-                        <option  value=3>RA</option>
+                        <option  value=1>Exp1</option>
+                        <option  value=2>Exp2</option>
+                        <option  value=3>Exp3</option>
                 </select>
                 <input type="hidden" value="" id="role_value" name="role_value"/>
               
             <div class="container latest-product-section"> 
-                <form action="" method="POST">
-                    {%csrf_token%}
-                    {%for n in role_name %}
-                   
-                    <p>Role :  {{n}} </p>   
-                    
-                    {%endfor%}
-                    <ul id="sortable">
-                    {%for f in feat %}
-                        <li id="{{f.feature}}_{{f.position}}">
-                            {%if 'price' in f.feature%}
-                                <div class="row">
-                                        <div class="col-md-1" >
-                                        <!-- <p> {{f.feature}}</p>-->
-                                        </div>
-                                        <div class="col-md-2">
-                                              
-                                            <button class="btn btn-primary">price</button>
-                                            <button class='show_hide' onclick="myFunction($(this).parent().parent().parent().attr('id'))">Hide</button>
-
-                                        </div>
-                                </div>
-                            {% elif 'color' in f.feature   %}
-                                <div class="row">
-                                        <div class="col-md-1">
-                                          <!-- <p> {{f.feature}}</p>                -->
-                                        </div>
-                                        <div class="col-md-4">
-                                        <button class="btn btn-primary">Color</button>
-                                        <button class='show_hide' onclick="myFunction($(this).parent().parent().parent().attr('id'))">Hide</button>
-
-                                        </div>
-                                        
-                                </div>
-                            {% elif 'os' in f.feature %}   
-                                <div class="row">
-                                        <div class="col-md-1" >
-                                          <!-- <p> {{f.feature}}</p>                -->
-                                        </div>
-                                        <div class="col-md-4" >
-                                            <button class="btn btn-primary">Operating System</button> 
-                                            <button class='show_hide' onclick="myFunction($(this).parent().parent().parent().attr('id'))">Hide</button>
-
-                                        </div>
-                                        
-                                </div>
-                            {% elif 'size' in f.feature %}   
-                                <div class="row">
-                                        <div class="col-md-1">
-                                          <!-- <p> {{f.feature}}</p>                -->
-                                        </div>
-                                        <div class="col-md-2">
-                                            <button class="btn btn-primary">Size</button>
-                                            <button class='show_hide' onclick="myFunction($(this).parent().parent().parent().attr('id'))">Hide</button>
-
-                                        </div>
-                                </div>
-                            {% elif 'cpu' in f.feature %}   
-                                <div class="row">
-                                        <div class="col-md-1">
-                                          <!-- <p> {{f.feature}}</p>                -->
-                                        </div>
-                                        <div class="col-md-2">
-                                            <button  class="btn btn-primary">CPU</button>
-                                            <button class='show_hide' onclick="myFunction($(this).parent().parent().parent().attr('id'))">Hide</button>
-
-                                        </div>
-                                </div>
-                            {% elif 'backcam' in f.feature %}   
-                                <div class="row">
-                                        <div class="col-md-1">
-                                          <!-- <p> {{f.feature}}</p>                -->
-                                        </div>
-                                        <div class="col-md-2">
-                                            <button class="btn btn-primary">Back Camera</button>
-                                            <button class='show_hide' onclick="myFunction($(this).parent().parent().parent().attr('id'))">Hide</button>
-
-                                        </div>
-                                </div>
-                            {% elif 'battery' in f.feature %}   
-                                <div class="row">
-                                        <div class="col-md-1">
-                                          <!-- <p> {{f.feature}}</p>                -->
-                                        </div>
-                                        <div class="col-md-2">
-                                            <button class="btn btn-primary">Battery</button>
-                                            <button class='show_hide' onclick="myFunction($(this).parent().parent().parent().attr('id'))">Hide</button>
-
-
-                                        </div>
-                                </div>
-                                {% elif 'mobilecompany' in f.feature %}   
-                                <div class="row">
-                                        <div class="col-md-1">
-                                          <!-- <p> {{f.feature}}</p>                -->
-                                        </div>
-                                        <div class="col-md-2">
-                                            <button class="btn btn-primary">Mobile Company</button>
-                                            <button class='show_hide' onclick="myFunction($(this).parent().parent().parent().attr('id'))">Hide</button>
-
-
-                                        </div>
-                                </div>
-                                {% elif 'chip' in f.feature %}   
-                                <div class="row">
-                                        <div class="col-md-1">
-                                          <!-- <p> {{f.feature}}</p>                -->
-                                        </div>
-                                        <div class="col-md-2">
-                                            <button class="btn btn-primary">Chip</button>
-                                            <button class='show_hide' onclick="myFunction($(this).parent().parent().parent().attr('id'))">Hide</button>
-
-
-                                        </div>
-                                </div>
-                                {% elif 'Resolution' in f.feature %}   
-                                <div class="row">
-                                        <div class="col-md-1">
-                                          <!-- <p> {{f.feature}}</p>                -->
-                                        </div>
-                                        <div class="col-md-2">
-                                            <button class="btn btn-primary">Resolution</button>
-                                            <button class='show_hide' onclick="myFunction($(this).parent().parent().parent().attr('id'))">Hide</button>
-
-
-                                        </div>
-                                </div>    
-                                {% elif 'weight' in f.feature %}   
-                                <div class="row">
-                                        <div class="col-md-1">
-                                          <!-- <p> {{f.feature}}</p>                -->
-                                        </div>
-                                        <div class="col-md-2">
-                                            <button class="btn btn-primary">Weight</button>
-                                            <button class='show_hide' onclick="myFunction($(this).parent().parent().parent().attr('id'))">Hide</button>
-
-
-                                        </div>
-                                </div>    
-                                {% elif 'dimensions' in f.feature %}   
-                                <div class="row">
-                                        <div class="col-md-1">
-                                          <!-- <p> {{f.feature}}</p>                -->
-                                        </div>
-                                        <div class="col-md-2">
-                                            <button class="btn btn-primary">Dimensions</button>
-                                            <button class='show_hide' onclick="myFunction($(this).parent().parent().parent().attr('id'))">Hide</button>
-
-
-                                        </div>
-                                </div>    
-                            {%endif%}
-                            </li>
-                        {%endfor%}
-                       
-                    </ul>
+                
+                    <p>Role :  Exp1 </p>   
+                    <div id="display_feature_div"></div>
+                  
                     <div class="row">
                                 <div class="col-md-8" >
                                         <a href="{%url 'filter'%}" class="button">Look up</a>     
                                 </div>     
                         </div>
-                </form>
+               
             </div>                 
                             
                
@@ -377,7 +226,53 @@
       </footer>
 
 <script >
+    
 
+$(document).ready(function () {
+    $.ajax({
+                                url: "{% url 'admin_setup' %}",
+                                type:'GET',
+                                'data': {
+                                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                                },
+                                dataType: "json",
+                                
+                                success: function(data){
+                                    console.log(data['feature_to_display'])
+                                    var feat_dsp=data['feature_to_display']
+                                    var disp_feat_div=document.getElementById('display_feature_div');
+                                    var ul_sortable=document.createElement('UL');
+                                    ul_sortable.setAttribute('id','sortable');
+                                    disp_feat_div.append(ul_sortable);
+                                    for (var i in feat_dsp){
+                                        console.log(feat_dsp[i].feature)
+                                    }
+                                    var li_sortable=document.createElement('li');
+                                    li_sortable.id="size"+"_5"
+                                    ul_sortable.appendChild(li_sortable);
+                                    
+                                    var div_row_col_md3=document.createElement('div');
+                                    div_row_col_md3.setAttribute("class",'row');
+                                    li_sortable.append(div_row_col_md3);    
+                                    var div_col_md_3=document.createElement('div');
+                                    div_col_md_3.setAttribute("class","col-md-3");
+                                    div_row_col_md3.append(div_col_md_3);
+                                    var btn_btn_primary=document.createElement('button');
+                                    btn_btn_primary.setAttribute("class","btn btn-primary");
+                                    btn_btn_primary.innerHTML="Size";
+                                    var btn_show_hide=document.createElement('button');
+                                    btn_show_hide.setAttribute("class","show_hide");
+                                    btn_show_hide.setAttribute("onclick","myFunction($(this).parent().parent().parent().attr('id'))");
+                                    btn_show_hide.innerHTML="Hide"
+                                    div_col_md_3.appendChild(btn_btn_primary)
+                                    div_col_md_3.appendChild(btn_show_hide)
+                                }
+
+    });
+});
+function testingfunction(){
+    console.log("helloo")
+}
 $("#roles").change(function() {
 role_data=$('#roles option:selected').val()
 console.log(typeof role_data ); 
@@ -400,6 +295,7 @@ a =JSON.stringify(role_data);
  });
 function myFunction(id) {
    var item = $('#'+id);
+   console.log(id)
    var temp = item;
    item.find(".show_hide").remove();
    var btn = $('<button>Show</button>').attr('width','200px').addClass('show_hide').attr('onclick', '(myFunc('+id+'))');
@@ -414,7 +310,7 @@ function myFunction(id) {
    temp.append(btn);
    item.remove();
   
-   console.log(arr);
+   alert(arr);
    console.log("jason st",JSON.stringify(arr));
    $("#myList").append(temp);
    $.ajax({
