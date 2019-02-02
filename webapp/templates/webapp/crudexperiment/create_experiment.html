@@ -397,6 +397,7 @@
             <div class='row-fluid' id='mobile_catalog_div'>
                 <div class='row'>
                     <div class='col-md-12'>
+                            
                             <div class="latest-product-section" > 
                                     {%  for mob in mobilephones  %}
                 
@@ -429,8 +430,9 @@
                 <!-- Pagination row -->
                 <div class='row'>
                     <div class='col-md-12'>
-                        
-                            <div class="pagination" >
+                           
+                            
+                            <!-- <div class="pagination" >
                                     <span class="step-links">
                                       
                                         {% if mobilephones.has_previous %}
@@ -447,7 +449,7 @@
                                             <a href="?page={{ mobilephones.paginator.num_pages }}">last &raquo;</a>
                                         {% endif %}
                                     </span>
-                            </div>
+                            </div> -->
                     </div>
                 </div>
             </div>
@@ -459,7 +461,9 @@
       <footer>
 		
           <div class="container-fluid" style='margin-left:15px'>
-              <p><a href="#" target="blank">Contact</a> | <a href="#" target="blank">LinkedIn1</a> | <a href="#" target="blank">Twitter</a> | <a href="#" target="blank">Google+</a></p>
+                <ul id="pagination-demo" class="pagination-sm"></ul>
+                <div id="page-content" class="page-content">Page 1</div>
+            <p><a href="#" target="blank">Contact</a> | <a href="#" target="blank">LinkedIn1</a> | <a href="#" target="blank">Twitter</a> | <a href="#" target="blank">Google+</a></p>
           </div>
      </footer>	
 
@@ -494,7 +498,16 @@ window.row_filedata=null;
 // When the page will this will be the first javascript function that will be called. 
 $(document).ready(function () {
    console.log('btrn',btns)
-
+   $('#pagination-demo').twbsPagination({
+        totalPages: 16,
+        visiblePages: 6,
+        next: 'Next',
+        prev: 'Prev',
+        onPageClick: function (event, page) {
+            //fetch content and render here
+            $('#page-content').text('Page ' + page) + ' content here';
+        }
+    });
 // This Will hide all the divs with class=innerchecksboxdivs
 
 $('.innerchecksboxdivs').hide();
@@ -2815,7 +2828,7 @@ function sendFilePath(id){
         }); 
 
     }
-    
+   
     </script>
 
 {%endblock%}

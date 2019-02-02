@@ -18,11 +18,10 @@ from django.utils.decorators import method_decorator
 #--------------------------------------------------------------------------------------------------
 from django.core import serializers
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from rawpaginator.paginator import Paginator
+
 from django.db import connection
 from django.db.models import Q
-from functools import reduce
-import operator
+
 #------------------------------------------------------------------------------------------
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
