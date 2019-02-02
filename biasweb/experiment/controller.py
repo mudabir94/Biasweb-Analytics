@@ -51,9 +51,9 @@ class ExperimentController:
             self.exp.capacity = cap            #Capacity to budget for experiment
             self.saveExperiment()
             self.exp.custom_exp_id = a_id
-            print('self.exp.custom_exp_id',self.exp.custom_exp_id)
+            #print('self.exp.custom_exp_id',self.exp.custom_exp_id)
             exp_id = self.exp.id
-            print(exp_id)
+            #print(exp_id)
             exp_id = '-' + str(exp_id).zfill(4)  #ensuring the id is now a 4 digit numeric string
             self.exp.custom_exp_id += exp_id
            
@@ -77,8 +77,12 @@ class ExperimentController:
         self.exp.save()
         print("Batches Title set to: ",self.exp.batches_title)
 
-    def getFSet(self):
-        return list(self.fSet.all())
+    def getFSetList(self):
+        if not self.fSet:
+            fS = list(self.exp.experiment_feature_set.all())
+        else:
+            fS = list(self.fSet.all())
+        return fS
     
     """
     setFSet
@@ -86,6 +90,8 @@ class ExperimentController:
             OR newFLevels (dictionary with symbols as key pointing to chosen list of levels)
     """
     def setFSet(self, newFSet=None, newFLevels=None, prompt = False):
+        if not self.fSet:
+            self.fSet = self.exp.experiment_feature_set
         #check whether FSet or FLevels
         if newFLevels:
             print("New Levels have been supplied - extracting FSet...")
@@ -187,6 +193,19 @@ class ExperimentController:
     #                 self.fLevels[f] = self.clarifyFeature(enquiry)
     #     print(self.fLevels[f])
 
+    
+    def getSubject(self, subj_CID):
+        #tables to traverse
+        #-user
+        #-subject
+        #-block
+        #-
+        #return dictionary of field:value
+        pass
+
+    def getSubjectDataFrame(self):
+        pass
+        
     def generateBlocks(self):
         self.blocks = list(
             itertools.product(
@@ -217,16 +236,18 @@ class ExperimentController:
         self.assigner.getLocalDToAssign(iFile)
         self.subjData = self.assigner.df
         if self.idField:
-            setIdField(self.idField)
+            self.setIdField(self.idField)
 
     def setIdField(self, idFName):
         self.idField = idFName
         print('outside if condition of not empty')
         if not self.subjData.empty:
+            #ensure the subjData column is a string before write to DB
             print('if subjdata not empty')
             self.subjData[idFName] = self.subjData[idFName].astype(str)
             print('self.subjData[idFName]:')
             print(self.subjData[idFName])
+
     def getSubColNames(self):
         cols = self.subjData.columns
         return cols
@@ -417,3 +438,10 @@ class ExperimentController:
     
     def toString():
         print("This class is the Controler Class");
+
+class SubjCont:
+    def __init__(self, u_id):
+        self.subject = Subject()
+        #Check if subject exists
+       
+        self.subject = Subject.objects.get(user__username=u_id)

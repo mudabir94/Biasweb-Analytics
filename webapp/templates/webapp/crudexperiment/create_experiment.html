@@ -522,7 +522,7 @@ $('#importSubdiv').hide();
 $('#dispFileFeatLvldiv').hide();
 $('#subj_split_batch_rowdiv').hide();
 $('#block_assign_row_div').hide();
-$('#blkoutputsDiv').hide();
+//$('#blkoutputsDiv').hide();
 $('#batchmngprvbtn_div').hide();
 $('#dataDiv').hide();
 $('#feat_lvl_div').show();
@@ -1594,6 +1594,7 @@ function postExpData(){
         var notext = document.createTextNode("NO");
         self_button_no.appendChild(notext);
         $('#self_button_no_div').append(self_button_no);
+        $('#self_button_no_div').append("<br/>");
 
    }
     else{
@@ -2722,6 +2723,10 @@ function sendFilePath(id){
                                     col_md_4_post.append(margin_b_20);
                                     var input_checkb=document.createElement('input');
                                     input_checkb.type="checkbox";
+                                    input_checkb.value=json_data_mobiles[i]['id'];
+                                    input_checkb.id=json_data_mobiles[i]['id'];
+                                    input_checkb.name=json_data_mobiles[i]['id']+"-"+json_data_mobiles[i]['Mobile_Name'];
+                                    input_checkb.setAttribute('onchange','toggleCheckbox(this)')
                                     var img=document.createElement('img');
                                     img.setAttribute('class','img-responsive')
                                     console.log("/static/"+json_data_mobiles[i]['imagepath1'])
@@ -2804,29 +2809,60 @@ function sendFilePath(id){
        
     }
     function toggleCheckbox(element){
-        console.log(element.value);
+        console.log("Element Value",element.value);
         var mob_id=element.value;
+        if (element.checked == true){
+           
+            $.ajax({
+            type: 'POST',
+            dataType: "json",
+            'data': {
+            'mobiledata': JSON.stringify(mob_id),
+            'custom_exp_id':custom_exp_id,
+            'csrfmiddlewaretoken': '{{ csrf_token }}',
+            },
+            // the ajax call is sent to subdetails url name in the post function.  
+            url: "{% url 'store_selected_admin_phones' %}",
+                success: function(data){
+
+                    alert(data['data']);
+                    if(data['data']=="phone already exsists in the same experiment"){
+                         console.log("IN UNCHEEEECKEd")
+                         element.checked=false;
+                     }
+                }
+            
+            }); 
+
+         
+        } 
+        else {            
+            
+            
+            $.ajax({
+            type: 'POST',
+            dataType: "json",
+            'data': {
+            'mobiledata': JSON.stringify(mob_id),
+            'custom_exp_id':custom_exp_id,
+            'csrfmiddlewaretoken': '{{ csrf_token }}',
+            },
+            // the ajax call is sent to subdetails url name in the post function.  
+            url: "{% url 'remove_selected_admin_phones' %}",
+                success: function(data){
+
+                     alert(data['data']);
+                    
+                }
+            
+            }); 
+        }
         // get user and exp id. 
         // store the selected phone id. 
         // in future the phone company as well.
         // the ajax request will save the info to selected admin phones model. 
         // 
-        $.ajax({
-        type: 'POST',
-        dataType: "json",
-        'data': {
-        'mobiledata': JSON.stringify(mob_id),
-        'csrfmiddlewaretoken': '{{ csrf_token }}',
-        },
-        // the ajax call is sent to subdetails url name in the post function.  
-        url: "{% url 'store_selected_admin_phones' %}",
-        success: function(data){
-
-            console.log('Successfully inserted in model');
-        }
-        
-        }); 
-
+       
     }
    
     </script>

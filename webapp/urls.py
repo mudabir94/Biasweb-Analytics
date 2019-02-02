@@ -58,6 +58,7 @@ urlpatterns = [
     url(r'^saveexperiment/',views.saveExperiment,  name='saveexperiment'),
     url(r'^datadefinded/',views.datadefined.as_view(), name='datadefined'),
     url(r'^store_selected_admin_phones/',views.storeSelectedAdminPhones, name='store_selected_admin_phones'),
+    url(r'^remove_selected_admin_phones/',views.removeSelectedAdminPhones, name='remove_selected_admin_phones'),
     url(r'^price_range_retrieve/',views.priceRangeRetrieve, name='price_range_retrieve'),
 #---------------------------------------------------------------------------------------------   
     ## Pages that are not currently used. 

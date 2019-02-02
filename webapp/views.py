@@ -18,7 +18,6 @@ from django.utils.decorators import method_decorator
 #--------------------------------------------------------------------------------------------------
 from django.core import serializers
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-
 from django.db import connection
 from django.db.models import Q
 
@@ -32,7 +31,7 @@ import numpy as np
 import pandas as pd
 from pandas.compat import StringIO
 #--------------------------------------------------------------------------------------
-from biasweb.experiment.controller import ExperimentController
+from biasweb.experiment.controller import ExperimentController,SubjCont
 from biasweb.pythonscripts.experiment_admin import Experiment_Admin
 from biasweb.pythonscripts.getdata import get
 from biasweb.pythonscripts.insertcsvfiletotable import populate_Table
@@ -189,19 +188,52 @@ def storeSelectedAdminPhones(request):
     if request.method == 'POST':
         if request.is_ajax:
             mobiledata = request.POST.get('mobiledata')
+            custom_exp_id = request.POST.get('custom_exp_id')
+
             mobiledata_json = json.loads(mobiledata)
-            print('mobiledata_json',mobiledata_json)
+            print('custom_exp_id',custom_exp_id)
             mobiledata_json=int(mobiledata_json)
 
            
-            userobj=User.objects.get(pk=request.user.id)
-            expobj=exp.objects.get(pk=11)
+            userobj=User.objects.get(custom_id=16010001)
+
+            expobj=exp.objects.get(custom_exp_id=custom_exp_id)
+            
+
+
+
             # smgphone=samsung_phone.objects.get(pk=mobiledata_json)
             # selphones=selectedAdminPhones(user=userobj,exp=expobj,mob=smgphone)
             phones=mobilephones.objects.get(pk=mobiledata_json)
-            cellphones=selectedAdminPhones(user=userobj,exp=expobj,mob=phones)
-            cellphones.save()
-            return JsonResponse({'data':'success'})
+            print("sel_phones",phones)
+            cellphones=selectedAdminPhones.objects.filter(user=userobj,exp=expobj,mob=phones)
+            print(cellphones)
+            # a check to see if the phone is already selected for the same exp. 
+            if not cellphones:
+                cellphones=selectedAdminPhones(user=userobj,exp=expobj,mob=phones)
+                cellphones.save()
+                data={'data':'Successfully inserted in model'}
+            else:
+                data={'data':'phone already exsists in the same experiment'}
+            return JsonResponse(data)
+def removeSelectedAdminPhones(request):
+    if request.method=='POST':
+        if request.is_ajax():
+            mobiledata=request.POST.get('mobiledata')
+            custom_exp_id = request.POST.get('custom_exp_id')
+            mobiledata_json=json.loads(mobiledata)
+            mobiledata_json=int(mobiledata_json)
+
+            userobj=User.objects.get(custom_id=16010001)
+            expobj=exp.objects.get(custom_exp_id=custom_exp_id)
+            phones=mobilephones.objects.get(pk=mobiledata_json)
+            
+            
+
+            cellphones=selectedAdminPhones.objects.filter(user=userobj,exp=expobj,mob=phones)
+            
+            cellphones.delete()
+            return JsonResponse({'data':'Successfully remved from model'})
 
 comp_mobiles=''    
 def showMob(request):
@@ -860,6 +892,7 @@ def filteredMobileView(request):
        
         userobj=User.objects.get(pk=request.user.id)
         role=userobj.role_id_id
+
         roleobj=Role.objects.get(pk=role)
         role=roleobj.role_name
         global filt_mobiles
@@ -890,7 +923,28 @@ def filteredMobileView(request):
                 template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
                 return render(request,template_name,{'mobiles':ex_mobile,'template_sidebar':template_sidebar})
             else:
-                print("mobiles",filt_mobiles)
+                # print("mobiles",filt_mobiles)
+                uid = request.user.id
+                userobj=User.objects.get(pk=request.user.id)
+                print("userobj",userobj.custom_id)
+                expid=442
+                print("expid",expid)
+                #!!! Problem
+                # on retrieving subj obj multiple subjects are retrieved as all have same custom id... 
+                tscont = SubjCont(u_id=userobj.custom_id)
+                custom_exp_id=tscont.subject.exp
+                print(custom_exp_id)
+                phoneobjs=selectedAdminPhones.objects.filter(exp=custom_exp_id)
+                
+                print(phoneobjs)
+                plist=[]
+                for pob in phoneobjs:
+                    print(pob)
+                    plist.append(pob.mob.id)
+                print(plist)
+                filt_mobiles=mobilephones.objects.filter(pk__in=plist)
+                print(filt_mobiles)
+               
                 paginator = Paginator(filt_mobiles,9)
                 page = request.GET.get('page')
                 ex_mobile = paginator.get_page(page)
@@ -939,7 +993,6 @@ class mobile_phone_view(TemplateView):
             return render(request,self.template_name,{'mobiles':ex_mobiles,'template_sidebar':template_sidebar})
            
         else:
-            # mobiles= samsung_phone.objects.all() 
             mobiles= mobilephones.objects.all() 
             paginator = Paginator(mobiles,9)
             page = request.GET.get('page')
@@ -1070,7 +1123,7 @@ def selfDefault(request):
             data = request.POST.get('csvfiledata')
             #print('d',d)
             json_data = json.loads(data)
-            print("file",json_data)
+            print("CHECKING FILE:\n",json_data)
             json_data=[i.replace('\r','') for i in json_data]  
             print('head',type(json_data[0]))
             filefields = json_data[0].split(",")
@@ -1157,33 +1210,38 @@ def uploadSampleFile(request):
                 print('arr_filebody')
                 print(arr_filebody)
                 dataframe= pd.DataFrame.from_records(arr_filebody,columns=filefields)
+                print('dataframe')
+                #ORDER CORRECTION:
+                #FIRST DECLARE ID FIELD - ELSE USER SAVING WILL BE INCORRECT
+                if customid_field!='None':
+                    expCont.setIdField(customid_field)
+                    print('ExpCont.idField')
+                    print(expCont.idField)
+                if batch_title_field=='None':
+                    expCont.setBatchesTitle(batch_name)
+                    selfDefBatches = True
+                #pickleExpController(expCont)
+                #expCont=getExpController(request)
+                print('>>>BEFORE subjdata head')
                 # print('dataframe')
                 print(dataframe.head())
                 expCont.subjData=dataframe
                 
                 print('subdata head')
                 print(expCont.subjData.head())
-                # expCont.idField=customid_field
-                print('custom id field')
-                print(customid_field)
-                expCont.setIdField(customid_field)
-                print('ExpCont.idField')
-                print(expCont.idField)
-                expCont.setBatchesTitle(batch_name)
-                print('expContsubjdatafield')
+                expCont.subjData=expCont.assigner.splitInBins(
+                    no_bins = batch_num,
+                    binName = batch_name,
+                    df = dataframe, #PREVIOUSLY MISSING LINE IN ASSIGNER LOGIC NO NEED TO PICKLE!
+                    binLabels = customlabels
+                )
+                print('AFTER >>>> Newly BATCHED: ExpCont_SubjData')
                 print(expCont.subjData.head())
+                #expCont.fSet = None  #Needed before pickling
                 pickleExpController(expCont)
-                expCont=getExpController(request)
-
-
-                expCont.subjData=expCont.assigner.splitInBins(batch_num,batch_name,customlabels)
-                print('ExpCont_SubjData')
-                print(expCont.subjData.head())
-                print('Exp assigner df')
-                print(expCont.assigner.df.head())
+                
                 expCont.saveSubjects()
                 dSubBatches=expCont.subjData
-                pickleExpController(expCont)
 
                 print("controller df")
                 # print(dSubBatches)
@@ -1204,6 +1262,8 @@ def uploadSampleFile(request):
 
                 dict_all['1']=dataframe
                 dict_all['batches']=groupby_batch_name_size
+                dict_all['exp_id']= expCont.exp.id
+                dict_all['custom_exp_id']=expCont.exp.custom_exp_id
                 
                 # dict_all['2']=groupsize
                 print('dictionary all')
@@ -1275,6 +1335,7 @@ def getExpController(request):
         print(request.user.custom_id,":",request.user.username)
         expAdminId = request.user.custom_id
         expCont = ExperimentController(a_id=expAdminId,e_id=sess_expId)
+        
         print("Exp Custom Id:",expCont.exp.custom_exp_id)
         print("The following features are ALREADY enabled:")
         print(list(expCont.exp.experiment_feature_set.all()))
@@ -1298,15 +1359,16 @@ def getExpController(request):
             print('in else cond to save obj in pickle')
             pickleExpController(expCont)
     else: #CREATE
-        print('in else create Exp obj  ')
+        print('CREATING NEW EXPERIMENT  ')
         expAdminId = request.user.custom_id
         print('expAdminId',expAdminId)
         expCont = ExperimentController(a_id=expAdminId)
-        print('Exp id',expCont.exp.id)
+        print('NEW Exp id',expCont.exp.id)
         request.session['sess_expId'] = expCont.exp.id
         request.session['sess_custExpId'] = expCont.exp.custom_exp_id
         print('request.session',request.session['sess_custExpId'] )
         print("SAVED NEW EXPERIMENT TO SESSION---->>>>>>")
+
     return expCont
 
 def pickleExpController(expCont):
@@ -1468,7 +1530,7 @@ class createExperiment(TemplateView):
             print('price_range_values1',price_range_values[0])
             print('price_range_values2',price_range_values[1])
             # mobiles_retrieved=samsung_phone.objects.filter(price_in_pkr__range=(price_range_values[0], price_range_values[1]))
-            mobiles_retrieved=mobilephones.objects.filter(price__range=(price_range_values[0], price_range_values[1])).order_by('price') 
+            mobiles_retrieved=mobilephones.objects.filter(price__range=(price_range_values[0], price_range_values[1])).order_by('id') 
             
             # else: 
             #     mobiles_retrieved=samsung_phone.objects.filter(price_in_pkr__range=(10000, 30000))

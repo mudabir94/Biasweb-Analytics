@@ -89,6 +89,13 @@ class  experiment(models.Model):
     """
     custom_exp_id=models.CharField(max_length=100,null=True,blank=True,unique=True)
     batches_title=models.CharField(max_length=100, null=True, blank=True)
+    # subj_id_field=models.CharField(max_length=100, null=True, blank=True)
+    # subj_email_field=models.CharField(max_length=100, null=True, blank=True)
+    # subj_subdetail=ListCharField(
+    #     base_field=CharField(max_length=20),
+    #     size=10,
+    #     max_length=(10*21)
+    # )
     capacity=models.IntegerField(default=100, null=True, blank=True)
     #DONE 24/10/2018 as ManyToMany: NEED ADD ADMIN ID AS A FOREIGN KEY
     admin=models.ManyToManyField(to=User, related_name='can_modify')
