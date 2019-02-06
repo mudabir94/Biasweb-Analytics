@@ -453,8 +453,9 @@ class adminSetup(TemplateView):
         if  request.is_ajax():
             print("in ajax")
             feature_to_display = list(feature_to_display.values())
-            print(feature_to_display)
+            print("feature to display",feature_to_display)
             feature_to_hide = list(feature_to_hide.values())
+            print("feature to hide",feature_to_hide)
             data={
                 'feature_to_display':feature_to_display,
                 'feature_to_hide':feature_to_hide
