@@ -354,12 +354,15 @@ def test(request):
         count=1
         
         for key,value in  enumerate(b):
-           
+        #   I have to make the roles part dynamic. 
             print ("val", value)
-             
-            with connection.cursor() as cursor:
-                cursor.execute("UPDATE webapp_sort_feature SET sh_hd="+"0"+" WHERE feature='"+value+"' and roles="+str(role)+"; ") 
-                print("executed") 
+            sort_feature_selected_obj=sort_feature.objects.get(feature=value,roles=1)
+            print("sortf",sort_feature_selected_obj) 
+            sort_feature_selected_obj.sh_hd=0
+            sort_feature_selected_obj.save()
+            # with connection.cursor() as cursor:
+            #     cursor.execute("UPDATE webapp_sort_feature SET sh_hd="+"0"+" WHERE feature='"+value+"' and roles="+str(1)+"; ") 
+            #     print("executed") 
             
         
 
@@ -383,10 +386,13 @@ def on(request):
         for key,value in  enumerate(b):
            
             print ("val", value)
-             
-            with connection.cursor() as cursor:
-                cursor.execute("UPDATE webapp_sort_feature SET sh_hd="+"1"+" WHERE feature='"+value+"' and roles="+str(role)+" ; ") 
-                print("executed") 
+            sort_feature_selected_obj=sort_feature.objects.get(feature=value,roles=1)
+            print("sortf",sort_feature_selected_obj) 
+            sort_feature_selected_obj.sh_hd=1
+            sort_feature_selected_obj.save() 
+            # with connection.cursor() as cursor:
+            #     cursor.execute("UPDATE webapp_sort_feature SET sh_hd="+"1"+" WHERE feature='"+value+"' and roles="+str(role)+" ; ") 
+            #     print("executed") 
             
         
 
@@ -426,42 +432,60 @@ def globalFunc(request):
 
         
     
-
-def adminSetup(request):
+feature_to_display=''
+feature_to_hide=''
+class adminSetup(TemplateView):
     # global  role
-    
-    colors=['black','white','gold']
-    size=['0','1','3','4','4.1','4.2','4.3','4.4','4.5','4.6','4.7','4.8','4.9','5','5.1','5.2','5.3','5.4','5.5','5.6','5.7','5.8','5.9','6','6.1','6.2','6.3','6.4','6.5','6.6','6.7','6.8','6.9','7']
-    role_name=['']
-    print(request.user.id)
-    userobj=User.objects.get(pk=request.user.id)
-    print("user object",userobj.role_id_id)
-    role_id=userobj.role_id_id
-    roleobj=Role.objects.get(pk=role_id)
-    role=roleobj.role_name
-    print(role)
+    global feature_to_display
+    global feature_to_hide
+    def get(self,request):
+        global feature_to_display
+        global feature_to_hide
+        role_name=['']
+        print(request.user.id)
+        userobj=User.objects.get(pk=request.user.id)
+        print("user object",userobj.role_id_id)
+        role_id=userobj.role_id_id
+        roleobj=Role.objects.get(pk=role_id)
+        role=roleobj.role_name
+        print(role)
+       
+        if  request.is_ajax():
+            print("in ajax")
+            feature_to_display = list(feature_to_display.values())
+            print(feature_to_display)
+            feature_to_hide = list(feature_to_hide.values())
+            data={
+                'feature_to_display':feature_to_display,
+                'feature_to_hide':feature_to_hide
+            }
+            return JsonResponse(data)
+        else:
+            if role=='Super_Admin':        
+                feature_to_display=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role_id).order_by('position')
+                
+                print("feature",feature_to_display)
+                feature_to_hide=sort_feature.objects.filter(Q(sh_hd = 0),roles=role_id).order_by('position')    
+                print("feature2",feature_to_hide)
 
-    if role=='Super_Admin':
-        print("role",role)
-        
-        feat=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role_id).order_by('position')
-        ft=sort_feature.objects.filter(Q(sh_hd = 0),roles=role_id).order_by('position')    
-      
-    elif role=='Experiment_Admin':
-        print('herereerer')
-        feat=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role).order_by('position')
-        ft=sort_feature.objects.filter(Q(sh_hd = 0),roles=role).order_by('position')    
-        # roleobj=Role.objects.get(pk=role)
-        # role_name=roleobj.role_name
-        # print(role_name)
-        
-    elif role=='Platform_Admin':
-        feat=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role).order_by('position')
-        ft=sort_feature.objects.filter(Q(sh_hd = 0),roles=role).order_by('position')    
+            elif role=='Experiment_Admin':
+                feature_to_display=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role).order_by('position')
+                feature_to_hide=sort_feature.objects.filter(Q(sh_hd = 0),roles=role).order_by('position')    
+                # roleobj=Role.objects.get(pk=role)
+                # role_name=roleobj.role_name
+                # print(role_name)
+                
+            elif role=='Platform_Admin':
+                feature_to_display=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role).order_by('position')
+                feature_to_hide=sort_feature.objects.filter(Q(sh_hd = 0),roles=role).order_by('position')    
+                roleobj=Role.objects.get(pk=role)
+                role_name=roleobj.role_name
+                print(role_name)
+            return render(request, 'webapp/admin_setup.html',{'role_name':role,'feature_to_display':feature_to_display,'feature_to_hide':feature_to_hide})
 
-        roleobj=Role.objects.get(pk=role)
-        role_name=roleobj.role_name
-        print(role_name)
+            
+    def post(self,request):
+        pass
         
 
     #*****************************************************
@@ -470,7 +494,7 @@ def adminSetup(request):
     #    role_name=['Student']
     # elif role==2:
     #     role_name=['Professor']
-    return render(request, 'webapp/admin_setup.html',{'feat':feat,'colors':colors,'role_name':role_name,'size':size,'ft':ft})
+    
     '''
     if request.user.is_authenticated:
                 
@@ -566,41 +590,74 @@ class filter(TemplateView):
             return render(request,'webapp/filter_test.html',{'mobiles':mobiles,'colors':colors,
             'os':os,'size':size,'feat':feat,'cpu':cpu,'back_cm':back_cm,'battery':battery})
         '''
-        if request.user.is_authenticated:
+        print(request.user.id)
+        userobj=User.objects.get(pk=request.user.id)
+        print("user object",userobj.role_id_id)
+        role=userobj.role_id_id
+        roleobj=Role.objects.get(pk=role)
+        role=roleobj.role_name
+        print(role)
+        colors=['black','white','gold']
+        os=['android v8.0 oreo','android v7.1.1 (nougat)','android v4.4 (kitkat)','android v6.0 (marshmallow)',
+            'android v5.0.2 (lollipop)','android v5.1 (lollipop)','android v4.3 (jelly bean)']
+        size=['0','1','3','4','4.1','4.2','4.3','4.4','4.5','4.6','4.7','4.8','4.9','5','5.1','5.2','5.3','5.4','5.5','5.6','5.7','5.8','5.9','6','6.1','6.2','6.3','6.4','6.5','6.6','6.7','6.8','6.9','7']
+        cpu=['octa-core','quad-core']
+        back_cm=['16 MP','13 MP','8 MP','5.0 MP','3.7 MP','2 MP','1.9 MP','VGA']
+        battery=['3600 mAh','3300 mAh','3000 mAh','2600 mAh','2400 mAh','2350']
+        mobilecompany=['samsung','I Phone']
+        chip=['Exynos 9810 Octa','Exynos 8895 Octa','Qualcomm Snapdragon 805','Exynos8890Octa','Quad-core (2 x 2.15 GHz Kryo + 2 x 1.6 GHz Kryo)','Exynos 7885 Octa','QualcommMSM8996Snapdragon820','Exynos7420','Exynos 7420 Octa','Exynos 7880 Octa','QualcommMSM8953Snapdragon625','Mediatek MT6757 Helio P20','Exynos 7870 SoC','Exynos 7870','1.4 GHz Quad-Core Cortex-A53','QualcommMSM816Snapdragon410','QualcommMSM8917Snapdragon425','1.2 GHz Quad-core Cortex-A53','Spreadtrum SC9830','MediatekMT6737T','Exynos3475','Spreadtrum SC9830','Spreadtrum','','']
+        resolution=['720 x 1280','540 x 960','480 x 800','1440 x 2960','1080 x 2220','1080 x 1920']      
+        weight=['163','195','173','174','155','191','157','172','132','0','181','169','179','135','160','170','143','159','146','156','138','131','122','126','153']  
+        dimensions=['147.6 x 68.7 x 8.4 mm','162.5 x 74.6 x 8.5 mm','159.5 x 73.4 x 8.1 mm','151.3 x 82.4 x 8.3 mm','148.9 x 68.1 x 8 mm','159.9 x 75.7 x 8.3 mm','150.9 x 72.6 x 7.7 mm','149.2 x 70.6 x 8.4 mm','143.4 x 70.8 x 6.9 mm','142.1 x 70.1 x 7 mm','153.2 x 76.1 x 7.6 mm','156.8 x 77.6 x 7.9 mm','146.1 x 71.4 x 7.9 mm','152.4 x 74.7 x 7.9 mm','146.8 x 75.3 x 8.9 mm','146.8 x 75.3 x 8.9 mm','156.7 x 78.8 x 8.1 mm','135.4 x 66.2 x 7.9 mm']
+        if role=='Super_Admin':
+            roles=2
+            feat=sort_feature.objects.filter(~Q(sh_hd = 0),roles=roles).order_by('position')
+            ft=sort_feature.objects.filter(Q(sh_hd = 0),roles=roles).order_by('position')
+            print("In super admin")
+        elif role=='Subject':
+            # global role
+            roles=1
+            feat=sort_feature.objects.filter(~Q(sh_hd = 0),roles=roles).order_by('position')
+            ft=sort_feature.objects.filter(Q(sh_hd = 0),roles=roles).order_by('position')
+        else:
+            print("in mobile redirect")
+            return redirect('/mobileanl/mobile')
+
+        # if request.user.is_authenticated:
             
-            colors=['black','white','gold']
-            os=['android v8.0 oreo','android v7.1.1 (nougat)','android v4.4 (kitkat)','android v6.0 (marshmallow)',
-                'android v5.0.2 (lollipop)','android v5.1 (lollipop)','android v4.3 (jelly bean)']
-            size=['0','1','3','4','4.1','4.2','4.3','4.4','4.5','4.6','4.7','4.8','4.9','5','5.1','5.2','5.3','5.4','5.5','5.6','5.7','5.8','5.9','6','6.1','6.2','6.3','6.4','6.5','6.6','6.7','6.8','6.9','7']
-            cpu=['octa-core','quad-core']
-            back_cm=['16 MP','13 MP','8 MP','5.0 MP','3.7 MP','2 MP','1.9 MP','VGA']
-            battery=['3600 mAh','3300 mAh','3000 mAh','2600 mAh','2400 mAh','2350']
-            mobilecompany=['samsung','I Phone']
-            chip=['Exynos 9810 Octa','Exynos 8895 Octa','Qualcomm Snapdragon 805','Exynos8890Octa','Quad-core (2 x 2.15 GHz Kryo + 2 x 1.6 GHz Kryo)','Exynos 7885 Octa','QualcommMSM8996Snapdragon820','Exynos7420','Exynos 7420 Octa','Exynos 7880 Octa','QualcommMSM8953Snapdragon625','Mediatek MT6757 Helio P20','Exynos 7870 SoC','Exynos 7870','1.4 GHz Quad-Core Cortex-A53','QualcommMSM816Snapdragon410','QualcommMSM8917Snapdragon425','1.2 GHz Quad-core Cortex-A53','Spreadtrum SC9830','MediatekMT6737T','Exynos3475','Spreadtrum SC9830','Spreadtrum','','']
-            resolution=['720 x 1280','540 x 960','480 x 800','1440 x 2960','1080 x 2220','1080 x 1920']      
-            weight=['163','195','173','174','155','191','157','172','132','0','181','169','179','135','160','170','143','159','146','156','138','131','122','126','153']  
-            dimensions=['147.6 x 68.7 x 8.4 mm','162.5 x 74.6 x 8.5 mm','159.5 x 73.4 x 8.1 mm','151.3 x 82.4 x 8.3 mm','148.9 x 68.1 x 8 mm','159.9 x 75.7 x 8.3 mm','150.9 x 72.6 x 7.7 mm','149.2 x 70.6 x 8.4 mm','143.4 x 70.8 x 6.9 mm','142.1 x 70.1 x 7 mm','153.2 x 76.1 x 7.6 mm','156.8 x 77.6 x 7.9 mm','146.1 x 71.4 x 7.9 mm','152.4 x 74.7 x 7.9 mm','146.8 x 75.3 x 8.9 mm','146.8 x 75.3 x 8.9 mm','156.7 x 78.8 x 8.1 mm','135.4 x 66.2 x 7.9 mm']
-            if request.user.is_student:
-                global  role
-                role=1
-                feat=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role).order_by('position')
-                ft=sort_feature.objects.filter(Q(sh_hd = 0),roles=role).order_by('position')
+        #     colors=['black','white','gold']
+        #     os=['android v8.0 oreo','android v7.1.1 (nougat)','android v4.4 (kitkat)','android v6.0 (marshmallow)',
+        #         'android v5.0.2 (lollipop)','android v5.1 (lollipop)','android v4.3 (jelly bean)']
+        #     size=['0','1','3','4','4.1','4.2','4.3','4.4','4.5','4.6','4.7','4.8','4.9','5','5.1','5.2','5.3','5.4','5.5','5.6','5.7','5.8','5.9','6','6.1','6.2','6.3','6.4','6.5','6.6','6.7','6.8','6.9','7']
+        #     cpu=['octa-core','quad-core']
+        #     back_cm=['16 MP','13 MP','8 MP','5.0 MP','3.7 MP','2 MP','1.9 MP','VGA']
+        #     battery=['3600 mAh','3300 mAh','3000 mAh','2600 mAh','2400 mAh','2350']
+        #     mobilecompany=['samsung','I Phone']
+        #     chip=['Exynos 9810 Octa','Exynos 8895 Octa','Qualcomm Snapdragon 805','Exynos8890Octa','Quad-core (2 x 2.15 GHz Kryo + 2 x 1.6 GHz Kryo)','Exynos 7885 Octa','QualcommMSM8996Snapdragon820','Exynos7420','Exynos 7420 Octa','Exynos 7880 Octa','QualcommMSM8953Snapdragon625','Mediatek MT6757 Helio P20','Exynos 7870 SoC','Exynos 7870','1.4 GHz Quad-Core Cortex-A53','QualcommMSM816Snapdragon410','QualcommMSM8917Snapdragon425','1.2 GHz Quad-core Cortex-A53','Spreadtrum SC9830','MediatekMT6737T','Exynos3475','Spreadtrum SC9830','Spreadtrum','','']
+        #     resolution=['720 x 1280','540 x 960','480 x 800','1440 x 2960','1080 x 2220','1080 x 1920']      
+        #     weight=['163','195','173','174','155','191','157','172','132','0','181','169','179','135','160','170','143','159','146','156','138','131','122','126','153']  
+        #     dimensions=['147.6 x 68.7 x 8.4 mm','162.5 x 74.6 x 8.5 mm','159.5 x 73.4 x 8.1 mm','151.3 x 82.4 x 8.3 mm','148.9 x 68.1 x 8 mm','159.9 x 75.7 x 8.3 mm','150.9 x 72.6 x 7.7 mm','149.2 x 70.6 x 8.4 mm','143.4 x 70.8 x 6.9 mm','142.1 x 70.1 x 7 mm','153.2 x 76.1 x 7.6 mm','156.8 x 77.6 x 7.9 mm','146.1 x 71.4 x 7.9 mm','152.4 x 74.7 x 7.9 mm','146.8 x 75.3 x 8.9 mm','146.8 x 75.3 x 8.9 mm','156.7 x 78.8 x 8.1 mm','135.4 x 66.2 x 7.9 mm']
+        #     if request.user.is_student:
+        #         global  role
+        #         role=1
+        #         feat=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role).order_by('position')
+        #         ft=sort_feature.objects.filter(Q(sh_hd = 0),roles=role).order_by('position')
                 
 
             
-            elif request.user.is_prof:
-                role=2
-                feat=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role).order_by('position')
-                ft=sort_feature.objects.filter(Q(sh_hd = 0),roles=role).order_by('position')
+        #     elif request.user.is_prof:
+        #         role=2
+        #         feat=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role).order_by('position')
+        #         ft=sort_feature.objects.filter(Q(sh_hd = 0),roles=role).order_by('position')
                
-                #return redirect('/admin')
-            else:
-                print("in mobile redirect")
-                return redirect('/mobileanl/mobile')  
+        #         #return redirect('/admin')
+        #     else:
+        #         print("in mobile redirect")
+        #         return redirect('/mobileanl/mobile')  
             
-        else:
-            print("in else authenticate failed")
-            return redirect('/mobileanl/mobile')  
+        # else:
+        #     print("in else authenticate failed")
+        #     return redirect('/mobileanl/mobile')  
 
 
         return render(request,'webapp/filter_test.html',{'colors':colors,
@@ -698,9 +755,9 @@ class filter(TemplateView):
                 
             else:
                 # query = 'SELECT * FROM webapp_samsung_phone '
-                query = 'SELECT * FROM webapp_mobilesphone '
+                query = 'SELECT * FROM webapp_mobilephones '
                 # mobiles=samsung_phone.objects.raw(query)
-                mobiles=mobilesphone.objects.raw(query)
+                mobiles=mobilephones.objects.raw(query)
                 sizeofmob=len(list(mobiles))
                 print(sizeofmob)
             print("sizeofmob",sizeofmob)
@@ -748,35 +805,21 @@ class mobile_phone_view(TemplateView):
         #form=mobile_phone_form(request.POST)
         querry_array=[]
         querry=''
-        # These check have to be changed in future..... 
-        if not request.user.is_superuser:
-            if request.user.is_student:
-                
-                obj=prunedmobilephones.objects.filter(roles=1)
-                for m in obj:
-                    querry_array.append(' ' + 'id='+str(m.m_id)+ ' ' )
-                    
-
-                # querry='SELECT * FROM webapp_samsung_phone WHERE '+ 'or'.join(querry_array)
-                querry='SELECT * FROM webapp_mobilephones WHERE '+ 'or'.join(querry_array)
-                print(querry)
-                # mobiles=samsung_phone.objects.raw(querry)
-                mobiles=mobilephones.objects.raw(querry)
-                return render(request,'webapp/comparemobile_specs.html',{'mobiles':mobiles})
-            if request.user.is_prof:
-                obj=prunedmobilephones.objects.filter(roles=2)
-                print("in here")
-                for m in obj:
-                    querry_array.append(' ' + 'id='+str(m.m_id)+ ' ' )
-                    
-
-                # querry='SELECT * FROM webapp_samsung_phone WHERE '+ 'or'.join(querry_array)
-                querry='SELECT * FROM webapp_mobilephones WHERE '+ 'or'.join(querry_array)
-                print(querry)
-                # mobiles=samsung_phone.objects.raw(querry)
-                mobiles=mobilephones.objects.raw(querry)
-                return render(request,'webapp/comparemobile_specs.html',{'mobiles':mobiles})
-        # as above check will  be changed in future we might not need the above code. . 
+        
+        userobj=User.objects.get(pk=request.user.id)
+        role=userobj.role_id_id
+        roleobj=Role.objects.get(pk=role)
+        role=roleobj.role_name
+        if role=='Super_Admin':
+            mobiles= mobilephones.objects.all() 
+            paginator = Paginator(mobiles,9)
+            page = request.GET.get('page')
+            mobiles = paginator.get_page(page)
+            print(mobiles)
+            template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
+            return render(request,self.template_name,{'mobiles':mobiles,'template_sidebar':template_sidebar})
+        elif role=='Subject':
+            pass
         else:
             # mobiles= samsung_phone.objects.all() 
             mobiles= mobilephones.objects.all() 
@@ -786,7 +829,6 @@ class mobile_phone_view(TemplateView):
             print(mobiles)
         
             return render(request,self.template_name,{'mobiles':mobiles})
-  
     def post(self,request):
         if request.method=="POST":
             form=mobile_phone_form(request.POST)

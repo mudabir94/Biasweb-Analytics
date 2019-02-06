@@ -23,7 +23,7 @@ urlpatterns = [
 
 
 #----------------------------------------------------------------------------------------------------------
-    url(r'^admin_setup/' , views.adminSetup , name='admin_setup') ,
+    url(r'^admin_setup/' , views.adminSetup.as_view() , name='admin_setup') ,
     url(r'^mobile/',views.mobile_phone_view.as_view(),name='mobileview'),
     path('mobile_info/<int:id>',views.mobile_phone_view.one_mobile_func, name='mobileinfo'),
     url(r'^filter/',views.filter.as_view(), name='filter'),

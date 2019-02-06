@@ -1,4 +1,4 @@
-{% extends "webapp/base.html" %}
+{% extends "webapp/newbase.html" %}
 {% block content %}
 {%load static from staticfiles%}
 
@@ -25,39 +25,10 @@
           </div>
         </div>
       </nav> -->
-      <nav class="navbar navbar-dark bg-dark">
-            <!-- <div class="container-fluid"> -->
-              <!-- <div class="navbar-header" > -->
-                  
-                <a class="navbar-brand" href="#">Mobile Analytics</a>
-                  
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar" 
-                aria-expanded="false" aria-label="Toggle navigation"style="background: transparent;">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-              <!-- </div> -->
-              <div class="collapse navbar-collapse" id="myNavbar">
-                <ul class=" navbar-nav mr-auto">
-                 
-                  <li><a href="{%url 'homepage'%}">Home </a></li>
-                  <li><a href="#" >About</a></li>
-                  {% if  user.is_authenticated %}
-                  <li><p id="username">{{ user.get_username }}</p></li>
-                  <li><p id="role">{{ user.role_id.role_name }}</p></li>
-                  <li><a href="{% url 'logout'%}">Logout</a></li> 
-                  {% else %}
-                  <li><a href="{% url 'login'%}?next={{request.path}}">Login</a></li>   
-                  {% endif %}  
-                </ul>
-                <!--<ul class="nav navbar-nav navbar-right">
-                  <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-                </ul>-->
-              </div>
-            <!-- </div> -->
-    </nav>    
+      
       <div class="container-fluid text-center">    
         <div class="row content">
-          <div class="col-sm-2 sidenav">
+          <div class="col-sm-1 sidenav">
                 <ul class="nav nav-pills nav-stacked">
                        
                        <!-- <li ><a href="{%url 'admin_setup'%}">Advance Search Setup</a></li>
@@ -65,23 +36,21 @@
                         
                 </ul><br>
           </div>
-        <div class="col-sm-6 text-left"> 
+        <div class="col-sm-7 text-left"> 
                 <select id="roles" >
+                    <!-- In Future this has to become dynamic -->
                         <option >Please Select</option>
-                        <option  value=1>STUDENT</option>
-                        <option  value=2>PROFESSOR</option>
-                        <option  value=3>RA</option>
+                        <option  value=1>Exp1</option>
+                        <option  value=2>Exp2</option>
+                        <option  value=3>Exp3</option>
                 </select>
                 <input type="hidden" value="" id="role_value" name="role_value"/>
               
             <div class="container latest-product-section"> 
                 <form action="" method="POST">
                     {%csrf_token%}
-                    {%for n in role_name %}
-                   
-                    <p>Role :  {{n}} </p>   
-                    
-                    {%endfor%}
+                    <p>Role :  Exp1 </p>   
+                    <div id="display_feature_div"></div>
                     <ul id="sortable">
                     {%for f in feat %}
                         <li id="{{f.feature}}_{{f.position}}">
@@ -105,7 +74,6 @@
                                         <div class="col-md-4">
                                         <button class="btn btn-primary">Color</button>
                                         <button class='show_hide' onclick="myFunction($(this).parent().parent().parent().attr('id'))">Hide</button>
-
                                         </div>
                                         
                                 </div>
@@ -406,7 +374,47 @@
       </footer>
 
 <script >
+    
 
+$(document).ready(function () {
+    $.ajax({
+                                url: "{% url 'admin_setup' %}",
+                                type:'GET',
+                                'data': {
+                                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                                },
+                                dataType: "json",
+                                
+                                success: function(data){
+                                    console.log(data['feature_to_display'])
+                                    var disp_feat_div=document.getElementById('display_feature_div');
+                                    var ul_sortable=document.createElement('UL');
+                                    ul_sortable.setAttribute('id','sortable');
+                                    disp_feat_div.append(ul_sortable);
+
+                                    var li_sortable=document.createElement('li');
+                                    li_sortable.id="Color"+"_1"
+                                    ul_sortable.appendChild(li_sortable);
+                                    
+                                    var div_row_col_md3=document.createElement('div');
+                                    div_row_col_md3.setAttribute("class",'row');
+                                    li_sortable.append(div_row_col_md3);    
+                                    var div_col_md_3=document.createElement('div');
+                                    div_col_md_3.setAttribute("class","col-md-3");
+                                    div_row_col_md3.append(div_col_md_3);
+                                    var btn_btn_primary=document.createElement('button');
+                                    btn_btn_primary.setAttribute("class","btn btn-primary");
+                                    btn_btn_primary.innerHTML="COLOR";
+                                    var btn_show_hide=document.createElement('button');
+                                    btn_show_hide.setAttribute("class","show_hide");
+                                    btn_show_hide.setAttribute("onclick","myfunction($(this).parent().parent().parent().attr('id'))");
+                                    btn_show_hide.innerHTML="Hide"
+                                    div_col_md_3.appendChild(btn_btn_primary)
+                                    div_col_md_3.appendChild(btn_show_hide)
+                                }
+
+    });
+});
 $("#roles").change(function() {
 role_data=$('#roles option:selected').val()
 console.log(typeof role_data ); 
