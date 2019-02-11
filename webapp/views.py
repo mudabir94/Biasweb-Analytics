@@ -566,9 +566,11 @@ class showFilter(TemplateView):
         battery=['3600 mAh','3300 mAh','3000 mAh','2600 mAh','2400 mAh','2350']
         return render(request,'webapp/filter_test.html',{'mobiles':mobiles,'colors':colors,
         'os':os,'size':size,'feat':feat,'cpu':cpu,'back_cm':back_cm,'battery':battery})
-
+filter_features=[]
 class filter(TemplateView):
+   
     def get(self,request):
+        global filter_features
         ''' 
             print("in filter")
             
@@ -587,6 +589,39 @@ class filter(TemplateView):
             return render(request,'webapp/filter_test.html',{'mobiles':mobiles,'colors':colors,
             'os':os,'size':size,'feat':feat,'cpu':cpu,'back_cm':back_cm,'battery':battery})
         '''
+        
+        if request.is_ajax():
+            print("IN AJAX REQUEST")
+            price=['10000','15000','20000','35000','50000','80000']
+            size=['4','4.5','5','6','7']
+            colors=['black','white','gold']
+            os=['android v8.0 oreo','android v7.1.1 (nougat)','android v4.4 (kitkat)','android v6.0 (marshmallow)',
+            'android v5.0.2 (lollipop)','android v5.1 (lollipop)','android v4.3 (jelly bean)']
+            # size=['0','1','3','4','4.1','4.2','4.3','4.4','4.5','4.6','4.7','4.8','4.9','5','5.1','5.2','5.3','5.4','5.5','5.6','5.7','5.8','5.9','6','6.1','6.2','6.3','6.4','6.5','6.6','6.7','6.8','6.9','7']
+            cpu=['octa-core','quad-core']
+            backcam=['16 MP','13 MP','8 MP','5.0 MP','3.7 MP','2 MP','1.9 MP','VGA']
+            battery=['3600 mAh','3300 mAh','3000 mAh','2600 mAh','2400 mAh','2350']
+            mobilecompany=['samsung','I Phone']
+            chip=['Exynos 9810 Octa','Exynos 8895 Octa','Qualcomm Snapdragon 805','Exynos8890Octa','Quad-core (2 x 2.15 GHz Kryo + 2 x 1.6 GHz Kryo)','Exynos 7885 Octa','QualcommMSM8996Snapdragon820','Exynos7420','Exynos 7420 Octa','Exynos 7880 Octa','QualcommMSM8953Snapdragon625','Mediatek MT6757 Helio P20','Exynos 7870 SoC','Exynos 7870','1.4 GHz Quad-Core Cortex-A53','QualcommMSM816Snapdragon410','QualcommMSM8917Snapdragon425','1.2 GHz Quad-core Cortex-A53','Spreadtrum SC9830','MediatekMT6737T','Exynos3475','Spreadtrum SC9830','Spreadtrum','','']
+            resolution=['720 x 1280','540 x 960','480 x 800','1440 x 2960','1080 x 2220','1080 x 1920']      
+            weight=['163','195','173','174','155','191','157','172','132','0','181','169','179','135','160','170','143','159','146','156','138','131','122','126','153']  
+            dimensions=['147.6 x 68.7 x 8.4 mm','162.5 x 74.6 x 8.5 mm','159.5 x 73.4 x 8.1 mm','151.3 x 82.4 x 8.3 mm','148.9 x 68.1 x 8 mm','159.9 x 75.7 x 8.3 mm','150.9 x 72.6 x 7.7 mm','149.2 x 70.6 x 8.4 mm','143.4 x 70.8 x 6.9 mm','142.1 x 70.1 x 7 mm','153.2 x 76.1 x 7.6 mm','156.8 x 77.6 x 7.9 mm','146.1 x 71.4 x 7.9 mm','152.4 x 74.7 x 7.9 mm','146.8 x 75.3 x 8.9 mm','146.8 x 75.3 x 8.9 mm','156.7 x 78.8 x 8.1 mm','135.4 x 66.2 x 7.9 mm']
+            filter_features = list(filter_features.values())
+            data_filter_feature={}
+            # data_filter_feature['backcam']=backcam
+            data_filter_feature['os']=os
+            # data_filter_feature['battery']=battery
+            # data_filter_feature['colors']=colors
+            # data_filter_feature['cpu']=cpu
+            # The features that are selected for the subject, will be extracted one by one. 
+            # Based on the feature names thier data will be inserted in list. 
+            # e.g f.color=features.get(name=color)-->['black',brown,..]
+            # similarly get every feature data and insert all this in a dic data_filter_feature and pass to ajaxreq
+            data={
+                'feat':filter_features,
+                'data_filter_feature':data_filter_feature
+                }
+            return JsonResponse(data)
         print(request.user.id)
         userobj=User.objects.get(pk=request.user.id)
         print("user object",userobj.role_id_id)
@@ -594,26 +629,17 @@ class filter(TemplateView):
         roleobj=Role.objects.get(pk=role)
         role=roleobj.role_name
         print(role)
-        colors=['black','white','gold']
-        os=['android v8.0 oreo','android v7.1.1 (nougat)','android v4.4 (kitkat)','android v6.0 (marshmallow)',
-            'android v5.0.2 (lollipop)','android v5.1 (lollipop)','android v4.3 (jelly bean)']
-        size=['0','1','3','4','4.1','4.2','4.3','4.4','4.5','4.6','4.7','4.8','4.9','5','5.1','5.2','5.3','5.4','5.5','5.6','5.7','5.8','5.9','6','6.1','6.2','6.3','6.4','6.5','6.6','6.7','6.8','6.9','7']
-        cpu=['octa-core','quad-core']
-        back_cm=['16 MP','13 MP','8 MP','5.0 MP','3.7 MP','2 MP','1.9 MP','VGA']
-        battery=['3600 mAh','3300 mAh','3000 mAh','2600 mAh','2400 mAh','2350']
-        mobilecompany=['samsung','I Phone']
-        chip=['Exynos 9810 Octa','Exynos 8895 Octa','Qualcomm Snapdragon 805','Exynos8890Octa','Quad-core (2 x 2.15 GHz Kryo + 2 x 1.6 GHz Kryo)','Exynos 7885 Octa','QualcommMSM8996Snapdragon820','Exynos7420','Exynos 7420 Octa','Exynos 7880 Octa','QualcommMSM8953Snapdragon625','Mediatek MT6757 Helio P20','Exynos 7870 SoC','Exynos 7870','1.4 GHz Quad-Core Cortex-A53','QualcommMSM816Snapdragon410','QualcommMSM8917Snapdragon425','1.2 GHz Quad-core Cortex-A53','Spreadtrum SC9830','MediatekMT6737T','Exynos3475','Spreadtrum SC9830','Spreadtrum','','']
-        resolution=['720 x 1280','540 x 960','480 x 800','1440 x 2960','1080 x 2220','1080 x 1920']      
-        weight=['163','195','173','174','155','191','157','172','132','0','181','169','179','135','160','170','143','159','146','156','138','131','122','126','153']  
-        dimensions=['147.6 x 68.7 x 8.4 mm','162.5 x 74.6 x 8.5 mm','159.5 x 73.4 x 8.1 mm','151.3 x 82.4 x 8.3 mm','148.9 x 68.1 x 8 mm','159.9 x 75.7 x 8.3 mm','150.9 x 72.6 x 7.7 mm','149.2 x 70.6 x 8.4 mm','143.4 x 70.8 x 6.9 mm','142.1 x 70.1 x 7 mm','153.2 x 76.1 x 7.6 mm','156.8 x 77.6 x 7.9 mm','146.1 x 71.4 x 7.9 mm','152.4 x 74.7 x 7.9 mm','146.8 x 75.3 x 8.9 mm','146.8 x 75.3 x 8.9 mm','156.7 x 78.8 x 8.1 mm','135.4 x 66.2 x 7.9 mm']
+        
         if role=='Super_Admin':
-            roles=2
-            feat=sort_feature.objects.filter(~Q(sh_hd = 0),roles=roles).order_by('position')
+            roles=1
+            filter_features=sort_feature.objects.filter(~Q(sh_hd = 0),roles=roles).order_by('position')
+            # feat=sort_feature.objects.filter(~Q(sh_hd = 0),roles=roles).order_by('position')
+
             ft=sort_feature.objects.filter(Q(sh_hd = 0),roles=roles).order_by('position')
-            print("In super admin")
+            print("In super admin",filter_features)
         elif role=='Subject':
             # global role
-            roles=1
+            roles=2
             feat=sort_feature.objects.filter(~Q(sh_hd = 0),roles=roles).order_by('position')
             ft=sort_feature.objects.filter(Q(sh_hd = 0),roles=roles).order_by('position')
         else:
@@ -657,111 +683,129 @@ class filter(TemplateView):
         #     return redirect('/mobileanl/mobile')  
 
 
-        return render(request,'webapp/filter_test.html',{'colors':colors,
-            'os':os,'size':size,'feat':feat,'ft':ft,'cpu':cpu,'back_cm':back_cm,'battery':battery,'mobilecompany':mobilecompany,'chip':chip,'resolution':resolution,'weight':weight,'dimensions':dimensions})
+        return render(request,'webapp/filter_test.html',
+        { 'feat':filter_features
+            # 'colors':colors,
+            # 'os':os,'size':size,'feat':filter_features,'ft':ft,'cpu':cpu,'back_cm':back_cm,'battery':battery,'mobilecompany':mobilecompany,'chip':chip,'resolution':resolution,'weight':weight,'dimensions':dimensions
+            })
     
     def post(self,request):
         # print("ssss",(request.POST['first_choice_value']))
         # print("ssss",form.cleaned_data['first_choice_value'])
         global sizeofmob
         
-        if request.method=="POST":
-            first_choice = request.POST['first_choice_value']
-            print("fc",first_choice)
-            first_choice2 = request.POST['first_choice2_value']
-            print("fc2",first_choice2)
-            second_choice=request.POST['second_choice_value']
-            print("sc",second_choice)
-            third_choice=request.POST['third_choice_value']
-            print("tc",third_choice)
-            fourth_choice=request.POST['fourth_choice_value']
-            print("fc",fourth_choice)
-            fourth_choice2=request.POST['fourth_choice2_value']
-            print("f2c",fourth_choice2)
-            fifth_choice=request.POST['fifth_choice_value']
-            print("fc",fifth_choice)
-            six_choice=request.POST['six_choice_value']
-            print("sixc",six_choice)
-            seven_choice=request.POST['seven_choice_value']
-            print("sevc",seven_choice)
-            eight_choice=request.POST['eight_choice_value']
+        # if request.method=="POST":
+            # first_choice = request.POST['first_choice_value']
+            # print("fc",first_choice)
+            # first_choice2 = request.POST['first_choice2_value']
+            # print("fc2",first_choice2)
+            # second_choice=request.POST['second_choice_value']
+            # print("sc",second_choice)
+            # third_choice=request.POST['third_choice_value']
+            # print("tc",third_choice)
+            # fourth_choice=request.POST['fourth_choice_value']
+            # print("fc",fourth_choice)
+            # fourth_choice2=request.POST['fourth_choice2_value']
+            # print("f2c",fourth_choice2)
+            # fifth_choice=request.POST['fifth_choice_value']
+            # print("fc",fifth_choice)
+            # six_choice=request.POST['six_choice_value']
+            # print("sixc",six_choice)
+            # seven_choice=request.POST['seven_choice_value']
+            # print("sevc",seven_choice)
+            # eight_choice=request.POST['eight_choice_value']
         
-            nine_choice=request.POST['nine_choice_value']
+            # nine_choice=request.POST['nine_choice_value']
             
-            ten_choice=request.POST['ten_choice_value']
+            # ten_choice=request.POST['ten_choice_value']
             
-            eleven_choice=request.POST['eleven_choice_value']
-            print("ele",eleven_choice)
-            twelve_choice=request.POST['twelve_choice_value']
+            # eleven_choice=request.POST['eleven_choice_value']
+            # print("ele",eleven_choice)
+            # twelve_choice=request.POST['twelve_choice_value']
+        filter_d={}
+        if request.is_ajax():
+            d = request.POST.get('filt_opt_sel')
+            #print('d',d)
+            filt_opt_sel = json.loads(d)
+            # print("filt_opt_sel",filt_opt_sel)
+            filter_d=filt_opt_sel
+            # data={'success':"success"}
+            # return JsonResponse(data)
+
+
+
+        # filter_d = {  'Colors' : second_choice,
+        #             'OS' : third_choice,
+        #             'Size': {'1':fourth_choice,'2':fourth_choice2},
+        #             'price':{'1':first_choice,'2':first_choice2},
+        #             'Cpu'  : fifth_choice,
+        #             'back_camera':six_choice,
+        #             'battery' : seven_choice,
+        #             'Mobile_Companny':eight_choice,
+        #             'Chip':nine_choice,
+        #             'Resolution':ten_choice,
+        #             'Weight':eleven_choice,
+        #             'Dimensions':twelve_choice
+        #      }
+        print(filter_d)
+        query_array = []
+        temparray=[]
+           
             
-            filter = {'Colors' : second_choice,
-                 'OS' : third_choice,
-                 'Size': {'1':fourth_choice,'2':fourth_choice2},
-                 'price':{'1':first_choice,'2':first_choice2},
-                 'Cpu'  : fifth_choice,
-                 'back_camera':six_choice,
-                 'battery' : seven_choice,
-                 'Mobile_Companny':eight_choice,
-                 'Chip':nine_choice,
-                 'Resolution':ten_choice,
-                 'Weight':eleven_choice,
-                 'Dimensions':twelve_choice
-                 }
-            print(filter)
-            query_array = []
-            temparray=[]
             
-            for key in filter:
-                if (filter[key] != ''):
-                    print("key",key)
-                    if(key == 'Size' ):
-                        temparray=[]
-                        for k in filter[key]:
-                            if (filter[key][k]!=''):
-                                print("in size",filter[key][k])
-                                temparray.append(filter[key][k])
-                        print(temparray)
-                        if  temparray:
-                            query_array.append(' '+key +' BETWEEN '+temparray[0]+ ' AND '+ temparray[1] +" " )
-                    elif(key == 'price'):
-                        temparray=[]
-                        for k in filter[key]:
-                            if (filter[key][k]!=''):
-                                print("in price",filter[key][k])
-                                temparray.append(filter[key][k])
-                        print(temparray)
-                        if  temparray:
-                            query_array.append(' '+key +' BETWEEN '+temparray[0]+ ' AND '+ temparray[1]+ " ")
-                    else:
-                        print("in key else")
-                        var=filter[key]
-                        query_array.append(' '+key +' LIKE '+"'"+'%%'+var+'%%'+"'")
+        for key in filter_d:
+            if (filter_d[key] != ''):
+                print("key",key)
+                if(key == 'Size' ):
+                    temparray=[]
+                    for k in filter_d[key]:
+                        if (filter_d[key][k]!=''):
+                            print("in size",filter_d[key][k])
+                            temparray.append(filter_d[key][k])
+                    print(temparray)
+                    if  temparray:
+                        query_array.append(' '+key +' BETWEEN '+temparray[0]+ ' AND '+ temparray[1] +" " )
+                elif(key == 'price'):
+                    temparray=[]
+                    for k in filter_d[key]:
+                        if (filter_d[key][k]!=''):
+                            print("in price",filter_d[key][k])
+                            temparray.append(filter_d[key][k])
+                    print(temparray)
+                    if  temparray:
+                        query_array.append(' '+key +' BETWEEN '+temparray[0]+ ' AND '+ temparray[1]+ " ")
+                else:
+                    print("in key else")
+                    var=filter_d[key]
+                    query_array.append(' '+key +' LIKE '+"'"+'%%'+var+'%%'+"'")
                 
                    
             
-            if len(query_array) != 0:
-                # query = 'SELECT * FROM webapp_samsung_phone WHERE '+ 'AND ' .join(query_array)
-                query = 'SELECT * FROM webapp_mobilephones WHERE '+ 'AND ' .join(query_array)
-                
-                #old_query= '''SELECT * FROM webapp_samsung_phone where OS like'+"'"+'android v7.1.1 (nougat)'+"'''
-                print(query)
-                # mobiles=samsung_phone.objects.raw(query)
-                mobiles=mobilephones.objects.raw(query)
-                sizeofmob=len(list(mobiles))
-                print(sizeofmob)
-                
-            else:
-                # query = 'SELECT * FROM webapp_samsung_phone '
-                query = 'SELECT * FROM webapp_mobilephones '
-                # mobiles=samsung_phone.objects.raw(query)
-                mobiles=mobilephones.objects.raw(query)
-                sizeofmob=len(list(mobiles))
-                print(sizeofmob)
-            print("sizeofmob",sizeofmob)
+        if len(query_array) != 0:
+            # query = 'SELECT * FROM webapp_samsung_phone WHERE '+ 'AND ' .join(query_array)
+            query = 'SELECT * FROM webapp_mobilephones WHERE '+ 'AND ' .join(query_array)
+            
+            #old_query= '''SELECT * FROM webapp_samsung_phone where OS like'+"'"+'android v7.1.1 (nougat)'+"'''
+            print(query)
+            # mobiles=samsung_phone.objects.raw(query)
+            mobiles=mobilephones.objects.raw(query)
+            sizeofmob=len(list(mobiles))
+            print(sizeofmob)
+            
+        else:
+            # query = 'SELECT * FROM webapp_samsung_phone '
+            query = 'SELECT * FROM webapp_mobilephones '
+            # mobiles=samsung_phone.objects.raw(query)
+            mobiles=mobilephones.objects.raw(query)
+            
+            sizeofmob=len(list(mobiles))
+            print(sizeofmob)
+        print("sizeofmob",sizeofmob)
             
           
             
         return render(request,'webapp/mobile.html',{'mobiles':mobiles})
+        # return redirect('/mobile')
 
 
 class blogview (TemplateView):
@@ -799,6 +843,7 @@ class blogview (TemplateView):
 class mobile_phone_view(TemplateView):
     template_name='webapp/mobile.html'
     def get(self,request):
+        print("in phonebiew")
         #form=mobile_phone_form(request.POST)
         querry_array=[]
         querry=''
@@ -841,8 +886,8 @@ class mobile_phone_view(TemplateView):
     def one_mobile_func(request,id):
         id1=id
         print(id1)
-        # singlemob=samsung_phone.objects.filter(id=id1)
-        singlemob=mobilephones.objects.filter(id=id1)
+        # singlemob=samsung_phone.objects.filter_d(id=id1)
+        singlemob=mobilephones.objects.filter_d(id=id1)
         print(singlemob)
         return render(request,'webapp/one_mobile_info.html',{
             'singlemob':singlemob
