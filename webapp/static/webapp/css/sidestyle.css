@@ -147,3 +147,14 @@
         margin-right: 0;
     }
 }
+
+.custom_side_rows{
+    display: block;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    width: auto;
+    margin-right: -15px;
+    margin-left: -15px;
+    margin-bottom: 20px;
+    background: #ffced2;
+}

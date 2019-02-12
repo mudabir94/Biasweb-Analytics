@@ -38,15 +38,15 @@
         
       <div class="container-fluid text-center">    
         <div class="row content">
-            <div class="col-sm-2 sidenav">
+            <div class="col-sm-4 sidenav" style="background: black">
                     <div class='container-fluid'>
-                        <!-- {% with template_sidebar=template_sidebar %}
+                        {% with template_sidebar=template_sidebar %}
                         {% include template_sidebar %}
-                        {% endwith %} -->
+                        {% endwith %}
                     </div>    
             </div>
           
-        <div class="col-sm-9  col-md-9 col-lg-9 col-xs-9 text-left" > 
+        <div class="col-sm-7  col-md-7 text-left" > 
               
             <div class="latest-product-section"> 
                     {%  for mob in mobiles  %}
@@ -103,7 +103,7 @@
                 </div>              
                
         </div>
-          <div class="col-sm-1 sidenav">
+          <div class="col-sm-1 sidenav" style="background: black">
             <div class=""   id="lc" style="position: fixed">
                   
             </div>
@@ -120,14 +120,14 @@
     <script>
         var arr=[];
        
-        window.addEventListener( "pageshow", function ( event ) {
-        var historyTraversal = event.persisted || 
-        ( typeof window.performance != "undefined" && 
-        window.performance.navigation.type === 2 );
-                if ( historyTraversal ) {
-                window.location.reload();
-            }
-        });
+        // window.addEventListener( "pageshow", function ( event ) {
+        // var historyTraversal = event.persisted || 
+        // ( typeof window.performance != "undefined" && 
+        // window.performance.navigation.type === 2 );
+        //         if ( historyTraversal ) {
+        //         window.location.reload();
+        //     }
+        // });
         function toggleCheckbox(element){      
         if (element.checked == true){
         console.log(element.id);

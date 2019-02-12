@@ -191,7 +191,8 @@ class mobilephones(models.Model):
     Resolution=models.CharField(max_length=500, null= True)
     Size=models.FloatField(null=True)
     Weight=models.IntegerField(null= True)
-    price_in_pkr=models.IntegerField( null= True)
+    # changed from price_in_pkr
+    price=models.IntegerField( null= True)
     price_in_usd=models.IntegerField( null= True)
     rating=models.FloatField(null= True)
     OS=models.CharField(max_length=300, null= True)
@@ -200,7 +201,8 @@ class mobilephones(models.Model):
     imagepath1=models.CharField(max_length=300,null=True)
     imagepath2=models.CharField(max_length=300,null=True)
     battery=models.CharField(max_length=400,null=True)
-    back_camera=models.CharField(max_length=400,null=True)
+    # changed from back_camera
+    backcam=models.CharField(max_length=400,null=True)
     
     def __str__(self):
         return self.Mobile_Name
