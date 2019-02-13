@@ -38,7 +38,7 @@
         
       <div class="container-fluid text-center">    
         <div class="row content">
-            <div class="col-sm-4 sidenav" style="background: black">
+            <div class="col-sm-3 sidenav" ">
                     <div class='container-fluid'>
                         {% with template_sidebar=template_sidebar %}
                         {% include template_sidebar %}
@@ -46,7 +46,7 @@
                     </div>    
             </div>
           
-        <div class="col-sm-7  col-md-7 text-left" > 
+        <div class="col-sm-8 col-md-8 text-left" > 
               
             <div class="latest-product-section"> 
                     {%  for mob in mobiles  %}
@@ -61,7 +61,7 @@
                                     <img class="img-responsive" src="{% static mob.imagepath1 %}"  alt="Latest Products Image"  title=""/>
                                         </div>
                                 <h4> <span class="text-uppercase margin-l-20">{{mob.Mobile_Name}}</span></h4>
-                          <!--
+                                <!--
                                     <h4><a href="{% url 'mobileinfo' id=mob.id %}">{{mob.Mobile_Companny}}</a> <span class="text-uppercase margin-l-20">{{mob.Mobile_Name}}</span></h4>
                                     <h4><a href = "{% url 'mobileinfo' id=mob.id %}"> Price </a><span class="text-uppercase margin-l-20">{{mob.price}}</span></h4>
                                     <h4>{{mob.os}}</h4>
@@ -85,7 +85,7 @@
                   
             </div>                 
             <div class="pagination" >
-                    <span class="step-links">
+                    <span class="step-links" >
                         {% if mobiles.has_previous %}
                             <a href="?page=1">&laquo; first</a>
                             <a href="?page={{ mobiles.previous_page_number }}">previous</a>
@@ -103,7 +103,7 @@
                 </div>              
                
         </div>
-          <div class="col-sm-1 sidenav" style="background: black">
+          <div class="col-sm-1 sidenav">
             <div class=""   id="lc" style="position: fixed">
                   
             </div>
@@ -120,14 +120,14 @@
     <script>
         var arr=[];
        
-        // window.addEventListener( "pageshow", function ( event ) {
-        // var historyTraversal = event.persisted || 
-        // ( typeof window.performance != "undefined" && 
-        // window.performance.navigation.type === 2 );
-        //         if ( historyTraversal ) {
-        //         window.location.reload();
-        //     }
-        // });
+        window.addEventListener( "pageshow", function ( event ) {
+        var historyTraversal = event.persisted || 
+        ( typeof window.performance != "undefined" && 
+        window.performance.navigation.type === 2 );
+                if ( historyTraversal ) {
+                window.location.reload();
+            }
+        });
         function toggleCheckbox(element){      
         if (element.checked == true){
         console.log(element.id);
@@ -156,8 +156,21 @@
                     },
                     url: "{% url 'showmobile' %}",
                     success: function(response){
-                        console.log("size_of_mobile",response['som']);
-                        window.location="{%url 'comparemobile_specs'%}"
+                        if (response['role']!=undefined){
+                            if (response['role']=="Super_Admin")
+                            {
+                                console.log("size_of_mobile",response['som']);
+                                window.location="{%url 'comparemobile_specs'%}"
+                            }
+                            else{
+                                window.location="{%url 'comparemobilespecsfilt_ver'%}"
+                            }
+                        }
+                        else{
+                            console.log("size_of_mobile",response['som']);
+                        window.location="{%url 'comparemobilespecsfilt_ver'%}"
+                        }
+                        
                      
                     
                     }

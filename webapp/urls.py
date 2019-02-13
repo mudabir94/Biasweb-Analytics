@@ -30,6 +30,10 @@ urlpatterns = [
     
     
     url(r'^comparemobile_specs/',views.compareMobileSpecs, name='comparemobile_specs'),
+    url(r'^comparemobilespecsfilt_ver/',views.compareMobileSpecsFilterVer, name='comparemobilespecsfilt_ver'),
+    url(r'^filtered_mobile_view/',views.filteredMobileView,name='filtered_mobile_view'),
+
+
     url(r'^showmob/',views.showMob, name='showmobile'),
     url(r'^showScore/',views.showScore, name='showscore'),
 

@@ -18,8 +18,11 @@ from django.utils.decorators import method_decorator
 #--------------------------------------------------------------------------------------------------
 from django.core import serializers
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from rawpaginator.paginator import Paginator
 from django.db import connection
 from django.db.models import Q
+from functools import reduce
+import operator
 #------------------------------------------------------------------------------------------
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
@@ -56,6 +59,7 @@ role=1   #global variable used in adminsetup and globalFunc function.
 mobiles=None
 filter_flag=None
 sizeofmob=0 # global variable assigned in filter class.
+filt_mobiles=None
 #-------------------------------------------------------------------------------------------------
 # IT IS NOT USED ANYWARE
 def indexAhp(request):
@@ -200,7 +204,7 @@ def storeSelectedAdminPhones(request):
             cellphones.save()
             return JsonResponse({'data':'success'})
 
-
+comp_mobiles=''    
 def showMob(request):
     if request.method=="POST":
         if request.is_ajax:
@@ -209,7 +213,7 @@ def showMob(request):
             mobiledata = request.POST.get('mobiledata')
         ### print('JSONLOADS',eval(d))
             mobiledata_json = json.loads(mobiledata)
-            print(mobiledata_json[0])
+            print("mobiledata_json",mobiledata_json[0])
             query_array=[]
             count=1    
             for key,value in  enumerate(mobiledata_json):
@@ -220,13 +224,13 @@ def showMob(request):
             #query=samsung_phone.objects.filter(id__in=(query_array))
             query=mobilephones.objects.filter(id__in=(query_array))
                         # old_query = 'SELECT * FROM webapp_samsung_phone WHERE '+ ' or ' .join(query_array)
-            global mobiles
+            global comp_mobiles
             global sizeofmob
                 # mobiles=samsung_phone.objects.raw(query)
-            mobiles=query
-            size_of_mobile=len(list(mobiles))
+            comp_mobiles=query
+            size_of_mobile=len(list(comp_mobiles))
             sizeofmob=size_of_mobile
-            print(mobiles)
+            print(comp_mobiles)
             dict = {'size_of_mobile':size_of_mobile}
     return HttpResponse(json.dumps(dict))
     #return render_to_response(request,'webapp/showmob.html',{'mobiles':mobiles}) 
@@ -236,6 +240,42 @@ def showMob(request):
     print(mobiles)
     return render(request,'webapp/showmob.html',{'mobiles':mobiles})
     '''
+def compareMobileSpecsFilterVer(request):
+    if request.method=="GET":
+        return render(request,'webapp/2by2comapremobilespecsfiltver.html')
+    if request.method=="POST":
+        if request.is_ajax: 
+            mobile={}
+            allmobile={}
+            global comp_mobiles
+            alternative_list=[]
+            criteria_list=['imagepath1','price',"Resolution"]
+            
+            test_mobiles = comp_mobiles
+            
+            for m in test_mobiles:
+                print('m objest',m)
+                for crit in criteria_list:
+                    print(crit)
+                    mobile[crit]=getattr(m, crit)
+                mobile['Others']=m.Mobile_Name
+
+                alternative_list.append(m.Mobile_Name)
+                allmobile[m.Mobile_Name]=mobile
+                # print(allmobile)
+                numofmobiles=len(allmobile)
+                mobile={}
+                print("alternative_list",alternative_list)
+                # features=['price','resolution','size']
+                data={
+                    'allmobiles':allmobile,
+                    'numofmobiles':numofmobiles,
+                    'criteria_list':criteria_list,
+                    'alternative_list':alternative_list
+                }
+            # code returns on this one. 
+            if allmobile:
+                return JsonResponse(data)
     
      
 def compareMobileSpecs(request):
@@ -248,7 +288,7 @@ def compareMobileSpecs(request):
             allmobile={}
             # 
             alternative_list=[]
-            criteria_list=['imagepath1','price_in_pkr',"Resolution"]
+            criteria_list=['imagepath1','price',"Resolution"]
             # "back_camera","Resolution","battery","price_in_usd",
             # "rating","Weight","Gpu","Dimensions","Cpu"]
              
@@ -577,7 +617,7 @@ class filter(TemplateView):
         if request.is_ajax():
             print("IN AJAX REQUEST")
             all_data_dic={}
-            price=['10000','15000','20000','35000','50000','80000']
+            price=['100000','120000']
             Size=['5','5.5','5.3','6.5','7']
             Colors=['black','white','gold']
             OS=['android v8.0 oreo','android v7.1.1 (nougat)','android v4.4 (kitkat)','android v6.0 (marshmallow)',
@@ -642,7 +682,7 @@ class filter(TemplateView):
         # print("ssss",(request.POST['first_choice_value']))
         # print("ssss",form.cleaned_data['first_choice_value'])
         global sizeofmob
-        global mobiles
+        global filt_mobiles
         
         
         # if request.method=="POST":
@@ -675,6 +715,7 @@ class filter(TemplateView):
             # twelve_choice=request.POST['twelve_choice_value']
         # filter_d={}
         if request.is_ajax():
+            count=0
             d = request.POST.get('filt_opt_sel')
             #print('d',d)
             filt_opt_sel = json.loads(d)
@@ -702,18 +743,18 @@ class filter(TemplateView):
             query_array = []
             temparray=[]
             
-                
-                
+            argument_list = []    
+            q_objects = Q()
+    
             for key in filter_d:
-               
+
+                print("key",key)
                 value=filter_d[key]
-                print("value",type(value))
+                print("value",value)
                 if (filter_d[key] != ''):
-                    print("key",key)
                     if(type(value) == list ):
                         temparray=[]
                         for k in value:
-                            print("k",k)
                             if(k!=''):
                                 # print("in size",k)
                                 temparray.append(k)
@@ -723,7 +764,12 @@ class filter(TemplateView):
                             #     temparray.append(filter_d[key][k])
                         print(temparray)
                         if  temparray:
-                            query_array.append(' '+key +' BETWEEN '+temparray[0]+ ' AND '+ temparray[1] +" " )
+                           
+                            # query_array.append(' '+key +' BETWEEN '+temparray[0]+ ' AND '+ temparray[1] +" " )
+                            
+                            argument_list.append( Q(**{key+'__range':(temparray[0],temparray[1])}))
+                            # kwargs={'{0}'__'{1}'.format(key,'range'):(temparray[0],temparray[1])}
+                            # count=count+1
                     # elif(key == 'price'):
                     #     temparray=[]
                     #     for k in filter_d[key]:
@@ -734,30 +780,36 @@ class filter(TemplateView):
                     #     if  temparray:
                     #         query_array.append(' '+key +' BETWEEN '+temparray[0]+ ' AND '+ temparray[1]+ " ")
                     else:
-                        print("in key else")
+                       
                         var=filter_d[key]
-                        query_array.append(' '+key +' LIKE '+"'"+'%%'+var+'%%'+"'")
+                        # query_array.append(' '+key +' LIKE '+"'"+'%%'+var+'%%'+"'")
+                        argument_list.append(Q(**{key+'__contains':var} ))
                     
                     
                 
-            if len(query_array) != 0:
+            # if len(query_array) != 0:
+            if len(argument_list) !=0:
+
                 # query = 'SELECT * FROM webapp_samsung_phone WHERE '+ 'AND ' .join(query_array)
-                query = 'SELECT * FROM webapp_mobilephones WHERE '+ 'AND ' .join(query_array)
+                # query = 'SELECT * FROM webapp_mobilephones WHERE '+ 'AND ' .join(query_array)
                 
                 #old_query= '''SELECT * FROM webapp_samsung_phone where OS like'+"'"+'android v7.1.1 (nougat)'+"'''
-                print(query)
+                # print(query)
                 # mobiles=samsung_phone.objects.raw(query)
-                mobiles=mobilephones.objects.raw(query)
-                sizeofmob=len(list(mobiles))
+                # filt_mobiles=mobilephones.objects.raw(query)
+                
+                filt_mobiles=mobilephones.objects.filter(reduce(operator.and_, argument_list)).order_by('id')
+                sizeofmob=len(list(filt_mobiles))
                 print(sizeofmob)
                 
             else:
                 # query = 'SELECT * FROM webapp_samsung_phone '
-                query = 'SELECT * FROM webapp_mobilephones '
+                # query = 'SELECT * FROM webapp_mobilephones '
+                query=mobilephones.objects.all().order_by('id')
                 # mobiles=samsung_phone.objects.raw(query)
-                mobiles=mobilephones.objects.raw(query)
+                filt_mobiles=query
                 
-                sizeofmob=len(list(mobiles))
+                sizeofmob=len(list(filt_mobiles))
                 print(sizeofmob)
             print("sizeofmob",sizeofmob)
             return JsonResponse(data)
@@ -801,10 +853,62 @@ class blogview (TemplateView):
         return render(request,'webapp/blog.html',{'form':form})
         '''
 
+
+def filteredMobileView(request):
+    print("IN FILTERED MOBILE VIEW-->")
+    template_name='webapp/mobile.html'
+    if request.method=="GET":
+       
+        userobj=User.objects.get(pk=request.user.id)
+        role=userobj.role_id_id
+        roleobj=Role.objects.get(pk=role)
+        role=roleobj.role_name
+        global filt_mobiles
+        
+        if role=='Super_Admin':
+            if filt_mobiles==None:
+                filt_mobiles= mobilephones.objects.all() 
+                print("mobiles ---<>",filt_mobiles)
+                paginator = Paginator(filt_mobiles,2)
+                page = request.GET.get('page')
+                ex_mobile = paginator.get_page(page)
+            else:
+                print("filt_mobiles",filt_mobiles)
+                print("in pass")
+                paginator = Paginator(filt_mobiles,9)
+                page = request.GET.get('page')
+                ex_mobile = paginator.get_page(page)               
+            template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
+            
+            
+            return render(request,template_name,{'mobiles':ex_mobile ,'template_sidebar':template_sidebar})
+        elif role=='Subject':
+            if filt_mobiles==None:
+                filt_mobiles= mobilephones.objects.all() 
+                paginator = Paginator(filt_mobiles,9)
+                page = request.GET.get('page')
+                ex_mobile = paginator.get_page(page)
+                template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
+                return render(request,template_name,{'mobiles':ex_mobile,'template_sidebar':template_sidebar})
+            else:
+                print("mobiles",filt_mobiles)
+                paginator = Paginator(filt_mobiles,9)
+                page = request.GET.get('page')
+                ex_mobile = paginator.get_page(page)
+                # using raw query paginator 'rawpaginator'
+                # raw_qs = filt_mobiles
+                # p = Paginator(raw_qs, 2)
+                # page = request.GET.get('page')
+                # filt_mobiles =p.page(1)
+                
+
+                template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
+                return render(request,template_name,{'mobiles':ex_mobile,'template_sidebar':template_sidebar})
+
 class mobile_phone_view(TemplateView):
     template_name='webapp/mobile.html'
     def get(self,request):
-        print("in phonebiew")
+        print("in phoneview")
         #form=mobile_phone_form(request.POST)
         querry_array=[]
         querry=''
@@ -814,44 +918,35 @@ class mobile_phone_view(TemplateView):
         roleobj=Role.objects.get(pk=role)
         role=roleobj.role_name
         global mobiles
+        
+        
         print("mobiles",mobiles)
         if role=='Super_Admin':
-            if mobiles==None:
-                mobiles= mobilephones.objects.all() 
-                print("mobiles ---<>",mobiles)
-                # paginator = Paginator(mobiles,9)
-                # page = request.GET.get('page')
-                # mobiles = paginator.get_page(page)
-            else:
-                print("mobiles",mobiles)
-            ex_mobiles=mobiles 
-            print("ex_mobiles",ex_mobiles)
-               
+            
+            mobiles= mobilephones.objects.all() 
+            print("mobiles ---<>",mobiles)
+            paginator = Paginator(mobiles,9)
+            page = request.GET.get('page')
+            ex_mobiles = paginator.get_page(page)
             template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
-            
-            
-            return render(request,self.template_name,{'mobiles':ex_mobiles,'template_sidebar':template_sidebar})
+            return render(request,self.template_name,{'mobiles':ex_mobiles,'template_sidebar':template_sidebar,'role':"Super_Admin"})
         elif role=='Subject':
-            if mobiles==None:
-                mobiles= mobilephones.objects.all() 
-                paginator = Paginator(mobiles,9)
-                page = request.GET.get('page')
-                mobiles = paginator.get_page(page)
-                template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
-                return render(request,self.template_name,{'mobiles':mobiles,'template_sidebar':template_sidebar})
-            else:
-                print("mobiles",mobiles)
-                ex_mobiles=mobiles
-                template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
+            
+            mobiles= mobilephones.objects.all() 
+            paginator = Paginator(mobiles,9)
+            page = request.GET.get('page')
+            ex_mobiles = paginator.get_page(page)
+            template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
             return render(request,self.template_name,{'mobiles':ex_mobiles,'template_sidebar':template_sidebar})
+           
         else:
             # mobiles= samsung_phone.objects.all() 
             mobiles= mobilephones.objects.all() 
             paginator = Paginator(mobiles,9)
             page = request.GET.get('page')
-            mobiles = paginator.get_page(page)
-            print(mobiles)
-            return render(request,self.template_name,{'mobiles':mobiles})
+            ex_mobiles = paginator.get_page(page)
+            
+            return render(request,self.template_name,{'mobiles':ex_mobiles})
     def post(self,request):
         if request.method=="POST":
             form=mobile_phone_form(request.POST)
@@ -1374,15 +1469,17 @@ class createExperiment(TemplateView):
             print('price_range_values1',price_range_values[0])
             print('price_range_values2',price_range_values[1])
             # mobiles_retrieved=samsung_phone.objects.filter(price_in_pkr__range=(price_range_values[0], price_range_values[1]))
-            mobiles_retrieved=mobilephones.objects.filter(price_in_pkr__range=(price_range_values[0], price_range_values[1])).order_by('price_in_pkr') 
+            mobiles_retrieved=mobilephones.objects.filter(price__range=(price_range_values[0], price_range_values[1])).order_by('price') 
+            
             # else: 
             #     mobiles_retrieved=samsung_phone.objects.filter(price_in_pkr__range=(10000, 30000))
+            print("mobiles_retrieved",mobiles_retrieved)
 
             # print(mobiles_retrieved) 
             mobiles_retrieved = list(mobiles_retrieved.values())
             # samsung_phones=mobiles_retrieved
             mobilephones_str=mobiles_retrieved
-           
+            print("mobilephones_str",mobilephones_str)
         
             return JsonResponse(
             {  
