@@ -51,9 +51,9 @@ class ExperimentController:
             self.exp.capacity = cap            #Capacity to budget for experiment
             self.saveExperiment()
             self.exp.custom_exp_id = a_id
-            print('self.exp.custom_exp_id',self.exp.custom_exp_id)
+            #print('self.exp.custom_exp_id',self.exp.custom_exp_id)
             exp_id = self.exp.id
-            print(exp_id)
+            #print(exp_id)
             exp_id = '-' + str(exp_id).zfill(4)  #ensuring the id is now a 4 digit numeric string
             self.exp.custom_exp_id += exp_id
            
@@ -438,3 +438,9 @@ class ExperimentController:
     
     def toString():
         print("This class is the Controler Class");
+
+class SubjCont:
+    def __init__(self, u_id):
+        self.subject = Subject()
+        #Check if subject exists
+        self.subject = Subject.objects.get(user__username=u_id)

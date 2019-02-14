@@ -1,4 +1,4 @@
-#%%0. IMPORT MODULES REQUIRED
+#0. IMPORT MODULES REQUIRED
 import numpy as np
 import pandas as pd
 from biasweb.experiment.controller import ExperimentController
@@ -37,19 +37,19 @@ def setPreDefinedBatches():
 OUT_PATH="biasweb/data/output/"
 interactive = False #Make True if you want this test to ask for field names mapping
 feature_editing = True
-#%% 1. RETRIEVE AN EXISTING EXPERIMENT
+## 1. RETRIEVE AN EXISTING EXPERIMENT
 
-admin_id = "ses-001" #USING THE CUSTOM-ID OF SUPERUSER #1 ses-007 for Mudabir
-init_expid = 42 #Using 42 for Shazib and 146 for Mudabir
-texp = ExperimentController(a_id=admin_id, e_id=init_expid) #9) #9 is prompt-based testing and #11 is web-based
-print("Exp Custom Id:",texp.exp.custom_exp_id)
-print("The following features are set to be enabled:")
-print(list(texp.fSet.all()))
+admin_id = "ses-007" #USING THE CUSTOM-ID OF SUPERUSER #2 (shazib [not dr.shazib]) ses-007 for Shazib
+# init_expid = 42 #to be created after first new experient
+# texp = ExperimentController(a_id=admin_id, e_id=init_expid) #9) #9 is prompt-based testing and #11 is web-based
+# print("Exp Custom Id:",texp.exp.custom_exp_id)
+# print("The following features are set to be enabled:")
+# print(list(texp.fSet.all()))
 
-#%% 2. CREATE A NEW EXPERIMENT
+## 2. CREATE A NEW EXPERIMENT
 texp = ExperimentController(a_id=admin_id)
 print("NEW Exp Custom Id:",texp.exp.custom_exp_id)
-#%% 3. TEST INDIV FEATURE MODIFICATION
+## 3. TEST INDIV FEATURE MODIFICATION
 if feature_editing:
     fSymbol = 'W' #JUST TO test individual feature handling
     xFSym = 'D' #Againd Ditto
@@ -59,10 +59,10 @@ if feature_editing:
     texp.addFeature(fSymbol=levFSym, byPrompt=True)
     #texp.delFeature(levFSymbol)
 
-    #%% 4. TEST FSET MODIFICATION (EN MASSE) ----
-    nFSym = 'C' #For testing the addition of new feature
+    ## 4. TEST FSET MODIFICATION (EN MASSE) ----
+    nFSym = 'P' #For testing the addition of new feature
     newFSet = ['W','A',nFSym]  #please change depending on what's in the database
-    texp.setFSet(newFSet,prompt=True)
+    texp.setFSet(newFSet,prompt=False)
     print(texp.fSet.all())
     #newLevs = {'W': ['direct', 'AHP'], 'C': ['full', 'pruned']}
     newLevs = {'W': ['direct', 'AHP'], 'A': ['all', '2by2','user'], 'R': ['0', '1']}
@@ -73,16 +73,16 @@ if feature_editing:
     print(texp.fLevels)
     texp.saveExperiment()
 
-    #%% 5. Test BLOCK GENERATION -- only proceed if DB has feature levels
+    ## 5. Test BLOCK GENERATION -- only proceed if DB has feature levels
     blocks = texp.generateBlocks()
 
-#%%TEST ASSIGNMENT TO BATCHES AND BLOCKS
+##TEST ASSIGNMENT TO BATCHES AND BLOCKS
 fPath = "biasweb/data/input/MBA_RCM1_SampleData.csv"
 texp.importSujbectData(fPath)
 #TODO@SHAZIB: for now assuming no appending to existing users
 #print(texp.subjData)
 
-#%%8.a OBTAIN DATA COL NAMES/FIELDS
+##8.a OBTAIN DATA COL NAMES/FIELDS
 fields = texp.getSubColNames()
 if interactive:
     print("Which field will be used as CUSTOM ID")
@@ -95,7 +95,7 @@ else:
 print("ID FIELD: ", texp.idField)
 #texp.saveSubjects()
 
-#%%TEST INTERACTIVE BATCH ASSIGNMENT (NO BLOCKS ASSIGNED YET)
+##TEST INTERACTIVE BATCH ASSIGNMENT (NO BLOCKS ASSIGNED YET)
 if interactive:
     print("EITHER identify a column no. for PRE-DEFINED Batching ")
     print("OR ENTER 999 FOR texp-DEFINED BATCHING")
@@ -106,7 +106,7 @@ if interactive:
 else:
     inputNo = 999 #Col 1 is assumed SECTION
 print("INPUT NO:", inputNo)
-#%%IF SELF-DEFINED BATCHING VS. PRE-DEFINED
+##IF SELF-DEFINED BATCHING VS. PRE-DEFINED
 if inputNo == 999:
     if interactive:
         batchesTitle = setSelfDefinedBatches(texp)
