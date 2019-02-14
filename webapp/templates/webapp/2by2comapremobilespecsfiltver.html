@@ -217,7 +217,7 @@ $(document).ready(function(){
                 'csrfmiddlewaretoken': '{{ csrf_token }}',
                 },
         // the ajax call is sent to subdetails url name in the post function.  
-                url: "{% url 'comparemobile_specs' %}",
+                url: "{% url 'comparemobilespecsfilt_ver' %}",
                 success: function(data){
                     // check num of mobiles. 
                     if (data['numofmobiles']===2){

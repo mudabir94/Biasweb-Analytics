@@ -198,3 +198,9 @@ button.social-signin.google {
   
   width:100%;
 }
+.loading_gif{
+  display: block;
+    width: 16px;
+    height: 16px;
+    background: red
+}

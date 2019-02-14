@@ -18,8 +18,11 @@ from django.utils.decorators import method_decorator
 #--------------------------------------------------------------------------------------------------
 from django.core import serializers
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from rawpaginator.paginator import Paginator
 from django.db import connection
 from django.db.models import Q
+from functools import reduce
+import operator
 #------------------------------------------------------------------------------------------
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
@@ -52,9 +55,11 @@ from .models import selectedAdminPhones
 #--------------------------------------------------------------------------------------------------
 role=1   #global variable used in adminsetup and globalFunc function. 
 #mobiles=samsung_phone.objects.raw('SELECT * FROM webapp_samsung_phone WHERE id=1 or id=2') # making mobiles object global.
-mobiles=mobilephones.objects.raw('SELECT * FROM webapp_mobilephones WHERE id=1 or id=2') # making mobiles object global.
-
+# mobiles=mobilephones.objects.raw('SELECT * FROM webapp_mobilephones WHERE id=1 or id=2') # making mobiles object global.
+mobiles=None
+filter_flag=None
 sizeofmob=0 # global variable assigned in filter class.
+filt_mobiles=None
 #-------------------------------------------------------------------------------------------------
 # IT IS NOT USED ANYWARE
 def indexAhp(request):
@@ -102,8 +107,8 @@ class Home(TemplateView):
 
         if role=='Super_Admin':
             
-            # template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
-             return render(request,'webapp/2by2comparemobilespecs.html')
+            template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
+            # return render(request,'webapp/2by2comparemobilespecs.html')
             # return render(request,template_sidebar)
         elif role=='Experiment_Admin':
             # roleobj=Role.objects.get(pk=role)
@@ -116,6 +121,12 @@ class Home(TemplateView):
             role_name=roleobj.role_name
             print(role_name)
             template_sidebar='webapp/sidebartemplates/sidebartemp_pltfadm.html'
+        elif role=='Subject':
+            # all other conditions of subjects will be done here. 
+            
+            #  return render(request,'webapp/2by2comparemobilespecs.html')
+            return redirect('/filter')
+
 
         #*****************************************************
 
@@ -193,7 +204,7 @@ def storeSelectedAdminPhones(request):
             cellphones.save()
             return JsonResponse({'data':'success'})
 
-
+comp_mobiles=''    
 def showMob(request):
     if request.method=="POST":
         if request.is_ajax:
@@ -202,7 +213,7 @@ def showMob(request):
             mobiledata = request.POST.get('mobiledata')
         ### print('JSONLOADS',eval(d))
             mobiledata_json = json.loads(mobiledata)
-            print(mobiledata_json[0])
+            print("mobiledata_json",mobiledata_json[0])
             query_array=[]
             count=1    
             for key,value in  enumerate(mobiledata_json):
@@ -213,13 +224,13 @@ def showMob(request):
             #query=samsung_phone.objects.filter(id__in=(query_array))
             query=mobilephones.objects.filter(id__in=(query_array))
                         # old_query = 'SELECT * FROM webapp_samsung_phone WHERE '+ ' or ' .join(query_array)
-            global mobiles
+            global comp_mobiles
             global sizeofmob
                 # mobiles=samsung_phone.objects.raw(query)
-            mobiles=query
-            size_of_mobile=len(list(mobiles))
+            comp_mobiles=query
+            size_of_mobile=len(list(comp_mobiles))
             sizeofmob=size_of_mobile
-            print(mobiles)
+            print(comp_mobiles)
             dict = {'size_of_mobile':size_of_mobile}
     return HttpResponse(json.dumps(dict))
     #return render_to_response(request,'webapp/showmob.html',{'mobiles':mobiles}) 
@@ -229,6 +240,42 @@ def showMob(request):
     print(mobiles)
     return render(request,'webapp/showmob.html',{'mobiles':mobiles})
     '''
+def compareMobileSpecsFilterVer(request):
+    if request.method=="GET":
+        return render(request,'webapp/2by2comapremobilespecsfiltver.html')
+    if request.method=="POST":
+        if request.is_ajax: 
+            mobile={}
+            allmobile={}
+            global comp_mobiles
+            alternative_list=[]
+            criteria_list=['imagepath1','price',"Resolution"]
+            
+            test_mobiles = comp_mobiles
+            
+            for m in test_mobiles:
+                print('m objest',m)
+                for crit in criteria_list:
+                    print(crit)
+                    mobile[crit]=getattr(m, crit)
+                mobile['Others']=m.Mobile_Name
+
+                alternative_list.append(m.Mobile_Name)
+                allmobile[m.Mobile_Name]=mobile
+                # print(allmobile)
+                numofmobiles=len(allmobile)
+                mobile={}
+                print("alternative_list",alternative_list)
+                # features=['price','resolution','size']
+                data={
+                    'allmobiles':allmobile,
+                    'numofmobiles':numofmobiles,
+                    'criteria_list':criteria_list,
+                    'alternative_list':alternative_list
+                }
+            # code returns on this one. 
+            if allmobile:
+                return JsonResponse(data)
     
      
 def compareMobileSpecs(request):
@@ -241,7 +288,7 @@ def compareMobileSpecs(request):
             allmobile={}
             # 
             alternative_list=[]
-            criteria_list=['imagepath1','price_in_pkr',"Resolution"]
+            criteria_list=['imagepath1','price',"Resolution"]
             # "back_camera","Resolution","battery","price_in_usd",
             # "rating","Weight","Gpu","Dimensions","Cpu"]
              
@@ -309,7 +356,7 @@ def compareMobileSpecs(request):
         'mobiles':mobiles,
         's':sizeofmob
         })
-def ind(request):
+def updateFeaturePosition(request):
    
     if request.is_ajax:
        # print("ajax",request.POST.get('data'))
@@ -324,11 +371,16 @@ def ind(request):
             print(key)
             k=str(int(key)+1)
             print ("test", value,k)
+            sort_feature_selected_obj=sort_feature.objects.get(feature=value,roles=1)
+            sort_feature_selected_obj.position=count
+            sort_feature_selected_obj.save()
             
-            with connection.cursor() as cursor:
-                cursor.execute("UPDATE webapp_sort_feature SET position="+str(count)+" WHERE feature='"+value+"' and roles="+str(role)+";") 
-                print("executed") 
+        #     with connection.cursor() as cursor:
+        #         cursor.execute("UPDATE webapp_sort_feature SET position="+str(count)+" WHERE feature='"+value+"' and roles="+str(role)+";") 
+        #         print("executed") 
             count=count+1
+
+        # not in use
         # UPDATE [Table] SET [Position] = $i WHERE [EntityId] = $value 
         
         #print ("test", d['color'])
@@ -337,7 +389,7 @@ def ind(request):
 
 
 
-def test(request):
+def hideFeature(request):
    
     if request.is_ajax:
        # print("ajax",request.POST.get('data'))
@@ -350,12 +402,15 @@ def test(request):
         count=1
         
         for key,value in  enumerate(b):
-           
+        #   I have to make the roles part dynamic. 
             print ("val", value)
-             
-            with connection.cursor() as cursor:
-                cursor.execute("UPDATE webapp_sort_feature SET sh_hd="+"0"+" WHERE feature='"+value+"' and roles="+str(role)+"; ") 
-                print("executed") 
+            sort_feature_selected_obj=sort_feature.objects.get(feature=value,roles=1)
+            print("sortf",sort_feature_selected_obj) 
+            sort_feature_selected_obj.sh_hd=0
+            sort_feature_selected_obj.save()
+            # with connection.cursor() as cursor:
+            #     cursor.execute("UPDATE webapp_sort_feature SET sh_hd="+"0"+" WHERE feature='"+value+"' and roles="+str(1)+"; ") 
+            #     print("executed") 
             
         
 
@@ -364,8 +419,8 @@ def test(request):
         #print ("test", d['color'])
         return render(request, 'webapp/admin_setup.html')
     
-def on(request):
-   
+def showFeature(request):
+    print("showFeature")
     if request.is_ajax:
        # print("ajax",request.POST.get('data'))
         ####print("PST",request.POST.get('d')) 
@@ -379,10 +434,13 @@ def on(request):
         for key,value in  enumerate(b):
            
             print ("val", value)
-             
-            with connection.cursor() as cursor:
-                cursor.execute("UPDATE webapp_sort_feature SET sh_hd="+"1"+" WHERE feature='"+value+"' and roles="+str(role)+" ; ") 
-                print("executed") 
+            sort_feature_selected_obj=sort_feature.objects.get(feature=value,roles=1)
+            print("sortf",sort_feature_selected_obj) 
+            sort_feature_selected_obj.sh_hd=1
+            sort_feature_selected_obj.save() 
+            # with connection.cursor() as cursor:
+            #     cursor.execute("UPDATE webapp_sort_feature SET sh_hd="+"1"+" WHERE feature='"+value+"' and roles="+str(role)+" ; ") 
+            #     print("executed") 
             
         
 
@@ -401,14 +459,9 @@ def globalFunc(request):
        ### print('JSONLOADS',eval(d))
         b = json.loads(d)
 
-        print("in func",b)
-        print(type(b))
-        
-        a=int(b)
-        print(int(b))
-        print(type(a))
-        global  role
-        role=a
+        # print("in func",b)
+        # print(type(b))
+    
 
         
 
@@ -417,47 +470,62 @@ def globalFunc(request):
         #print ("test", d['color'])
           
         return render(request, 'webapp/admin_setup.html')
-
-        
-
-        
     
-
-def adminSetup(request):
+feature_to_display=''
+feature_to_hide=''
+class adminSetup(TemplateView):
     # global  role
-    
-    colors=['black','white','gold']
-    size=['0','1','3','4','4.1','4.2','4.3','4.4','4.5','4.6','4.7','4.8','4.9','5','5.1','5.2','5.3','5.4','5.5','5.6','5.7','5.8','5.9','6','6.1','6.2','6.3','6.4','6.5','6.6','6.7','6.8','6.9','7']
-    role_name=['']
-    print(request.user.id)
-    userobj=User.objects.get(pk=request.user.id)
-    print("user object",userobj.role_id_id)
-    role_id=userobj.role_id_id
-    roleobj=Role.objects.get(pk=role_id)
-    role=roleobj.role_name
-    print(role)
+    global feature_to_display
+    global feature_to_hide
+    def get(self,request):
+        global feature_to_display
+        global feature_to_hide
+        role_name=['']
+        print(request.user.id)
+        userobj=User.objects.get(pk=request.user.id)
+        print("user object",userobj.role_id_id)
+        role_id=userobj.role_id_id
+        roleobj=Role.objects.get(pk=role_id)
+        role=roleobj.role_name
+        print(role)
+       
+        if  request.is_ajax():
+            print("in ajax")
+            feature_to_display = list(feature_to_display.values())
+            print("feature to display",feature_to_display)
+            feature_to_hide = list(feature_to_hide.values())
+            print("feature to hide",feature_to_hide)
+            data={
+                'feature_to_display':feature_to_display,
+                'feature_to_hide':feature_to_hide
+            }
+            return JsonResponse(data)
+        else:
+            if role=='Super_Admin':        
+                feature_to_display=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role_id).order_by('position')
+                
+                print("feature",feature_to_display)
+                feature_to_hide=sort_feature.objects.filter(Q(sh_hd = 0),roles=role_id).order_by('position')    
+                print("feature2",feature_to_hide)
 
-    if role=='Super_Admin':
-        print("role",role)
-        
-        feat=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role_id).order_by('position')
-        ft=sort_feature.objects.filter(Q(sh_hd = 0),roles=role_id).order_by('position')    
-      
-    elif role=='Experiment_Admin':
-        print('herereerer')
-        feat=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role).order_by('position')
-        ft=sort_feature.objects.filter(Q(sh_hd = 0),roles=role).order_by('position')    
-        # roleobj=Role.objects.get(pk=role)
-        # role_name=roleobj.role_name
-        # print(role_name)
-        
-    elif role=='Platform_Admin':
-        feat=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role).order_by('position')
-        ft=sort_feature.objects.filter(Q(sh_hd = 0),roles=role).order_by('position')    
+            elif role=='Experiment_Admin':
+                feature_to_display=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role).order_by('position')
+                feature_to_hide=sort_feature.objects.filter(Q(sh_hd = 0),roles=role).order_by('position')    
+                # roleobj=Role.objects.get(pk=role)
+                # role_name=roleobj.role_name
+                # print(role_name)
+                
+            elif role=='Platform_Admin':
+                feature_to_display=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role).order_by('position')
+                feature_to_hide=sort_feature.objects.filter(Q(sh_hd = 0),roles=role).order_by('position')    
+                roleobj=Role.objects.get(pk=role)
+                role_name=roleobj.role_name
+                print(role_name)
+            return render(request, 'webapp/admin_setup.html',{'role_name':'role','feature_to_display':feature_to_display,'feature_to_hide':feature_to_hide})
 
-        roleobj=Role.objects.get(pk=role)
-        role_name=roleobj.role_name
-        print(role_name)
+            
+    def post(self,request):
+        pass
         
 
     #*****************************************************
@@ -466,7 +534,7 @@ def adminSetup(request):
     #    role_name=['Student']
     # elif role==2:
     #     role_name=['Professor']
-    return render(request, 'webapp/admin_setup.html',{'feat':feat,'colors':colors,'role_name':role_name,'size':size,'ft':ft})
+    
     '''
     if request.user.is_authenticated:
                 
@@ -532,178 +600,225 @@ class showFilter(TemplateView):
         m=mobilephones.objects.all()
         feat=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role).order_by('position')
 
-        colors=['black','white','gold']
-        os=['android v8.0 oreo','android v7.1.1 (nougat)','android v4.4 (kitkat)','android v6.0 (marshmallow)',
+        Colors=['black','white','gold']
+        OS=['android v8.0 oreo','android v7.1.1 (nougat)','android v4.4 (kitkat)','android v6.0 (marshmallow)',
         'android v5.0.2 (lollipop)','android v5.1 (lollipop)','android v4.3 (jelly bean)']
-        size=['0','1','3','4','4.1','4.2','4.3','4.4','4.5','4.6','4.7','4.8','4.9','5','5.1','5.2','5.3','5.4','5.5','5.6','5.7','5.8','5.9','6','6.1','6.2','6.3','6.4','6.5','6.6','6.7','6.8','6.9','7']
-        cpu=['octa-core','quad-core']
-        back_cm=['16 MP','13 MP','8 MP','5.0 MP','3.7 MP','2 MP','1.9 MP','VGA']
+        Size=['0','1','3','4','4.1','4.2','4.3','4.4','4.5','4.6','4.7','4.8','4.9','5','5.1','5.2','5.3','5.4','5.5','5.6','5.7','5.8','5.9','6','6.1','6.2','6.3','6.4','6.5','6.6','6.7','6.8','6.9','7']
+        Cpu=['octa-core','quad-core']
+        back_camera=['16 MP','13 MP','8 MP','5.0 MP','3.7 MP','2 MP','1.9 MP','VGA']
         battery=['3600 mAh','3300 mAh','3000 mAh','2600 mAh','2400 mAh','2350']
-        return render(request,'webapp/filter_test.html',{'mobiles':mobiles,'colors':colors,
-        'os':os,'size':size,'feat':feat,'cpu':cpu,'back_cm':back_cm,'battery':battery})
-
+        return render(request,'webapp/filter_test.html',{'mobiles':mobiles,'Colors':Colors,
+        'os':OS,'size':Size,'feat':feat,'cpu':Cpu,'back_cm':back_camera,'battery':battery})
+filter_features=[]
 class filter(TemplateView):
+   
     def get(self,request):
-        ''' 
-            print("in filter")
-            
-            print("global",role)
-            mobiles=samsung_phone.objects.all()
-            m=samsung_phone.objects.all()
-            feat=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role).order_by('position')
-
-            colors=['black','white','gold']
-            os=['android v8.0 oreo','android v7.1.1 (nougat)','android v4.4 (kitkat)','android v6.0 (marshmallow)',
+        global filter_features
+        if request.is_ajax():
+            print("IN AJAX REQUEST")
+            all_data_dic={}
+            price=['100000','120000']
+            Size=['5','5.5','5.3','6.5','7']
+            Colors=['black','white','gold']
+            OS=['android v8.0 oreo','android v7.1.1 (nougat)','android v4.4 (kitkat)','android v6.0 (marshmallow)',
             'android v5.0.2 (lollipop)','android v5.1 (lollipop)','android v4.3 (jelly bean)']
-            size=['0','1','3','4','4.1','4.2','4.3','4.4','4.5','4.6','4.7','4.8','4.9','5','5.1','5.2','5.3','5.4','5.5','5.6','5.7','5.8','5.9','6','6.1','6.2','6.3','6.4','6.5','6.6','6.7','6.8','6.9','7']
-            cpu=['octa-core','quad-core']
-            back_cm=['16 MP','13 MP','8 MP','5.0 MP','3.7 MP','2 MP','1.9 MP','VGA']
-            battery=['3600 mAh','3300 mAh','3000 mAh','2600 mAh','2400 mAh','2350']
-            return render(request,'webapp/filter_test.html',{'mobiles':mobiles,'colors':colors,
-            'os':os,'size':size,'feat':feat,'cpu':cpu,'back_cm':back_cm,'battery':battery})
-        '''
-        if request.user.is_authenticated:
-            
-            colors=['black','white','gold']
-            os=['android v8.0 oreo','android v7.1.1 (nougat)','android v4.4 (kitkat)','android v6.0 (marshmallow)',
-                'android v5.0.2 (lollipop)','android v5.1 (lollipop)','android v4.3 (jelly bean)']
-            size=['0','1','3','4','4.1','4.2','4.3','4.4','4.5','4.6','4.7','4.8','4.9','5','5.1','5.2','5.3','5.4','5.5','5.6','5.7','5.8','5.9','6','6.1','6.2','6.3','6.4','6.5','6.6','6.7','6.8','6.9','7']
-            cpu=['octa-core','quad-core']
-            back_cm=['16 MP','13 MP','8 MP','5.0 MP','3.7 MP','2 MP','1.9 MP','VGA']
+            # size=['0','1','3','4','4.1','4.2','4.3','4.4','4.5','4.6','4.7','4.8','4.9','5','5.1','5.2','5.3','5.4','5.5','5.6','5.7','5.8','5.9','6','6.1','6.2','6.3','6.4','6.5','6.6','6.7','6.8','6.9','7']
+            Cpu=['octa-core','quad-core']
+            backcam=['16 MP','13 MP','8 MP','5.0 MP','3.7 MP','2 MP','1.9 MP','VGA']
             battery=['3600 mAh','3300 mAh','3000 mAh','2600 mAh','2400 mAh','2350']
             mobilecompany=['samsung','I Phone']
-            chip=['Exynos 9810 Octa','Exynos 8895 Octa','Qualcomm Snapdragon 805','Exynos8890Octa','Quad-core (2 x 2.15 GHz Kryo + 2 x 1.6 GHz Kryo)','Exynos 7885 Octa','QualcommMSM8996Snapdragon820','Exynos7420','Exynos 7420 Octa','Exynos 7880 Octa','QualcommMSM8953Snapdragon625','Mediatek MT6757 Helio P20','Exynos 7870 SoC','Exynos 7870','1.4 GHz Quad-Core Cortex-A53','QualcommMSM816Snapdragon410','QualcommMSM8917Snapdragon425','1.2 GHz Quad-core Cortex-A53','Spreadtrum SC9830','MediatekMT6737T','Exynos3475','Spreadtrum SC9830','Spreadtrum','','']
+            Chip=['Exynos 9810 Octa','Exynos 8895 Octa','Qualcomm Snapdragon 805','Exynos8890Octa','Quad-core (2 x 2.15 GHz Kryo + 2 x 1.6 GHz Kryo)','Exynos 7885 Octa','QualcommMSM8996Snapdragon820','Exynos7420','Exynos 7420 Octa','Exynos 7880 Octa','QualcommMSM8953Snapdragon625','Mediatek MT6757 Helio P20','Exynos 7870 SoC','Exynos 7870','1.4 GHz Quad-Core Cortex-A53','QualcommMSM816Snapdragon410','QualcommMSM8917Snapdragon425','1.2 GHz Quad-core Cortex-A53','Spreadtrum SC9830','MediatekMT6737T','Exynos3475','Spreadtrum SC9830','Spreadtrum','','']
             resolution=['720 x 1280','540 x 960','480 x 800','1440 x 2960','1080 x 2220','1080 x 1920']      
             weight=['163','195','173','174','155','191','157','172','132','0','181','169','179','135','160','170','143','159','146','156','138','131','122','126','153']  
             dimensions=['147.6 x 68.7 x 8.4 mm','162.5 x 74.6 x 8.5 mm','159.5 x 73.4 x 8.1 mm','151.3 x 82.4 x 8.3 mm','148.9 x 68.1 x 8 mm','159.9 x 75.7 x 8.3 mm','150.9 x 72.6 x 7.7 mm','149.2 x 70.6 x 8.4 mm','143.4 x 70.8 x 6.9 mm','142.1 x 70.1 x 7 mm','153.2 x 76.1 x 7.6 mm','156.8 x 77.6 x 7.9 mm','146.1 x 71.4 x 7.9 mm','152.4 x 74.7 x 7.9 mm','146.8 x 75.3 x 8.9 mm','146.8 x 75.3 x 8.9 mm','156.7 x 78.8 x 8.1 mm','135.4 x 66.2 x 7.9 mm']
-            if request.user.is_student:
-                global  role
-                role=1
-                feat=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role).order_by('position')
-                ft=sort_feature.objects.filter(Q(sh_hd = 0),roles=role).order_by('position')
-                
+            all_data_dic['price']=price
+            all_data_dic['Size']=Size
+            all_data_dic['Colors']=Colors
+            all_data_dic['OS']=OS
+            all_data_dic['Cpu']=Cpu
+            all_data_dic['backcam']=backcam
+            all_data_dic['battery']=battery
 
-            
-            elif request.user.is_prof:
-                role=2
-                feat=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role).order_by('position')
-                ft=sort_feature.objects.filter(Q(sh_hd = 0),roles=role).order_by('position')
-               
-                #return redirect('/admin')
-            else:
-                print("in mobile redirect")
-                return redirect('/mobileanl/mobile')  
-            
+            filter_features = list(filter_features.values())
+            print(":filter",filter_features)
+            data_filter_feature={}
+            for i in filter_features:
+                print("i:",i['feature'])
+                data_filter_feature[i['feature']]=all_data_dic[i['feature']]
+
+            data={
+                'feat':filter_features,
+                'data_filter_feature':data_filter_feature
+                }
+            return JsonResponse(data)
         else:
-            print("in else authenticate failed")
-            return redirect('/mobileanl/mobile')  
+            print(request.user.id)
+            userobj=User.objects.get(pk=request.user.id)
+            print("user object",userobj.role_id_id)
+            role=userobj.role_id_id
+            roleobj=Role.objects.get(pk=role)
+            role=roleobj.role_name
+            print(role)
+            
+            if role=='Super_Admin':
+                roles=1
+                filter_features=sort_feature.objects.filter(~Q(sh_hd = 0),roles=roles).order_by('position')
+                # feat=sort_feature.objects.filter(~Q(sh_hd = 0),roles=roles).order_by('position')
 
+                ft=sort_feature.objects.filter(Q(sh_hd = 0),roles=roles).order_by('position')
+                print("In super admin",filter_features)
+            elif role=='Subject':
+                # global role
+                roles=2
+                filter_features=sort_feature.objects.filter(~Q(sh_hd = 0),roles=roles).order_by('position')
+                ft=sort_feature.objects.filter(Q(sh_hd = 0),roles=roles).order_by('position')
+            # else:
+            #     print("in mobile redirect")
+            #     return redirect('/mobileanl/mobile')
 
-        return render(request,'webapp/filter_test.html',{'colors':colors,
-            'os':os,'size':size,'feat':feat,'ft':ft,'cpu':cpu,'back_cm':back_cm,'battery':battery,'mobilecompany':mobilecompany,'chip':chip,'resolution':resolution,'weight':weight,'dimensions':dimensions})
+            return render(request,'webapp/filter_test.html')
     
     def post(self,request):
         # print("ssss",(request.POST['first_choice_value']))
         # print("ssss",form.cleaned_data['first_choice_value'])
         global sizeofmob
+        global filt_mobiles
         
-        if request.method=="POST":
-            first_choice = request.POST['first_choice_value']
-            print("fc",first_choice)
-            first_choice2 = request.POST['first_choice2_value']
-            print("fc2",first_choice2)
-            second_choice=request.POST['second_choice_value']
-            print("sc",second_choice)
-            third_choice=request.POST['third_choice_value']
-            print("tc",third_choice)
-            fourth_choice=request.POST['fourth_choice_value']
-            print("fc",fourth_choice)
-            fourth_choice2=request.POST['fourth_choice2_value']
-            print("f2c",fourth_choice2)
-            fifth_choice=request.POST['fifth_choice_value']
-            print("fc",fifth_choice)
-            six_choice=request.POST['six_choice_value']
-            print("sixc",six_choice)
-            seven_choice=request.POST['seven_choice_value']
-            print("sevc",seven_choice)
-            eight_choice=request.POST['eight_choice_value']
         
-            nine_choice=request.POST['nine_choice_value']
+        # if request.method=="POST":
+            # first_choice = request.POST['first_choice_value']
+            # print("fc",first_choice)
+            # first_choice2 = request.POST['first_choice2_value']
+            # print("fc2",first_choice2)
+            # second_choice=request.POST['second_choice_value']
+            # print("sc",second_choice)
+            # third_choice=request.POST['third_choice_value']
+            # print("tc",third_choice)
+            # fourth_choice=request.POST['fourth_choice_value']
+            # print("fc",fourth_choice)
+            # fourth_choice2=request.POST['fourth_choice2_value']
+            # print("f2c",fourth_choice2)
+            # fifth_choice=request.POST['fifth_choice_value']
+            # print("fc",fifth_choice)
+            # six_choice=request.POST['six_choice_value']
+            # print("sixc",six_choice)
+            # seven_choice=request.POST['seven_choice_value']
+            # print("sevc",seven_choice)
+            # eight_choice=request.POST['eight_choice_value']
+        
+            # nine_choice=request.POST['nine_choice_value']
             
-            ten_choice=request.POST['ten_choice_value']
+            # ten_choice=request.POST['ten_choice_value']
             
-            eleven_choice=request.POST['eleven_choice_value']
-            print("ele",eleven_choice)
-            twelve_choice=request.POST['twelve_choice_value']
+            # eleven_choice=request.POST['eleven_choice_value']
+            # print("ele",eleven_choice)
+            # twelve_choice=request.POST['twelve_choice_value']
+        # filter_d={}
+        if request.is_ajax():
+            count=0
+            d = request.POST.get('filt_opt_sel')
+            #print('d',d)
+            filt_opt_sel = json.loads(d)
+            # print("filt_opt_sel",filt_opt_sel)
+            filter_d=filt_opt_sel
+            # return render(request,'webapp/mobile.html')  
+            data={'success':"success"}
             
-            filter = {'Colors' : second_choice,
-                 'OS' : third_choice,
-                 'Size': {'1':fourth_choice,'2':fourth_choice2},
-                 'price':{'1':first_choice,'2':first_choice2},
-                 'Cpu'  : fifth_choice,
-                 'back_camera':six_choice,
-                 'battery' : seven_choice,
-                 'Mobile_Companny':eight_choice,
-                 'Chip':nine_choice,
-                 'Resolution':ten_choice,
-                 'Weight':eleven_choice,
-                 'Dimensions':twelve_choice
-                 }
-            print(filter)
+
+
+        # filter_d = {  'Colors' : second_choice,
+        #             'OS' : third_choice,
+        #             'Size': {'1':fourth_choice,'2':fourth_choice2},
+        #             'price':{'1':first_choice,'2':first_choice2},
+        #             'Cpu'  : fifth_choice,
+        #             'back_camera':six_choice,
+        #             'battery' : seven_choice,
+        #             'Mobile_Companny':eight_choice,
+        #             'Chip':nine_choice,
+        #             'Resolution':ten_choice,
+        #             'Weight':eleven_choice,
+        #             'Dimensions':twelve_choice
+        #      }
+        # print(filter_d)
             query_array = []
             temparray=[]
             
-            for key in filter:
-                if (filter[key] != ''):
-                    print("key",key)
-                    if(key == 'Size' ):
+            argument_list = []    
+            q_objects = Q()
+    
+            for key in filter_d:
+
+                print("key",key)
+                value=filter_d[key]
+                print("value",value)
+                if (filter_d[key] != ''):
+                    if(type(value) == list ):
                         temparray=[]
-                        for k in filter[key]:
-                            if (filter[key][k]!=''):
-                                print("in size",filter[key][k])
-                                temparray.append(filter[key][k])
+                        for k in value:
+                            if(k!=''):
+                                # print("in size",k)
+                                temparray.append(k)
+                            # print("filter_d[key][k]",value[k])
+                            # if (filter_d[key][k]!=''):
+                            #     print("in size",filter_d[key][k])
+                            #     temparray.append(filter_d[key][k])
                         print(temparray)
                         if  temparray:
-                            query_array.append(' '+key +' BETWEEN '+temparray[0]+ ' AND '+ temparray[1] +" " )
-                    elif(key == 'price'):
-                        temparray=[]
-                        for k in filter[key]:
-                            if (filter[key][k]!=''):
-                                print("in price",filter[key][k])
-                                temparray.append(filter[key][k])
-                        print(temparray)
-                        if  temparray:
-                            query_array.append(' '+key +' BETWEEN '+temparray[0]+ ' AND '+ temparray[1]+ " ")
+                           
+                            # query_array.append(' '+key +' BETWEEN '+temparray[0]+ ' AND '+ temparray[1] +" " )
+                            
+                            argument_list.append( Q(**{key+'__range':(temparray[0],temparray[1])}))
+                            # kwargs={'{0}'__'{1}'.format(key,'range'):(temparray[0],temparray[1])}
+                            # count=count+1
+                    # elif(key == 'price'):
+                    #     temparray=[]
+                    #     for k in filter_d[key]:
+                    #         if (filter_d[key][k]!=''):
+                    #             print("in price",filter_d[key][k])
+                    #             temparray.append(filter_d[key][k])
+                    #     print(temparray)
+                    #     if  temparray:
+                    #         query_array.append(' '+key +' BETWEEN '+temparray[0]+ ' AND '+ temparray[1]+ " ")
                     else:
-                        print("in key else")
-                        var=filter[key]
-                        query_array.append(' '+key +' LIKE '+"'"+'%%'+var+'%%'+"'")
+                       
+                        var=filter_d[key]
+                        # query_array.append(' '+key +' LIKE '+"'"+'%%'+var+'%%'+"'")
+                        argument_list.append(Q(**{key+'__contains':var} ))
+                    
+                    
                 
-                   
-            
-            if len(query_array) != 0:
+            # if len(query_array) != 0:
+            if len(argument_list) !=0:
+
                 # query = 'SELECT * FROM webapp_samsung_phone WHERE '+ 'AND ' .join(query_array)
-                query = 'SELECT * FROM webapp_mobilephones WHERE '+ 'AND ' .join(query_array)
+                # query = 'SELECT * FROM webapp_mobilephones WHERE '+ 'AND ' .join(query_array)
                 
                 #old_query= '''SELECT * FROM webapp_samsung_phone where OS like'+"'"+'android v7.1.1 (nougat)'+"'''
-                print(query)
+                # print(query)
                 # mobiles=samsung_phone.objects.raw(query)
-                mobiles=mobilephones.objects.raw(query)
-                sizeofmob=len(list(mobiles))
+                # filt_mobiles=mobilephones.objects.raw(query)
+                
+                filt_mobiles=mobilephones.objects.filter(reduce(operator.and_, argument_list)).order_by('id')
+                sizeofmob=len(list(filt_mobiles))
                 print(sizeofmob)
                 
             else:
                 # query = 'SELECT * FROM webapp_samsung_phone '
-                query = 'SELECT * FROM webapp_mobilesphone '
+                # query = 'SELECT * FROM webapp_mobilephones '
+                query=mobilephones.objects.all().order_by('id')
                 # mobiles=samsung_phone.objects.raw(query)
-                mobiles=mobilesphone.objects.raw(query)
-                sizeofmob=len(list(mobiles))
+                filt_mobiles=query
+                
+                sizeofmob=len(list(filt_mobiles))
                 print(sizeofmob)
             print("sizeofmob",sizeofmob)
+            return JsonResponse(data)
+
             
           
             
-        return render(request,'webapp/mobile.html',{'mobiles':mobiles})
+        # return render(request,'webapp/mobile.html',{'mobiles':mobiles})
+        # return redirect('/mobile')
 
 
 class blogview (TemplateView):
@@ -738,51 +853,100 @@ class blogview (TemplateView):
         return render(request,'webapp/blog.html',{'form':form})
         '''
 
+
+def filteredMobileView(request):
+    print("IN FILTERED MOBILE VIEW-->")
+    template_name='webapp/mobile.html'
+    if request.method=="GET":
+       
+        userobj=User.objects.get(pk=request.user.id)
+        role=userobj.role_id_id
+        roleobj=Role.objects.get(pk=role)
+        role=roleobj.role_name
+        global filt_mobiles
+        
+        if role=='Super_Admin':
+            if filt_mobiles==None:
+                filt_mobiles= mobilephones.objects.all() 
+                print("mobiles ---<>",filt_mobiles)
+                paginator = Paginator(filt_mobiles,2)
+                page = request.GET.get('page')
+                ex_mobile = paginator.get_page(page)
+            else:
+                print("filt_mobiles",filt_mobiles)
+                print("in pass")
+                paginator = Paginator(filt_mobiles,9)
+                page = request.GET.get('page')
+                ex_mobile = paginator.get_page(page)               
+            template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
+            
+            
+            return render(request,template_name,{'mobiles':ex_mobile ,'template_sidebar':template_sidebar})
+        elif role=='Subject':
+            if filt_mobiles==None:
+                filt_mobiles= mobilephones.objects.all() 
+                paginator = Paginator(filt_mobiles,9)
+                page = request.GET.get('page')
+                ex_mobile = paginator.get_page(page)
+                template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
+                return render(request,template_name,{'mobiles':ex_mobile,'template_sidebar':template_sidebar})
+            else:
+                print("mobiles",filt_mobiles)
+                paginator = Paginator(filt_mobiles,9)
+                page = request.GET.get('page')
+                ex_mobile = paginator.get_page(page)
+                # using raw query paginator 'rawpaginator'
+                # raw_qs = filt_mobiles
+                # p = Paginator(raw_qs, 2)
+                # page = request.GET.get('page')
+                # filt_mobiles =p.page(1)
+                
+
+                template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
+                return render(request,template_name,{'mobiles':ex_mobile,'template_sidebar':template_sidebar})
+
 class mobile_phone_view(TemplateView):
     template_name='webapp/mobile.html'
     def get(self,request):
+        print("in phoneview")
         #form=mobile_phone_form(request.POST)
         querry_array=[]
         querry=''
-        # These check have to be changed in future..... 
-        if not request.user.is_superuser:
-            if request.user.is_student:
-                
-                obj=prunedmobilephones.objects.filter(roles=1)
-                for m in obj:
-                    querry_array.append(' ' + 'id='+str(m.m_id)+ ' ' )
-                    
-
-                # querry='SELECT * FROM webapp_samsung_phone WHERE '+ 'or'.join(querry_array)
-                querry='SELECT * FROM webapp_mobilephones WHERE '+ 'or'.join(querry_array)
-                print(querry)
-                # mobiles=samsung_phone.objects.raw(querry)
-                mobiles=mobilephones.objects.raw(querry)
-                return render(request,'webapp/comparemobile_specs.html',{'mobiles':mobiles})
-            if request.user.is_prof:
-                obj=prunedmobilephones.objects.filter(roles=2)
-                print("in here")
-                for m in obj:
-                    querry_array.append(' ' + 'id='+str(m.m_id)+ ' ' )
-                    
-
-                # querry='SELECT * FROM webapp_samsung_phone WHERE '+ 'or'.join(querry_array)
-                querry='SELECT * FROM webapp_mobilephones WHERE '+ 'or'.join(querry_array)
-                print(querry)
-                # mobiles=samsung_phone.objects.raw(querry)
-                mobiles=mobilephones.objects.raw(querry)
-                return render(request,'webapp/comparemobile_specs.html',{'mobiles':mobiles})
-        # as above check will  be changed in future we might not need the above code. . 
+        
+        userobj=User.objects.get(pk=request.user.id)
+        role=userobj.role_id_id
+        roleobj=Role.objects.get(pk=role)
+        role=roleobj.role_name
+        global mobiles
+        
+        
+        print("mobiles",mobiles)
+        if role=='Super_Admin':
+            
+            mobiles= mobilephones.objects.all() 
+            print("mobiles ---<>",mobiles)
+            paginator = Paginator(mobiles,9)
+            page = request.GET.get('page')
+            ex_mobiles = paginator.get_page(page)
+            template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
+            return render(request,self.template_name,{'mobiles':ex_mobiles,'template_sidebar':template_sidebar,'role':"Super_Admin"})
+        elif role=='Subject':
+            
+            mobiles= mobilephones.objects.all() 
+            paginator = Paginator(mobiles,9)
+            page = request.GET.get('page')
+            ex_mobiles = paginator.get_page(page)
+            template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
+            return render(request,self.template_name,{'mobiles':ex_mobiles,'template_sidebar':template_sidebar})
+           
         else:
             # mobiles= samsung_phone.objects.all() 
             mobiles= mobilephones.objects.all() 
             paginator = Paginator(mobiles,9)
             page = request.GET.get('page')
-            mobiles = paginator.get_page(page)
-            print(mobiles)
-        
-            return render(request,self.template_name,{'mobiles':mobiles})
-  
+            ex_mobiles = paginator.get_page(page)
+            
+            return render(request,self.template_name,{'mobiles':ex_mobiles})
     def post(self,request):
         if request.method=="POST":
             form=mobile_phone_form(request.POST)
@@ -798,7 +962,7 @@ class mobile_phone_view(TemplateView):
     def one_mobile_func(request,id):
         id1=id
         print(id1)
-        # singlemob=samsung_phone.objects.filter(id=id1)
+        # singlemob=samsung_phone.objects.filter_d(id=id1)
         singlemob=mobilephones.objects.filter(id=id1)
         print(singlemob)
         return render(request,'webapp/one_mobile_info.html',{
@@ -1007,6 +1171,11 @@ def uploadSampleFile(request):
                 #pickleExpController(expCont)
                 #expCont=getExpController(request)
                 print('>>>BEFORE subjdata head')
+                # print('dataframe')
+                print(dataframe.head())
+                expCont.subjData=dataframe
+                
+                print('subdata head')
                 print(expCont.subjData.head())
                 expCont.subjData=expCont.assigner.splitInBins(
                     no_bins = batch_num,
@@ -1120,7 +1289,7 @@ def getExpController(request):
         print(list(expCont.exp.experiment_feature_set.all()))
         try:
             print('in try pickle expCont')
-            pickledExpCont = pickle.load( open("expCont2.p", "rb") )
+            pickledExpCont = pickle.load( open("expCont4.p", "rb") )
             print('pickledExpCont.subjData')
             print(pickledExpCont.subjData)
         except:
@@ -1151,12 +1320,12 @@ def getExpController(request):
     return expCont
 
 def pickleExpController(expCont):
-    pickle.dump(expCont, open('expCont2.p','wb'))
+    pickle.dump(expCont, open('expCont4.p','wb'))
 
 def getSavedSubjectDataExpCont(request):
     if request.method == 'POST':
         if request.is_ajax:
-            pickleExpCont=pickle.load( open("expCont2.p", "rb") )
+            pickleExpCont=pickle.load( open("expCont4.p", "rb") )
             subject_data=pickleExpCont.subjData
             subject_data=subject_data.to_dict()
             data={
@@ -1241,12 +1410,12 @@ def assignToBlocks(request):
         return JsonResponse(data, safe=False)
 def removeSessionObj(request):
     try:
-        filepath = Path("E:/bias/expCont2.p")
+        filepath = Path("C:/biasweb/expCont4.p")
     except FileNotFoundError:
         filepath=None
     else:
         if filepath.exists():
-            os.remove('E:/bias/expCont2.p')
+            os.remove('C:/biasweb/expCont4.p')
         if request.session['sess_expId']:
             del request.session['sess_expId']
         return HttpResponse()
@@ -1265,7 +1434,7 @@ def importExcel(request):
             df = pd.read_csv(StringIO(json_data))
             print(df)
             data={
-                'data':'success'
+                'data':df
             }
             
     return HttpResponse()
@@ -1288,8 +1457,8 @@ def saveExperiment(request):
 class createExperiment(TemplateView): 
     template_name='webapp/crudexperiment/create_experiment.html'
     
-    def get(self,request):       
-        # removeSessionObj(request)
+    def get(self,request):  
+      
         platformfeatobj=platform_feature.objects.all()
         userobj=User.objects.get(pk=request.user.id)
         role=userobj.role_id_id
@@ -1309,15 +1478,17 @@ class createExperiment(TemplateView):
             print('price_range_values1',price_range_values[0])
             print('price_range_values2',price_range_values[1])
             # mobiles_retrieved=samsung_phone.objects.filter(price_in_pkr__range=(price_range_values[0], price_range_values[1]))
-            mobiles_retrieved=mobilephones.objects.filter(price_in_pkr__range=(price_range_values[0], price_range_values[1])).order_by('price_in_pkr') 
+            mobiles_retrieved=mobilephones.objects.filter(price__range=(price_range_values[0], price_range_values[1])).order_by('price') 
+            
             # else: 
             #     mobiles_retrieved=samsung_phone.objects.filter(price_in_pkr__range=(10000, 30000))
+            print("mobiles_retrieved",mobiles_retrieved)
 
             # print(mobiles_retrieved) 
             mobiles_retrieved = list(mobiles_retrieved.values())
             # samsung_phones=mobiles_retrieved
             mobilephones_str=mobiles_retrieved
-           
+            print("mobilephones_str",mobilephones_str)
         
             return JsonResponse(
             {  

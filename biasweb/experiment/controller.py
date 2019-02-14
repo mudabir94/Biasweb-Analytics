@@ -395,7 +395,7 @@ class ExperimentController:
         #WRITE TO DATABASE
         #obtain set of existing users
         currUsers = User.objects.values_list('custom_id', flat=True)
-        print(currUsers)
+        # print(currUsers)
         #check if subjects exist for this exp object
         if not self.subjects.pk:
             subjForDb = list()

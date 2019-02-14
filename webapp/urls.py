@@ -9,9 +9,9 @@ urlpatterns = [
     # These urls doesn't have templates. These functions are
     # called  through ajax. They are either used to retrieve  
     # data from model and render the data to some other template.         
-    url(r'^test/',views.test, name='test'),                
-    url(r'^ind/',views.ind, name='ind'),                   
-    url(r'^on/',views.on, name='on'),                       
+    url(r'^hidefeature/',views.hideFeature, name='hidefeature'),                
+    url(r'^updatefeatureposition/',views.updateFeaturePosition, name='updatefeatureposition'),                   
+    url(r'^showfeature/',views.showFeature, name='showfeature'),                       
     url(r'^globalFunc/',views.globalFunc,name='gf'),      
 #----------------------------------------------------------------------------------------------------------    
     # Basic Landing Pages
@@ -23,13 +23,17 @@ urlpatterns = [
 
 
 #----------------------------------------------------------------------------------------------------------
-    url(r'^admin_setup/' , views.adminSetup , name='admin_setup') ,
+    url(r'^admin_setup/' , views.adminSetup.as_view() , name='admin_setup') ,
     url(r'^mobile/',views.mobile_phone_view.as_view(),name='mobileview'),
     path('mobile_info/<int:id>',views.mobile_phone_view.one_mobile_func, name='mobileinfo'),
     url(r'^filter/',views.filter.as_view(), name='filter'),
     
     
     url(r'^comparemobile_specs/',views.compareMobileSpecs, name='comparemobile_specs'),
+    url(r'^comparemobilespecsfilt_ver/',views.compareMobileSpecsFilterVer, name='comparemobilespecsfilt_ver'),
+    url(r'^filtered_mobile_view/',views.filteredMobileView,name='filtered_mobile_view'),
+
+
     url(r'^showmob/',views.showMob, name='showmobile'),
     url(r'^showScore/',views.showScore, name='showscore'),
 
