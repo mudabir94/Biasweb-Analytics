@@ -12,5 +12,9 @@ from webapp.forms import SubjectCreationForm as scf
 
 #1. Initialize test subject control
 uid = 16010001
-tscont = SubjCont(u_id=uid)
+exp=Experiment.objects.get(pk=41)
+
+print(exp)
+expid=443
+tscont = SubjCont(u_id=uid,e_id=expid)
 tscont.subject.exp

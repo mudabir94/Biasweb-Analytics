@@ -31,7 +31,7 @@ import numpy as np
 import pandas as pd
 from pandas.compat import StringIO
 #--------------------------------------------------------------------------------------
-from biasweb.experiment.controller import ExperimentController
+from biasweb.experiment.controller import ExperimentController,SubjCont
 from biasweb.pythonscripts.experiment_admin import Experiment_Admin
 from biasweb.pythonscripts.getdata import get
 from biasweb.pythonscripts.insertcsvfiletotable import populate_Table
@@ -188,19 +188,52 @@ def storeSelectedAdminPhones(request):
     if request.method == 'POST':
         if request.is_ajax:
             mobiledata = request.POST.get('mobiledata')
+            custom_exp_id = request.POST.get('custom_exp_id')
+
             mobiledata_json = json.loads(mobiledata)
-            print('mobiledata_json',mobiledata_json)
+            print('custom_exp_id',custom_exp_id)
             mobiledata_json=int(mobiledata_json)
 
            
-            userobj=User.objects.get(pk=request.user.id)
-            expobj=exp.objects.get(pk=11)
+            userobj=User.objects.get(custom_id=16010001)
+
+            expobj=exp.objects.get(custom_exp_id=custom_exp_id)
+            
+
+
+
             # smgphone=samsung_phone.objects.get(pk=mobiledata_json)
             # selphones=selectedAdminPhones(user=userobj,exp=expobj,mob=smgphone)
             phones=mobilephones.objects.get(pk=mobiledata_json)
-            cellphones=selectedAdminPhones(user=userobj,exp=expobj,mob=phones)
-            cellphones.save()
-            return JsonResponse({'data':'success'})
+            print("sel_phones",phones)
+            cellphones=selectedAdminPhones.objects.filter(user=userobj,exp=expobj,mob=phones)
+            print(cellphones)
+            # a check to see if the phone is already selected for the same exp. 
+            if not cellphones:
+                cellphones=selectedAdminPhones(user=userobj,exp=expobj,mob=phones)
+                cellphones.save()
+                data={'data':'Successfully inserted in model'}
+            else:
+                data={'data':'phone already exsists in the same experiment'}
+            return JsonResponse(data)
+def removeSelectedAdminPhones(request):
+    if request.method=='POST':
+        if request.is_ajax():
+            mobiledata=request.POST.get('mobiledata')
+            custom_exp_id = request.POST.get('custom_exp_id')
+            mobiledata_json=json.loads(mobiledata)
+            mobiledata_json=int(mobiledata_json)
+
+            userobj=User.objects.get(custom_id=16010001)
+            expobj=exp.objects.get(custom_exp_id=custom_exp_id)
+            phones=mobilephones.objects.get(pk=mobiledata_json)
+            
+            
+
+            cellphones=selectedAdminPhones.objects.filter(user=userobj,exp=expobj,mob=phones)
+            
+            cellphones.delete()
+            return JsonResponse({'data':'Successfully remved from model'})
 
 comp_mobiles=''    
 def showMob(request):
@@ -859,6 +892,7 @@ def filteredMobileView(request):
        
         userobj=User.objects.get(pk=request.user.id)
         role=userobj.role_id_id
+
         roleobj=Role.objects.get(pk=role)
         role=roleobj.role_name
         global filt_mobiles
@@ -889,7 +923,28 @@ def filteredMobileView(request):
                 template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
                 return render(request,template_name,{'mobiles':ex_mobile,'template_sidebar':template_sidebar})
             else:
-                print("mobiles",filt_mobiles)
+                # print("mobiles",filt_mobiles)
+                uid = request.user.id
+                userobj=User.objects.get(pk=request.user.id)
+                print("userobj",userobj.custom_id)
+                expid=442
+                print("expid",expid)
+                #!!! Problem
+                # on retrieving subj obj multiple subjects are retrieved as all have same custom id... 
+                tscont = SubjCont(u_id=userobj.custom_id)
+                custom_exp_id=tscont.subject.exp
+                print(custom_exp_id)
+                phoneobjs=selectedAdminPhones.objects.filter(exp=custom_exp_id)
+                
+                print(phoneobjs)
+                plist=[]
+                for pob in phoneobjs:
+                    print(pob)
+                    plist.append(pob.mob.id)
+                print(plist)
+                filt_mobiles=mobilephones.objects.filter(pk__in=plist)
+                print(filt_mobiles)
+               
                 paginator = Paginator(filt_mobiles,9)
                 page = request.GET.get('page')
                 ex_mobile = paginator.get_page(page)
@@ -938,7 +993,6 @@ class mobile_phone_view(TemplateView):
             return render(request,self.template_name,{'mobiles':ex_mobiles,'template_sidebar':template_sidebar})
            
         else:
-            # mobiles= samsung_phone.objects.all() 
             mobiles= mobilephones.objects.all() 
             paginator = Paginator(mobiles,9)
             page = request.GET.get('page')
@@ -1476,7 +1530,7 @@ class createExperiment(TemplateView):
             print('price_range_values1',price_range_values[0])
             print('price_range_values2',price_range_values[1])
             # mobiles_retrieved=samsung_phone.objects.filter(price_in_pkr__range=(price_range_values[0], price_range_values[1]))
-            mobiles_retrieved=mobilephones.objects.filter(price__range=(price_range_values[0], price_range_values[1])).order_by('price') 
+            mobiles_retrieved=mobilephones.objects.filter(price__range=(price_range_values[0], price_range_values[1])).order_by('id') 
             
             # else: 
             #     mobiles_retrieved=samsung_phone.objects.filter(price_in_pkr__range=(10000, 30000))

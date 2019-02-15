@@ -443,4 +443,5 @@ class SubjCont:
     def __init__(self, u_id):
         self.subject = Subject()
         #Check if subject exists
+       
         self.subject = Subject.objects.get(user__username=u_id)
