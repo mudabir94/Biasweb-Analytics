@@ -60,6 +60,9 @@ urlpatterns = [
     url(r'^store_selected_admin_phones/',views.storeSelectedAdminPhones, name='store_selected_admin_phones'),
     url(r'^remove_selected_admin_phones/',views.removeSelectedAdminPhones, name='remove_selected_admin_phones'),
     url(r'^price_range_retrieve/',views.priceRangeRetrieve, name='price_range_retrieve'),
+    url(r'^get_selectedadmin_phones/',views.getSelectedAdminPhones, name='get_selectedadmin_phones'),
+
+    
 #---------------------------------------------------------------------------------------------   
     ## Pages that are not currently used. 
     #url(r'^blog/', views.blogview.as_view(), name='blog'), 

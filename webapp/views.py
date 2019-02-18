@@ -211,6 +211,7 @@ def storeSelectedAdminPhones(request):
             # a check to see if the phone is already selected for the same exp. 
             if not cellphones:
                 cellphones=selectedAdminPhones(user=userobj,exp=expobj,mob=phones)
+                
                 cellphones.save()
                 data={'data':'Successfully inserted in model'}
             else:
@@ -236,6 +237,34 @@ def removeSelectedAdminPhones(request):
             return JsonResponse({'data':'Successfully remved from model'})
 
 comp_mobiles=''    
+def getSelectedAdminPhones(request):
+    if request.method=='GET':
+        if request.is_ajax():
+            userobj=User.objects.get(custom_id=16010001)
+            expobj=exp.objects.get(custom_exp_id='ses-001-0444')
+            cellphones=selectedAdminPhones.objects.filter(user=userobj,exp=expobj)
+            clist=[]
+            for c in cellphones:
+                print("mid",c.mob_id)
+                clist.append(c.mob_id)
+            phones=mobilephones.objects.filter(id__in=clist)
+
+            cellphones = list(phones.values())
+            # samsung_phones=mobiles_retrieved
+            cellphones_str=cellphones
+            # print("cellphones_str",cellphones_str)
+        
+            return JsonResponse(
+            {  
+                # 'samsung_phones':samsung_phones
+                'cellphones':cellphones_str,
+                'data':'retrieved data from model'
+            })
+            
+
+            
+
+
 def showMob(request):
     if request.method=="POST":
         if request.is_ajax:
@@ -1534,13 +1563,13 @@ class createExperiment(TemplateView):
             
             # else: 
             #     mobiles_retrieved=samsung_phone.objects.filter(price_in_pkr__range=(10000, 30000))
-            print("mobiles_retrieved",mobiles_retrieved)
+            # print("mobiles_retrieved",mobiles_retrieved)
 
             # print(mobiles_retrieved) 
             mobiles_retrieved = list(mobiles_retrieved.values())
             # samsung_phones=mobiles_retrieved
             mobilephones_str=mobiles_retrieved
-            print("mobilephones_str",mobilephones_str)
+            # print("mobilephones_str",mobilephones_str)
         
             return JsonResponse(
             {  
@@ -1554,7 +1583,7 @@ class createExperiment(TemplateView):
             # samsung_phones= samsung_phone.objects.all()
             
             m_p= mobilephones.objects.all() 
-            print("mobile_phones",m_p)
+            # print("mobile_phones",m_p)
             # paginator = Paginator(samsung_phones,9)
             paginator = Paginator(m_p,9)
             page = request.GET.get('page')
@@ -1568,7 +1597,7 @@ class createExperiment(TemplateView):
                 # page = request.GET.get('page')
                 # samsung_phones = paginator.get_page(page)
                 # print("samsung_phones",samsung_phones)
-                print("mobilephones",mobile_phones__str)
+                # print("mobilephones",mobile_phones__str)
             
                 creat_exp_template_sidebar='webapp/sidebartemplates/createExpSideBars/crtExpsidebartemp_exp.html'
             elif role=='Experimental_Admin':
@@ -1577,7 +1606,7 @@ class createExperiment(TemplateView):
                 # page = request.GET.get('page')
                 # samsung_phones = paginator.get_page(page)
                 # print(samsung_phones)
-                print(mobilephones)
+                # print(mobilephones)
                 creat_exp_template_sidebar='webapp/sidebartemplates/createExpSideBars/crtExpsidebartemp_exp.html'
             elif role=='Platform_Admin':
                 pass

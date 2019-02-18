@@ -494,6 +494,7 @@ window.row_filedata=null;
 // When the page will this will be the first javascript function that will be called. 
 $(document).ready(function () {
    console.log('btrn',btns)
+   populateExpPhones()
 
 // This Will hide all the divs with class=innerchecksboxdivs
 
@@ -2795,9 +2796,92 @@ function sendFilePath(id){
         // $('#upload').prop('disabled',true);
        
     }
+    // fetch data from server against the experiment underconstruction and see if there is any mobiles present. 
+    function populateExpPhones(){
+        $.ajax({
+            type: 'GET',
+            dataType: "json",
+            'data': {
+            'csrfmiddlewaretoken': '{{ csrf_token }}',
+            },
+            // the ajax call is sent to subdetails url name in the post function.  
+            url: "{% url 'get_selectedadmin_phones' %}",
+                success: function(data){
+                    var phns=data['cellphones'];
+                    console.log("phns",phns);
+                    var lpd=document.getElementById('expphonelist_div');
+                    for (p in phns){
+                        console.log("Mobile name",phns[p].Mobile_Name)
+                        var div_row=document.createElement('div');
+                        div_row.setAttribute('class','row')
+                        div_row.id=phns[p].id
+                        lpd.append(div_row);
+                        var div_col_md_6_1=document.createElement('DIV');
+                        div_col_md_6_1.setAttribute('class','col-md-6');
+                        div_col_md_6_1.innerHTML=phns[p].Mobile_Name
+                        div_row.append(div_col_md_6_1);
+                        var div_col_md_6_2=document.createElement('div');
+                        div_col_md_6_2.setAttribute('class','col-md-6');
+                        var del_button=document.createElement('button');
+                        del_button.textContent="Delete";
+                        del_button.setAttribute('onclick','delExpPhone($(this).parent().parent())')
+                        div_col_md_6_2.append(del_button);
+                        div_row.append(div_col_md_6_2);
+                    }
+
+                     alert(data['data']);
+                    
+                }
+            
+            }); 
+    }
+    function delExpPhone(element){
+        var mob_id=$(element).attr('id');
+        console.log("mob_id",mob_id)
+        $.ajax({
+            type: 'POST',
+            dataType: "json",
+            'data': {
+            'mobiledata': JSON.stringify(mob_id),
+            'custom_exp_id':custom_exp_id,
+            'csrfmiddlewaretoken': '{{ csrf_token }}',
+            },
+            // the ajax call is sent to subdetails url name in the post function.  
+            url: "{% url 'remove_selected_admin_phones' %}",
+                success: function(data){
+                   
+                      alert(data['data']);
+                    
+                }
+            
+            }); 
+        $(element).remove()
+    }
+    function expPhone_UpdataList(element){
+         console.log("ele",element)
+         var lpd=document.getElementById('expphonelist_div');
+         var div_row=document.createElement('div');
+         div_row.setAttribute('class','row')
+         div_row.id=element.value
+         lpd.append(div_row);
+         var div_col_md_6_1=document.createElement('DIV');
+         div_col_md_6_1.setAttribute('class','col-md-6');
+         div_col_md_6_1.innerHTML=element.name
+         div_row.append(div_col_md_6_1);
+         var div_col_md_6_2=document.createElement('div');
+         div_col_md_6_2.setAttribute('class','col-md-6');
+         var del_button=document.createElement('button');
+         del_button.textContent="Delete";
+         del_button.setAttribute('onclick','delExpPhone($(this).parent().parent())')
+         div_col_md_6_2.append(del_button);
+         div_row.append(div_col_md_6_2);
+
+    }
     function toggleCheckbox(element){
-        console.log("Element Value",element.value);
+        console.log("Element",element.name);
         var mob_id=element.value;
+        // On toggle check pass the element to an exp_phone list for updation. 
+        expPhone_UpdataList(element)
         if (element.checked == true){
            
             $.ajax({
