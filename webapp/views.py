@@ -195,7 +195,7 @@ def storeSelectedAdminPhones(request):
             mobiledata_json=int(mobiledata_json)
 
            
-            userobj=User.objects.get(custom_id=16010001)
+            userobj=User.objects.get(pk=request.user.id)
 
             expobj=exp.objects.get(custom_exp_id=custom_exp_id)
             
@@ -927,7 +927,7 @@ def filteredMobileView(request):
                 uid = request.user.id
                 userobj=User.objects.get(pk=request.user.id)
                 print("userobj",userobj.custom_id)
-                expid=442
+                expid=180
                 print("expid",expid)
                 #!!! Problem
                 # on retrieving subj obj multiple subjects are retrieved as all have same custom id... 
