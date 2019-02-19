@@ -12,13 +12,6 @@ from webapp.forms import SubjectCreationForm as scf
 
 #1. Retrieve user subjects and experiments
 uid = 16010001
-<<<<<<< HEAD
-exp=Experiment.objects.get(pk=41)
-
-print(exp)
-expid=443
-tscont = SubjCont(u_id=uid)
-=======
 #1.1 Get list of experiments the user is a subject in
 tuser = User.objects.get(username=uid)
 subj_list = tuser.subject_set.all().prefetch_related('exp')
@@ -35,5 +28,4 @@ sId = subj_list.get(exp=exp_active).id
 
 #2. Initialize test subject control
 tscont = SubjCont(s_id=sId)
->>>>>>> 462e2215182105b427156229f901f41beab8c677
 tscont.subject.exp
