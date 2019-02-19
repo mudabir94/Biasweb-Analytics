@@ -222,16 +222,17 @@ def removeSelectedAdminPhones(request):
         if request.is_ajax():
             mobiledata=request.POST.get('mobiledata')
             custom_exp_id = request.POST.get('custom_exp_id')
+            print("custom_exp_id",custom_exp_id)
             mobiledata_json=json.loads(mobiledata)
             mobiledata_json=int(mobiledata_json)
 
-            userobj=User.objects.get(custom_id=16010001)
+            
             expobj=exp.objects.get(custom_exp_id=custom_exp_id)
             phones=mobilephones.objects.get(pk=mobiledata_json)
             
             
 
-            cellphones=selectedAdminPhones.objects.filter(user=userobj,exp=expobj,mob=phones)
+            cellphones=selectedAdminPhones.objects.filter(exp=expobj,mob=phones)
             
             cellphones.delete()
             return JsonResponse({'data':'Successfully remved from model'})
@@ -240,9 +241,17 @@ comp_mobiles=''
 def getSelectedAdminPhones(request):
     if request.method=='GET':
         if request.is_ajax():
-            userobj=User.objects.get(custom_id=16010001)
-            expobj=exp.objects.get(custom_exp_id='ses-001-0444')
-            cellphones=selectedAdminPhones.objects.filter(user=userobj,exp=expobj)
+
+            # expCont = getExpController(request)
+            # existExpId = expCont.exp.id
+            # print("existExpId",existExpId)
+            # expobj=exp.objects.get(custom_exp_id=existExpId)
+            # print("expobj",expobj)
+            ## A Check is to be set for knowing if the admin has created new, working on existing or have not created the exp obj yet. 
+            # if working on existing:
+           
+            cellphones=selectedAdminPhones.objects.filter(exp=186)
+
             clist=[]
             for c in cellphones:
                 print("mid",c.mob_id)
@@ -252,7 +261,7 @@ def getSelectedAdminPhones(request):
             cellphones = list(phones.values())
             # samsung_phones=mobiles_retrieved
             cellphones_str=cellphones
-            # print("cellphones_str",cellphones_str)
+            print("cellphones_str",cellphones_str)
         
             return JsonResponse(
             {  
@@ -1664,57 +1673,3 @@ class createExperiment(TemplateView):
                 }
                 return JsonResponse(data) #, safe=False)
         #return render(request,'webapp/crudexperiment/create_experiment.html',data)
-class datadefined(TemplateView):
-    template_name='webapp/crudexperiment/create_experiment.html'
-    def get(self,request):
-        pass
-    def post(self,request):  
-        platformfeatobj=platform_feature.objects.all()
-        userobj=User.objects.get(pk=request.user.id)
-        role=userobj.role_id_id
-        roleobj=Role.objects.get(pk=role)
-        role=roleobj.role_name
-        # samsung_phones=''
-        mobilephones_str=''
-        if request.is_ajax():
-            price_range_values = request.POST.get('price_range_values')
-            print(price_range_values)
-            if price_range_values:
-                print("in if ")
-                print('price_range_values',price_range_values)
-                price_range_values = json.loads(price_range_values)
-                print('price_range_values',price_range_values[0])
-                print('price_range_values1',price_range_values[1])
-                # mobiles_retrieved=samsung_phone.objects.filter(price_in_pkr__range=(price_range_values[0], price_range_values[1]))
-                mobiles_retrieved=mobilephones.objects.filter(price_in_pkr__range=(price_range_values[0], price_range_values[1]))
-            print(mobiles_retrieved) 
-            mobiles_retrieved = list(mobiles_retrieved.values())
-            # samsung_phones=mobiles_retrieved
-            mobilephones_str=mobiles_retrieved
-            
-        if role=='Super_Admin':
-            # print("samsung_phones",samsung_phones)
-            creat_exp_template_sidebar='webapp/sidebartemplates/createExpSideBars/crtExpsidebartemp_exp.html'
-        elif role=='Experimental_Admin':
-            print(samsung_phones)
-            creat_exp_template_sidebar='webapp/sidebartemplates/createExpSideBars/crtExpsidebartemp_exp.html'
-        elif role=='Platform_Admin':
-            pass
-        try:
-            sess_expId = request.session['sess_expId']
-            print("sesid",sess_expId)
-        except KeyError:
-            sess_expId = ""
-        try:
-            sess_custExpId = request.session['sess_custExpId']
-        except KeyError:
-            sess_custExpId = "123"
-        
-        return render(request,self.template_name,
-        {  'creat_exp_template_sidebar':creat_exp_template_sidebar,
-            'platformfeatobj':platformfeatobj,
-            'sess_expId':sess_expId,
-            'sess_custExpId':sess_custExpId,
-            'mobilephones':mobilephones_str
-                                        }
-        )   

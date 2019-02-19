@@ -16,5 +16,5 @@ exp=Experiment.objects.get(pk=41)
 
 print(exp)
 expid=443
-tscont = SubjCont(u_id=uid,e_id=expid)
+tscont = SubjCont(u_id=uid)
 tscont.subject.exp

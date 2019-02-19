@@ -56,7 +56,6 @@ urlpatterns = [
     url(r'^get_saved_subject_data_expcont/',views.getSavedSubjectDataExpCont,  name='get_saved_subject_data_expcont'),
     url(r'^import_excel/',views.importExcel,  name='import_excel'),
     url(r'^saveexperiment/',views.saveExperiment,  name='saveexperiment'),
-    url(r'^datadefinded/',views.datadefined.as_view(), name='datadefined'),
     url(r'^store_selected_admin_phones/',views.storeSelectedAdminPhones, name='store_selected_admin_phones'),
     url(r'^remove_selected_admin_phones/',views.removeSelectedAdminPhones, name='remove_selected_admin_phones'),
     url(r'^price_range_retrieve/',views.priceRangeRetrieve, name='price_range_retrieve'),

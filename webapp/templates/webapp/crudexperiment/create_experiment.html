@@ -476,9 +476,10 @@
 
 
 
-
+var global_phones_exp_phones=[]
 //Global Variable
 var dict = {};
+
 var arr_feature_levels=[];
 var globalfiledatalist=[];
 var exp_id = '{{sess_expId}}';
@@ -498,7 +499,7 @@ window.row_filedata=null;
 // When the page will this will be the first javascript function that will be called. 
 $(document).ready(function () {
    console.log('btrn',btns)
-   populateExpPhones()
+   
 
 // This Will hide all the divs with class=innerchecksboxdivs
 
@@ -522,13 +523,14 @@ $('#feat_lvl_div').show();
 //TODO@MUDABIR:
 if(exp_id===""){
     // $('#feat_lvl_div').hide();
-    
+    alert('exp_id')
     
     //test to see if session exp empty
     //if not, then alert that session exists
     //if ok, load the experiment details as were
     //else, set sess_expId to None
 } else {
+
     let contin = confirm("Continue working on Experiment: "+custom_exp_id+"?");
      if(contin===false){
 
@@ -558,6 +560,7 @@ if(exp_id===""){
 
      }
      else{
+        populateExpPhones();
         showExpWIP();
 
         // Check through an ajax call if anything related to dict,blocklist etc
@@ -615,10 +618,116 @@ if(exp_id===""){
         // Showing saved subject data. 
         // send an ajax call and get the expCont.subjData of the current Exp Object. 
         getSavedSubjectDataExpCont();
-
+        
      }
 }
+var slider2 = new rSlider({
+                    target: '#price_slider',
+                    values: {min:5000,max:70000},
+                    range: true,
+                    tooltip: true,
+                    scale: false,
+                    labels: false,
+                    set: [5000, 70000],
+                    step:10000,
+                    onChange:function (values) { 
+                        var values=values.split(',');
+                        console.log(values);
+                        $.ajax({
+                             // Ajax call to getrange of phones ...  
+                                url: "{% url 'createexp' %}",
+                                type:'GET',
+                                'data': {
+                                'price_range_values':JSON.stringify(values),
+                                // 'csrfmiddlewaretoken': '{{ csrf_token }}',
+                                },
+                                dataType: "json",
+                                success: function(data){
+                                console.log("data",data)// location.reload();
+                                $('#mobile_catalog_div').empty();
+                                $('#pager').hide();
+                                // var json_data_mobiles=data['samsung_phones']
+                                var json_data_mobiles=data['mobilephones']
+                                // var row_fluid=document.createElement('div');
+                                // row_fluid.setAttribute('class','row-fluid');
+                                // row_fluid.setAttribute('id','mobile_catalog_div');
+                                row_fluid=$('#mobile_catalog_div');
+                                var row=document.createElement('div');
+                                row.setAttribute('class','row');
+                                row_fluid.append(row);
+                                var col_md_12=document.createElement("div");
+                                col_md_12.setAttribute('class','col-md-12');
+                                row.append(col_md_12);
+                                var lps=document.createElement("div");
+                                lps.setAttribute("class",'latest-product-section');
+                                col_md_12.append(lps);
+                                var rtc=document.createElement('DIV');
+                                rtc.setAttribute("class","row text-center");
+                                lps.append(rtc);
+                                for (var i=0;i<json_data_mobiles.length;i++){
+                                   
+                                    if (i%3===0 && i!==0){
+                                        console.log("asd",i)
+                                        var hr=document.createElement('hr');
+                                        lps.append(hr); 
+                                        var rtc=document.createElement('DIV');
+                                        rtc.setAttribute("class","row text-center");
+                                        lps.append(rtc);
+                                      
+                                    }
+                                    var col_md_4_post=document.createElement('DIV');
+                                    col_md_4_post.setAttribute("class","col-md-4 sm-margin-b-50 pull-left post");
+                                    rtc.append(col_md_4_post);
+                                    var margin_b_20=document.createElement('DIV');
+                                    margin_b_20.setAttribute("class","margin-b-20");
+                                    col_md_4_post.append(margin_b_20);
+                                    var input_checkb=document.createElement('input');
+                                    input_checkb.type="checkbox";
+                                    input_checkb.value=json_data_mobiles[i]['id'];
+                                    input_checkb.id=json_data_mobiles[i]['id']+"cat";
+                                    input_checkb.name=json_data_mobiles[i]['id']+"-"+json_data_mobiles[i]['Mobile_Name'];
+                                    input_checkb.setAttribute('onchange','toggleCheckbox(this)')
+                                    var img=document.createElement('img');
+                                    img.setAttribute('class','img-responsive')
+                                    console.log("/static/"+json_data_mobiles[i]['imagepath1'])
+                                    img.src="/static/"+json_data_mobiles[i]['imagepath1'];
 
+                                    margin_b_20.append(input_checkb);
+                                    margin_b_20.append(img);
+                                    var mobile_name_p=document.createElement('p')
+                                    mobile_name_p.innerHTML=json_data_mobiles[i]['Mobile_Name']
+                                    col_md_4_post.append(mobile_name_p)
+                                    var mobile_price_p=document.createElement('p')
+                                    mobile_price_p.innerHTML=json_data_mobiles[i]['price']
+                                    col_md_4_post.append(mobile_price_p)
+                                    var link=document.createElement('a');
+                                    link.setAttribute('class','link btn btn-success');
+                                    // took alot of time finding this solution...
+                                    var url = "{% url 'mobileinfo' id=4  %}".replace("4", json_data_mobiles[i]['id']);
+                                    link.href= url;
+
+                                    link.text="READ MORE";
+                                    col_md_4_post.append(link); 
+                                    // if (i%3===0 && i!==0){
+                                       
+                                    // }
+                                    // console.log(i)
+                                }
+                                console.log("global_phones_exp_phones",global_phones_exp_phones);
+                                for (phones in global_phones_exp_phones){
+                                    $('input:checkbox[id^='+global_phones_exp_phones[phones]+"cat"+']:not(:checked)').prop('checked',true);
+                                    // console.log("catt",$('input:checkbox[id^='+global_phones_exp_phones[phones].id+"cat"+']:not(:checked)').attr('id'));
+
+                                }
+                            }
+                                
+                                
+                         }); 
+                       
+                    }
+        });
+        
+       
 
 });
 function showcheckboxes_stored(){
@@ -2630,152 +2739,106 @@ function sendFilePath(id){
             $('#mobile_catalog_div').hide();
             $('#pager').hide();
 
-
-        // $( function() {
-        //     $( "#priceslider" ).slider({
-        //      range:true,
-        //      min:10,
-        //      max:20,
-        //     values:[10,20],
-        //     "ui-slider": "highlight",
-        //      scale:true,
-        //      step:1,
-        //      slide: function( event, ui ) {
-        //         var values = $( "#priceslider" ).slider( "option", "values" );
-        //          console.log('values',values);
-        //      }
-        //      });
-         
-        //  });
-        var slider2 = new rSlider({
-                    target: '#price_slider',
-                    
-                    values: {min:5000,max:70000},
-                    range: true,
-                    tooltip: true,
-                    scale: false,
-                    labels: false,
-                    set: [5000, 70000],
-                    step:10000,
-                    onChange:function (values) { 
-                        var values=values.split(',');
-                        console.log(values);
-                        
-                        $.ajax({
-                             // Ajax call to getrange of phones ...  
-                                url: "{% url 'createexp' %}",
-                                type:'GET',
-                                'data': {
-                                'price_range_values':JSON.stringify(values),
-                                // 'csrfmiddlewaretoken': '{{ csrf_token }}',
-                                },
-                                dataType: "json",
-                                
-                                success: function(data){
-                                console.log("data",data)// location.reload();
-                                $('#mobile_catalog_div').empty();
-                                $('#pager').hide();
-                                // var json_data_mobiles=data['samsung_phones']
-                                var json_data_mobiles=data['mobilephones']
-                                
-                                // var row_fluid=document.createElement('div');
-                                // row_fluid.setAttribute('class','row-fluid');
-                                // row_fluid.setAttribute('id','mobile_catalog_div');
-                                row_fluid=$('#mobile_catalog_div');
-                                var row=document.createElement('div');
-                                row.setAttribute('class','row');
-                                row_fluid.append(row);
-                                var col_md_12=document.createElement("div");
-                                col_md_12.setAttribute('class','col-md-12');
-                                row.append(col_md_12);
-                                var lps=document.createElement("div");
-                                lps.setAttribute("class",'latest-product-section');
-                                col_md_12.append(lps);
-                                
-                                    
-                                var rtc=document.createElement('DIV');
-                                rtc.setAttribute("class","row text-center");
-                                lps.append(rtc);
-                                for (var i=0;i<json_data_mobiles.length;i++){
+        // var slider2 = new rSlider({
+        //             target: '#price_slider',
+        //             values: {min:5000,max:70000},
+        //             range: true,
+        //             tooltip: true,
+        //             scale: false,
+        //             labels: false,
+        //             set: [5000, 70000],
+        //             step:10000,
+        //             onChange:function (values) { 
+        //                 var values=values.split(',');
+        //                 console.log(values);
+        //                 $.ajax({
+        //                      // Ajax call to getrange of phones ...  
+        //                         url: "{% url 'createexp' %}",
+        //                         type:'GET',
+        //                         'data': {
+        //                         'price_range_values':JSON.stringify(values),
+        //                         // 'csrfmiddlewaretoken': '{{ csrf_token }}',
+        //                         },
+        //                         dataType: "json",
+        //                         success: function(data){
+        //                         console.log("data",data)// location.reload();
+        //                         $('#mobile_catalog_div').empty();
+        //                         $('#pager').hide();
+        //                         // var json_data_mobiles=data['samsung_phones']
+        //                         var json_data_mobiles=data['mobilephones']
+        //                         // var row_fluid=document.createElement('div');
+        //                         // row_fluid.setAttribute('class','row-fluid');
+        //                         // row_fluid.setAttribute('id','mobile_catalog_div');
+        //                         row_fluid=$('#mobile_catalog_div');
+        //                         var row=document.createElement('div');
+        //                         row.setAttribute('class','row');
+        //                         row_fluid.append(row);
+        //                         var col_md_12=document.createElement("div");
+        //                         col_md_12.setAttribute('class','col-md-12');
+        //                         row.append(col_md_12);
+        //                         var lps=document.createElement("div");
+        //                         lps.setAttribute("class",'latest-product-section');
+        //                         col_md_12.append(lps);
+        //                         var rtc=document.createElement('DIV');
+        //                         rtc.setAttribute("class","row text-center");
+        //                         lps.append(rtc);
+        //                         for (var i=0;i<json_data_mobiles.length;i++){
                                    
-                                    if (i%3===0 && i!==0){
-                                        console.log("asd",i)
-                                        var hr=document.createElement('hr');
-                                        lps.append(hr); 
-                                        var rtc=document.createElement('DIV');
-                                        rtc.setAttribute("class","row text-center");
-                                        lps.append(rtc);
+        //                             if (i%3===0 && i!==0){
+        //                                 console.log("asd",i)
+        //                                 var hr=document.createElement('hr');
+        //                                 lps.append(hr); 
+        //                                 var rtc=document.createElement('DIV');
+        //                                 rtc.setAttribute("class","row text-center");
+        //                                 lps.append(rtc);
                                       
-                                    }
-                                    var col_md_4_post=document.createElement('DIV');
-                                    col_md_4_post.setAttribute("class","col-md-4 sm-margin-b-50 pull-left post");
-                                    rtc.append(col_md_4_post);
-                                    var margin_b_20=document.createElement('DIV');
-                                    margin_b_20.setAttribute("class","margin-b-20");
-                                    col_md_4_post.append(margin_b_20);
-                                    var input_checkb=document.createElement('input');
-                                    input_checkb.type="checkbox";
-                                    input_checkb.value=json_data_mobiles[i]['id'];
-                                    input_checkb.id=json_data_mobiles[i]['id'];
-                                    input_checkb.name=json_data_mobiles[i]['id']+"-"+json_data_mobiles[i]['Mobile_Name'];
-                                    input_checkb.setAttribute('onchange','toggleCheckbox(this)')
-                                    var img=document.createElement('img');
-                                    img.setAttribute('class','img-responsive')
-                                    console.log("/static/"+json_data_mobiles[i]['imagepath1'])
-                                    img.src="/static/"+json_data_mobiles[i]['imagepath1'];
+        //                             }
+        //                             var col_md_4_post=document.createElement('DIV');
+        //                             col_md_4_post.setAttribute("class","col-md-4 sm-margin-b-50 pull-left post");
+        //                             rtc.append(col_md_4_post);
+        //                             var margin_b_20=document.createElement('DIV');
+        //                             margin_b_20.setAttribute("class","margin-b-20");
+        //                             col_md_4_post.append(margin_b_20);
+        //                             var input_checkb=document.createElement('input');
+        //                             input_checkb.type="checkbox";
+        //                             input_checkb.value=json_data_mobiles[i]['id'];
+        //                             input_checkb.id=json_data_mobiles[i]['id'];
+        //                             input_checkb.name=json_data_mobiles[i]['id']+"-"+json_data_mobiles[i]['Mobile_Name'];
+        //                             input_checkb.setAttribute('onchange','toggleCheckbox(this)')
+        //                             var img=document.createElement('img');
+        //                             img.setAttribute('class','img-responsive')
+        //                             console.log("/static/"+json_data_mobiles[i]['imagepath1'])
+        //                             img.src="/static/"+json_data_mobiles[i]['imagepath1'];
 
-                                    margin_b_20.append(input_checkb);
-                                    margin_b_20.append(img);
-                                    var mobile_name_p=document.createElement('p')
-                                    mobile_name_p.innerHTML=json_data_mobiles[i]['Mobile_Name']
-                                    col_md_4_post.append(mobile_name_p)
-                                    var mobile_price_p=document.createElement('p')
-                                    mobile_price_p.innerHTML=json_data_mobiles[i]['price']
-                                    col_md_4_post.append(mobile_price_p)
-                                    var link=document.createElement('a');
-                                    link.setAttribute('class','link btn btn-success');
-                                    // took alot of time finding this solution...
-                                    var url = "{% url 'mobileinfo' id=4  %}".replace("4", json_data_mobiles[i]['id']);
-                                    link.href= url;
+        //                             margin_b_20.append(input_checkb);
+        //                             margin_b_20.append(img);
+        //                             var mobile_name_p=document.createElement('p')
+        //                             mobile_name_p.innerHTML=json_data_mobiles[i]['Mobile_Name']
+        //                             col_md_4_post.append(mobile_name_p)
+        //                             var mobile_price_p=document.createElement('p')
+        //                             mobile_price_p.innerHTML=json_data_mobiles[i]['price']
+        //                             col_md_4_post.append(mobile_price_p)
+        //                             var link=document.createElement('a');
+        //                             link.setAttribute('class','link btn btn-success');
+        //                             // took alot of time finding this solution...
+        //                             var url = "{% url 'mobileinfo' id=4  %}".replace("4", json_data_mobiles[i]['id']);
+        //                             link.href= url;
 
-                                    link.text="READ MORE";
-                                    col_md_4_post.append(link); 
-                                    // if (i%3===0 && i!==0){
+        //                             link.text="READ MORE";
+        //                             col_md_4_post.append(link); 
+        //                             // if (i%3===0 && i!==0){
                                        
-                                    // }
-                                    // console.log(i)
-                                }
-                                
-                                $('#mobile_catalog_div').append(row_fluid)
-                                if($('#mobile_catalog_div').is(":hidden")){
-                                    $('#pager').hide();
-                                }
-                                else{
-                                    $('#pager').show();
-                                }
-                                
-
-                                // $("#mobile_catalog_div").cPager({
-                                //     // how many items per page
-                                //     pageSize: 10,
-                                //     // container ID
-                                //     pageid: "pager",
-                                //     // item class
-                                //     itemClass: "post",
-                                //     pageIndex: 1
-
-                                //     });
-
+        //                             // }
+        //                             // console.log(i)
+        //                         }
+  
+        //                     }
                                 
                                 
-                                // $().appendTo('#testresponse')
-                                }
-                                
-                                
-                         }); 
+        //                  }); 
                        
-                    }
-        });
+        //             }
+        // });
 
         });
     function mobileCatalog(){
@@ -2800,25 +2863,31 @@ function sendFilePath(id){
         // $('#upload').prop('disabled',true);
        
     }
+    
     // fetch data from server against the experiment underconstruction and see if there is any mobiles present. 
     function populateExpPhones(){
         $.ajax({
             type: 'GET',
             dataType: "json",
             'data': {
+                'custom_exp_id':custom_exp_id,
             'csrfmiddlewaretoken': '{{ csrf_token }}',
             },
             // the ajax call is sent to subdetails url name in the post function.  
             url: "{% url 'get_selectedadmin_phones' %}",
                 success: function(data){
                     var phns=data['cellphones'];
+                    // global_phones_exp_phones=phns
+                    console.log("gbphones",phns)
                     console.log("phns",phns);
                     var lpd=document.getElementById('expphonelist_div');
                     for (p in phns){
                         console.log("Mobile name",phns[p].Mobile_Name)
                         var div_row=document.createElement('div');
                         div_row.setAttribute('class','row')
-                        div_row.id=phns[p].id
+                        div_row.id=phns[p].id+"-catrow"
+                        global_phones_exp_phones.push(phns[p].id);
+                        $('input:checkbox[id^='+phns[p].id+"cat"+']:not(:checked)').prop('checked',true);
                         lpd.append(div_row);
                         var div_col_md_6_1=document.createElement('DIV');
                         div_col_md_6_1.setAttribute('class','col-md-6');
@@ -2841,7 +2910,9 @@ function sendFilePath(id){
     }
     function delExpPhone(element){
         var mob_id=$(element).attr('id');
-        console.log("mob_id",mob_id)
+        split_id=mob_id.split('-')
+        console.log("mob_id",split_id[0]);
+        mob_id=split_id[0]
         $.ajax({
             type: 'POST',
             dataType: "json",
@@ -2853,9 +2924,15 @@ function sendFilePath(id){
             // the ajax call is sent to subdetails url name in the post function.  
             url: "{% url 'remove_selected_admin_phones' %}",
                 success: function(data){
-                   
-                      alert(data['data']);
-                    
+                 $('input:checkbox[id^='+mob_id+"cat"+']:checked').prop("checked", false);
+                    alert(data['data']);
+
+                    var index = global_phones_exp_phones.indexOf(parseInt(mob_id));
+                     if (index > -1) {
+                        global_phones_exp_phones.splice(index, 1);
+                            }
+                    console.log("global_phones_exp_phones_delPhones_remove",global_phones_exp_phones)
+
                 }
             
             }); 
@@ -2866,11 +2943,18 @@ function sendFilePath(id){
          var lpd=document.getElementById('expphonelist_div');
          var div_row=document.createElement('div');
          div_row.setAttribute('class','row')
-         div_row.id=element.value
+        //  div_row.id=element.value
+         global_phones_exp_phones.push(parseInt(element.value))
+         console.log("global_phones_exp_phones_updatelist",global_phones_exp_phones)
+
+         div_row.id=element.value+"-catrow"
          lpd.append(div_row);
          var div_col_md_6_1=document.createElement('DIV');
          div_col_md_6_1.setAttribute('class','col-md-6');
-         div_col_md_6_1.innerHTML=element.name
+         //// IN FUTURE KEEP THIS PART IN CHECK>>
+         var name=element.name.split('-')
+         console.log("ele name",name[1]);
+         div_col_md_6_1.innerHTML=name[1];
          div_row.append(div_col_md_6_1);
          var div_col_md_6_2=document.createElement('div');
          div_col_md_6_2.setAttribute('class','col-md-6');
@@ -2885,7 +2969,7 @@ function sendFilePath(id){
         console.log("Element",element.name);
         var mob_id=element.value;
         // On toggle check pass the element to an exp_phone list for updation. 
-        expPhone_UpdataList(element)
+       
         if (element.checked == true){
            
             $.ajax({
@@ -2904,6 +2988,10 @@ function sendFilePath(id){
                     if(data['data']=="phone already exsists in the same experiment"){
                          console.log("IN UNCHEEEECKEd")
                          element.checked=false;
+
+                     }
+                     else{
+                        expPhone_UpdataList(element)
                      }
                 }
             
@@ -2925,8 +3013,17 @@ function sendFilePath(id){
             // the ajax call is sent to subdetails url name in the post function.  
             url: "{% url 'remove_selected_admin_phones' %}",
                 success: function(data){
-
-                     alert(data['data']);
+                    console.log("lasldmasdmkasmdkasmdkasmdkasmdkasmd")
+                    console.log("REMOEMORMEORM",$("#"+mob_id+"-catrow.row").remove());
+                    alert(data['data']);
+                    
+                    var index = global_phones_exp_phones.indexOf(parseInt(mob_id));
+                    console.log("out index check",index)
+                     if (index > -1) {
+                         console.log("in index check",index)
+                        global_phones_exp_phones.splice(index, 1);
+                            }
+                    console.log("global_phones_exp_phones_toggle_after_remove",global_phones_exp_phones)
                     
                 }
             
