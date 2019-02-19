@@ -1673,3 +1673,9 @@ class createExperiment(TemplateView):
                 }
                 return JsonResponse(data) #, safe=False)
         #return render(request,'webapp/crudexperiment/create_experiment.html',data)
+class editExperiment(TemplateView):
+        def get(self,request):
+            pass
+        def post(self,request):
+            pass
+
