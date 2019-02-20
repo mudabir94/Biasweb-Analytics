@@ -440,7 +440,7 @@ class ExperimentController:
         print("This class is the Controler Class");
 
 class SubjCont:
-    def __init__(self, u_id):
+    def __init__(self, s_id):
         self.subject = Subject()
         #Check if subject exists
-        self.subject = Subject.objects.get(user__username=u_id)
+        self.subject = Subject.objects.get(id=s_id)
