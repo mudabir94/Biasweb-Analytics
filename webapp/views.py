@@ -123,7 +123,7 @@ class Home(TemplateView):
             # all other conditions of subjects will be done here. 
             
             #  return render(request,'webapp/2by2comparemobilespecs.html')
-            return redirect('/filter')
+            return redirect('/filtered_mobile_view')
 
 
         #*****************************************************
@@ -962,27 +962,19 @@ def filteredMobileView(request):
                 return render(request,template_name,{'mobiles':ex_mobile,'template_sidebar':template_sidebar})
             else:
                 # print("mobiles",filt_mobiles)
-                uid = request.user.id
-                userobj=User.objects.get(pk=request.user.id)
-                print("userobj",userobj.custom_id)
-                expid=180
-                print("expid",expid)
-                #!!! Problem
-                # on retrieving subj obj multiple subjects are retrieved as all have same custom id... 
-                tscont = SubjCont(u_id=userobj.custom_id)
-                custom_exp_id=tscont.subject.exp
-                print(custom_exp_id)
-                phoneobjs=selectedAdminPhones.objects.filter(exp=custom_exp_id)
-                
-                print(phoneobjs)
+                uid = request.user.username
+                print(uid)
+                tuser = User.objects.get(username=uid)
+                exp_list = tuser.subject_set.values_list('exp', flat=True) #PLEASE CHECK IF WE CAN GET PREFETCH RELATED HERE
+                exp_active = max(exp_list)                
+                phoneobjs=selectedAdminPhones.objects.filter(exp=exp_active)
+                # print(phoneobjs)
                 plist=[]
                 for pob in phoneobjs:
                     print(pob)
                     plist.append(pob.mob.id)
-                print(plist)
+                # print(plist)
                 filt_mobiles=mobilephones.objects.filter(pk__in=plist)
-                print(filt_mobiles)
-               
                 paginator = Paginator(filt_mobiles,9)
                 page = request.GET.get('page')
                 ex_mobile = paginator.get_page(page)
@@ -1673,8 +1665,41 @@ class createExperiment(TemplateView):
                 }
                 return JsonResponse(data) #, safe=False)
         #return render(request,'webapp/crudexperiment/create_experiment.html',data)
+from webapp.models import experiment as Experiment
 class editExperiment(TemplateView):
         def get(self,request):
+            # Get user id. 
+            # check admin status.
+            # fetch all exp created by this admin
+            # get the latest exp .. In future only get the exp which has status=active. 
+            # userid= request.user.id
+            # userobj=user.objects.get(pk=userid)
+            uid=request.user.id
+            print(uid)
+            print(Experiment.objects.filter(owner=uid).values_list('id',flat=True))
+            expList=Experiment.objects.filter(owner=uid).values_list('id',flat=True)
+            expactive=max(expList)
+            print(expactive)
+            request.session['sess_expId'] = expactive
+            expCont = getExpController(request)
+            existExpId = expCont.exp.id
+             #SET FLEVELS
+            expCont.setFSet(newFLevels=postedFLevels,prompt=False)
+            block_set = expCont.generateBlocks()
+            block_list = list(block_set.all().values('serial_no','levels_set'))
+                
+                # # blockStr = "\n".join(str(b) for b in expCont.exp.block_set.all())
+            print('<<<<<<TO DISPLAY ON PAGE>>>>>>')
+            print(block_list)
+            data = {
+                    'exp_id':existExpId,
+                    'custom_exp_id':expCont.exp.custom_exp_id,
+                    'block_list':block_list
+                }
+            
+
+
+            
             pass
         def post(self,request):
             pass
