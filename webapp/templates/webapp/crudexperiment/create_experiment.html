@@ -390,11 +390,21 @@
                     </div>
             </div>
            
-            
+            <div class="row-fluid">
+             
+                    <div class="col-md-12 col-sm-12">
+                      <button onclick="FuncA()">A</button>
+                      <button onclick="FuncB()">B</button>
+                    </div>
+             </div>
+        
+
            
 
             <!-- Mobile Catalog Div -->
             <div class='row-fluid' id='mobile_catalog_div'>
+                   
+                     
                 <div class='row'>
                     <div class='col-md-12'>
                             
@@ -426,8 +436,7 @@
                             </div>                    
                     </div>
                 </div>
-                
-                <!-- Pagination row -->
+                              <!-- Pagination row -->
                 <div class='row'>
                     <div class='col-md-12'>
                            
@@ -470,8 +479,216 @@
 
 
 <script>
+var active_button=''
+function FuncA(){
+    console.log("FUNCA")
+    active_button='a'
+    console.log("active_button",active_button)
+    $.ajax({
+                             // Ajax call to getrange of phones ...  
+                                url: "{% url 'get_mobile_data' %}",
+                                type:'GET',
+                                'data': {
+                               
+                                // 'csrfmiddlewaretoken': '{{ csrf_token }}',
+                                },
+                                dataType: "json",
+                                success: function(data){
+                                console.log("data",data)// location.reload();
+                                $('#mobile_catalog_div').empty();
+                                $('#pager').hide();
+                                // var json_data_mobiles=data['samsung_phones']
+                                
+                                var json_data_mobiles=data['mobilephones']
+                                // var row_fluid=document.createElement('div');
+                                // row_fluid.setAttribute('class','row-fluid');
+                                // row_fluid.setAttribute('id','mobile_catalog_div');
+                                row_fluid=$('#mobile_catalog_div');
+                                var row=document.createElement('div');
+                                row.setAttribute('class','row');
+                                row_fluid.append(row);
+                                var col_md_12=document.createElement("div");
+                                col_md_12.setAttribute('class','col-md-12');
+                                row.append(col_md_12);
+                                var lps=document.createElement("div");
+                                lps.setAttribute("class",'latest-product-section');
+                                col_md_12.append(lps);
+                                var rtc=document.createElement('DIV');
+                                rtc.setAttribute("class","row text-center");
+                                lps.append(rtc);
+                                for (var i=0;i<json_data_mobiles.length;i++){
+                                   
+                                    if (i%3===0 && i!==0){
+                                        console.log("asd",i)
+                                        var hr=document.createElement('hr');
+                                        lps.append(hr); 
+                                        var rtc=document.createElement('DIV');
+                                        rtc.setAttribute("class","row text-center");
+                                        lps.append(rtc);
+                                      
+                                    }
+                                    var col_md_4_post=document.createElement('DIV');
+                                    col_md_4_post.setAttribute("class","col-md-4 sm-margin-b-50 pull-left post");
+                                    rtc.append(col_md_4_post);
+                                    var margin_b_20=document.createElement('DIV');
+                                    margin_b_20.setAttribute("class","margin-b-20");
+                                    col_md_4_post.append(margin_b_20);
+                                    var input_checkb=document.createElement('input');
+                                    input_checkb.type="checkbox";
+                                    if (lista.lenght===0){
 
+                                    }
+                                    else{
+                                        //  a check to check if the retrieved mob id matches the id in the list 
+                                         
+                                        if (lista.includes(json_data_mobiles[i]['id'])){
+                                            input_checkb.checked=true;
+                                        }
 
+                                    }
+                                    
+                                    input_checkb.value=json_data_mobiles[i]['id'];
+                                    input_checkb.id=json_data_mobiles[i]['id']+"cat";
+                                    input_checkb.name=json_data_mobiles[i]['id']+"-"+json_data_mobiles[i]['Mobile_Name'];
+                                    input_checkb.setAttribute('onchange','toggleCheckbox(this)')
+                                    var img=document.createElement('img');
+                                    img.setAttribute('class','img-responsive')
+                                    console.log("/static/"+json_data_mobiles[i]['imagepath1'])
+                                    img.src="/static/"+json_data_mobiles[i]['imagepath1'];
+
+                                    margin_b_20.append(input_checkb);
+                                    margin_b_20.append(img);
+                                    var mobile_name_p=document.createElement('p')
+                                    mobile_name_p.innerHTML=json_data_mobiles[i]['Mobile_Name']
+                                    col_md_4_post.append(mobile_name_p)
+                                    var mobile_price_p=document.createElement('p')
+                                    mobile_price_p.innerHTML=json_data_mobiles[i]['price']
+                                    col_md_4_post.append(mobile_price_p)
+                                    var link=document.createElement('a');
+                                    link.setAttribute('class','link btn btn-success');
+                                    // took alot of time finding this solution...
+                                    var url = "{% url 'mobileinfo' id=4  %}".replace("4", json_data_mobiles[i]['id']);
+                                    link.href= url;
+
+                                    link.text="READ MORE";
+                                    col_md_4_post.append(link); 
+                                    // if (i%3===0 && i!==0){
+                                       
+                                    // }
+                                    // console.log(i)
+                                 }
+                                console.log("global_phones_exp_phones",global_phones_exp_phones);
+                                for (phones in global_phones_exp_phones){
+                                    $('input:checkbox[id^='+global_phones_exp_phones[phones]+"cat"+']:not(:checked)').prop('checked',true);
+                                    // console.log("catt",$('input:checkbox[id^='+global_phones_exp_phones[phones].id+"cat"+']:not(:checked)').attr('id'));
+
+                                }
+                            }
+    });
+
+}
+function FuncB(){
+    active_button='b';
+    $.ajax({
+                             // Ajax call to getrange of phones ...  
+                                url: "{% url 'get_mobile_data' %}",
+                                type:'GET',
+                                'data': {
+                               
+                                // 'csrfmiddlewaretoken': '{{ csrf_token }}',
+                                },
+                                dataType: "json",
+                                success: function(data){
+                                console.log("data",data)// location.reload();
+                                $('#mobile_catalog_div').empty();
+                                $('#pager').hide();
+                                // var json_data_mobiles=data['samsung_phones']
+                                var json_data_mobiles=data['mobilephones']
+                                // var row_fluid=document.createElement('div');
+                                // row_fluid.setAttribute('class','row-fluid');
+                                // row_fluid.setAttribute('id','mobile_catalog_div');
+                                row_fluid=$('#mobile_catalog_div');
+                                var row=document.createElement('div');
+                                row.setAttribute('class','row');
+                                row_fluid.append(row);
+                                var col_md_12=document.createElement("div");
+                                col_md_12.setAttribute('class','col-md-12');
+                                row.append(col_md_12);
+                                var lps=document.createElement("div");
+                                lps.setAttribute("class",'latest-product-section');
+                                col_md_12.append(lps);
+                                var rtc=document.createElement('DIV');
+                                rtc.setAttribute("class","row text-center");
+                                lps.append(rtc);
+                                for (var i=0;i<json_data_mobiles.length;i++){
+                                   
+                                    if (i%3===0 && i!==0){
+                                        console.log("asd",i)
+                                        var hr=document.createElement('hr');
+                                        lps.append(hr); 
+                                        var rtc=document.createElement('DIV');
+                                        rtc.setAttribute("class","row text-center");
+                                        lps.append(rtc);
+                                      
+                                    }
+                                    var col_md_4_post=document.createElement('DIV');
+                                    col_md_4_post.setAttribute("class","col-md-4 sm-margin-b-50 pull-left post");
+                                    rtc.append(col_md_4_post);
+                                    var margin_b_20=document.createElement('DIV');
+                                    margin_b_20.setAttribute("class","margin-b-20");
+                                    col_md_4_post.append(margin_b_20);
+                                    var input_checkb=document.createElement('input');
+                                    if (listb.lenght===0){
+                                            pass
+                                        }
+                                    else{
+                                        //  a check to check if the retrieved mob id matches the id in the list 
+                                        
+                                        if (listb.includes(json_data_mobiles[i]['id'])){
+                                            input_checkb.checked=true;
+                                        }
+
+                                    }
+                                    input_checkb.type="checkbox";
+                                    input_checkb.value=json_data_mobiles[i]['id'];
+                                    input_checkb.id=json_data_mobiles[i]['id']+"cat";
+                                    input_checkb.name=json_data_mobiles[i]['id']+"-"+json_data_mobiles[i]['Mobile_Name'];
+                                    input_checkb.setAttribute('onchange','toggleCheckbox(this)')
+                                    var img=document.createElement('img');
+                                    img.setAttribute('class','img-responsive')
+                                    console.log("/static/"+json_data_mobiles[i]['imagepath1'])
+                                    img.src="/static/"+json_data_mobiles[i]['imagepath1'];
+
+                                    margin_b_20.append(input_checkb);
+                                    margin_b_20.append(img);
+                                    var mobile_name_p=document.createElement('p')
+                                    mobile_name_p.innerHTML=json_data_mobiles[i]['Mobile_Name']
+                                    col_md_4_post.append(mobile_name_p)
+                                    var mobile_price_p=document.createElement('p')
+                                    mobile_price_p.innerHTML=json_data_mobiles[i]['price']
+                                    col_md_4_post.append(mobile_price_p)
+                                    var link=document.createElement('a');
+                                    link.setAttribute('class','link btn btn-success');
+                                    // took alot of time finding this solution...
+                                    var url = "{% url 'mobileinfo' id=4  %}".replace("4", json_data_mobiles[i]['id']);
+                                    link.href= url;
+
+                                    link.text="READ MORE";
+                                    col_md_4_post.append(link); 
+                                    // if (i%3===0 && i!==0){
+                                       
+                                    // }
+                                    // console.log(i)
+                                 }
+                                console.log("global_phones_exp_phones",global_phones_exp_phones);
+                                for (phones in global_phones_exp_phones){
+                                    $('input:checkbox[id^='+global_phones_exp_phones[phones]+"cat"+']:not(:checked)').prop('checked',true);
+                                    // console.log("catt",$('input:checkbox[id^='+global_phones_exp_phones[phones].id+"cat"+']:not(:checked)').attr('id'));
+
+                                }
+                            }
+    });
+}
 
 
 
@@ -1738,7 +1955,7 @@ function postExpData(){
                         url: "{% url 'import_subjects' %}",
                         success: function(data){
                             console.log("<<---SUBJECT IMPORT POST WAS GREAT!--->>");
-                            console.log(data)
+                            console.log("<<---SUBJECT IMPORT DATA",data)
                             for(var i in data){
                                 console.log("data:",i,data[i]);
                             }
@@ -2965,69 +3182,103 @@ function sendFilePath(id){
          div_row.append(div_col_md_6_2);
 
     }
+    var dict_batch={}
+    var lista=[]
+    var listb=[]
     function toggleCheckbox(element){
         console.log("Element",element.name);
         var mob_id=element.value;
         // On toggle check pass the element to an exp_phone list for updation. 
        
         if (element.checked == true){
-           
-            $.ajax({
-            type: 'POST',
-            dataType: "json",
-            'data': {
-            'mobiledata': JSON.stringify(mob_id),
-            'custom_exp_id':custom_exp_id,
-            'csrfmiddlewaretoken': '{{ csrf_token }}',
-            },
-            // the ajax call is sent to subdetails url name in the post function.  
-            url: "{% url 'store_selected_admin_phones' %}",
-                success: function(data){
-
-                    alert(data['data']);
-                    if(data['data']=="phone already exsists in the same experiment"){
-                         console.log("IN UNCHEEEECKEd")
-                         element.checked=false;
-
-                     }
-                     else{
-                        expPhone_UpdataList(element)
-                     }
-                }
+           // on checking the mobile simply save the data in a dictionary. 
+            if (active_button==='a'){
+                lista.push(parseInt(mob_id)); 
             
-            }); 
+            
+                dict_batch[active_button]=lista
+                console.log("dict_batch",dict_batch)
+            }
+            else{
+                listb.push(parseInt(mob_id)); 
+            
+            
+                dict_batch[active_button]=lista
+                console.log("dict_batch",dict_batch)
+            }
+            
+            // $.ajax({
+            // type: 'POST',
+            // dataType: "json",
+            // 'data': {
+            // 'mobiledata': JSON.stringify(mob_id),
+            // 'custom_exp_id':custom_exp_id,
+            // 'csrfmiddlewaretoken': '{{ csrf_token }}',
+            // },
+            // // the ajax call is sent to subdetails url name in the post function.  
+            // url: "{% url 'store_selected_admin_phones' %}",
+            //     success: function(data){
+
+            //         alert(data['data']);
+            //         if(data['data']=="phone already exsists in the same experiment"){
+            //              console.log("IN UNCHEEEECKEd")
+            //              element.checked=false;
+
+            //          }
+            //          else{
+            //             expPhone_UpdataList(element)
+            //          }
+            //     }
+            
+            // }); 
 
          
         } 
-        else {            
+        else { 
+            //on unchecking remove the mobile from the list of dict_batch
+                      
+            if (active_button==='a'){
+                lista.splice( lista.indexOf(mob_id), 1 );
+                console.log("lista",lista);
+                dict_batch[active_button]=lista;
+                console.log("dict_batch",dict_batch);
+            }
+            else{
+                listb.splice( listb.indexOf(mob_id), 1 );
+                console.log("listb",listb);
+                dict_batch[active_button]=listb;
+                console.log("dict_batch",dict_batch);
+            }
+
             
-            
-            $.ajax({
-            type: 'POST',
-            dataType: "json",
-            'data': {
-            'mobiledata': JSON.stringify(mob_id),
-            'custom_exp_id':custom_exp_id,
-            'csrfmiddlewaretoken': '{{ csrf_token }}',
-            },
-            // the ajax call is sent to subdetails url name in the post function.  
-            url: "{% url 'remove_selected_admin_phones' %}",
-                success: function(data){
-                    console.log("lasldmasdmkasmdkasmdkasmdkasmdkasmd")
-                    console.log("REMOEMORMEORM",$("#"+mob_id+"-catrow.row").remove());
-                    alert(data['data']);
+
+
+            // $.ajax({
+            // type: 'POST',
+            // dataType: "json",
+            // 'data': {
+            // 'mobiledata': JSON.stringify(mob_id),
+            // 'custom_exp_id':custom_exp_id,
+            // 'csrfmiddlewaretoken': '{{ csrf_token }}',
+            // },
+            // // the ajax call is sent to subdetails url name in the post function.  
+            // url: "{% url 'remove_selected_admin_phones' %}",
+            //     success: function(data){
+            //         console.log("lasldmasdmkasmdkasmdkasmdkasmdkasmd")
+            //         console.log("REMOEMORMEORM",$("#"+mob_id+"-catrow.row").remove());
+            //         alert(data['data']);
                     
-                    var index = global_phones_exp_phones.indexOf(parseInt(mob_id));
-                    console.log("out index check",index)
-                     if (index > -1) {
-                         console.log("in index check",index)
-                        global_phones_exp_phones.splice(index, 1);
-                            }
-                    console.log("global_phones_exp_phones_toggle_after_remove",global_phones_exp_phones)
+            //         var index = global_phones_exp_phones.indexOf(parseInt(mob_id));
+            //         console.log("out index check",index)
+            //          if (index > -1) {
+            //              console.log("in index check",index)
+            //             global_phones_exp_phones.splice(index, 1);
+            //                 }
+            //         console.log("global_phones_exp_phones_toggle_after_remove",global_phones_exp_phones)
                     
-                }
+            //     }
             
-            }); 
+            // }); 
         }
         // get user and exp id. 
         // store the selected phone id. 

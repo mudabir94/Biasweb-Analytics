@@ -1704,3 +1704,14 @@ class editExperiment(TemplateView):
         def post(self,request):
             pass
 
+def getMobiledata(request):
+    if request.is_ajax():
+        if request.method=="GET":
+            print("in get mobile data")
+            mobiles_retrieved=mobilephones.objects.all()
+
+            mobiles_retrieved = list(mobiles_retrieved.values())   
+            mobilephones_str=mobiles_retrieved
+            return JsonResponse(
+            {  'mobilephones':mobilephones_str}
+            )

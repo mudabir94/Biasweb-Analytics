@@ -295,4 +295,5 @@ class userroles(models.Model):
 class selectedAdminPhones(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     exp = models.ForeignKey(experiment, on_delete=models.CASCADE)
+    batch_label=models.CharField(max_length=200,null=True)
     mob = models.ForeignKey(mobilephones, on_delete=models.CASCADE)
