@@ -50,31 +50,39 @@ admin_id = "ses-007" #USING THE CUSTOM-ID OF SUPERUSER #2 (shazib [not dr.shazib
 texp = ExperimentController(a_id=admin_id)
 print("NEW Exp Custom Id:",texp.exp.custom_exp_id)
 ## 3. TEST INDIV FEATURE MODIFICATION
-if feature_editing:
-    fSymbol = 'W' #JUST TO test individual feature handling
-    xFSym = 'D' #Againd Ditto
-    levFSym= 'A' #FOR testing levels change in an existing feature
-    texp.addFeature(fSymbol)
-    texp.delFeature(fSymbol)
-    texp.addFeature(fSymbol=levFSym, byPrompt=True)
-    #texp.delFeature(levFSymbol)
+# if feature_editing:
+fSymbol = 'W' #JUST TO test individual feature handling
+xFSym = 'D' #Againd Ditto
+levFSym= 'A' #FOR testing levels change in an existing feature
+texp.addFeature(fSymbol)
+texp.delFeature(fSymbol)
+texp.addFeature(fSymbol=levFSym, byPrompt=True)
+#texp.delFeature(levFSymbol)
 
-    ## 4. TEST FSET MODIFICATION (EN MASSE) ----
-    nFSym = 'P' #For testing the addition of new feature
-    newFSet = ['W','A',nFSym]  #please change depending on what's in the database
-    texp.setFSet(newFSet,prompt=False)
-    print(texp.fSet.all())
-    #newLevs = {'W': ['direct', 'AHP'], 'C': ['full', 'pruned']}
-    newLevs = {'W': ['direct', 'AHP'], 'A': ['all', '2by2','user'], 'R': ['0', '1']}
-    texp.setFSet(newFLevels=newLevs,prompt=True)
-    texp.saveExperiment()
-    #Edit feature levels
-    #texp.autoSetFLevels(True)
-    print(texp.fLevels)
-    texp.saveExperiment()
+## 4. TEST FSET MODIFICATION (EN MASSE) ----
+nFSym = 'P' #For testing the addition of new feature
+newFSet = ['W','A',nFSym]  #please change depending on what's in the database
+texp.setFSet(newFSet,prompt=False)
+set1 = [91,14,49]
+set2 = [43,6,101]
+setDict = {1:set1, 2:set2} 
+#SHOULD ask, if P is included, which sets to create
+texp.addFeature('P', ['P.1','P.2'])
+#Nominate Set 1 and Set 2 (as in params-for-test.txt)
 
-    ## 5. Test BLOCK GENERATION -- only proceed if DB has feature levels
-    blocks = texp.generateBlocks()
+#Then it should generate blocks
+print(texp.fSet.all())
+#newLevs = {'W': ['direct', 'AHP'], 'C': ['full', 'pruned']}
+#newLevs = {'W': ['direct', 'AHP'], 'A': ['all', '2by2','user'], 'R': ['0', '1']}
+#texp.setFSet(newFLevels=newLevs,prompt=True)
+texp.saveExperiment()
+#Edit feature levels
+#texp.autoSetFLevels(True)
+print(texp.fLevels)
+texp.saveExperiment()
+
+## 5. Test BLOCK GENERATION -- only proceed if DB has feature levels
+blocks = texp.generateBlocks()
 
 ##TEST ASSIGNMENT TO BATCHES AND BLOCKS
 fPath = "biasweb/data/input/MBA_RCM1_SampleData.csv"
@@ -104,7 +112,7 @@ if interactive:
         print("[",i,"]",fields[i])
     inputNo = eval(input("No of Batch Column?  "))
 else:
-    inputNo = 999 #Col 1 is assumed SECTION
+    inputNo = 1 #Col 1 is assumed SECTION
 print("INPUT NO:", inputNo)
 ##IF SELF-DEFINED BATCHING VS. PRE-DEFINED
 if inputNo == 999:
