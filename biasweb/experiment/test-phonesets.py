@@ -8,7 +8,11 @@ from webapp.models import Block
 from webapp.models import experiment_feature as ExpFeature
 from webapp.models import platform_feature as PFeature
 from webapp.models import User, Subject
+from webapp.models import selectedAdminPhones as PSets
+from webapp.models import mobilephones as Phones
+
 from webapp.forms import SubjectCreationForm as scf
+
 
 #0. Initialize phone
 set1 = [91,14,49]
@@ -43,8 +47,10 @@ for l in levsToSet:  #TODO - CLEAN OTHER FEATURES PREFIX TO MAKE THIS WORK (REMO
     pExists = l.find("P",0,1)
     print("FOUND?> ",pExists)
     if(l.find("P")!=-1):
-        setNo = int(l.split(".")[1])
-        print(setNo,"-phones: ",setDict[setNo])    
+        setNo = int(l.split(".")[1])        
+        phones = PSets.objects.filter(exp=exp_active, pset_id=setNo)
+        print(phones.values_list('mob',flat=True))
+        #print(setNo,"-phones: ",setDict[setNo])       
 levsToSet
 
 

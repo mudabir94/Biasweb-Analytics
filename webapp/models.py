@@ -293,6 +293,9 @@ class userroles(models.Model):
     userrole=models.CharField(max_length=200,null=True)
 
 class selectedAdminPhones(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     exp = models.ForeignKey(experiment, on_delete=models.CASCADE)
+    block = models.ForeignKey(Block, on_delete=models.CASCADE, null=True)
+    pset_id = models.CharField(max_length=10, null=True)
     mob = models.ForeignKey(mobilephones, on_delete=models.CASCADE)
+    p_order = models.IntegerField(null=True)
