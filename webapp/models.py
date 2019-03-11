@@ -252,7 +252,7 @@ class sort_feature(models.Model):
     sh_hd=models.IntegerField(null=True)
     # roles=models.IntegerField(null=True)
     roles = models.ForeignKey(Role, on_delete=models.CASCADE,default=None,null=True)
-
+    exp_sets=models.CharField(max_length=200,null=True)
 
     def __str__(self):
         return self.feature

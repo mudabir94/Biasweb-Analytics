@@ -63,6 +63,9 @@ urlpatterns = [
     url(r'^price_range_retrieve/',views.priceRangeRetrieve, name='price_range_retrieve'),
     url(r'^get_selectedadmin_phones/',views.getSelectedAdminPhones, name='get_selectedadmin_phones'),
     url(r'^get_mobile_data/',views.getMobiledata,name='get_mobile_data'),
+    url(r'^get_specificmobile_data/',views.getSpecificMobileData,name='get_specificmobile_data'),
+
+
 
     
 #---------------------------------------------------------------------------------------------   

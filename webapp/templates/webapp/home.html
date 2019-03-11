@@ -44,7 +44,12 @@
                    
               </div>
             <div class="col-sm-8 text-left"  > 
-              
+                <div class="row grid ">
+                    <div class="well tile">A</div>
+                    <div class="well span2 tile">B</div>
+                    <div class="well span2 tile">C</div>
+                    <div class="well span4 tile">D</div>
+                </div>
               </div>
               <div class="col-sm-1 sidenav">
                 <div class=""   id="lc" style="position: fixed">
@@ -61,3 +66,13 @@
               </div>
          </footer>	
 {% endblock %}
+<script>
+ $(function () {
+    $(".grid").sortable({
+        tolerance: 'pointer',
+        revert: 'invalid',
+        forceHelperSize: true
+    });
+});
+  
+</script>

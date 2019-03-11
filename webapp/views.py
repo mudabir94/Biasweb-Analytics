@@ -522,11 +522,30 @@ def showFeature(request):
 def globalFunc(request):
    
     if request.is_ajax:
-       # print("ajax",request.POST.get('data'))
+        #print("ajax",request.POST.get('data'))
         ####print("PST",request.POST.get('d')) 
-        d = request.POST.get('d')
-       ### print('JSONLOADS',eval(d))
-        b = json.loads(d)
+        setnum = request.POST.get('set')
+        ### print('JSONLOADS',eval(d))
+        set_num = json.loads(setnum)
+        global feature_to_display
+        global feature_to_hide
+        role_name=['']
+        print(request.user.id)
+        userobj=User.objects.get(pk=request.user.id)
+        print("user object",userobj.role_id_id)
+        role_id=userobj.role_id_id
+        roleobj=Role.objects.get(pk=role_id)
+        role=roleobj.role_name
+        print(role)
+        print("setnum",set_num)
+        feature_to_display=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role_id,exp_sets=set_num).order_by('position')
+                
+        print("feature-->",feature_to_display)
+        feature_to_hide=sort_feature.objects.filter(Q(sh_hd = 0),roles=role_id,exp_sets=set_num).order_by('position')    
+        print("feature2-->",feature_to_hide)
+        feature_to_display=list(feature_to_display.values())
+
+        feature_to_hide = list(feature_to_hide.values())
 
         # print("in func",b)
         # print(type(b))
@@ -537,8 +556,13 @@ def globalFunc(request):
         # UPDATE [Table] SET [Position] = $i WHERE [EntityId] = $value 
             
         #print ("test", d['color'])
+        data={
+                'feature_to_display':feature_to_display,
+                'feature_to_hide':feature_to_hide
+            }
+        return JsonResponse(data)
           
-        return render(request, 'webapp/admin_setup.html')
+        # return render(request, 'webapp/admin_setup.html',{'role_name':'role','feature_to_display':feature_to_display,'feature_to_hide':feature_to_hide})
     
 feature_to_display=''
 feature_to_hide=''
@@ -559,7 +583,6 @@ class adminSetup(TemplateView):
         print(role)
        
         if  request.is_ajax():
-            print("in ajax")
             feature_to_display = list(feature_to_display.values())
             print("feature to display",feature_to_display)
             feature_to_hide = list(feature_to_hide.values())
@@ -571,10 +594,10 @@ class adminSetup(TemplateView):
             return JsonResponse(data)
         else:
             if role=='Super_Admin':        
-                feature_to_display=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role_id).order_by('position')
+                feature_to_display=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role_id,exp_sets="Set1").order_by('position')
                 
                 print("feature",feature_to_display)
-                feature_to_hide=sort_feature.objects.filter(Q(sh_hd = 0),roles=role_id).order_by('position')    
+                feature_to_hide=sort_feature.objects.filter(Q(sh_hd = 0),roles=role_id,exp_sets="Set1").order_by('position')    
                 print("feature2",feature_to_hide)
 
             elif role=='Experiment_Admin':
@@ -1703,6 +1726,28 @@ class editExperiment(TemplateView):
             pass
         def post(self,request):
             pass
+def getSpecificMobileData(request):
+    if request.is_ajax():
+        if request.method=="POST":
+            specsmobdata = request.POST.get('specsmobdata')
+            
+            specsmobdata = json.loads(specsmobdata)
+            print("specsmobdata",type(specsmobdata))
+            specmob_dic={}
+            for key,val in specsmobdata.items():
+                print(key,val)
+                specmobret=mobilephones.objects.filter(id__in=val)
+                specmobret = list(specmobret.values())   
+                specmobret_str=specmobret
+                specmob_dic[key]=specmobret_str
+            # print("specsmobdata",specmobret)
+            print(specmob_dic)
+            
+            # specmobret = list(specmobret.values())   
+            # specmobret_str=specmobret
+            return JsonResponse(
+            {  'mobilephones':specmob_dic}
+            )
 
 def getMobiledata(request):
     if request.is_ajax():
