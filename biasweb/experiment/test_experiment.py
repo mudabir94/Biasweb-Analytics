@@ -8,8 +8,9 @@ from webapp.models import Block
 from webapp.models import experiment_feature as ExpFeature
 from webapp.models import platform_feature as PFeature
 from webapp.models import User, Subject
+from webapp.models import selectedAdminPhones as PSets
 from webapp.forms import SubjectCreationForm as scf
-
+from webapp.models import mobilephones as Phones
 def setSelfDefinedBatches(expCont, defaultNo=None):
     if not defaultNo:
         no_batches = eval(input("Number of Batches? "))
@@ -50,31 +51,54 @@ admin_id = "ses-007" #USING THE CUSTOM-ID OF SUPERUSER #2 (shazib [not dr.shazib
 texp = ExperimentController(a_id=admin_id)
 print("NEW Exp Custom Id:",texp.exp.custom_exp_id)
 ## 3. TEST INDIV FEATURE MODIFICATION
-if feature_editing:
-    fSymbol = 'W' #JUST TO test individual feature handling
-    xFSym = 'D' #Againd Ditto
-    levFSym= 'A' #FOR testing levels change in an existing feature
-    texp.addFeature(fSymbol)
-    texp.delFeature(fSymbol)
-    texp.addFeature(fSymbol=levFSym, byPrompt=True)
-    #texp.delFeature(levFSymbol)
+# if feature_editing:
+fSymbol = 'W' #JUST TO test individual feature handling
+xFSym = 'D' #Againd Ditto
+levFSym= 'A' #FOR testing levels change in an existing feature
+texp.addFeature(fSymbol)
+texp.delFeature(fSymbol)
+texp.addFeature(fSymbol=levFSym, byPrompt=True)
+#texp.delFeature(levFSymbol)
 
-    ## 4. TEST FSET MODIFICATION (EN MASSE) ----
-    nFSym = 'P' #For testing the addition of new feature
-    newFSet = ['W','A',nFSym]  #please change depending on what's in the database
-    texp.setFSet(newFSet,prompt=False)
-    print(texp.fSet.all())
-    #newLevs = {'W': ['direct', 'AHP'], 'C': ['full', 'pruned']}
-    newLevs = {'W': ['direct', 'AHP'], 'A': ['all', '2by2','user'], 'R': ['0', '1']}
-    texp.setFSet(newFLevels=newLevs,prompt=True)
-    texp.saveExperiment()
-    #Edit feature levels
-    #texp.autoSetFLevels(True)
-    print(texp.fLevels)
-    texp.saveExperiment()
+## 4. TEST FSET MODIFICATION (EN MASSE) ----
+nFSym = 'P' #For testing the addition of new feature
+newFSet = ['W','A',nFSym]  #please change depending on what's in the database
+texp.setFSet(newFSet,prompt=False)
+set1 = [91,14,49]
+set2 = [43,6,101]
+setDict = {1:set1, 2:set2}
+p_levList = list()
+for key,s in setDict.items():
+    p_set = Phones.objects.filter(id__in=s)
+    p_levList.append('P.'+str(key))
+    for count, p in enumerate(p_set):
+        expPSets = PSets()
+        expPSets.exp = texp.exp
+        expPSets.pset_id= key
+        expPSets.mob = p
+        expPSets.p_order = count 
+        expPSets.save()
 
-    ## 5. Test BLOCK GENERATION -- only proceed if DB has feature levels
-    blocks = texp.generateBlocks()
+print(PSets.objects.filter(exp_id = texp.exp.id))       
+texp.addFeature('P', p_levList)
+
+#SHOULD ask, if P is included, which sets to create
+
+#Nominate Set 1 and Set 2 (as in params-for-test.txt)
+
+#Then it should generate blocks
+print(texp.fSet.all())
+#newLevs = {'W': ['direct', 'AHP'], 'C': ['full', 'pruned']}
+#newLevs = {'W': ['direct', 'AHP'], 'A': ['all', '2by2','user'], 'R': ['0', '1']}
+#texp.setFSet(newFLevels=newLevs,prompt=True)
+texp.saveExperiment()
+#Edit feature levels
+#texp.autoSetFLevels(True)
+print(texp.fLevels)
+texp.saveExperiment()
+
+## 5. Test BLOCK GENERATION -- only proceed if DB has feature levels
+blocks = texp.generateBlocks()
 
 ##TEST ASSIGNMENT TO BATCHES AND BLOCKS
 fPath = "biasweb/data/input/MBA_RCM1_SampleData.csv"
@@ -104,7 +128,7 @@ if interactive:
         print("[",i,"]",fields[i])
     inputNo = eval(input("No of Batch Column?  "))
 else:
-    inputNo = 999 #Col 1 is assumed SECTION
+    inputNo = 1 #Col 1 is assumed SECTION
 print("INPUT NO:", inputNo)
 ##IF SELF-DEFINED BATCHING VS. PRE-DEFINED
 if inputNo == 999:
@@ -132,9 +156,11 @@ texp.updateAllBatches() #MAKE SURE TO CALL IF YOU CHANGED THE BATCHES
 
 
 texp.saveSubjects()
-texp.deleteAllSubjects()
+#texp.deleteAllSubjects()
 
 breakUp = texp.assignToBlocks() #retruns a dataframe of groupby sizes (unstacked for batchwise breakup)
+texp.saveSubjects()
+
 breakUp.to_json(orient='index') #FOR ROW-WISE printing in HTML as json object
 
 tpvt = pd.pivot_table(
