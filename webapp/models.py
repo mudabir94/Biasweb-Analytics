@@ -293,13 +293,17 @@ class userroles(models.Model):
     userrole=models.CharField(max_length=200,null=True)
 
 class selectedAdminPhones(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     exp = models.ForeignKey(experiment, on_delete=models.CASCADE)
-<<<<<<< HEAD
-    batch_label=models.CharField(max_length=200,null=True)
-=======
-    block = models.ForeignKey(Block, on_delete=models.CASCADE, null=True)
-    pset_id = models.CharField(max_length=10, null=True)
->>>>>>> 68f7d2d6bdec502e73b4bf60a8e38d7b8f26d69c
+    block = models.ForeignKey(Block, on_delete=models.CASCADE)
+    pset_id = models.CharField(max_length=10,null=True)
     mob = models.ForeignKey(mobilephones, on_delete=models.CASCADE)
     p_order = models.IntegerField(null=True)
+
+class ExpCriteriaOrder(models.Model):
+    exp = models.ForeignKey(experiment, on_delete=models.CASCADE)
+    block = models.ForeignKey(Block, on_delete=models.CASCADE)
+    cOrder_id = models.CharField(max_length=10,null=True)
+    #NEED TO KEEP A RECORD OF THE EXISTING SET OF AVAILABLE CRITERIA IN THE MOBILE PHONES TABLE
+    pCriteria = models.CharField(max_length=200, null=True)
+    position = models.IntegerField(null=True)
