@@ -1444,7 +1444,7 @@ function saveExperiment(){
                 'ftDict_chkbxDict_blkLst':JSON.stringify(ftDict_chkbxDict_blkLst),
                 'csrfmiddlewaretoken': '{{ csrf_token }}',
                 },
-        // the ajax call is sent to subdetails url name in the post function.  
+    // the ajax call is sent to subdetails url name in the post function.  
                 url: "{% url 'saveexperiment' %}",
                 success: function(data){
                        alert(data['status']);
@@ -2588,7 +2588,9 @@ if (outercheckval==="P"){
 
         $('#'+outercheckid+'-innercheckboxdiv').append(dict[outercheckval]);
         $('#'+outercheckid+'-innercheckboxdiv').show();
+
         updateFeatureLvls();
+        mobileCatalog()
       }
  
       // Uncommenting the following line would hide the text,
@@ -2911,10 +2913,10 @@ $('#'+outercheckid+'-innercheckboxdiv').empty();
 
 
 function sendFeatureLevels(){
-// if (dict['C']===undefined){
-//     alert("Please Choose Criteria")
-//     return;
-// }
+if (dict['CO']===undefined){
+    alert("Please Choose Criteria")
+    return;
+}
 $.ajax({
 type: 'POST',
 dataType: "json",
@@ -3176,7 +3178,7 @@ function sendFilePath(id){
                                 success: function(data){
                                 console.log("data",data)// location.reload();
                                 $('#mobile_catalog_div').empty();
-                                $('#pager').hide();
+                              
                                 // var json_data_mobiles=data['samsung_phones']
                                 var json_data_mobiles=data['mobilephones']
                                 // var row_fluid=document.createElement('div');
@@ -3193,7 +3195,7 @@ function sendFilePath(id){
                                 lps.setAttribute("class",'latest-product-section');
                                 col_md_12.append(lps);
                                 var rtc=document.createElement('DIV');
-                                rtc.setAttribute("class","row text-center grid");
+                                rtc.setAttribute("class","row text-center");
                                 lps.append(rtc);
                                 for (var i=0;i<json_data_mobiles.length;i++){
                                    
@@ -3244,7 +3246,7 @@ function sendFilePath(id){
                                     // }
                                     // console.log(i)
                                 }
-                                console.log("global_phones_exp_phones",global_phones_exp_phones);
+                                // console.log("global_phones_exp_phones",global_phones_exp_phones);
                                 for (phones in global_phones_exp_phones){
                                     $('input:checkbox[id^='+global_phones_exp_phones[phones]+"cat"+']:not(:checked)').prop('checked',true);
                                     // console.log("catt",$('input:checkbox[id^='+global_phones_exp_phones[phones].id+"cat"+']:not(:checked)').attr('id'));
@@ -3300,7 +3302,7 @@ function sendFilePath(id){
                     console.log("active_button",active_button)
                     console.log(data['mobilephones'][active_button])
                     $('#mobile_catalog_div').empty();
-                                $('#pager').hide();
+                               
                                 // var json_data_mobiles=data['samsung_phones']
                                 
                                 var json_data_mobiles=data['mobilephones'][active_button]
@@ -3319,8 +3321,12 @@ function sendFilePath(id){
                                 lps.setAttribute("class",'latest-product-section');
                                 col_md_12.append(lps);
                                 var rtc=document.createElement('DIV');
-                                rtc.setAttribute("class","row text-center grid");
+                                rtc.setAttribute("class","row text-center");
+                                rtc.id="grid";
                                 lps.append(rtc);
+
+                            
+
                                 for (var i=0;i<json_data_mobiles.length;i++){
                                    
                                 //     if (i%3===0 && i!==0){
@@ -3333,6 +3339,7 @@ function sendFilePath(id){
                                 //     }
                                     var col_md_4_post=document.createElement('DIV');
                                     col_md_4_post.setAttribute("class","col-md-4 sm-margin-b-50 pull-left post");
+                                    col_md_4_post.id=json_data_mobiles[i]['id'];
                                     rtc.append(col_md_4_post);
                                     var margin_b_20=document.createElement('DIV');
                                     margin_b_20.setAttribute("class","margin-b-20");
@@ -3345,8 +3352,8 @@ function sendFilePath(id){
                                     }
                                     else{
                                         //  a check to check if the retrieved mob id matches the id in the list 
-                                        console.log("list",dict_batch[active_button])
-                                        console.log("list type",typeof(dict_batch[active_button]))
+                                        // console.log("list",dict_batch[active_button])
+                                        // console.log("list type",typeof(dict_batch[active_button]))
 
                                         if (dict_batch[active_button].includes(json_data_mobiles[i]['id'])){
                                             input_checkb.checked=true;
@@ -3384,12 +3391,37 @@ function sendFilePath(id){
                                     // }
                                     // console.log(i)
                                  }
-                                console.log("global_phones_exp_phones",global_phones_exp_phones);
+                                // console.log("global_phones_exp_phones",global_phones_exp_phones);
                                 for (phones in global_phones_exp_phones){
                                     $('input:checkbox[id^='+global_phones_exp_phones[phones]+"cat"+']:not(:checked)').prop('checked',true);
                                     // console.log("catt",$('input:checkbox[id^='+global_phones_exp_phones[phones].id+"cat"+']:not(:checked)').attr('id'));
 
                                 }
+                                var ds="grid_"+active_button;
+                                console.log("ds",ds)
+
+                                $("#grid").sortable({
+                                    stop: function( event, ui ) {
+                                      var arr=[]
+                                        console.log("event-->",$(this));
+                                        var id = ui.item.attr("id");
+                                        
+                                        // var data = $(this).sortable('toArray', { attribute: 'id' });
+                                        $(this).find('input').each(function(){
+                                    arr.push($(this).val());  
+                                            });         
+                                            console.log("array->",arr)
+                                        var result = arr.map(function (x) { 
+                                        return parseInt(x, 10); 
+                                        });
+                                        console.log("data-->",result)
+                                        dict_batch[active_button]=result
+                                        console.log("dict_batch-->",dict_batch);
+                                        },
+                                  
+                                });
+                                $( "#grid" ).disableSelection();
+                              
                             }
             });
         var backbutton=document.createElement('button');
@@ -3398,12 +3430,39 @@ function sendFilePath(id){
         backbutton.setAttribute('id','backbutton_id')
         $('#phoneset_button_div').append(backbutton);
         $(element).remove();
-        console.log("grid", $(".grid"));
-        $(".grid").sortable();
-
-
+        var savebutton=document.createElement('button');
+        savebutton.innerHTML="Save Phone Set"
+        savebutton.setAttribute('onclick','SavePhoneSet($(this))')
+        savebutton.setAttribute('id','backbutton_id')
+        $('#phoneset_button_div').append(savebutton);
+        
     }
-   
+    function SavePhoneSet(element){
+        $.ajax({
+                // Ajax call to savephoneset  
+                url: "{% url 'savephonesets' %}",
+                type:'POST',
+                'data': {
+                'phoneset_dic':JSON.stringify(dict_batch),
+                'featlevels_dic': JSON.stringify(dict,undefined,''),
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                },
+                dataType: "json",
+                success: function(data){
+                    if(exp_id===""){
+                    exp_id = data['exp_id'];
+                    custom_exp_id = data['custom_exp_id'];
+                    showExpWIP()
+                    }
+                    if (data['block_list']!=null){
+                        blockList = data['block_list']
+                        table_blocks=draw_block_table(blockList)
+                        display_blocktable(table_blocks);
+                        window.localStorage.setItem("blockList", JSON.stringify(blockList));
+                    }
+                }
+        });
+    }
     function backFunc (element){
         var nextstep=document.createElement('button');
         nextstep.innerHTML="Next Step"
@@ -3414,15 +3473,34 @@ function sendFilePath(id){
         
     }
     function SetFunc(active_id){
-
+        // $( "#grid" ).sortable( "refreshPositions" );
+        // $( "#grid" ).sortable( "destroy" );
         // console.log("button id",$(button).attr('id'))
         active_button=active_id;
         console.log("active_button",active_button);
+        console.log("dict_batch_setfunc",dict_batch);
         // check if back button exists
+        var temp_list=[]
         console.log("backbutton_id-->",$('#backbutton_id').text());
         if ($('#backbutton_id').text()==="back"){
             $('#mobile_catalog_div').empty();
             var json_data_mobiles=specmobphones[active_button]
+            if (dict_batch[active_button].length===specmobphones[active_button].length){
+                var len=dict_batch[active_button].length;
+                for (var i=0;i<len;i++){
+                    for (var j=0;j<len;j++){
+                        if(specmobphones[active_button][j].id===dict_batch[active_button][i]){
+                                temp_list.push(specmobphones[active_button][j])
+                        }
+                    }
+                }
+             
+            }
+            console.log("temp_list",temp_list)
+            var json_data_mobiles=temp_list
+            // console.log("json_data_mobiles",json_data_mobiles)
+            // console.log("specmobphones[active_button]",specmobphones[active_button])
+
             row_fluid=$('#mobile_catalog_div');
                                 var row=document.createElement('div');
                                 row.setAttribute('class','row');
@@ -3435,8 +3513,8 @@ function sendFilePath(id){
                                 col_md_12.append(lps);
                                 var rtc=document.createElement('DIV');
                                 rtc.setAttribute("class","row text-center");
+                                rtc.id="grid";
                                 lps.append(rtc);
-                                console.log("json_data_mobiles_length",json_data_mobiles)
                                 for (var i=0;i<json_data_mobiles.length;i++){
                                    
                                     if (i%3===0 && i!==0){
@@ -3450,6 +3528,7 @@ function sendFilePath(id){
                                     }
                                     var col_md_4_post=document.createElement('DIV');
                                     col_md_4_post.setAttribute("class","col-md-4 sm-margin-b-50 pull-left post");
+                                    col_md_4_post.id=i+1;
                                     rtc.append(col_md_4_post);
                                     var margin_b_20=document.createElement('DIV');
                                     margin_b_20.setAttribute("class","margin-b-20");
@@ -3462,9 +3541,7 @@ function sendFilePath(id){
                                     }
                                     else{
                                         //  a check to check if the retrieved mob id matches the id in the list 
-                                        console.log("list",dict_batch[active_button])
-                                        console.log("list type",typeof(dict_batch[active_button]))
-
+                                        
                                         if (dict_batch[active_button].includes(json_data_mobiles[i]['id'])){
                                             input_checkb.checked=true;
                                         }
@@ -3477,7 +3554,7 @@ function sendFilePath(id){
                                     input_checkb.setAttribute('onchange','toggleCheckbox(this)')
                                     var img=document.createElement('img');
                                     img.setAttribute('class','img-responsive')
-                                    console.log("/static/"+json_data_mobiles[i]['imagepath1'])
+                                    // console.log("/static/"+json_data_mobiles[i]['imagepath1'])
                                     img.src="/static/"+json_data_mobiles[i]['imagepath1'];
 
                                     margin_b_20.append(input_checkb);
@@ -3497,12 +3574,39 @@ function sendFilePath(id){
                                     link.text="READ MORE";
                                     col_md_4_post.append(link); 
                                     }
-                                    console.log("global_phones_exp_phones",global_phones_exp_phones);
+                                    // console.log("global_phones_exp_phones",global_phones_exp_phones);
                                     for (phones in global_phones_exp_phones){
                                         $('input:checkbox[id^='+global_phones_exp_phones[phones]+"cat"+']:not(:checked)').prop('checked',true);
                                         // console.log("catt",$('input:checkbox[id^='+global_phones_exp_phones[phones].id+"cat"+']:not(:checked)').attr('id'));
 
                                     }
+                                    var ds="grid_"+active_button;
+                                    console.log("ds",ds)
+                                    $("#grid").sortable({
+                                    stop: function( event, ui ) {
+                                        var arr=[]
+                                        var id = ui.item.attr("id");
+                                        console.log("id",id);
+                                        console.log("children",$(this).find('input'));
+                                        $(this).find('input').each(function(){
+                                    arr.push($(this).val());  
+                                            });         
+                                            console.log("array",arr)
+                                        // var data = $(this).sortable('toArray', { attribute: 'id' });
+                                        var result = arr.map(function (x) { 
+                                        return parseInt(x, 10); 
+                                        });
+                                        console.log("data--??>",result)
+                                        console.log("active_button",active_button)
+                                        dict_batch[active_button]=result
+                                        console.log("dict_batch-->",dict_batch);
+                                        
+                                       
+                                        },
+                                  
+                                });
+                                $( "#grid" ).disableSelection();
+
                             }   
         else{
             $.ajax({
@@ -3536,21 +3640,23 @@ function sendFilePath(id){
                                 col_md_12.append(lps);
                                 var rtc=document.createElement('DIV');
                                 rtc.setAttribute("class","row text-center");
+                               
                                 lps.append(rtc);
                                 
                                 for (var i=0;i<json_data_mobiles.length;i++){
                                    
-                                    if (i%3===0 && i!==0){
-                                        console.log("asd",i)
-                                        var hr=document.createElement('hr');
-                                        lps.append(hr); 
-                                        var rtc=document.createElement('DIV');
-                                        rtc.setAttribute("class","row text-center");
-                                        lps.append(rtc);
+                                    // if (i%3===0 && i!==0){
+                                    //     console.log("asd",i)
+                                    //     var hr=document.createElement('hr');
+                                    //     lps.append(hr); 
+                                    //     var rtc=document.createElement('DIV');
+                                    //     rtc.setAttribute("class","row text-center");
+                                    //     lps.append(rtc);
                                       
-                                    }
+                                    // }
                                     var col_md_4_post=document.createElement('DIV');
                                     col_md_4_post.setAttribute("class","col-md-4 sm-margin-b-50 pull-left post");
+                                    
                                     rtc.append(col_md_4_post);
                                     var margin_b_20=document.createElement('DIV');
                                     margin_b_20.setAttribute("class","margin-b-20");
@@ -3563,8 +3669,8 @@ function sendFilePath(id){
                                     }
                                     else{
                                         //  a check to check if the retrieved mob id matches the id in the list 
-                                        console.log("list",dict_batch[active_button])
-                                        console.log("list type",typeof(dict_batch[active_button]))
+                                        // console.log("list",dict_batch[active_button])
+                                        // console.log("list type",typeof(dict_batch[active_button]))
 
                                         if (dict_batch[active_button].includes(json_data_mobiles[i]['id'])){
                                             input_checkb.checked=true;
@@ -3602,12 +3708,13 @@ function sendFilePath(id){
                                     // }
                                     // console.log(i)
                                  }
-                                console.log("global_phones_exp_phones",global_phones_exp_phones);
+                                // console.log("global_phones_exp_phones",global_phones_exp_phones);
                                 for (phones in global_phones_exp_phones){
                                     $('input:checkbox[id^='+global_phones_exp_phones[phones]+"cat"+']:not(:checked)').prop('checked',true);
                                     // console.log("catt",$('input:checkbox[id^='+global_phones_exp_phones[phones].id+"cat"+']:not(:checked)').attr('id'));
 
                                 }
+                               
                             }
     });
 
@@ -3629,8 +3736,8 @@ function sendFilePath(id){
                 success: function(data){
                     var phns=data['cellphones'];
                     // global_phones_exp_phones=phns
-                    console.log("gbphones",phns)
-                    console.log("phns",phns);
+                    // console.log("gbphones",phns)
+                    // console.log("phns",phns);
                     var lpd=document.getElementById('expphonelist_div');
                     for (p in phns){
                         console.log("Mobile name",phns[p].Mobile_Name)
@@ -3690,7 +3797,6 @@ function sendFilePath(id){
         $(element).remove()
     }
     function expPhone_UpdataList(element){
-         console.log("ele",element)
          var lpd=document.getElementById('expphonelist_div');
          var div_row=document.createElement('div');
          div_row.setAttribute('class','row')

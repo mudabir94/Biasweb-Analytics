@@ -1689,6 +1689,49 @@ class createExperiment(TemplateView):
                 return JsonResponse(data) #, safe=False)
         #return render(request,'webapp/crudexperiment/create_experiment.html',data)
 from webapp.models import experiment as Experiment
+def SavePhoneSets(request):
+     if request.method=="POST":
+            if request.is_ajax:
+                phoneset_dic = request.POST.get('phoneset_dic')
+                phoneset_dic=json.loads(phoneset_dic)
+                featlevels_dic=request.POST.get('featlevels_dic')
+                postedFLevels = json.loads(featlevels_dic)
+                expCont = getExpController(request)
+                existExpId = expCont.exp.id
+              
+                print("existExpId",existExpId)
+                expCont.setFSet(newFLevels=postedFLevels,prompt=False)
+                block_set = expCont.generateBlocks()
+                block_list = list(block_set.all().values('serial_no','levels_set'))
+                print('<<<<<<TO DISPLAY ON PAGE>>>>>>')
+                print(block_list)
+                p_levList = list()
+                for key,s in phoneset_dic.items():
+                    p_set = mobilephones.objects.filter(id__in=s)
+                    p_levList.append('P.'+str(key))
+                    for count, p in enumerate(p_set):
+                        expPSets = selectedAdminPhones()
+                        expPSets.exp = expCont.exp
+                        expPSets.pset_id= key
+                        expPSets.mob = p
+                        expPSets.p_order = count 
+                        expPSets.save()
+                print(selectedAdminPhones.objects.filter(exp_id = expCont.exp.id))       
+                
+
+
+
+
+                data = {
+                    "data":"data",
+                     'exp_id':existExpId,
+                     'custom_exp_id':expCont.exp.custom_exp_id,
+                     'block_list':block_list
+                }
+                return JsonResponse(data) #, safe=False)
+
+
+
 class editExperiment(TemplateView):
         def get(self,request):
             # Get user id. 

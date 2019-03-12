@@ -64,6 +64,7 @@ urlpatterns = [
     url(r'^get_selectedadmin_phones/',views.getSelectedAdminPhones, name='get_selectedadmin_phones'),
     url(r'^get_mobile_data/',views.getMobiledata,name='get_mobile_data'),
     url(r'^get_specificmobile_data/',views.getSpecificMobileData,name='get_specificmobile_data'),
+    url(r'^savephonesets/',views.SavePhoneSets,name='savephonesets'),
 
 
 
