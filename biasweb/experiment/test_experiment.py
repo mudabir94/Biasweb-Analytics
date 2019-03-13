@@ -69,17 +69,18 @@ set2 = [43,6,101]
 setDict = {1:set1, 2:set2}
 p_levList = list()
 for key,s in setDict.items():
+    print(key,":",s)
     p_set = Phones.objects.filter(id__in=s)
     p_levList.append('P.'+str(key))
-    for count, p in enumerate(p_set):
+    for count, i in enumerate(s):
         expPSets = PSets()
         expPSets.exp = texp.exp
         expPSets.pset_id= key
-        expPSets.mob = p
-        expPSets.p_order = count 
+        expPSets.mob = p_set.get(id=i)
+        expPSets.p_order = count
         expPSets.save()
-
 print(PSets.objects.filter(exp_id = texp.exp.id))       
+
 texp.addFeature('P', p_levList)
 
 #SHOULD ask, if P is included, which sets to create
