@@ -5,14 +5,8 @@
     <!-- MAIN ROW CONTENT DIV  -->
     <div class="row content">
         <!-- 1st SIDEBAR COL DIV -->
-        <div class="col-sm-3 sidenav" style='background:#920000e3'>
-            <div class='container-fluid'>
-                {% with creat_exp_template_sidebar=creat_exp_template_sidebar %}
-                {% include creat_exp_template_sidebar %}
-                {% endwith %}
-            </div>
-        </div>
-        <div class="col-sm-9  col-md-9 col-lg-9 col-xs-9 text-left" > 
+      
+        <div class="col-md-12 text-left" > 
 
             <!-- CREATE EXP ROW DIV  -->
             <div class ="row-fluid">     
@@ -36,9 +30,10 @@
             <!-- CUSTOM NAV ROW DIV -->
             <div class='row-fluid'>
                 <div class='row' id='custom_nav_div' >
-                <div class='col-md-4'><button id='ftlvl' class='custom_nav_btn active 'onclick='showFeatureLvls($(this))'>Feature Levels</button> </div>
-                <div class='col-md-4'><button id='btchmng' class='custom_nav_btn'onclick='showBatchManagement()'>Batch Management</button></div>
-                <div class='col-md-4'><button id='blkmng' class='custom_nav_btn' onclick='showBlockManagement()'>Block Management</button></div>
+                    <div class='col-md-3'><button id='ftlvl' class='custom_nav_btn active 'onclick='showFeatureLvls($(this))'>Feature Levels</button> </div>
+                    <div class='col-md-3'><button id='btchmng' class='custom_nav_btn'onclick='showBatchManagement()'>Batch Management</button></div>
+                    <div class='col-md-3'><button id='blkmng' class='custom_nav_btn' onclick='showBlockManagement()'>Block Management</button></div>
+                    <div class='col-md-3'><button id='create_exp_mobile_catalog' class='custom_nav_btn' onclick='mobileCatalog()'>Mobile catalog</button></div>
                 </div>    
             </div>
             <br>
@@ -64,9 +59,7 @@
                         {%endfor%}
                     
                         <div class='row-fluid'>
-
-                            <button style="background: #1f8c6e;box-shadow: 0 0 0.5px 0.5px #1f8c6e;border: none;" onclick='sendFeatureLevels()'> Set Feature Levels </button>
-    
+                            <button id="sendfeatlvl_btn" onclick='sendFeatureLevels()'> Set Feature Levels </button>
                         </div> 
                     </div>
                     <div class=col-md-3   >
@@ -91,7 +84,7 @@
                     <div class='col-md-1' >
                         <div class='row'>
                        
-                            <div class='col-md-12'>  <button style="background: #105796;box-shadow: 0 0 0.5px 0.5px #105796;border: none;" onclick='showImportSubdiv()'>NEXT</button></div>
+                            <div class='col-md-12'>  <button id="nextbtn_to_batch" onclick='showImportSubdiv()'>NEXT</button></div>
 
                             
                         </div>
@@ -376,7 +369,7 @@
                         </div>
             </div> 
             <!-- Previous Btn -->
-            <div class='row' id='batchmngprvbtn_div'>
+            <div class='row-fluid' id='batchmngprvbtn_div'>
                     <div class='col-md-1'>
                         <div id='prev_btn_div'>
                         <button style="background: #105796;box-shadow: 0 0 0.5px 0.5px #105796;border: none;" onclick="showFeatLvlDiv()">Previous</button>
@@ -390,14 +383,15 @@
                     </div>
             </div>
            
-            <div class="row-fluid">
+            <div class="row-fluid" id="phones_main_button_div">
              
                     <div class="col-md-12 col-sm-12" id="phoneset_button_div">
+
                       <!-- <button onclick="FuncA()">A</button>
                       <button onclick="FuncB()">B</button> -->
-                      <button onclick="NextStep($(this))">Next Step</button>
+                      <!-- <button onclick="NextStep($(this))">Next Step</button> -->
                     </div>
-             </div>
+            </div>
         
 
             <div class='row-fluid'>
@@ -405,72 +399,73 @@
                             <div class='col-md-12'>
                                     
                                         <div id="phsetnum_div"></div>
+                                        <div id="ordersetnum_div"></div>
                             </div>
                     </div>
             </div>
-
+            <div class="row-fluid" id="price_slider_div"></div>
             <!-- Mobile Catalog Div -->
             <div class='row-fluid' id='mobile_catalog_div'>
                    
                      
                 <div class='row'>
-                    <div class='col-md-12'>
-                            
-                            <div class="latest-product-section" > 
-                                    {%  for mob in mobilephones  %}
-                
-                                    {% if forloop.counter0|divisibleby:3 %} 
-                                    <div class="row text-center">
-                                         {%  endif %}
-                                        
-                                            <div class="col-md-4 col-lg-4 col-xs-12 sm-margin-b-50 pull-left">
-                                                    <div class="margin-b-20" >
-                                                    <!-- <h4>Compare</h4> -->
-                                                    <input type="checkbox" value={{mob.id}} id={{mob.id}} name={{mob.id}}-{{mob.Mobile_Name}}  onchange="toggleCheckbox(this)"> 
-                                                    <img class="img-responsive" src="{% static mob.imagepath1 %}"  alt="Latest Products Image"  title=""/>
-                                                    </div>
-                                                    <a class="link btn btn-success" href="{% url 'mobileinfo' id=mob.id %}">
-                                                        {% filter upper %}
-                                                            Read More
-                                                        {% endfilter %}
-                                                    </a>
-                                                
-                                            </div>
-                                                    {%  if forloop.counter|divisibleby:3 or forloop.last %}
-                                                        </div><!-- row closing --><hr>
-                                                        {%  endif %}
-                                                    {%  endfor %}
+                        <div class='col-md-12'>
                                 
-                            </div>                    
-                    </div>
-                </div>
-                              <!-- Pagination row -->
-                
-                <div class='row'>
-                    <div class='col-md-12'>
-                           
-                            
-                            <!-- <div class="pagination" >
-                                    <span class="step-links">
-                                      
-                                        {% if mobilephones.has_previous %}
-                                            <a href="?page=1">&laquo; first</a>
-                                            <a href="?page={{ mobilephones.previous_page_number }}">previous</a>
-                                        {% endif %}
-                                        
-                                        <span class="current">
-                                            Page {{ mobilephones.number }} of {{ mobilephones.paginator.num_pages }}.
-                                        </span>
+                                <div class="latest-product-section" > 
+                                        {%  for mob in mobilephones  %}
+                    
+                                        {% if forloop.counter0|divisibleby:3 %} 
+                                        <div class="row text-center">
+                                            {%  endif %}
+                                            
+                                                <div class="col-md-4 col-lg-4 col-xs-12 sm-margin-b-50 pull-left">
+                                                        <div class="margin-b-20" >
+                                                        <!-- <h4>Compare</h4> -->
+                                                        <input type="checkbox" value={{mob.id}} id={{mob.id}} name={{mob.id}}-{{mob.Mobile_Name}}  onchange="toggleCheckbox(this)"> 
+                                                        <img class="img-responsive" src="{% static mob.imagepath1 %}"  alt="Latest Products Image"  title=""/>
+                                                        </div>
+                                                        <a class="link btn btn-success" href="{% url 'mobileinfo' id=mob.id %}">
+                                                            {% filter upper %}
+                                                                Read More
+                                                            {% endfilter %}
+                                                        </a>
+                                                    
+                                                </div>
+                                                        {%  if forloop.counter|divisibleby:3 or forloop.last %}
+                                                            </div><!-- row closing --><hr>
+                                                            {%  endif %}
+                                                        {%  endfor %}
                                     
-                                        {% if mobiles.has_next %}
-                                            <a href="?page={{ mobilephones.next_page_number }}">next</a>
-                                            <a href="?page={{ mobilephones.paginator.num_pages }}">last &raquo;</a>
-                                        {% endif %}
-                                    </span>
-                            </div> -->
-                    </div>
+                                </div>                    
+                        </div>
+                </div>
+                                <!-- Pagination row -->
+                    
+                <div class='row'>
+                        <div class='col-md-12'>
+                            
+                                <!-- <div class="pagination" >
+                                        <span class="step-links">
+                                        
+                                            {% if mobilephones.has_previous %}
+                                                <a href="?page=1">&laquo; first</a>
+                                                <a href="?page={{ mobilephones.previous_page_number }}">previous</a>
+                                            {% endif %}
+                                            
+                                            <span class="current">
+                                                Page {{ mobilephones.number }} of {{ mobilephones.paginator.num_pages }}.
+                                            </span>
+                                        
+                                            {% if mobiles.has_next %}
+                                                <a href="?page={{ mobilephones.next_page_number }}">next</a>
+                                                <a href="?page={{ mobilephones.paginator.num_pages }}">last &raquo;</a>
+                                            {% endif %}
+                                        </span>
+                                </div> -->
+                        </div>
                 </div>
             </div>
+            
             <div class="turn-page" id="pager"></div>
         </div>
         <!-- <div class="col-sm-1 sidenav" style='background:yellow'>side bar</div>    -->
@@ -735,6 +730,7 @@ $('.show_select_tag').hide();
 $('#self-defined').hide();
 $('#pre-defined').hide();
 $('#selfbuttondiv').hide();
+
 $('#prebuttondiv').hide();
 $('#upload').prop('disabled',true);
 $('#importSubdiv').hide();
@@ -745,6 +741,8 @@ $('#block_assign_row_div').hide();
 $('#batchmngprvbtn_div').hide();
 $('#dataDiv').hide();
 $('#price_slider').hide();
+$('#phones_main_button_div').hide();
+
 
 $('#feat_lvl_div').show();
 //defaultFeatLevel_Table();
@@ -787,7 +785,7 @@ if(exp_id===""){
 
      }
      else{
-        populateExpPhones();
+        // populateExpPhones();
         showExpWIP();
 
         // Check through an ajax call if anything related to dict,blocklist etc
@@ -848,113 +846,6 @@ if(exp_id===""){
         
      }
 }
-// var slider2 = new rSlider({
-//                     target: '#price_slider',
-//                     values: {min:5000,max:70000},
-//                     range: true,
-//                     tooltip: true,
-//                     scale: false,
-//                     labels: false,
-//                     set: [5000, 70000],
-//                     step:10000,
-//                     onChange:function (values) { 
-//                         var values=values.split(',');
-//                         console.log(values);
-//                         $.ajax({
-//                              // Ajax call to getrange of phones ...  
-//                                 url: "{% url 'createexp' %}",
-//                                 type:'GET',
-//                                 'data': {
-//                                 'price_range_values':JSON.stringify(values),
-//                                 // 'csrfmiddlewaretoken': '{{ csrf_token }}',
-//                                 },
-//                                 dataType: "json",
-//                                 success: function(data){
-//                                 console.log("data",data)// location.reload();
-//                                 $('#mobile_catalog_div').empty();
-//                                 $('#pager').hide();
-//                                 // var json_data_mobiles=data['samsung_phones']
-//                                 var json_data_mobiles=data['mobilephones']
-//                                 // var row_fluid=document.createElement('div');
-//                                 // row_fluid.setAttribute('class','row-fluid');
-//                                 // row_fluid.setAttribute('id','mobile_catalog_div');
-//                                 row_fluid=$('#mobile_catalog_div');
-//                                 var row=document.createElement('div');
-//                                 row.setAttribute('class','row');
-//                                 row_fluid.append(row);
-//                                 var col_md_12=document.createElement("div");
-//                                 col_md_12.setAttribute('class','col-md-12');
-//                                 row.append(col_md_12);
-//                                 var lps=document.createElement("div");
-//                                 lps.setAttribute("class",'latest-product-section');
-//                                 col_md_12.append(lps);
-//                                 var rtc=document.createElement('DIV');
-//                                 rtc.setAttribute("class","row text-center");
-//                                 lps.append(rtc);
-//                                 for (var i=0;i<json_data_mobiles.length;i++){
-                                   
-//                                     if (i%3===0 && i!==0){
-//                                         console.log("asd",i)
-//                                         var hr=document.createElement('hr');
-//                                         lps.append(hr); 
-//                                         var rtc=document.createElement('DIV');
-//                                         rtc.setAttribute("class","row text-center");
-//                                         lps.append(rtc);
-                                      
-//                                     }
-//                                     var col_md_4_post=document.createElement('DIV');
-//                                     col_md_4_post.setAttribute("class","col-md-4 sm-margin-b-50 pull-left post");
-//                                     rtc.append(col_md_4_post);
-//                                     var margin_b_20=document.createElement('DIV');
-//                                     margin_b_20.setAttribute("class","margin-b-20");
-//                                     col_md_4_post.append(margin_b_20);
-//                                     var input_checkb=document.createElement('input');
-//                                     input_checkb.type="checkbox";
-//                                     input_checkb.value=json_data_mobiles[i]['id'];
-//                                     input_checkb.id=json_data_mobiles[i]['id']+"cat";
-//                                     input_checkb.name=json_data_mobiles[i]['id']+"-"+json_data_mobiles[i]['Mobile_Name'];
-//                                     input_checkb.setAttribute('onchange','toggleCheckbox(this)')
-//                                     var img=document.createElement('img');
-//                                     img.setAttribute('class','img-responsive')
-//                                     console.log("/static/"+json_data_mobiles[i]['imagepath1'])
-//                                     img.src="/static/"+json_data_mobiles[i]['imagepath1'];
-
-//                                     margin_b_20.append(input_checkb);
-//                                     margin_b_20.append(img);
-//                                     var mobile_name_p=document.createElement('p')
-//                                     mobile_name_p.innerHTML=json_data_mobiles[i]['Mobile_Name']
-//                                     col_md_4_post.append(mobile_name_p)
-//                                     var mobile_price_p=document.createElement('p')
-//                                     mobile_price_p.innerHTML=json_data_mobiles[i]['price']
-//                                     col_md_4_post.append(mobile_price_p)
-//                                     var link=document.createElement('a');
-//                                     link.setAttribute('class','link btn btn-success');
-//                                     // took alot of time finding this solution...
-//                                     var url = "{% url 'mobileinfo' id=4  %}".replace("4", json_data_mobiles[i]['id']);
-//                                     link.href= url;
-
-//                                     link.text="READ MORE";
-//                                     col_md_4_post.append(link); 
-//                                     // if (i%3===0 && i!==0){
-                                       
-//                                     // }
-//                                     // console.log(i)
-//                                 }
-//                                 console.log("global_phones_exp_phones",global_phones_exp_phones);
-//                                 for (phones in global_phones_exp_phones){
-//                                     $('input:checkbox[id^='+global_phones_exp_phones[phones]+"cat"+']:not(:checked)').prop('checked',true);
-//                                     // console.log("catt",$('input:checkbox[id^='+global_phones_exp_phones[phones].id+"cat"+']:not(:checked)').attr('id'));
-
-//                                 }
-//                             }
-                                
-                                
-//                          }); 
-                       
-//                     }
-//         });
-        
-       
 
 });
 function showcheckboxes_stored(){
@@ -984,9 +875,6 @@ function getSavedSubjectDataExpCont(){
         //  for (var i=0;i<Object.keys(data['subject_data'][Object.keys(data['subject_data'])[0]]).length;i++){
 
         //  }
-        
-          
-         
          }
                      
     }); 
@@ -1313,9 +1201,12 @@ function showFeatLvlDiv(){
     $('#dataDiv').hide();
     $('#batchmngprvbtn_div').hide();
     $('#dataDiv').hide();
+    $("#price_slider_div").empty(); 
+    $("#phones_main_button_div").hide(); 
+
     $('#mobile_catalog_div').hide();
-    $('#pager').hide();
     $('#feat_lvl_div').show( 1000);
+
     // var current=$('#btchmng')
     var current=$(".active");
     current.prop('class',current.attr('class').replace('active',""));
@@ -1379,9 +1270,11 @@ function showFeatureLvls(){
     $('#dataDiv').hide();
     $('#batchmngprvbtn_div').hide();
     $('#dataDiv').hide();
-    $('#feat_lvl_div').slideDown(500);  
     $('#mobile_catalog_div').hide();
     $('#pager').hide();
+    $('#phones_main_button_div').hide();
+    $('#price_slider_div').empty();
+    $('#feat_lvl_div').slideDown(500);  
 
     $('#dispFileFeatLvldiv').show();
     
@@ -2559,76 +2452,6 @@ var  setlist=[];
 function outerCheckBox(outercheckval,outercheckid) {
 console.log("checkbox");
 console.log(outercheckval);
-if (outercheckval==="P"){
-    $('#phsetnum_div').empty();
-    $('#phsetnum_div').dialog({ 
-    title: "Phone Set",
-    autoOpen: false,
-    minHeight: 200,
-    maxHeight: 300,
-    closeOnEscape: true,
-    hide: { effect: "highlight", duration: 1000 },
-    buttons: [
-    {
-      text: "Save",
-      
-      click: function() {
-        $( this ).dialog( "close" );
-        console.log("vale",$('#inputset_num').val())
-        numofsets=$('#inputset_num').val();
-        setlist=[]
-        
-        for (var i=0;i<numofsets;i++){
-            var j=i+1
-            var str="P."+j;
-            setlist.push(str);
-        }
-        console.log("SetList",setlist);
-        dict[outercheckval]=setlist
-
-        $('#'+outercheckid+'-innercheckboxdiv').append(dict[outercheckval]);
-        $('#'+outercheckid+'-innercheckboxdiv').show();
-
-        updateFeatureLvls();
-        mobileCatalog()
-      }
- 
-      // Uncommenting the following line would hide the text,
-      // resulting in the label being used as a tooltip
-      //showText: false
-    }
-  ]
-    }); // Initialize dialog plugin
-$('#phsetnum_div').dialog("open");
-var row_div = document.createElement('div');
-row_div.setAttribute('class','row');
-$('#phsetnum_div').append(row_div);
-
-var row_d1=document.createElement('div');
-row_d1.setAttribute('class','row');
-row_div.append(row_d1);
-var col_md_12_div=document.createElement('DIV');
-col_md_12_div.setAttribute('class','col-md-12');
-row_d1.append(col_md_12_div)
-var p_text=document.createElement('p');
-p_text.innerHTML="Number of sets"
-col_md_12_div.append(p_text)
-var row_d2=document.createElement('div');
-row_d2.setAttribute('class','row');
-row_div.append(row_d2);
-var col_md_12_div2=document.createElement('DIV');
-col_md_12_div2.setAttribute('class','col-md-12');
-row_d2.append(col_md_12_div2)
-var input = document.createElement("INPUT");
-input.setAttribute("type", "number");
-input.id='inputset_num';
-col_md_12_div2.append(input);
-
-
-
-}
-
-else{
 
 
     // Ajax call is made to send the outercheckboxid to the controller. 
@@ -2651,34 +2474,189 @@ else{
     var outerckbox = $('#'+outercheckid);
     console.log('outercheckbox obj',outerckbox);
     console.log('dic',dict);
-    dict[outercheckval]=data
-    console.log('value of key in dic',dict[outercheckval]);
-    
-
+   
 
     // checking if the user has checked or not. 
 
-    if (outerckbox.is(':checked')) {
+if (outerckbox.is(':checked')) {
         // alert('You Checked');
         console.log('outercheckval',outercheckval);
-        console.log('data retrieved',data)
-        dict[outercheckval]=data
-        if (data==null){
-            dict[outercheckval]=[0,1]
-        }
-        console.log('dictionary',dict)
-        // calling innercheckboxdivs. 
-        // these divs basically come after outercheckbox that contain innerchecks.
-        // outercheck id and the data is sent to this function.
-        // This function shows the innerChecksdivs after including and populating data in 
-        // innerchecks.
-        // todo: change the name of innercheckboxdivs name as it seems like it is refering to
-        // div inside inner checks...
+        console.log('data retrieved',data);
+    if (outercheckval==="P"){
         
-        // checkbox_id_dict[outercheckid]=[];
-        showInnerCheckBoxDivs(outercheckid,data);
-        updateFeatureLvls();
-    } else {
+        $('#phsetnum_div').empty();
+                $('#phsetnum_div').dialog({ 
+                title: "Phone Set",
+                autoOpen: false,
+                minHeight: 200,
+                maxHeight: 300,
+                closeOnEscape: true,
+                hide: { effect: "highlight", duration: 1000 },
+                buttons: [
+                {
+                text: "Save",
+                click: function() {
+                    $( this ).dialog( "close" );
+                    console.log("vale",$('#inputset_num').val())
+                    numofsets=$('#inputset_num').val();
+                    setlist=[]
+                    
+                    for (var i=0;i<numofsets;i++){
+                        var j=i+1
+                        var str="P."+j;
+                        setlist.push(str);
+                    }
+                    console.log("SetList",setlist);
+                    dict[outercheckval]=setlist
+
+                    $('#'+outercheckid+'-innercheckboxdiv').append(dict[outercheckval]);
+                    $('#'+outercheckid+'-innercheckboxdiv').show();
+
+                    updateFeatureLvls();
+                
+                    mobileCatalog();
+                    var current=$(".active");
+                    current.prop('class',current.attr('class').replace('active',""));
+                    $('#create_exp_mobile_catalog').prop('class', 'custom_nav_btn active');
+
+                }
+
+                // Uncommenting the following line would hide the text,
+                // resulting in the label being used as a tooltip
+                //showText: false
+                }
+                ]
+                }); // Initialize dialog plugin
+                $('#phsetnum_div').dialog("open");
+                var row_div = document.createElement('div');
+                row_div.setAttribute('class','row');
+                $('#phsetnum_div').append(row_div);
+
+                var row_d1=document.createElement('div');
+                row_d1.setAttribute('class','row');
+                row_div.append(row_d1);
+                var col_md_12_div=document.createElement('DIV');
+                col_md_12_div.setAttribute('class','col-md-12');
+                row_d1.append(col_md_12_div)
+                var p_text=document.createElement('p');
+                p_text.innerHTML="Number of sets"
+                col_md_12_div.append(p_text)
+                var row_d2=document.createElement('div');
+                row_d2.setAttribute('class','row');
+                row_div.append(row_d2);
+                var col_md_12_div2=document.createElement('DIV');
+                col_md_12_div2.setAttribute('class','col-md-12');
+                row_d2.append(col_md_12_div2)
+                var input = document.createElement("INPUT");
+                input.setAttribute("type", "number");
+                input.id='inputset_num';
+                col_md_12_div2.append(input);
+    }
+
+            
+    else if(outercheckval==="CO"){
+        var numofsets=0;
+        $('#ordersetnum_div').empty();
+        $('#ordersetnum_div').dialog({ 
+        title: "Order Criteria",
+        autoOpen: false,
+        minHeight: 200,
+        maxHeight: 300,
+        closeOnEscape: true,
+        hide: { effect: "highlight", duration: 1000 },
+        buttons: [
+        {
+        text: "Save",
+        click: function() {
+            $( this ).dialog( "close" );
+            console.log("vale",$('#inputset_num_co').val())
+            numofsets=$('#inputset_num_co').val();
+            $.ajax({
+            type: 'POST',
+            dataType: "json",
+            'data': {
+            'numofsets':numofsets,
+            'csrfmiddlewaretoken': '{{ csrf_token }}',
+            },
+            // the ajax call is sent to subdetails url name in the post function.  
+            url: "{% url 'admin_setup' %}",
+            success: function(data){
+                window.location.href = data.redirecturl;
+            }
+            });
+            setlist=[]
+            
+            for (var i=0;i<numofsets;i++){
+                var j=i+1
+                var str="CO."+j;
+                setlist.push(str);
+            }
+            console.log("SetList",setlist);
+            dict[outercheckval]=setlist
+
+            $('#'+outercheckid+'-innercheckboxdiv').append(dict[outercheckval]);
+            $('#'+outercheckid+'-innercheckboxdiv').show();
+
+            updateFeatureLvls();
+        }
+    
+        // Uncommenting the following line would hide the text,
+        // resulting in the label being used as a tooltip
+        //showText: false
+        }
+    ]
+        }); // Initialize dialog plugin
+        $('#ordersetnum_div').dialog("open");
+        var row_div = document.createElement('div');
+        row_div.setAttribute('class','row');
+        $('#ordersetnum_div').append(row_div);
+
+        var row_d1=document.createElement('div');
+        row_d1.setAttribute('class','row');
+        row_div.append(row_d1);
+        var col_md_12_div=document.createElement('DIV');
+        col_md_12_div.setAttribute('class','col-md-12');
+        row_d1.append(col_md_12_div)
+        var p_text=document.createElement('p');
+        p_text.innerHTML="Number of sets"
+        col_md_12_div.append(p_text)
+        var row_d2=document.createElement('div');
+        row_d2.setAttribute('class','row');
+        row_div.append(row_d2);
+        var col_md_12_div2=document.createElement('DIV');
+        col_md_12_div2.setAttribute('class','col-md-12');
+        row_d2.append(col_md_12_div2)
+        var input = document.createElement("INPUT");
+        input.setAttribute("type", "number");
+        input.id='inputset_num_co';
+        col_md_12_div2.append(input);
+        // send an ajax call to admin_setup sending set num, exp id. 
+        
+
+      
+    }
+    else {
+            dict[outercheckval]=data
+            if (data==null){
+                dict[outercheckval]=[0,1]
+            }
+            console.log('dictionary',dict)
+            // calling innercheckboxdivs. 
+            // these divs basically come after outercheckbox that contain innerchecks.
+            // outercheck id and the data is sent to this function.
+            // This function shows the innerChecksdivs after including and populating data in 
+            // innerchecks.
+            // todo: change the name of innercheckboxdivs name as it seems like it is refering to
+            // div inside inner checks...
+            
+            // checkbox_id_dict[outercheckid]=[];
+            showInnerCheckBoxDivs(outercheckid,data);
+            updateFeatureLvls();
+        } 
+    
+}
+    
+    else {
         // alert('You Un-Checked it');
         // For now its purpose is simply to hide the innercheckdivs.  
         hideInnerCheckBoxDivs(outercheckid);
@@ -2698,7 +2676,7 @@ else{
     }
   }});  
  }
-}
+
 
 // once the onclick function=>(innercheckbox) of inner checks are called it 
 // shows three things. innercheck value , id and outer check value/title.
@@ -2913,10 +2891,10 @@ $('#'+outercheckid+'-innercheckboxdiv').empty();
 
 
 function sendFeatureLevels(){
-if (dict['CO']===undefined){
-    alert("Please Choose Criteria")
-    return;
-}
+// if (dict['CO']===undefined){
+//     alert("Please Choose Criteria")
+//     return;
+// }
 $.ajax({
 type: 'POST',
 dataType: "json",
@@ -3143,8 +3121,9 @@ function sendFilePath(id){
 
         });
     function mobileCatalog(){
-        $('#mobile_catalog_div').show();
-        $('#pager').show();
+        
+
+       
         $('#importSubdiv').hide();
         $('#dispFileFeatLvldiv').hide();
         $('#subj_split_batch_rowdiv').hide();
@@ -3153,7 +3132,28 @@ function sendFilePath(id){
         $('#batchmngprvbtn_div').hide();
         $('#dataDiv').hide();
         $('#blkoutputsDiv').hide();
+        $('#mobile_catalog_div').show();
+        $("#price_slider_div").show(); 
+                               $('#price_slider_div').empty();
+                                var row_fluid=$('#price_slider_div');
+                                var row=document.createElement('div');
+                                row.setAttribute('class','row');
+                                row_fluid.append(row);
+                                var col_md_4_1=document.createElement("div");
+                                col_md_4_1.setAttribute('class','col-md-4');
+                                row.append(col_md_4_1);
+                                var col_md_4_2=document.createElement("div");
+                                col_md_4_2.setAttribute('class','col-md-4');
+                                row.append(col_md_4_2);
+                                var col_md_4_3=document.createElement("div");
+                                col_md_4_3.setAttribute('class','col-md-4');
+                                row.append(col_md_4_3);
+                                var input=document.createElement('input');
+                                input.setAttribute('class','slider')
+        input.setAttribute('id','price_slider')
+        col_md_4_2.append(input)
         $('#price_slider').show();
+
         var slider2 = new rSlider({
                     target: '#price_slider',
                     values: {min:5000,max:70000},
@@ -3216,6 +3216,17 @@ function sendFilePath(id){
                                     col_md_4_post.append(margin_b_20);
                                     var input_checkb=document.createElement('input');
                                     input_checkb.type="checkbox";
+                                    if (dict_batch[active_button]===undefined ){
+                                        dict_batch[active_button]=[];
+                                    }
+                                    else{
+                                        //  a check to check if the retrieved mob id matches the id in the list 
+                                        
+                                        if (dict_batch[active_button].includes(json_data_mobiles[i]['id'])){
+                                            input_checkb.checked=true;
+                                        }
+
+                                    }
                                     input_checkb.value=json_data_mobiles[i]['id'];
                                     input_checkb.id=json_data_mobiles[i]['id']+"cat";
                                     input_checkb.name=json_data_mobiles[i]['id']+"-"+json_data_mobiles[i]['Mobile_Name'];
@@ -3261,6 +3272,35 @@ function sendFilePath(id){
         });
 
         // on clicking the mobile catalog generate set buttons and put set P.1 as active. 
+        var phoneset_button_div=$('#phoneset_button_div');
+        $('#phoneset_button_div').empty();
+        $('#phones_main_button_div').show();
+        var row=document.createElement('div');
+        row.setAttribute('class','row');
+        phoneset_button_div.append(row);
+        var col_md_8=document.createElement('div');
+        col_md_8.setAttribute('class','col-md-9 btn-group');
+        col_md_8.id="set_buttons"
+        row.append(col_md_8);
+        var col_md_2=document.createElement('div');
+        col_md_2.setAttribute('class','col-md-2');
+        col_md_2.setAttribute('style','width:inherit');
+
+        col_md_2.id="process_buttons"
+        row.append(col_md_2);
+        var nextstep=document.createElement('button');
+        nextstep.innerHTML="Next Step";
+        nextstep.setAttribute("onclick","NextStep($(this))");
+        col_md_2.append(nextstep);
+        var col_md_2=document.createElement('div');
+        col_md_2.setAttribute('class','col-md-1');
+        col_md_2.id="save_button"
+        row.append(col_md_2);
+       
+
+
+
+
         for (var i=0;i<setlist.length;i++){
             var button=document.createElement('button')
             button.id=setlist[i]
@@ -3269,8 +3309,9 @@ function sendFilePath(id){
             if (i===0){
                 var this_b=button
             }
-            $('#phoneset_button_div').append(button)
+            $('#set_buttons').append(button)
         }
+
         SetFunc($(this_b).attr('id'));
         // $('.innerchecksboxdivs').hide();
         // $('.map_select_label').hide();
@@ -3425,19 +3466,24 @@ function sendFilePath(id){
                             }
             });
         var backbutton=document.createElement('button');
-        backbutton.innerHTML="back"
+        backbutton.innerHTML="Back"
         backbutton.setAttribute('onclick','backFunc($(this))')
         backbutton.setAttribute('id','backbutton_id')
-        $('#phoneset_button_div').append(backbutton);
-        $(element).remove();
+       
+        
         var savebutton=document.createElement('button');
-        savebutton.innerHTML="Save Phone Set"
+        savebutton.innerHTML="Save"
         savebutton.setAttribute('onclick','SavePhoneSet($(this))')
-        savebutton.setAttribute('id','backbutton_id')
-        $('#phoneset_button_div').append(savebutton);
+        savebutton.setAttribute('id','savebutton_id')
+        $(element).remove();
+        $('#process_buttons').empty();
+        $('#save_button').empty();
+        $('#process_buttons').append(backbutton);
+        $('#save_button').append(savebutton);
         
     }
     function SavePhoneSet(element){
+        console.log("DICT_BATCH",dict_batch)
         $.ajax({
                 // Ajax call to savephoneset  
                 url: "{% url 'savephonesets' %}",
@@ -3460,47 +3506,55 @@ function sendFilePath(id){
                         display_blocktable(table_blocks);
                         window.localStorage.setItem("blockList", JSON.stringify(blockList));
                     }
+                    showFeatLvlDiv();
                 }
+                
         });
     }
     function backFunc (element){
+        
+        
+        
         var nextstep=document.createElement('button');
-        nextstep.innerHTML="Next Step"
-        nextstep.setAttribute('onclick','NextStep($(this))')
-        $('#phoneset_button_div').append(nextstep);
+        nextstep.innerHTML="Next Step";
+        nextstep.setAttribute("onclick","NextStep($(this))");
+        $('#save_button').empty();
+        $('#process_buttons').empty();
+        $('#process_buttons').append(nextstep);
+        
         $(element).remove();
         SetFunc(active_button);
         
     }
     function SetFunc(active_id){
-        // $( "#grid" ).sortable( "refreshPositions" );
-        // $( "#grid" ).sortable( "destroy" );
-        // console.log("button id",$(button).attr('id'))
+        if(active_button!==""){
+            document.getElementById(active_button).style.backgroundColor = ""
+        }
+        
+
         active_button=active_id;
-        console.log("active_button",active_button);
-        console.log("dict_batch_setfunc",dict_batch);
         // check if back button exists
         var temp_list=[]
-        console.log("backbutton_id-->",$('#backbutton_id').text());
-        if ($('#backbutton_id').text()==="back"){
+        document.getElementById(active_button).style.backgroundColor = "#94000e"
+        
+        if ($('#backbutton_id').text()==="Back"){
             $('#mobile_catalog_div').empty();
+            
             var json_data_mobiles=specmobphones[active_button]
-            if (dict_batch[active_button].length===specmobphones[active_button].length){
-                var len=dict_batch[active_button].length;
-                for (var i=0;i<len;i++){
-                    for (var j=0;j<len;j++){
-                        if(specmobphones[active_button][j].id===dict_batch[active_button][i]){
-                                temp_list.push(specmobphones[active_button][j])
+            console.log("dict_batch---",dict_batch[active_button])
+            if (dict_batch[active_button]!==undefined){
+                        if (dict_batch[active_button].length===specmobphones[active_button].length){
+                            var len=dict_batch[active_button].length;
+                            for (var i=0;i<len;i++){
+                                for (var j=0;j<len;j++){
+                                    if(specmobphones[active_button][j].id===dict_batch[active_button][i]){
+                                            temp_list.push(specmobphones[active_button][j])
+                                    }
+                                }
+                            }
                         }
-                    }
-                }
-             
             }
-            console.log("temp_list",temp_list)
             var json_data_mobiles=temp_list
-            // console.log("json_data_mobiles",json_data_mobiles)
-            // console.log("specmobphones[active_button]",specmobphones[active_button])
-
             row_fluid=$('#mobile_catalog_div');
                                 var row=document.createElement('div');
                                 row.setAttribute('class','row');
@@ -3518,13 +3572,11 @@ function sendFilePath(id){
                                 for (var i=0;i<json_data_mobiles.length;i++){
                                    
                                     if (i%3===0 && i!==0){
-                                        console.log("asd",i)
                                         var hr=document.createElement('hr');
                                         lps.append(hr); 
                                         var rtc=document.createElement('DIV');
                                         rtc.setAttribute("class","row text-center");
                                         lps.append(rtc);
-                                      
                                     }
                                     var col_md_4_post=document.createElement('DIV');
                                     col_md_4_post.setAttribute("class","col-md-4 sm-margin-b-50 pull-left post");
@@ -3589,19 +3641,14 @@ function sendFilePath(id){
                                         console.log("id",id);
                                         console.log("children",$(this).find('input'));
                                         $(this).find('input').each(function(){
-                                    arr.push($(this).val());  
-                                            });         
+                                        arr.push($(this).val());  
+                                        });         
                                             console.log("array",arr)
                                         // var data = $(this).sortable('toArray', { attribute: 'id' });
                                         var result = arr.map(function (x) { 
                                         return parseInt(x, 10); 
                                         });
-                                        console.log("data--??>",result)
-                                        console.log("active_button",active_button)
-                                        dict_batch[active_button]=result
-                                        console.log("dict_batch-->",dict_batch);
-                                        
-                                       
+                                        dict_batch[active_button]=result;
                                         },
                                   
                                 });
@@ -3621,7 +3668,6 @@ function sendFilePath(id){
                                 success: function(data){
                                 console.log("data",data)// location.reload();
                                 $('#mobile_catalog_div').empty();
-                                $('#pager').hide();
                                 // var json_data_mobiles=data['samsung_phones']
                                 
                                 var json_data_mobiles=data['mobilephones']

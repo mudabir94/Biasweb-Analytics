@@ -36,13 +36,14 @@
           </div>
         <div class="col-sm-7 text-left"> 
           <p>Exp:1</p>
-                <select id="roles" >
-                    <!-- In Future this has to become dynamic -->
+                <!-- <select id="roles" >
+                    In Future this has to become dynamic
                         <option >Please Select</option>
                         <option  value="Set1">Set1</option>
                         <option  value="Set2">Set2</option>
                         <option  value="Set3">Set3</option>
-                </select>
+                </select> -->
+                <div id="sel"></div>
                 <input type="hidden" value="" id="role_value" name="role_value"/>
               
             <div class="container latest-product-section" id="product-section"> 
@@ -90,6 +91,18 @@ $(document).ready(function () {
                                 dataType: "json",
                                 
                                 success: function(data){
+                                  var inputdata = data['numofsets']
+                                  console.log(inputdata)
+ var select = $('<select name="options" id="options"></select>');
+ $.each(inputdata, function(index, value) {
+   var option = $('<option></option>');
+   console.log("value",value)
+   option.attr('value', value);
+   option.text(value);
+   select.append(option);
+ });
+ $('#sel').empty().append(select); 
+                                  
                                     var feat_dsp=data['feature_to_display'];
                                     var disp_feat_div=document.getElementById('display_feature_div');
                                     var ul_sortable=document.createElement('ul');
@@ -219,8 +232,8 @@ $(document).ready(function () {
 function testingfunction(){
     console.log("helloo")
 }
-$("#roles").change(function() {
-role_data=$('#roles option:selected').val()
+$("#options").change(function() {
+role_data=$('#options option:selected').val()
 console.log(typeof role_data ); 
 var set_num =JSON.stringify(role_data);
 alert(set_num)

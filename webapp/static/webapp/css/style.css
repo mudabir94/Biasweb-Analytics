@@ -184,16 +184,7 @@ button.social-signin.google {
 {
   margin-top: 10px;
 }
-.custom_nav_btn{
-  width:100%;
-  background:lightskyblue;
-  border: none;
-  box-shadow: 0 0 0.5px 0.5px  lightskyblue;
-}
-.active{
-  background:white;
-  box-shadow: 0 0 0.5px 0.5px #ea0000;
-}
+
 .barbutton{
   
   width:100%;

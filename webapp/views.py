@@ -44,7 +44,7 @@ from .forms import (NameForm, SignUpForm, blogForm, filterform,
 from .models import Role, User, blog
 from .models import experiment as exp
 from .models import (mobile_phone, mobilephones, platform_feature, prunedmobilephones,
-                     samsung_phone, sort_feature, userscoreRecord)
+                     samsung_phone, sort_feature, userscoreRecord,ExpCriteriaOrder)
 from.models import template_roles as tr 
 from. models import templates as tpl
 
@@ -436,10 +436,17 @@ def updateFeaturePosition(request):
 
         print(b[0])
         count=1
+        # ExpCriteriaOrder_obj=ExpCriteriaOrder.objects.get(pCriteria="cpu")
+        # ExpCriteriaOrder_obj.position=3
+        # ExpCriteriaOrder_obj.save()
         for key,value in  enumerate(b):
             print(key)
             k=str(int(key)+1)
             print ("test", value,k)
+            ExpCriteriaOrder_obj=ExpCriteriaOrder.objects.get(pCriteria=value)
+            ExpCriteriaOrder_obj.position=count
+            ExpCriteriaOrder_obj.save()
+            
             sort_feature_selected_obj=sort_feature.objects.get(feature=value,roles=1)
             sort_feature_selected_obj.position=count
             sort_feature_selected_obj.save()
@@ -585,19 +592,21 @@ class adminSetup(TemplateView):
         if  request.is_ajax():
             feature_to_display = list(feature_to_display.values())
             print("feature to display",feature_to_display)
+            numofsets=['CO.1','CO.2','CO.3']
             feature_to_hide = list(feature_to_hide.values())
             print("feature to hide",feature_to_hide)
             data={
                 'feature_to_display':feature_to_display,
-                'feature_to_hide':feature_to_hide
+                'feature_to_hide':feature_to_hide,
+                'numofsets':numofsets
             }
             return JsonResponse(data)
         else:
             if role=='Super_Admin':        
-                feature_to_display=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role_id,exp_sets="Set1").order_by('position')
-                
+                feature_to_display=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role_id).order_by('position')
+                numofsets=['CO.1','CO.2','CO.3']
                 print("feature",feature_to_display)
-                feature_to_hide=sort_feature.objects.filter(Q(sh_hd = 0),roles=role_id,exp_sets="Set1").order_by('position')    
+                feature_to_hide=sort_feature.objects.filter(Q(sh_hd = 0),roles=role_id).order_by('position')    
                 print("feature2",feature_to_hide)
 
             elif role=='Experiment_Admin':
@@ -613,11 +622,31 @@ class adminSetup(TemplateView):
                 roleobj=Role.objects.get(pk=role)
                 role_name=roleobj.role_name
                 print(role_name)
-            return render(request, 'webapp/admin_setup.html',{'role_name':'role','feature_to_display':feature_to_display,'feature_to_hide':feature_to_hide})
+            return render(request, 'webapp/admin_setup.html',{'numofsets':numofsets,'feature_to_display':feature_to_display,'feature_to_hide':feature_to_hide})
 
             
     def post(self,request):
-        pass
+        if request.is_ajax():
+            print(request.user.id)
+            userobj=User.objects.get(pk=request.user.id)
+            print("user object",userobj.role_id_id)
+            role_id=userobj.role_id_id
+            roleobj=Role.objects.get(pk=role_id)
+            role=roleobj.role_name
+            print(role)
+            numofsets=request.POST.get("numofsets")
+            # get all feature/criteria 
+            feature_to_disp=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role_id,exp_sets="Set1").order_by('position')
+            feature_to_hide=sort_feature.objects.filter(Q(sh_hd = 0),roles=role_id,exp_sets="Set1").order_by('position')    
+
+            data={
+                    "numofsets":numofsets,
+                    'feature_to_display':feature_to_disp,
+                    'feature_to_hide':feature_to_hide
+                    }
+            return render(request,"webapp/admin_setup.html",data)
+
+        
         
 
     #*****************************************************
@@ -1700,23 +1729,50 @@ def SavePhoneSets(request):
                 existExpId = expCont.exp.id
               
                 print("existExpId",existExpId)
+
                 expCont.setFSet(newFLevels=postedFLevels,prompt=False)
                 block_set = expCont.generateBlocks()
                 block_list = list(block_set.all().values('serial_no','levels_set'))
                 print('<<<<<<TO DISPLAY ON PAGE>>>>>>')
                 print(block_list)
                 p_levList = list()
-                for key,s in phoneset_dic.items():
-                    p_set = mobilephones.objects.filter(id__in=s)
-                    p_levList.append('P.'+str(key))
-                    for count, p in enumerate(p_set):
-                        expPSets = selectedAdminPhones()
-                        expPSets.exp = expCont.exp
-                        expPSets.pset_id= key
-                        expPSets.mob = p
-                        expPSets.p_order = count 
-                        expPSets.save()
-                print(selectedAdminPhones.objects.filter(exp_id = expCont.exp.id))       
+                print("PHONESET DICT",phoneset_dic)
+                exp_obj=Experiment.objects.get(custom_exp_id="ses-007-0244")
+                if (selectedAdminPhones.objects.filter(exp=exp_obj).exists()):
+                    sap_obj=selectedAdminPhones.objects.filter(exp=exp_obj)
+                    # for key,s in phoneset_dic.items():
+                    #     print("sap_obj",sap_obj)
+                    #     print(s)
+                    #     for count,i in enumerate(s):
+                else:
+                    for key,s in phoneset_dic.items():
+                        print(key,":",s)
+                        p_set = mobilephones.objects.filter(id__in=s)
+                        p_levList.append('P.'+str(key))
+                        for count, i in enumerate(s):
+                            expPSets = selectedAdminPhones()
+                            expPSets.exp = expCont.exp
+                            expPSets.pset_id= key
+                            expPSets.mob = p_set.get(id=i)
+                            expPSets.p_order = count
+                            expPSets.save()
+                # A Check is to be made for updation...
+                    # for key,s in phoneset_dic.items():
+                    #     p_set = mobilephones.objects.filter(id__in=s)
+                    #     print("p_set",p_set)
+                    #     p_levList.append('P.'+str(key))
+                    #     print("key",key)
+                    #     print("s",s)
+                    #     for count, p in enumerate(p_set):
+                    #         print("p",p)
+                    #         print("count",count)
+                    #         expPSets = selectedAdminPhones()
+                    #         expPSets.exp = expCont.exp
+                    #         expPSets.pset_id= key
+                    #         expPSets.mob = p
+                    #         expPSets.p_order = count 
+                    #         expPSets.save()
+                # print(selectedAdminPhones.objects.filter(exp_id = expCont.exp.id))       
                 
 
 
@@ -1795,11 +1851,7 @@ def getSpecificMobileData(request):
 def getMobiledata(request):
     if request.is_ajax():
         if request.method=="GET":
-            print("in get mobile data")
             mobiles_retrieved=mobilephones.objects.all()
-
             mobiles_retrieved = list(mobiles_retrieved.values())   
             mobilephones_str=mobiles_retrieved
-            return JsonResponse(
-            {  'mobilephones':mobilephones_str}
-            )
+            return JsonResponse({'mobilephones':mobilephones_str})

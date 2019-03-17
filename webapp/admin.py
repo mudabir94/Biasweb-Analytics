@@ -9,7 +9,7 @@ from .models import User
 from .models import signup_table,blog,mobile_phone,mobilephones,experiment
 from .models import samsung_phone,sort_feature,userscoreRecord,Role,platform_feature
 from .models import template_roles,templates,feature,selectedAdminPhones
-from .models import Subject,experiment_feature,Batch,Block,prunedmobilephones
+from .models import Subject,experiment_feature,Batch,Block,prunedmobilephones,ExpCriteriaOrder
 
 class MyUserChangeForm(UserChangeForm):
     class Meta(UserChangeForm.Meta):
@@ -36,6 +36,8 @@ class templateRoleAdmin(admin.ModelAdmin):
     'can_add','can_view','can_del',\
     'created_at','update_at',)    
 
+class ExpCriteriaOrderAdmin(admin.ModelAdmin):
+    list_display=('id','exp','cOrder_id','pCriteria','position')
 class ExperimentAdmin(admin.ModelAdmin):
     list_display= ('id','custom_exp_id')
 #----------------------------------------------------------------------------
@@ -74,8 +76,7 @@ class selectedAdminPhonesResource(resources.ModelResource):
     class meta:
         model=selectedAdminPhones
 class selectedAdminPhones_Admin(ImportExportActionModelAdmin):
-    pass
-
+    list_display=('id','exp','block','pset_id','mob','p_order')
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>    
 #----------------------------------------------------------------------------
 
@@ -98,6 +99,8 @@ class mobilephonesAdmin(ImportExportActionModelAdmin):
 
 
 admin.site.register(User, MyUserAdmin)
+admin.site.register(ExpCriteriaOrder, ExpCriteriaOrderAdmin)
+admin.site.register(selectedAdminPhones, selectedAdminPhones_Admin)
 
 admin.site.register(samsung_phone,SamsungAdmin)
 admin.site.register(Role,RoleAdmin)
@@ -105,7 +108,6 @@ admin.site.register(platform_feature,PlatformFeatureAdmin)
 admin.site.register(experiment,ExperimentAdmin)
 admin.site.register(templates,templateAdmin)
 admin.site.register(template_roles,templateRoleAdmin)
-admin.site.register(selectedAdminPhones,selectedAdminPhones_Admin)
 admin.site.register(sort_feature,sort_featureAdmin)
 admin.site.register(mobilephones,mobilephonesAdmin)
 admin.site.register(userscoreRecord)

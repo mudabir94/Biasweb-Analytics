@@ -1,0 +1,67 @@
+.btn-group button {
+    background-color: lightskyblue; /* Green background */
+    border: 1px solid lightskyblue; /* Green border */
+    color: white; /* White text */
+    padding: 10px 24px; /* Some padding */
+    cursor: pointer; /* Pointer/hand icon */
+    float: left; /* Float the buttons side by side */
+  }
+  .btn-group button:hover {
+    background-color: #94000f5e;
+  }
+#process_buttons  button {
+    background-color: rgba(0, 0, 0, 0.664); /* Green background */
+    border: 1px solid rgba(0, 0, 0, 0.664);/* Green border */
+    color: white; /* White text */
+    padding: 10px 24px; /* Some padding */
+    cursor: pointer; /* Pointer/hand icon */
+    float: left; /* Float the buttons side by side */
+  } 
+#save_button button{
+    background-color: rgba(60, 138, 24, 0.863); /* Green background */
+    border: 1px solid rgba(60, 138, 24, 0.863);/* Green border */
+    color: white; /* White text */
+    padding: 10px 24px; /* Some padding */
+    cursor: pointer; /* Pointer/hand icon */
+    float: left; /* Float the buttons side by side */
+}
+.custom_nav_btn{
+    width:100%;
+    background:lightskyblue;
+    border: 1px solid  lightskyblue;
+    color: white; /* White text */
+    cursor: pointer;
+    box-shadow: 0 0 0.5px 0.5px  lightskyblue;
+    padding: 10px 24px; /* Some padding */
+    float: left; /* Float the buttons side by side */
+
+}
+  .active{
+    background:white;
+    color: green; /* White text */
+
+    box-shadow: 0 0 0.5px 0.5px #ea0000;
+  }
+
+
+#sendfeatlvl_btn{
+    background: rgba(60, 138, 24, 0.863);
+    color: white; /* White text */
+    padding: 10px 20px; /* Some padding */
+    box-shadow: 0 0 0.5px 0.5px rgba(60, 138, 24, 0.863);
+    border: 1px solid rgba(60, 138, 24, 0.863);
+    cursor: pointer;
+
+}
+#grid{
+    cursor: grab;
+}
+#nextbtn_to_batch{
+    background: #105796;
+    color: white; 
+    padding: 10px 20px; /* Some padding */
+    /* box-shadow: 0 0 0.5px 0.5px #105796; */
+    cursor: pointer;
+    border:none;
+
+}
