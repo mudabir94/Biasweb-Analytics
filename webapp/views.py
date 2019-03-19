@@ -122,7 +122,7 @@ class Home(TemplateView):
         elif role=='Subject':
             # all other conditions of subjects will be done here. 
             
-            #  return render(request,'webapp/2by2comparemobilespecs.html')
+            # return render(request,'webapp/2by2comparemobilespecs.html')
             return redirect('/filtered_mobile_view')
 
 
@@ -531,9 +531,9 @@ def globalFunc(request):
     if request.is_ajax:
         #print("ajax",request.POST.get('data'))
         ####print("PST",request.POST.get('d')) 
-        setnum = request.POST.get('set')
-        ### print('JSONLOADS',eval(d))
-        set_num = json.loads(setnum)
+        # setnum = request.POST.get('set')
+        # ### print('JSONLOADS',eval(d))
+        # set_num = json.loads(setnum)
         global feature_to_display
         global feature_to_hide
         role_name=['']
@@ -544,11 +544,10 @@ def globalFunc(request):
         roleobj=Role.objects.get(pk=role_id)
         role=roleobj.role_name
         print(role)
-        print("setnum",set_num)
-        feature_to_display=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role_id,exp_sets=set_num).order_by('position')
+        feature_to_display=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role_id).order_by('position')
                 
         print("feature-->",feature_to_display)
-        feature_to_hide=sort_feature.objects.filter(Q(sh_hd = 0),roles=role_id,exp_sets=set_num).order_by('position')    
+        feature_to_hide=sort_feature.objects.filter(Q(sh_hd = 0),roles=role_id).order_by('position')    
         print("feature2-->",feature_to_hide)
         feature_to_display=list(feature_to_display.values())
 
@@ -573,6 +572,103 @@ def globalFunc(request):
     
 feature_to_display=''
 feature_to_hide=''
+class orderCriteria_Setup(TemplateView):
+    def get(self,request):
+        role_name=['']
+        print(request.user.id)
+        userobj=User.objects.get(pk=request.user.id)
+        print("user object",userobj.role_id_id)
+        role_id=userobj.role_id_id
+        roleobj=Role.objects.get(pk=role_id)
+        role=roleobj.role_name
+        print(role)
+        if  request.is_ajax():
+            feature_to_display=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role_id).order_by('position')
+            print("feature",feature_to_display)
+            feature_to_hide=sort_feature.objects.filter(Q(sh_hd = 0),roles=role_id).order_by('position')    
+            print("feature2",feature_to_hide)
+            feature_to_display = list(feature_to_display.values())
+            feature_to_hide = list(feature_to_hide.values())
+
+            data={
+                'feature_to_display':feature_to_display,
+                'feature_to_hide':feature_to_hide,
+            }
+            return JsonResponse(data)
+
+        
+    def post(self,request):
+         if request.is_ajax:
+                crit_order_dict = request.POST.get('crit_order_dict')
+                crit_order_dict=json.loads(crit_order_dict)
+                crit_hide_dict = request.POST.get('crit_hide_dict')
+                crit_hide_dict=json.loads(crit_hide_dict)
+                featlevels_dic=request.POST.get('featlevels_dic')
+                postedFLevels = json.loads(featlevels_dic)
+                print("crit_order_dict",crit_order_dict)
+                print("crit_hide_dict",crit_hide_dict)
+                print("featlevels_dic",featlevels_dic)
+
+                expCont = getExpController(request)
+                existExpId = expCont.exp.id
+                existCusId=expCont.exp.custom_exp_id
+                expCont.setFSet(newFLevels=postedFLevels,prompt=False)
+                block_set = expCont.generateBlocks()
+                block_list = list(block_set.all().values('serial_no','levels_set'))
+                print('<<<<<<TO DISPLAY ON PAGE>>>>>>')
+                print(block_list)
+                # save orderset Details in expCriteriaOrder
+                exp_obj=Experiment.objects.get(custom_exp_id=existCusId)
+                
+                p_levList=list()
+                for key,s in crit_order_dict.items():
+                        print(key,":",s)
+                        # o_set = mobilephones.objects.filter(id__in=s)
+
+                        p_levList.append('CO.'+str(key))
+                        for count, i in enumerate(s):
+                           
+                            print("count",count)
+                            print("ii",i)
+                            expOSets=ExpCriteriaOrder()
+                            expOSets.exp=expCont.exp
+                            expOSets.cOrder_id=key
+                            expOSets.pCriteria=i
+                            expOSets.position=count+1
+                            expOSets.sh_hd=1
+                            expOSets.save()
+                            # expPSets = selectedAdminPhones()
+                            # expPSets.exp = expCont.exp
+                            # expPSets.pset_id= key
+                            # expPSets.mob = p_set.get(id=i)
+                            # expPSets.p_order = count
+                for key,s in crit_hide_dict.items():
+                        print(key,":",s)
+                        # o_set = mobilephones.objects.filter(id__in=s)
+
+                        p_levList.append('CO.'+str(key))
+                        for count, i in enumerate(s):
+                           
+                            print("count",count)
+                            print("ii",i)
+                            expOSets=ExpCriteriaOrder()
+                            expOSets.exp=expCont.exp
+                            expOSets.cOrder_id=key
+                            expOSets.pCriteria=i
+                            expOSets.position=0
+                            expOSets.sh_hd=0
+                            expOSets.save()
+                            # expPSets = selectedAdminPhones()
+                            # expPSets.exp = expCont.exp
+                            # expPSets.pset_id= key
+                            # expPSets.mob = p_set.get(id=i)
+                            # expPSets.p_order = count
+                            
+                data={
+                'success':'success',
+                }
+                return JsonResponse(data)
+              
 class adminSetup(TemplateView):
     # global  role
     global feature_to_display

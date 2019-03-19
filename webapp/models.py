@@ -307,3 +307,4 @@ class ExpCriteriaOrder(models.Model):
     #NEED TO KEEP A RECORD OF THE EXISTING SET OF AVAILABLE CRITERIA IN THE MOBILE PHONES TABLE
     pCriteria = models.CharField(max_length=200, null=True)
     position = models.IntegerField(null=True)
+    sh_hd=models.IntegerField(null=True)

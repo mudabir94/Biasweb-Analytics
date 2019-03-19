@@ -7,6 +7,11 @@
         <!-- 1st SIDEBAR COL DIV -->
       
         <div class="col-md-12 text-left" > 
+             <!-- Order Criteria  -->
+             <div class="row-fluid" id="order_criteria_div">
+
+             </div>
+
 
             <!-- CREATE EXP ROW DIV  -->
             <div class ="row-fluid">     
@@ -22,7 +27,8 @@
                         </div>                            
                     </div>
                     <div class ="row"> 
-                        <div class='col-md-12' >    
+                        <div class='col-md-12' >
+                            <button onclick="HideALL()">Hide All</button>
                         <!-- <p1>Experiment id {{experiment_id}}</p1> -->
                         </div>                            
                     </div>
@@ -722,14 +728,19 @@ $(document).ready(function () {
    console.log('btrn',btns)
    
 
-// This Will hide all the divs with class=innerchecksboxdivs
+  initializePage();
 
+});
+function initializePage(){
+    // This Will hide all the divs with class=innerchecksboxdivs
+$("#order_criteria_div").hide();
 $('.innerchecksboxdivs').hide();
 $('.map_select_label').hide();
 $('.show_select_tag').hide();
 $('#self-defined').hide();
 $('#pre-defined').hide();
 $('#selfbuttondiv').hide();
+$('#blkoutputsDiv').hide();
 
 $('#prebuttondiv').hide();
 $('#upload').prop('disabled',true);
@@ -844,10 +855,9 @@ if(exp_id===""){
         // send an ajax call and get the expCont.subjData of the current Exp Object. 
         getSavedSubjectDataExpCont();
         
-     }
+        }
+    }
 }
-
-});
 function showcheckboxes_stored(){
     for (var key in checkbox_id_dict){
             console.log('cheCKebox value',checkbox_id_dict[key]);
@@ -1189,7 +1199,9 @@ function showImportSubdiv(){
     
     $('#feat_lvl_div').hide();
     $('#mobile_catalog_div').hide();
-    $('#pager').hide();
+    $("#price_slider_div").empty(); 
+    $("#phones_main_button_div").hide(); 
+
     $('#importSubdiv').show(1000);
     $('#batchmngprvbtn_div').show();
 
@@ -1271,10 +1283,12 @@ function showFeatureLvls(){
     $('#batchmngprvbtn_div').hide();
     $('#dataDiv').hide();
     $('#mobile_catalog_div').hide();
-    $('#pager').hide();
     $('#phones_main_button_div').hide();
     $('#price_slider_div').empty();
-    $('#feat_lvl_div').slideDown(500);  
+    $('#feat_lvl_div').slideDown(500);
+    $('#blkoutputsDiv').hide();
+
+
 
     $('#dispFileFeatLvldiv').show();
     
@@ -1285,14 +1299,46 @@ function showBatchManagement(){
     $('#feat_lvl_div').hide();
     $('#block_assign_row_div').hide();
     $('#mobile_catalog_div').hide();
-    $('#pager').hide();
+    $("#price_slider_div").empty(); 
+    $("#phones_main_button_div").hide(); 
     $('#importSubdiv').slideDown();
+
     $('#batchmngprvbtn_div').show();
     $('#dispFileFeatLvldiv').show();
+    $('#blkoutputsDiv').hide();
+
   
 
 
    
+}
+function HideALL(){
+    $('#block_assign_row_div').hide();
+    $('#feat_lvl_div').hide();
+    $('#dispFileFeatLvldiv').hide();
+    $('#subj_split_batch_rowdiv').hide();
+    $('#importSubdiv').hide();
+    $('#dataDiv').hide();
+    $('#batchmngprvbtn_div').hide();
+    $('#mobile_catalog_div').hide();
+    $("#price_slider_div").empty(); 
+    $("#phones_main_button_div").hide(); 
+    $('#blkoutputsDiv').hide();
+    $('.innerchecksboxdivs').hide();
+    $('.map_select_label').hide();
+    $('.show_select_tag').hide();
+    $('#self-defined').hide();
+    $('#pre-defined').hide();
+    $('#selfbuttondiv').hide();
+    $('#blkoutputsDiv').hide();
+    $('#prebuttondiv').hide();
+    $('#upload').prop('disabled',true);
+    $('#importSubdiv').hide();
+
+
+
+    var current=$(".active");
+    current.prop('class',current.attr('class').replace('active',""));
 }
 function showBlockManagement(){
     // hiding all unneccesary rows
@@ -1302,8 +1348,11 @@ function showBlockManagement(){
     $('#subj_split_batch_rowdiv').hide();
     $('#dataDiv').hide();
     $('#batchmngprvbtn_div').hide();
+    $('#blkoutputsDiv').hide();
+
     $('#mobile_catalog_div').hide();
-    $('#pager').hide();
+    $("#price_slider_div").empty(); 
+    $("#phones_main_button_div").hide(); 
     $('#block_assign_row_div').show();
     // $('#blkoutputsDiv').show();
 }
@@ -2571,29 +2620,16 @@ if (outerckbox.is(':checked')) {
             $( this ).dialog( "close" );
             console.log("vale",$('#inputset_num_co').val())
             numofsets=$('#inputset_num_co').val();
-            $.ajax({
-            type: 'POST',
-            dataType: "json",
-            'data': {
-            'numofsets':numofsets,
-            'csrfmiddlewaretoken': '{{ csrf_token }}',
-            },
-            // the ajax call is sent to subdetails url name in the post function.  
-            url: "{% url 'admin_setup' %}",
-            success: function(data){
-                window.location.href = data.redirecturl;
-            }
-            });
-            setlist=[]
-            
+            HideALL();
+            setlist=[];
             for (var i=0;i<numofsets;i++){
                 var j=i+1
                 var str="CO."+j;
                 setlist.push(str);
             }
             console.log("SetList",setlist);
-            dict[outercheckval]=setlist
-
+            dict[outercheckval]=setlist;
+            orderCriteriaHtmlSetup(outercheckval,setlist);
             $('#'+outercheckid+'-innercheckboxdiv').append(dict[outercheckval]);
             $('#'+outercheckid+'-innercheckboxdiv').show();
 
@@ -3990,5 +4026,688 @@ function sendFilePath(id){
     }
    
     </script>
+<script>
+    var crit_order_dict={};
+    var crit_hide_dict={};
+    var active_co="CO.1";
+    var feat_to_disp=[];
+    var feat_to_hide=[];
+    function orderCriteriaHtmlSetup(CO,CO_list){
+        var colist=CO_list;
+        $("#order_criteria_div").show();
+        // CREATING HTML <-->
+        var order_criteria_div=document.getElementById("order_criteria_div");
+        var container=document.createElement("div");
+        container.setAttribute('class','container-fluid text-center');
+        order_criteria_div.append(container);
+        var main_row=document.createElement('div');
+        main_row.setAttribute('class','row content');
+        container.append(main_row);
+        var col_md_1=document.createElement('div');
+        col_md_1.setAttribute('class','col-md-1 sidenav');
+        main_row.append(col_md_1);
+        var back_to_main_setup_btn=document.createElement('button');
+        back_to_main_setup_btn.innerHTML="Back";
+        back_to_main_setup_btn.setAttribute('onclick','initializePage()')
+        col_md_1.append(back_to_main_setup_btn);
+        var col_md_5=document.createElement('div');
+        col_md_5.setAttribute('class','col-md-5 text-left');
+        main_row.append(col_md_5);
 
+        var select_div=document.createElement('div');
+        select_div.setAttribute('id','select_div');
+        var container_two=document.createElement('div');
+        container_two.setAttribute('class','container ');
+        container_two.id="product-section";
+        col_md_5.append(select_div);
+        col_md_5.append(container_two);
+        var disp_feat_div=document.createElement("div");
+        disp_feat_div.setAttribute('id','display_feature_div');
+        container_two.append(disp_feat_div);
+        var col_md_5_2=document.createElement('div');
+        col_md_5_2.setAttribute('class','col-md-5');
+        main_row.append(col_md_5_2);
+        var hiddenfeat_div=document.createElement('div');
+        col_md_5_2.append(hiddenfeat_div);
+        var h2=document.createElement('h2');
+        h2.innerHTML="Hidden Features";
+        hiddenfeat_div.append(h2);
+        var hide_feature_div=document.createElement('div');
+        hide_feature_div.setAttribute('id','hide_feature_div');
+        
+        hiddenfeat_div.append(hide_feature_div);
+        var recenthiddenfeat_div=document.createElement('div');
+        recenthiddenfeat_div.setAttribute('id','recent_hidden_div');
+        col_md_5_2.append(recenthiddenfeat_div);
+        var h2=document.createElement('h2');
+        h2.innerHTML="Recent  Hidden Features";
+        var ul_mylist=document.createElement('ul');
+        ul_mylist.setAttribute('id','myList');
+        recenthiddenfeat_div.append(h2);
+        recenthiddenfeat_div.append(ul_mylist);
+        var col_md_1=document.createElement('div');
+        col_md_1.setAttribute('class','col-md-1 sidenav');
+        main_row.append(col_md_1);
+        var save_to_main_setup_btn=document.createElement('button');
+        save_to_main_setup_btn.innerHTML="Save";
+        save_to_main_setup_btn.setAttribute('onclick',"saveOrderSet()");
+        col_md_1.append(save_to_main_setup_btn);
+
+        get_data_Ajax(colist);
+
+    }
+    function get_data_Ajax(colist){
+        if (crit_order_dict[active_co]===undefined){
+      crit_order_dict[active_co]=[]
+    }
+        // ajax call to get feature_to_display, feature_to_hide
+    $.ajax({
+                                url: "{% url 'ordercriteriasetup' %}",
+                                type:'GET',
+                                'data': {
+                                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                                },
+                                dataType: "json",
+                                
+                                success: function(data){
+                                // this will be changed numofsets will be given by user...
+                                var inputdata =colist
+                                var select=document.createElement('select');
+                                select.setAttribute('id', 'sel_options');
+                                select.setAttribute('onchange',"selChangeFunc($(this))")
+                                for (var i=0;i<inputdata.length;i++){
+                                        var option=document.createElement('option');
+                                        option.value=inputdata[i];
+                                        option.text=inputdata[i];
+                                        select.append(option);
+                                }
+                                var shw_disp=[];
+                                var hide_disp=[];
+                                $('#select_div').empty()
+                                $('#select_div').append(select);   
+                                var feat_dsp=data['feature_to_display'];
+                                feat_to_disp=data['feature_to_display'];
+                                var disp_feat_div=document.getElementById('display_feature_div');
+                                var ul_sortable=document.createElement('ul');
+                                ul_sortable.setAttribute('id','sortable');
+                                disp_feat_div.append(ul_sortable);
+                                for (var i in feat_dsp){
+                                    console.log(feat_dsp[i].feature);
+                                var li_sortable=document.createElement('li');
+                                li_sortable.id=feat_dsp[i].feature+"_"+feat_dsp[i].position;
+                                ul_sortable.append(li_sortable);
+                                var div_row=document.createElement('div');
+                                div_row.setAttribute("class",'row');
+                                li_sortable.append(div_row);    
+                                var div_col_md_6_1=document.createElement('div');
+                                div_col_md_6_1.setAttribute("class","col-md-6");
+                                div_row.append(div_col_md_6_1);
+                                var btn_btn_primary=document.createElement('button');
+                                btn_btn_primary.setAttribute("class","btn btn-primary");
+                                btn_btn_primary.innerHTML=feat_dsp[i].feature;
+                                div_col_md_6_1.appendChild(btn_btn_primary);
+                                var div_col_md_6_2=document.createElement('div');
+                                div_col_md_6_2.setAttribute('class',"col-md-6");
+                                div_row.append(div_col_md_6_2);
+                                var btn_show_hide=document.createElement('button');
+                                btn_show_hide.setAttribute("class","show_hide");
+                                btn_show_hide.setAttribute("onclick","hideFromDisplay($(this).parent().parent().parent().attr('id'))");
+                                btn_show_hide.innerHTML="Hide";
+                                div_col_md_6_2.appendChild(btn_show_hide);
+                                shw_disp.push(feat_dsp[i].feature);
+                                }
+                                var feat_hide=data['feature_to_hide'];
+                                feat_to_hide=data['feature_to_hide'];
+                                var hide_feat_div=document.getElementById('hide_feature_div');
+                                var ul_hiddenfeat=document.createElement('ul');
+                                ul_hiddenfeat.setAttribute("id","hiddenfeat");
+                                hide_feat_div.append(ul_hiddenfeat);
+                                for (var i in feat_hide){
+
+                                    console.log(feat_hide[i].feature);
+                                    var li_hiddenfeat=document.createElement('li');
+                                    li_hiddenfeat.id=feat_hide[i].feature+"_"+feat_hide[i].position
+                                    ul_hiddenfeat.append(li_hiddenfeat);
+
+                                    var div_row=document.createElement('div')
+                                    div_row.setAttribute('class','row');
+                                    li_hiddenfeat.append(div_row);
+                                    var div_col_md_6_1=document.createElement('div');
+                                    div_col_md_6_1.setAttribute('class','col-md-6');
+                                    div_row.append(div_col_md_6_1);
+                                    var div_col_md_6_2=document.createElement('div');
+                                    div_col_md_6_2.setAttribute('class','col-md-6');
+                                    div_row.append(div_col_md_6_2);
+                                    var btn_btn_primary=document.createElement('btn');
+                                    btn_btn_primary.setAttribute('class','btn btn-primary');
+                                    btn_btn_primary.innerHTML=feat_hide[i].feature;
+                                    div_col_md_6_1.append(btn_btn_primary);
+                                    var btn_show_hide=document.createElement('button');
+                                    btn_show_hide.setAttribute('class','show_hide');
+                                    btn_show_hide.setAttribute('onclick','showToDisplay($(this).parent().parent().parent().attr("id"))');
+                                    btn_show_hide.innerHTML="show";
+                                    div_col_md_6_2.append(btn_show_hide);
+                                    hide_disp.push(feat_hide[i].feature)
+                               
+                                }
+                                crit_order_dict[active_co]=shw_disp;
+                                crit_hide_dict[active_co]=hide_disp;
+                                console.log("crit_order_dict-->",crit_order_dict);
+                                console.log("crit_hide_dict-->",crit_hide_dict);
+
+                                $('ul').sortable({
+                                    axis: 'y',
+                                    stop: function (event, ui) {
+                                    var data = $(this).sortable('serialize').split("&");
+                                    var arr=[];
+                                    for (var key in data)
+                                    {   
+                                        arr.push(data[key].split("=")[0].replace('[]',''));
+                                    }
+                                    console.log("arr",arr)
+                                    console.log("crit_order_dict-->",crit_order_dict)
+
+                                    console.log("jason string",JSON.stringify(arr))
+
+                                    $('span').text(data);
+                                    if (crit_order_dict[active_co]===undefined){
+                                        crit_order_dict[active_co]=[]
+                                    }
+                                    else{
+                                    crit_order_dict[active_co]=arr;
+                                    crit_hide_dict[active_co]=hide_disp;
+                                    console.log("crit_order_dict",crit_order_dict);
+                                    console.log("crit_hide_dict",crit_hide_dict);
+
+                                    }
+                                    // $.ajax({
+                                
+                                    //     type: 'POST',
+                                    //     dataType: "json",
+                                    //     'data': {
+                                    //     'd': JSON.stringify(arr),
+
+                                    //     'csrfmiddlewaretoken': '{{ csrf_token }}',
+                                    //     },
+                                        
+                                    //     url: "{% url 'updatefeatureposition' %}",
+                                    //     success: function(response){
+                                    //     console.log("success");
+                                    //     }
+                                    // });
+                                    }
+                                });
+                                
+
+                            }
+
+                        });
+
+    }
+    
+    function saveOrderSet(){
+        console.log("crit_order_dict<><><>",crit_order_dict);
+        console.log("crit_hide_dict<><><>",crit_hide_dict);
+        // make an ajax call that will send the two dicts to server. 
+        $.ajax({
+                                
+                                        type: 'POST',
+                                        dataType: "json",
+                                        'data': {
+                                        'featlevels_dic': JSON.stringify(dict,undefined,''),
+                                        'crit_order_dict':JSON.stringify(crit_order_dict),
+                                        'crit_hide_dict':JSON.stringify(crit_hide_dict),
+
+                                        'csrfmiddlewaretoken': '{{ csrf_token }}',
+                                        },
+                                        
+                                        url: "{% url 'ordercriteriasetup' %}",
+                                        success: function(response){
+                                        console.log("success");
+                                        }
+                                    });
+
+
+    }
+</script>
+<script>
+
+   function selChangeFunc(element){
+        role_data=$(element).val();
+        console.log("role_data", role_data ); 
+        active_co=role_data
+        alert(active_co)
+        $('#recent_hidden_div').empty();
+        $('#hide_feature_div').empty();
+        $("#display_feature_div").empty();
+
+        var recenthiddenfeat_div=document.getElementById('recent_hidden_div');
+        console.log("recenthiddenfeat_div",recenthiddenfeat_div)
+        var h2=document.createElement('h2');
+        h2.innerHTML="Recent  Hidden Features";
+        var ul_mylist=document.createElement('ul');
+        ul_mylist.setAttribute('id','myList');
+        recenthiddenfeat_div.append(h2);
+        recenthiddenfeat_div.append(ul_mylist);
+        
+        var hide_feature_div=document.getElementById('hide_feature_div');
+
+        var ul_hiddenfeat=document.createElement('ul');
+        ul_hiddenfeat.setAttribute("id","hiddenfeat");
+        hide_feature_div.append(ul_hiddenfeat);
+
+        if(crit_order_dict[active_co]===undefined || crit_hide_dict===undefined){
+            var feat_dsp=["os",'cpu','price','size'];
+            var ft_hide=[]
+        }
+        else{
+            var feat_dsp =crit_order_dict[active_co];
+            var ft_hide=crit_hide_dict[active_co];
+        }
+        
+        var disp_feat_div=document.getElementById('display_feature_div');
+        var ul_sortable=document.createElement('ul');
+        ul_sortable.setAttribute('id','sortable');
+        disp_feat_div.append(ul_sortable);
+        var  shw_disp=[];
+        var hide_disp=[];
+        for (var i in feat_dsp){
+            console.log(feat_dsp[i]);
+        var li_sortable=document.createElement('li');
+        var k=parseInt(i)+1
+
+        li_sortable.id=feat_dsp[i]+"_"+k;
+        ul_sortable.append(li_sortable);
+        var div_row=document.createElement('div');
+        div_row.setAttribute("class",'row');
+        li_sortable.append(div_row);    
+        var div_col_md_6_1=document.createElement('div');
+        div_col_md_6_1.setAttribute("class","col-md-6");
+        div_row.append(div_col_md_6_1);
+        var btn_btn_primary=document.createElement('button');
+        btn_btn_primary.setAttribute("class","btn btn-primary");
+        btn_btn_primary.innerHTML=feat_dsp[i];
+        div_col_md_6_1.appendChild(btn_btn_primary);
+        var div_col_md_6_2=document.createElement('div');
+        div_col_md_6_2.setAttribute('class',"col-md-6");
+        div_row.append(div_col_md_6_2);
+        var btn_show_hide=document.createElement('button');
+        btn_show_hide.setAttribute("class","show_hide");
+        btn_show_hide.setAttribute("onclick","hideFromDisplay($(this).parent().parent().parent().attr('id'))");
+        btn_show_hide.innerHTML="Hide";
+        div_col_md_6_2.appendChild(btn_show_hide);
+        shw_disp.push(feat_dsp[i]);
+
+        }
+        var feat_hide=ft_hide;
+        var hide_feat_div=document.getElementById('hide_feature_div');
+        var ul_hiddenfeat=document.createElement('ul');
+        ul_hiddenfeat.setAttribute("id","hiddenfeat");
+        hide_feat_div.append(ul_hiddenfeat);
+        for (var i in feat_hide){
+
+            var li_hiddenfeat=document.createElement('li');
+            li_hiddenfeat.id=feat_hide[i]+"_"+i
+            ul_hiddenfeat.append(li_hiddenfeat);
+
+            // var div_row=document.createElement('div');
+            // div_row.setAttribute('class','row');
+            // temp.append(div_row);
+            // var div_col_md_6_1=document.createElement('div');
+            // div_col_md_6_1.setAttribute('class','col-md-6');
+            // div_row.append(div_col_md_6_1);
+            // var btn_btn_primary=document.createElement('btn');
+            // btn_btn_primary.setAttribute('class','btn btn-primary');
+            // btn_btn_primary.innerHTML=data[0];
+            // div_col_md_6_1.append(btn_btn_primary);
+            // var div_col_md_6_2=document.createElement('div');
+            // div_col_md_6_2.setAttribute('class','col-md-6');
+            // div_row.append(div_col_md_6_2);
+            // var btn=document.createElement('button');
+            // btn.setAttribute('class','show_hide');
+            // btn.setAttribute('onclick','showToDisplay($(this).parent().parent().parent().attr("id"))');
+            // btn.innerHTML="show";
+            // div_col_md_6_2.append(btn);
+        
+        
+
+            var div_row=document.createElement('div')
+            div_row.setAttribute('class','row');
+            li_hiddenfeat.append(div_row);
+            var div_col_md_6_1=document.createElement('div');
+            div_col_md_6_1.setAttribute('class','col-md-6');
+            div_row.append(div_col_md_6_1);
+            var div_col_md_6_2=document.createElement('div');
+            div_col_md_6_2.setAttribute('class','col-md-6');
+            div_row.append(div_col_md_6_2);
+            var btn_btn_primary=document.createElement('btn');
+            btn_btn_primary.setAttribute('class','btn btn-primary');
+            btn_btn_primary.innerHTML=feat_hide[i];
+            div_col_md_6_1.append(btn_btn_primary);
+            var btn_show_hide=document.createElement('button');
+            btn_show_hide.setAttribute('class','show_hide');
+            btn_show_hide.setAttribute('onclick','showToDisplay($(this).parent().parent().parent().attr("id"))');
+            btn_show_hide.innerHTML="show";
+            div_col_md_6_2.append(btn_show_hide);
+            hide_disp.push(feat_hide[i]);
+
+
+        }
+            crit_order_dict[active_co]=shw_disp;
+            crit_hide_dict[active_co]=hide_disp;
+            console.log("crit_order_dict->>",crit_order_dict);
+            console.log("crit_hide_dict->>",crit_hide_dict);
+
+            $('ul').sortable({
+                axis: 'y',
+                stop: function (event, ui) {
+                console.log("thus",$(this))
+                var data = $(this).sortable('serialize').split("&");
+                var arr=[];
+                console.log("data",data)
+                for (var key in data)
+                {   
+                    console.log("key",key)
+                    arr.push(data[key].split("=")[0].replace('[]',''));
+
+                }
+                console.log("arr",arr)
+                                    console.log("crit_order_dict-->",crit_order_dict)
+
+                                    console.log("jason string",JSON.stringify(arr))
+
+                                    $('span').text(data);
+                                    if (crit_order_dict[active_co]===undefined){
+                                        crit_order_dict[active_co]=[]
+                                    }
+                                    else{
+                                    crit_order_dict[active_co]=arr;
+                                    crit_hide_dict[active_co]=hide_disp;
+
+                                    console.log("crit_order_dict-",crit_order_dict)
+                                    console.log("crit_hide_dict-",crit_hide_dict);
+
+                                    }
+                                            //   $.ajax({
+                                          
+                                            //         type: 'POST',
+                                            //         dataType: "json",
+                                            //         'data': {
+                                            //         'd': JSON.stringify(arr),
+        
+                                            //         'csrfmiddlewaretoken': '{{ csrf_token }}',
+                                            //       },
+                                                  
+                                            //         url: "{% url 'updatefeatureposition' %}",
+                                            //         success: function(response){
+                                            //         console.log("success");
+                                            //         }
+                                            //     });
+                                              }
+                                          });
+        }
+        
+        // $.ajax({
+        //        type: 'POST',
+        //        dataType: "json",
+        //        'data': {
+        //        'set': set_num,
+        //        'csrfmiddlewaretoken': '{{ csrf_token }}',
+        //         },
+        //        url: "{% url 'gf' %}",
+        //        success: function(response){
+        //            console.log("success");
+        //        }
+        //    });
+              // location.reload().delay(800);
+         
+        
+        function hideFromDisplay(id) {
+           var item = $('#'+id);
+           console.log(id);
+           var temp=document.getElementById(id);
+          //  var temp = item;
+          
+           item.find(".show_hide").remove();
+          //  var btn = $('<button>Show</button>').attr('width','200px').addClass('show_hide').attr('onclick', '(showToDisplay('+id+'))');
+          // var btn = $('<button>Show</button>').attr('width','200px').addClass('show_hide').attr('onclick', '(showToDisplay($(this).parent().attr("id")))');
+          var btn=document.createElement('button');
+          btn.setAttribute('class','show_hide');
+          btn.setAttribute('onclick','showToDisplay($(this).parent().parent().parent().attr("id"))');
+          btn.innerHTML="show"
+          var data = id.split("_");  
+          console.log("data",data[0])
+          var arr=[];
+          var elem="";
+          for (var key in data)
+                    {   
+                        console.log("key",key);
+                        arr.push(data[key]);
+                        elem=data[key];
+                        break;
+                    }
+            console.log("temp2",temp )
+        
+           
+            item.remove();
+          
+            console.log("jason st",JSON.stringify(arr));
+            console.log("elem",elem);
+
+            console.log("active_co",active_co)
+            var index = crit_order_dict[active_co].indexOf(elem);
+            console.log("INDEX",index)
+                     if (index > -1) {
+                       crit_order_dict[active_co].splice(index, 1);
+                            }
+            console.log("crit_order_dict<<<<",crit_order_dict)
+            crit_hide_dict[active_co].push(elem);
+            console.log("crit_hide_dict<<<",crit_hide_dict)
+            var mylist=document.getElementById('myList');
+              
+              while (temp.firstChild) {
+               temp.removeChild(temp.firstChild);
+            }
+              console.log("lastchild",temp);
+              mylist.append(temp);
+              var div_row=document.createElement('div');
+              div_row.setAttribute('class','row');
+              temp.append(div_row);
+              var div_col_md_6_1=document.createElement('div');
+              div_col_md_6_1.setAttribute('class','col-md-6');
+              div_row.append(div_col_md_6_1);
+              var btn_btn_primary=document.createElement('btn');
+              btn_btn_primary.setAttribute('class','btn btn-primary');
+              btn_btn_primary.innerHTML=data[0];
+              div_col_md_6_1.append(btn_btn_primary);
+              var div_col_md_6_2=document.createElement('div');
+              div_col_md_6_2.setAttribute('class','col-md-6');
+              div_row.append(div_col_md_6_2);
+              div_col_md_6_2.append(btn);
+              // $("#myList").append(temp);
+        
+        
+          
+        //    $.ajax({
+        //        type: 'POST',
+        //        dataType: "json",
+        //        'data': {
+        //        'd': JSON.stringify(arr),
+        //        'csrfmiddlewaretoken': '{{ csrf_token }}',
+        //       },
+        //        url: "{% url 'hidefeature' %}",
+        //        success: function(response){
+        //        console.log("success");
+        //        }
+        //    });
+         }
+        
+        function showToDisplay(id) {
+            console.log("showToDisplayid",id)
+            var item = $("#"+id);
+            //var item=document.getElementById(id)
+            // var item = $(id);
+             var temp = document.getElementById(id);
+                item.find(".show_hide").remove();
+                //  var btn = $('<button>Hide</button>').attr('width', '200px').addClass('show_hide').attr('onclick', '(hideFromDisplay($(this).parent().attr("id")))');
+                var btn=document.createElement('button');btn.setAttribute('class','show_hide');btn.setAttribute('onclick',"hideFromDisplay($(this).parent().parent().parent().attr('id'))");
+                btn.innerHTML="Hide";
+                var data =item.attr('id');
+                console.log("showToDisplay_data",data)
+                var d=data.split("_");
+                var arr=[]; 
+                var elem='';
+                for (var key in d)
+                  {   
+                          console.log("key",key);
+                          arr.push(d[key]);
+                          elem=d[key];
+                          break;
+                }
+                item.remove();
+        
+                // temp.append(btn);
+
+            console.log("active_co",active_co)
+            var index = crit_hide_dict[active_co].indexOf(elem);
+            console.log("INDEX",index)
+                     if (index > -1) {
+                       crit_hide_dict[active_co].splice(index, 1);
+                            }
+            
+            crit_order_dict[active_co].push(elem);
+            console.log("crit_order_dict>>>>",crit_order_dict);
+            console.log("crit_hide_dict>>>>",crit_hide_dict);
+                
+                var ul_sortable=document.getElementById('sortable');
+                ul_sortable.append(temp);
+                while (temp.firstChild) {
+                temp.removeChild(temp.firstChild);
+                }
+        
+                var div_row=document.createElement('div');
+                div_row.setAttribute("class",'row');
+                temp.append(div_row);    
+                var div_col_md_6_1=document.createElement('div');
+                div_col_md_6_1.setAttribute("class","col-md-6");
+                div_row.append(div_col_md_6_1);
+                var btn_btn_primary=document.createElement('button');
+                btn_btn_primary.setAttribute("class","btn btn-primary");
+                btn_btn_primary.innerHTML=d[0];
+                div_col_md_6_1.append(btn_btn_primary);
+                var div_col_md_6_2=document.createElement('div');
+                div_col_md_6_2.setAttribute("class","col-md-6");
+                div_row.append(div_col_md_6_2);
+                div_col_md_6_2.appendChild(btn);
+               // console.log(arr);
+               // console.log("jason st",JSON.stringify(arr));
+                // $("#sortable").append(temp);
+                
+        
+        
+        
+        
+                // $.ajax({
+                // type: 'POST',
+                // dataType: "json",
+                // 'data': {
+                // 'd': JSON.stringify(arr),
+                // 'csrfmiddlewaretoken': '{{ csrf_token }}',
+                // },
+                // url: "{% url 'showfeature' %}",
+                // success: function(response){
+                // console.log("success");
+                //  }
+                // });
+         }
+        //  function myFun(id) {
+                 
+        //         var item = $('#'+id);
+        //         var temp = item;
+                 
+        //         item.find(".show_hide").remove();
+        //         var btn = $('<button>Hide</button>').attr('width', '200px').addClass('show_hide').attr('onclick', '(hideFromDisplay($(this).parent().attr("id")))');
+        //         var data = id.split("_");
+        //         var arr=[];
+        //         for (var key in data)
+        //           {   
+        //               console.log("key",key);
+        //               arr.push(data[key]);
+        //               break;
+        //           }
+        //         temp.append(btn);
+        //         item.remove();
+        //         console.log(arr);
+        //         console.log("jason st",JSON.stringify(arr));
+        //         $("#sortable").append(temp);
+        //         $.ajax({
+        //           type: 'POST',
+        //           dataType: "json",
+        //           'data': {
+        //           'd': JSON.stringify(arr),
+        //           'csrfmiddlewaretoken': '{{ csrf_token }}',
+        //           },
+        //           url: "{% url 'showfeature' %}",
+        //           success: function(response){
+        //           console.log("success");
+        //           }
+        //        });
+        //       }
+             
+              //  $(document).ready(function () {
+                
+              //   role_data=$('#roles option:selected').val()
+              //   console.log(role_data ); 
+              //   JSON.stringify(role_data)
+              //   //    $.ajax({
+                //     type: 'POST',
+                //     dataType: "json",
+                //     'data': {
+                //     'd': JSON.stringify(role_data),
+                //     'csrfmiddlewaretoken': '{{ csrf_token }}',
+                //     },
+                //     url: "{% url 'gf' %}",
+                //     success: function(response){
+                        
+                //     console.log("success");
+                //     }
+                // });
+              
+        //        $('#sortable').sortable({
+        //         axis: 'y',
+        //         stop: function (event, ui) {
+        //           console.log("thus",$(this))
+        // 	        var data = $(this).sortable('serialize').split("&");
+        //             var arr=[];
+        //             console.log("data",data)
+        //             for (var key in data)
+        //             {   
+        //                 console.log("key",key)
+        //                 arr.push(data[key].split("=")[0].replace('[]',''));
+        
+        //             }
+        //              console.log("arr",arr)
+        //              console.log("jason string",JSON.stringify(arr))
+        //             $('span').text(data);
+        //            $.ajax({
+               
+        //                 type: 'POST',
+        //                 dataType: "json",
+        //                 'data': {
+        //                 'd': JSON.stringify(arr),
+        
+        //                 'csrfmiddlewaretoken': '{{ csrf_token }}',
+        //                },
+                       
+        //                 url: "{% url 'updatefeatureposition' %}",
+        //                 success: function(response){
+        //                 console.log("success");
+        //                     }
+        //             });
+        // 	}
+        //     });
+        //  });
+        
+        
+</script>
 {%endblock%}

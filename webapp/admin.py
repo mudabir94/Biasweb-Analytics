@@ -37,7 +37,7 @@ class templateRoleAdmin(admin.ModelAdmin):
     'created_at','update_at',)    
 
 class ExpCriteriaOrderAdmin(admin.ModelAdmin):
-    list_display=('id','exp','cOrder_id','pCriteria','position')
+    list_display=('id','exp','cOrder_id','pCriteria','position','sh_hd')
 class ExperimentAdmin(admin.ModelAdmin):
     list_display= ('id','custom_exp_id')
 #----------------------------------------------------------------------------

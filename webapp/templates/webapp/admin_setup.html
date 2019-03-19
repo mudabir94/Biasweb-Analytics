@@ -93,15 +93,15 @@ $(document).ready(function () {
                                 success: function(data){
                                   var inputdata = data['numofsets']
                                   console.log(inputdata)
- var select = $('<select name="options" id="options"></select>');
- $.each(inputdata, function(index, value) {
-   var option = $('<option></option>');
-   console.log("value",value)
-   option.attr('value', value);
-   option.text(value);
-   select.append(option);
- });
- $('#sel').empty().append(select); 
+                                  var select = $('<select name="options" id="options"></select>');
+                                  $.each(inputdata, function(index, value) {
+                                    var option = $('<option></option>');
+                                    console.log("value",value)
+                                    option.attr('value', value);
+                                    option.text(value);
+                                    select.append(option);
+                                  });
+                                  $('#sel').empty().append(select); 
                                   
                                     var feat_dsp=data['feature_to_display'];
                                     var disp_feat_div=document.getElementById('display_feature_div');
@@ -606,5 +606,5 @@ function showToDisplay(id) {
 //  });
 
 
-     </script>
+</script>
 {%endblock%}
