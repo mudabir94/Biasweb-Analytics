@@ -59,34 +59,9 @@ filter_flag=None
 sizeofmob=0 # global variable assigned in filter class.
 filt_mobiles=None
 #-------------------------------------------------------------------------------------------------
-# IT IS NOT USED ANYWARE
-def indexAhp(request):
-    return render (request,'webapp/index-ahp.html')
-# priceRangeRetrieve
-def priceRangeRetrieve(request):
-    if request.method=="POST":
-        if request.is_ajax:
-            price_range_values = request.POST.get('price_range_values')
-            price_range_values = json.loads(price_range_values)
-            print('price_range_values',price_range_values[0])
-            print('price_range_values1',price_range_values[1])
 
-            # mobiles_retrieved=samsung_phone.objects.filter(price_in_pkr__range=(price_range_values[0], price_range_values[1]))
-            mobiles_retrieved=mobilephones.objects.filter(price_in_pkr__range=(price_range_values[0], price_range_values[1]))
-            print(mobiles_retrieved) 
-            mobiles_retrieved = list(mobiles_retrieved.values())
-            
-            
-            # for att in dir(mobiles_retrieved):
-            #     print (att, getattr(mobiles_retrieved,att))
-            data={
-                # 'samsung_phones': mobiles_retrieved
-                'mobilephones':mobiles_retrieved
-            }
-            return JsonResponse(data)
             
 @method_decorator(login_required, name='dispatch')
-
 class Home(TemplateView):
     template_name='webapp/home.html'
     def get(self,request):
@@ -122,8 +97,8 @@ class Home(TemplateView):
         elif role=='Subject':
             # all other conditions of subjects will be done here. 
             
-            # return render(request,'webapp/2by2comparemobilespecs.html')
-            return redirect('/filtered_mobile_view')
+            return render(request,'webapp/2by2comparemobilespecs.html')
+            # return redirect('/filtered_mobile_view')
 
 
         #*****************************************************
@@ -133,6 +108,32 @@ class Home(TemplateView):
     def post(self,request):
 
         return render(request,self.template_name)
+
+# IT IS NOT USED ANYWARE
+def indexAhp(request):
+    return render (request,'webapp/index-ahp.html')
+# priceRangeRetrieve
+def priceRangeRetrieve(request):
+    if request.method=="POST":
+        if request.is_ajax:
+            price_range_values = request.POST.get('price_range_values')
+            price_range_values = json.loads(price_range_values)
+            print('price_range_values',price_range_values[0])
+            print('price_range_values1',price_range_values[1])
+
+            # mobiles_retrieved=samsung_phone.objects.filter(price_in_pkr__range=(price_range_values[0], price_range_values[1]))
+            mobiles_retrieved=mobilephones.objects.filter(price_in_pkr__range=(price_range_values[0], price_range_values[1]))
+            print(mobiles_retrieved) 
+            mobiles_retrieved = list(mobiles_retrieved.values())
+            
+            
+            # for att in dir(mobiles_retrieved):
+            #     print (att, getattr(mobiles_retrieved,att))
+            data={
+                # 'samsung_phones': mobiles_retrieved
+                'mobilephones':mobiles_retrieved
+            }
+            return JsonResponse(data)
 
 def showScore(request):
     mobileid=0
@@ -366,7 +367,10 @@ def compareMobileSpecs(request):
             #@TODO: Create test for feature level if c.pruned. Then add other to the criteria list. 
             # for m in mobiles:
             print('user id',request.user.id)
-            test_obj=selectedAdminPhones.objects.filter(user=request.user.id)
+            exp_obj=Experiment.objects.get(custom_exp_id="ses-007-0268")
+
+        
+            test_obj=selectedAdminPhones.objects.filter(user=request.user.id,exp=exp_obj,pset_id="P.1")
             print('test_obj')
             test_list=[]
             for tb in test_obj:
@@ -666,6 +670,9 @@ class orderCriteria_Setup(TemplateView):
                             
                 data={
                 'success':'success',
+                'exp_id':existExpId,
+                'custom_exp_id':expCont.exp.custom_exp_id,
+                'block_list':block_list
                 }
                 return JsonResponse(data)
               
@@ -1833,13 +1840,120 @@ def SavePhoneSets(request):
                 print(block_list)
                 p_levList = list()
                 print("PHONESET DICT",phoneset_dic)
-                exp_obj=Experiment.objects.get(custom_exp_id="ses-007-0244")
+                # exp_obj=Experiment.objects.get(custom_exp_id="ses-007-0266")
+                exp_obj=Experiment.objects.get(custom_exp_id=expCont.exp.custom_exp_id)
+                # Updation check. 
                 if (selectedAdminPhones.objects.filter(exp=exp_obj).exists()):
-                    sap_obj=selectedAdminPhones.objects.filter(exp=exp_obj)
-                    # for key,s in phoneset_dic.items():
-                    #     print("sap_obj",sap_obj)
-                    #     print(s)
-                    #     for count,i in enumerate(s):
+                    sap_objs=selectedAdminPhones.objects.filter(exp=exp_obj)
+                    pset_list=set(sap_objs.values_list('pset_id', flat=True))
+                    pset_list=list(pset_list)
+                    # pset_list=['P.1','P.2','P.3']
+
+                    print("pset_list",pset_list)
+                    keylist=list(phoneset_dic.keys())
+                    # keylist=['P.1','P.2']
+                    print("keylist",keylist)
+                    if (len(pset_list)>len(keylist)):
+                        diff_list=list(set(pset_list) - set(keylist))
+                        obj=selectedAdminPhones.objects.filter(exp=exp_obj,pset_id__in=diff_list).delete()
+                        print("object",obj)
+                        print('Difflist for db deletion',diff_list)
+                    elif (len(pset_list)<len(keylist)):
+                        diff_list=list(set(keylist) - set(pset_list))
+                        print('Difflist for db updation',diff_list)
+                        
+                        for i in diff_list:
+                            p_set = mobilephones.objects.filter(id__in=phoneset_dic[i])
+
+                            for count, m in enumerate(phoneset_dic[i]):
+                                expPSets = selectedAdminPhones()
+                                expPSets.exp = expCont.exp
+                                expPSets.pset_id= i
+                                expPSets.mob = p_set.get(id=m)
+                                expPSets.p_order = count
+                                expPSets.save()
+                            
+
+                        
+                    dum_dict={}
+                    for sap in sap_objs:
+                        
+                    # after checking if phones for exp under construction exsists
+                    # we have to get each phone obj check its pset_id and phone name/id and update its position.
+                        
+                        for key,s in phoneset_dic.items():
+                            sp=selectedAdminPhones.objects.filter(exp=exp_obj,pset_id=key)
+                            sp_list=list(sp.values_list('mob',flat=True))
+                            print("sp",sp.count())
+                            splen=sp.count()
+                            print("SAP",sap.pset_id)
+                            print("mob",sap.mob.id)
+                            print('key',key)
+                            print("s",s)
+                            print("splen",splen)
+                           
+
+                            if ((sap.mob.id in s) and sap.pset_id==key ):
+                                
+                                print("s.index(sap.mob.id)",s.index(sap.mob.id))
+                                sap.p_order=s.index(sap.mob.id)
+                                sap.save()
+                                if key in dum_dict.keys(): 
+                                    print("sap.mob.id",sap.mob.id)
+                                    print("key",key)
+                                    dum_dict[key].append(sap.mob.id)
+                                    print("DUM_DUCT",dum_dict)
+                                   
+                                else:
+                                    print("SHould Run only once for keys... ")
+                                    dum_dict[key]=[]
+                                    dum_dict[key].append(sap.mob.id)
+                                    
+
+                            elif (sap.mob.id not in s) and (sap.pset_id==key) and (splen>len(s)):
+                                print("length Greater delete")
+                                obj=selectedAdminPhones.objects.filter(exp=exp_obj,pset_id=key,mob=sap.mob.id).delete()
+                            if key in dum_dict.keys(): 
+                                if ((len(dum_dict[key])==splen) and (splen<len(s))  and (sap.pset_id==key)):
+                                    temp_list=[]
+                                    temp_list=dum_dict[key]
+
+                                    diff_list=set(s)-set(temp_list)
+                                    print("UP_DIFF",diff_list)
+                                    for i in diff_list:
+                                        p = mobilephones.objects.get(id=i)
+                                        pos=s.index(i)
+
+                                        expPSets = selectedAdminPhones()
+                                        expPSets.exp = expCont.exp
+                                        expPSets.pset_id= key
+                                        expPSets.mob = p
+                                        expPSets.p_order = pos
+                                        expPSets.save()
+                                        # print("FOR Updation")
+                                        # print("KEY")
+                                        # expPSets=selectedAdminPhones()
+                                        # expPSets.exp = expCont.exp
+                                        # expPSets.pset_id= key
+                                        # expPSets.mob = mobilephones.objects.get(id=sap.mob.id)
+                                        # expPSets.p_order = s.index(sap.mob.id)
+                                        # expPSets.save()
+                            print("dum_dict",dum_dict)
+
+                            print("----------------------------------------------")
+                    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+                            
+                    
+                            
+                        
+                            
+
+                                    
+                        
+                            
+                            
+                      
+
                 else:
                     for key,s in phoneset_dic.items():
                         print(key,":",s)

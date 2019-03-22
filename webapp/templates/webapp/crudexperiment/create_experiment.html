@@ -563,7 +563,7 @@ function FuncA(){
                                     input_checkb.setAttribute('onchange','toggleCheckbox(this)')
                                     var img=document.createElement('img');
                                     img.setAttribute('class','img-responsive')
-                                    console.log("/static/"+json_data_mobiles[i]['imagepath1'])
+                                    // console.log("/static/"+json_data_mobiles[i]['imagepath1'])
                                     img.src="/static/"+json_data_mobiles[i]['imagepath1'];
 
                                     margin_b_20.append(input_checkb);
@@ -666,7 +666,7 @@ function FuncB(){
                                     input_checkb.setAttribute('onchange','toggleCheckbox(this)')
                                     var img=document.createElement('img');
                                     img.setAttribute('class','img-responsive')
-                                    console.log("/static/"+json_data_mobiles[i]['imagepath1'])
+                                    // console.log("/static/"+json_data_mobiles[i]['imagepath1'])
                                     img.src="/static/"+json_data_mobiles[i]['imagepath1'];
 
                                     margin_b_20.append(input_checkb);
@@ -776,7 +776,7 @@ if(exp_id===""){
          localStorage.removeItem("blockList");
          localStorage.removeItem("checkbox_id_dict");
          localStorage.removeItem("feat_dict");
-         $('#feat_lvl_div').hide();
+        //  $('#feat_lvl_div').hide();
          exp_id="";
         //  ajax call to remove pickle data
          $.ajax({
@@ -796,9 +796,10 @@ if(exp_id===""){
 
      }
      else{
+         
         // populateExpPhones();
         showExpWIP();
-
+        // TO BE IMPLEMENTED
         // Check through an ajax call if anything related to dict,blocklist etc
         // is stored in the database if data is not null then save the 
         // retrieved data into dict,checkbox_id_dict
@@ -808,6 +809,8 @@ if(exp_id===""){
         checkbox_id_dict=JSON.parse(window.localStorage.getItem("checkbox_id_dict")); 
         var blockList = JSON.parse(window.localStorage.getItem("blockList")); 
 
+        console.log("DICT",dict)
+        console.log("checkbox_id_dict",checkbox_id_dict)
 
         if ( blockList===null){
                 alert('block list empty');
@@ -818,36 +821,22 @@ if(exp_id===""){
         }
 
         if (dict==null ){
-            dict={};
-
-        //     dict['I']=['I.1'];
-        //     dict['R']=['R.1'];
-        //     dict['W']=['W.direct'];
-        //     dict['A']=['A.all','A.user']
-        //     dict['C']=['C.full']
+            dict={}
         }
         else {
             displayfeaturelevelTable();
         }
-        if (checkbox_id_dict==null){
-            checkbox_id_dict={};
-
-            // checkbox_id_dict[1]=['1-innercheckbox-1'];
-            // checkbox_id_dict[2]=['1-innercheckbox-2'];
-            // checkbox_id_dict[3]=['0-innercheckbox-3'];
-            // checkbox_id_dict[4]=['0-innercheckbox-4','3-innercheckbox-4'];
-            // checkbox_id_dict[5]=['0-innercheckbox-5'];
-        }
-
-        console.log('dict',dict);console.log('checkbox_id_dict',checkbox_id_dict);
-
         // Filling outer checkboxes when the page is loaded. 
             // LOGIC TO BE IMPLEMENTED. 
             // First Check if checbox_id_dict is empty if not then run following, else do nothing. 
             // Then Run a SEPERATE OUTERCHECKBOX function that generates checkboxes exactly like the original one, but doesnt store data in dict.
             // Which will run a seperate showinnerbox function to populate the innerchecboxes. 
       
-        if (checkbox_id_dict!={}){
+        if (checkbox_id_dict==null){
+            checkbox_id_dict={};
+        }
+
+        else{
              showcheckboxes_stored();
         }
 
@@ -912,7 +901,7 @@ success: function(data){
 console.log("success");
 var outerckbox = $('#'+outercheckid);
 console.log('outercheckbox obj',outerckbox);
-        // For this Function IF CONDITION SHOULD ALWAYS BE TRUE.. 
+        // For this Function IF CONDITION SHOULD ALWAYS BE TRUE... 
         if (outerckbox.is(':checked')) {
             // alert('You Checked');
             console.log('outercheckval',outercheckval);
@@ -1208,6 +1197,7 @@ function showImportSubdiv(){
 
 }
 function showFeatLvlDiv(){
+    $('#order_criteria_div').hide();
     $('#importSubdiv').hide();
     $('#block_assign_row_div').hide();
     $('#dataDiv').hide();
@@ -1223,8 +1213,6 @@ function showFeatLvlDiv(){
     var current=$(".active");
     current.prop('class',current.attr('class').replace('active',""));
     $('#ftlvl').prop('class', 'custom_nav_btn active');
-
-
 }
 
 function displayfeaturelevelTable(){
@@ -1337,8 +1325,8 @@ function HideALL(){
 
 
 
-    var current=$(".active");
-    current.prop('class',current.attr('class').replace('active',""));
+    // var current=$(".active");
+    // current.prop('class',current.attr('class').replace('active',""));
 }
 function showBlockManagement(){
     // hiding all unneccesary rows
@@ -2501,8 +2489,6 @@ var  setlist=[];
 function outerCheckBox(outercheckval,outercheckid) {
 console.log("checkbox");
 console.log(outercheckval);
-
-
     // Ajax call is made to send the outercheckboxid to the controller. 
     // The controller will fetch the sub-details of that feature from model and return back in
     // in success function. 
@@ -2522,7 +2508,7 @@ console.log(outercheckval);
     console.log("success");
     var outerckbox = $('#'+outercheckid);
     console.log('outercheckbox obj',outerckbox);
-    console.log('dic',dict);
+    console.log('dict',dict);
    
 
     // checking if the user has checked or not. 
@@ -2533,7 +2519,7 @@ if (outerckbox.is(':checked')) {
         console.log('data retrieved',data);
     if (outercheckval==="P"){
         
-        $('#phsetnum_div').empty();
+                $('#phsetnum_div').empty();
                 $('#phsetnum_div').dialog({ 
                 title: "Phone Set",
                 autoOpen: false,
@@ -2556,7 +2542,10 @@ if (outerckbox.is(':checked')) {
                         setlist.push(str);
                     }
                     console.log("SetList",setlist);
-                    dict[outercheckval]=setlist
+                    if (dict[outercheckval]===undefined){
+                        dict[outercheckval]=setlist
+                    }
+                    
 
                     $('#'+outercheckid+'-innercheckboxdiv').append(dict[outercheckval]);
                     $('#'+outercheckid+'-innercheckboxdiv').show();
@@ -2605,6 +2594,9 @@ if (outerckbox.is(':checked')) {
             
     else if(outercheckval==="CO"){
         var numofsets=0;
+        $('order_criteria_div').empty();
+
+
         $('#ordersetnum_div').empty();
         $('#ordersetnum_div').dialog({ 
         title: "Order Criteria",
@@ -2632,8 +2624,10 @@ if (outerckbox.is(':checked')) {
             orderCriteriaHtmlSetup(outercheckval,setlist);
             $('#'+outercheckid+'-innercheckboxdiv').append(dict[outercheckval]);
             $('#'+outercheckid+'-innercheckboxdiv').show();
-
+            
             updateFeatureLvls();
+         
+            
         }
     
         // Uncommenting the following line would hide the text,
@@ -2696,18 +2690,25 @@ if (outerckbox.is(':checked')) {
         // alert('You Un-Checked it');
         // For now its purpose is simply to hide the innercheckdivs.  
         hideInnerCheckBoxDivs(outercheckid);
-        console.log(outercheckval);
+        console.log("outercheckval",outercheckval);
+        console.log("dict",dict)
         dict[outercheckval]=null;
         if (dict[outercheckval]==null  ){
             delete dict[outercheckval];
-            console.log('in else condition');  
         }
+        console.log("phoneset_dic--",phoneset_dic)
+        // empty phoneset_dic 
+        phoneset_dic={}
+        console.log("phoneset_dic",phoneset_dic)
+
+        console.log("dict",dict)
+
+
         var get_dict=JSON.parse(window.localStorage.getItem("feat_dict")); 
         get_dict=dict;
         var set_dict=get_dict;
         window.localStorage.setItem("feat_dict", JSON.stringify(set_dict));
 
-        console.log(dict)
         updateFeatureLvls();
     }
   }});  
@@ -2769,6 +2770,7 @@ if ($(innercheckboxid).prop('checked') == true){
             var get_chkbx_id_dict=JSON.parse(window.localStorage.getItem("checkbox_id_dict")); 
             var get_chkbx_id_dict=checkbox_id_dict;
             var set_chkbx_id_dict=get_chkbx_id_dict;
+            console.log("set_chkbx_id_dict",set_chkbx_id_dict);
             window.localStorage.setItem("checkbox_id_dict", JSON.stringify(set_chkbx_id_dict));
 
 
@@ -2931,6 +2933,12 @@ function sendFeatureLevels(){
 //     alert("Please Choose Criteria")
 //     return;
 // }
+if (jQuery.isEmptyObject(dict))
+{
+    alert("Please enable at least one Feature. Thank you!!")
+    return;
+
+}
 $.ajax({
 type: 'POST',
 dataType: "json",
@@ -3252,13 +3260,13 @@ function sendFilePath(id){
                                     col_md_4_post.append(margin_b_20);
                                     var input_checkb=document.createElement('input');
                                     input_checkb.type="checkbox";
-                                    if (dict_batch[active_button]===undefined ){
-                                        dict_batch[active_button]=[];
+                                    if (phoneset_dic[active_button]===undefined ){
+                                        phoneset_dic[active_button]=[];
                                     }
                                     else{
                                         //  a check to check if the retrieved mob id matches the id in the list 
                                         
-                                        if (dict_batch[active_button].includes(json_data_mobiles[i]['id'])){
+                                        if (phoneset_dic[active_button].includes(json_data_mobiles[i]['id'])){
                                             input_checkb.checked=true;
                                         }
 
@@ -3269,7 +3277,7 @@ function sendFilePath(id){
                                     input_checkb.setAttribute('onchange','toggleCheckbox(this)')
                                     var img=document.createElement('img');
                                     img.setAttribute('class','img-responsive')
-                                    console.log("/static/"+json_data_mobiles[i]['imagepath1'])
+                                    // console.log("/static/"+json_data_mobiles[i]['imagepath1'])
                                     img.src="/static/"+json_data_mobiles[i]['imagepath1'];
 
                                     margin_b_20.append(input_checkb);
@@ -3365,13 +3373,13 @@ function sendFilePath(id){
 
     function NextStep(element){
         // send all mobile id to server and request for there details. 
-        console.log("dict_batch-->",dict_batch[active_button])
+        console.log("phoneset_dic-->",phoneset_dic[active_button])
         $.ajax({
                 // Ajax call to get specific phones...  
                 url: "{% url 'get_specificmobile_data' %}",
                 type:'POST',
                 'data': {
-                'specsmobdata':JSON.stringify(dict_batch),
+                'specsmobdata':JSON.stringify(phoneset_dic),
                 'csrfmiddlewaretoken': '{{ csrf_token }}',
                 },
                 dataType: "json",
@@ -3423,16 +3431,16 @@ function sendFilePath(id){
                                     col_md_4_post.append(margin_b_20);
                                     var input_checkb=document.createElement('input');
                                     input_checkb.type="checkbox";
-                                    console.log("dict_batch[active_button]",dict_batch[active_button])
-                                    if (dict_batch[active_button]===undefined){
-                                        dict_batch[active_button]=[]
+                                    console.log("phoneset_dic[active_button]",phoneset_dic[active_button])
+                                    if (phoneset_dic[active_button]===undefined){
+                                        phoneset_dic[active_button]=[]
                                     }
                                     else{
                                         //  a check to check if the retrieved mob id matches the id in the list 
-                                        // console.log("list",dict_batch[active_button])
-                                        // console.log("list type",typeof(dict_batch[active_button]))
+                                        // console.log("list",phoneset_dic[active_button])
+                                        // console.log("list type",typeof(phoneset_dic[active_button]))
 
-                                        if (dict_batch[active_button].includes(json_data_mobiles[i]['id'])){
+                                        if (phoneset_dic[active_button].includes(json_data_mobiles[i]['id'])){
                                             input_checkb.checked=true;
                                         }
 
@@ -3444,7 +3452,7 @@ function sendFilePath(id){
                                     input_checkb.setAttribute('onchange','toggleCheckbox(this)')
                                     var img=document.createElement('img');
                                     img.setAttribute('class','img-responsive')
-                                    console.log("/static/"+json_data_mobiles[i]['imagepath1'])
+                                    // console.log("/static/"+json_data_mobiles[i]['imagepath1'])
                                     img.src="/static/"+json_data_mobiles[i]['imagepath1'];
 
                                     margin_b_20.append(input_checkb);
@@ -3492,8 +3500,8 @@ function sendFilePath(id){
                                         return parseInt(x, 10); 
                                         });
                                         console.log("data-->",result)
-                                        dict_batch[active_button]=result
-                                        console.log("dict_batch-->",dict_batch);
+                                        phoneset_dic[active_button]=result
+                                        console.log("phoneset_dic-->",phoneset_dic);
                                         },
                                   
                                 });
@@ -3519,13 +3527,13 @@ function sendFilePath(id){
         
     }
     function SavePhoneSet(element){
-        console.log("DICT_BATCH",dict_batch)
+        console.log("phoneset_dic",phoneset_dic)
         $.ajax({
                 // Ajax call to savephoneset  
                 url: "{% url 'savephonesets' %}",
                 type:'POST',
                 'data': {
-                'phoneset_dic':JSON.stringify(dict_batch),
+                'phoneset_dic':JSON.stringify(phoneset_dic),
                 'featlevels_dic': JSON.stringify(dict,undefined,''),
                 'csrfmiddlewaretoken': '{{ csrf_token }}',
                 },
@@ -3542,6 +3550,7 @@ function sendFilePath(id){
                         display_blocktable(table_blocks);
                         window.localStorage.setItem("blockList", JSON.stringify(blockList));
                     }
+                    $('#ftlvl').prop('class', 'custom_nav_btn active');
                     showFeatLvlDiv();
                 }
                 
@@ -3577,13 +3586,13 @@ function sendFilePath(id){
             $('#mobile_catalog_div').empty();
             
             var json_data_mobiles=specmobphones[active_button]
-            console.log("dict_batch---",dict_batch[active_button])
-            if (dict_batch[active_button]!==undefined){
-                        if (dict_batch[active_button].length===specmobphones[active_button].length){
-                            var len=dict_batch[active_button].length;
+            console.log("phoneset_dic---",phoneset_dic[active_button])
+            if (phoneset_dic[active_button]!==undefined){
+                        if (phoneset_dic[active_button].length===specmobphones[active_button].length){
+                            var len=phoneset_dic[active_button].length;
                             for (var i=0;i<len;i++){
                                 for (var j=0;j<len;j++){
-                                    if(specmobphones[active_button][j].id===dict_batch[active_button][i]){
+                                    if(specmobphones[active_button][j].id===phoneset_dic[active_button][i]){
                                             temp_list.push(specmobphones[active_button][j])
                                     }
                                 }
@@ -3624,13 +3633,13 @@ function sendFilePath(id){
                                     var input_checkb=document.createElement('input');
                                     input_checkb.type="checkbox";
                                  
-                                    if (dict_batch[active_button]===undefined ){
-                                        dict_batch[active_button]=[];
+                                    if (phoneset_dic[active_button]===undefined ){
+                                        phoneset_dic[active_button]=[];
                                     }
                                     else{
                                         //  a check to check if the retrieved mob id matches the id in the list 
                                         
-                                        if (dict_batch[active_button].includes(json_data_mobiles[i]['id'])){
+                                        if (phoneset_dic[active_button].includes(json_data_mobiles[i]['id'])){
                                             input_checkb.checked=true;
                                         }
 
@@ -3684,7 +3693,7 @@ function sendFilePath(id){
                                         var result = arr.map(function (x) { 
                                         return parseInt(x, 10); 
                                         });
-                                        dict_batch[active_button]=result;
+                                        phoneset_dic[active_button]=result;
                                         },
                                   
                                 });
@@ -3745,16 +3754,16 @@ function sendFilePath(id){
                                     col_md_4_post.append(margin_b_20);
                                     var input_checkb=document.createElement('input');
                                     input_checkb.type="checkbox";
-                                    console.log("dict_batch[active_button]",dict_batch[active_button])
-                                    if (dict_batch[active_button]===undefined){
-                                        dict_batch[active_button]=[]
+                                    console.log("phoneset_dic[active_button]",phoneset_dic[active_button])
+                                    if (phoneset_dic[active_button]===undefined){
+                                        phoneset_dic[active_button]=[]
                                     }
                                     else{
                                         //  a check to check if the retrieved mob id matches the id in the list 
-                                        // console.log("list",dict_batch[active_button])
-                                        // console.log("list type",typeof(dict_batch[active_button]))
+                                        // console.log("list",phoneset_dic[active_button])
+                                        // console.log("list type",typeof(phoneset_dic[active_button]))
 
-                                        if (dict_batch[active_button].includes(json_data_mobiles[i]['id'])){
+                                        if (phoneset_dic[active_button].includes(json_data_mobiles[i]['id'])){
                                             input_checkb.checked=true;
                                         }
 
@@ -3766,7 +3775,7 @@ function sendFilePath(id){
                                     input_checkb.setAttribute('onchange','toggleCheckbox(this)')
                                     var img=document.createElement('img');
                                     img.setAttribute('class','img-responsive')
-                                    console.log("/static/"+json_data_mobiles[i]['imagepath1'])
+                                    // console.log("/static/"+json_data_mobiles[i]['imagepath1'])
                                     img.src="/static/"+json_data_mobiles[i]['imagepath1'];
 
                                     margin_b_20.append(input_checkb);
@@ -3904,7 +3913,7 @@ function sendFilePath(id){
          div_row.append(div_col_md_6_2);
 
     }
-    var dict_batch={}
+    var phoneset_dic={}
     var lista=[]
     var listb=[]
     
@@ -3923,15 +3932,15 @@ function sendFilePath(id){
            // on checking the mobile simply save the data in a dictionary. 
             // setphonelist.push(mob_id)
             
-            console.log("dictxd",dict_batch)
-            if (active_button in  dict_batch){
-                dict_batch[active_button].push(mob_id)
+            console.log("dictxd",phoneset_dic)
+            if (active_button in  phoneset_dic){
+                phoneset_dic[active_button].push(mob_id)
             }else{
 
-                dict_batch[active_button]=[]
-                dict_batch[active_button].push(mob_id)
+                phoneset_dic[active_button]=[]
+                phoneset_dic[active_button].push(mob_id)
             }
-            console.log("dict_batch",dict_batch)
+            console.log("phoneset_dic",phoneset_dic)
             
             // $.ajax({
             // type: 'POST',
@@ -3961,30 +3970,30 @@ function sendFilePath(id){
          
         } 
         else { 
-            //on unchecking remove the mobile from the list of dict_batch
-            console.log("dictxd",dict_batch)
-            if (active_button in  dict_batch){
-                var list= dict_batch[active_button]
+            //on unchecking remove the mobile from the list of phoneset_dic
+            console.log("dictxd",phoneset_dic)
+            if (active_button in  phoneset_dic){
+                var list= phoneset_dic[active_button]
                 list.splice(list.indexOf(mob_id),1);
                 if (list.length===0){
-                    delete dict_batch[active_button];
-                    console.log("after removing dict_batch",dict_batch)
+                    delete phoneset_dic[active_button];
+                    console.log("after removing phoneset_dic",phoneset_dic)
                 }else{
-                dict_batch[active_button]=list;
-                console.log("after removing one element from list",dict_batch);
+                phoneset_dic[active_button]=list;
+                console.log("after removing one element from list",phoneset_dic);
                 }
             }    
             // if (active_button==='a'){
             //     lista.splice( lista.indexOf(mob_id), 1 );
             //     console.log("lista",lista);
-            //     dict_batch[active_button]=lista;
-            //     console.log("dict_batch",dict_batch);
+            //     phoneset_dic[active_button]=lista;
+            //     console.log("phoneset_dic",phoneset_dic);
             // }
             // else{
             //     listb.splice( listb.indexOf(mob_id), 1 );
             //     console.log("listb",listb);
-            //     dict_batch[active_button]=listb;
-            //     console.log("dict_batch",dict_batch);
+            //     phoneset_dic[active_button]=listb;
+            //     console.log("phoneset_dic",phoneset_dic);
             // }
 
             
@@ -4034,6 +4043,8 @@ function sendFilePath(id){
     var feat_to_hide=[];
     function orderCriteriaHtmlSetup(CO,CO_list){
         var colist=CO_list;
+        $("#order_criteria_div").empty();
+
         $("#order_criteria_div").show();
         // CREATING HTML <-->
         var order_criteria_div=document.getElementById("order_criteria_div");
@@ -4262,8 +4273,20 @@ function sendFilePath(id){
                                         },
                                         
                                         url: "{% url 'ordercriteriasetup' %}",
-                                        success: function(response){
-                                        console.log("success");
+                                        success: function(data){
+                                            if(exp_id===""){
+                                                    exp_id = data['exp_id'];
+                                                    custom_exp_id = data['custom_exp_id'];
+                                                    showExpWIP()
+                                                    }
+                                                    if (data['block_list']!=null){
+                                                        blockList = data['block_list']
+                                                        table_blocks=draw_block_table(blockList)
+                                                        display_blocktable(table_blocks);
+                                                        window.localStorage.setItem("blockList", JSON.stringify(blockList));
+                                                    }
+                                                    alert("HERE")
+                                                    showFeatLvlDiv();                                        
                                         }
                                     });
 

@@ -195,3 +195,13 @@ button.social-signin.google {
     height: 16px;
     background: red
 }
+.custom_side_rows {
+  background-color: lightskyblue; /* Green background */
+  border: 1px solid lightskyblue; /* Green border */
+  color: white; /* White text */
+  padding: 10px 24px; /* Some padding */
+  cursor: pointer; /* Pointer/hand icon */
+}
+.custom_side_rows:hover {
+  background-color: #94000f5e;
+}

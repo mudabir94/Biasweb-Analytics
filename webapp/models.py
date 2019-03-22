@@ -297,7 +297,7 @@ class selectedAdminPhones(models.Model):
     exp = models.ForeignKey(experiment, on_delete=models.CASCADE,null=True)
     block = models.ForeignKey(Block, on_delete=models.CASCADE, null=True)
     pset_id = models.CharField(max_length=10,null=True)
-    mob = models.ForeignKey(mobilephones, on_delete=models.CASCADE)
+    mob = models.ForeignKey(mobilephones, on_delete=models.CASCADE,null=True)
     p_order = models.IntegerField(null=True)
 
 class ExpCriteriaOrder(models.Model):
