@@ -81,7 +81,8 @@ class Home(TemplateView):
         if role=='Super_Admin':
             
             template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
-            # return render(request,'webapp/2by2comparemobilespecs.html')
+            # return redirect('/filtered_mobile_view')
+            return render(request,'webapp/2by2comparemobilespecs.html')
             # return render(request,template_sidebar)
         elif role=='Experiment_Admin':
             # roleobj=Role.objects.get(pk=role)
@@ -100,16 +101,11 @@ class Home(TemplateView):
             return render(request,'webapp/2by2comparemobilespecs.html')
             # return redirect('/filtered_mobile_view')
 
-
         #*****************************************************
-
-
         return render(request,self.template_name,{'role_id':userobj.role_id_id,'template_sidebar':template_sidebar})
     def post(self,request):
-
         return render(request,self.template_name)
-
-# IT IS NOT USED ANYWARE
+# IT IS NOT USED ANYWHERE
 def indexAhp(request):
     return render (request,'webapp/index-ahp.html')
 # priceRangeRetrieve
