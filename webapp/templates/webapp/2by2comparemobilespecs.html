@@ -5,7 +5,8 @@
 		<meta charset="utf-8" >
 		<meta name="viewport" content = "width=device-width, initial-scale=1.0">
         {% load staticfiles %}
-        
+        <link rel="stylesheet" href="{% static 'webapp/css/style.css' %}">
+
         <!-- Google API Script -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
           <!-- Bootstrap 4 js -->
@@ -837,6 +838,7 @@ function makeTable(allmobile,keynum){
         var submit_button=document.createElement("BUTTON");
         submit_button.setAttribute("class","btn btn-success");
         var text = document.createTextNode("Submit");
+        submit_button.setAttribute("onclick","SubmitAllData()")
         submit_button.appendChild(text);
         $(submit_button).appendTo('#nextbtn_div');
 
@@ -1293,7 +1295,9 @@ var slider = new rSlider({
  
 
 }
-
+function SubmitAllData(){
+    console.log("FINAL RESULT",final_result_dict)
+}
 </script>
 
 

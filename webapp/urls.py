@@ -45,6 +45,8 @@ urlpatterns = [
     url(r'^biastestfeatures/',views.BiasTestFeature.as_view(), name='select_biasfeature'),
     url(r'^manageshortlist/',views.ManageShortList.as_view(), name='manage_shortlisting'),
     url(r'^createexp/',views.createExperiment.as_view(), name='createexp'),
+    url(r'^editexp/',views.editExperiment.as_view(), name='editexp'),
+
     url(r'^subdetails/',views.subDetails, name='subdetails'),
     url(r'^uploadsamplefile/',views.uploadSampleFile, name='uploadsamplefile'),
     url(r'^postexp/',views.postExp, name='postexp'),
@@ -56,9 +58,18 @@ urlpatterns = [
     url(r'^get_saved_subject_data_expcont/',views.getSavedSubjectDataExpCont,  name='get_saved_subject_data_expcont'),
     url(r'^import_excel/',views.importExcel,  name='import_excel'),
     url(r'^saveexperiment/',views.saveExperiment,  name='saveexperiment'),
-    url(r'^datadefinded/',views.datadefined.as_view(), name='datadefined'),
     url(r'^store_selected_admin_phones/',views.storeSelectedAdminPhones, name='store_selected_admin_phones'),
+    url(r'^remove_selected_admin_phones/',views.removeSelectedAdminPhones, name='remove_selected_admin_phones'),
     url(r'^price_range_retrieve/',views.priceRangeRetrieve, name='price_range_retrieve'),
+    url(r'^get_selectedadmin_phones/',views.getSelectedAdminPhones, name='get_selectedadmin_phones'),
+    url(r'^get_mobile_data/',views.getMobiledata,name='get_mobile_data'),
+    url(r'^get_specificmobile_data/',views.getSpecificMobileData,name='get_specificmobile_data'),
+    url(r'^savephonesets/',views.SavePhoneSets,name='savephonesets'),
+    url(r'^ordercriteriasetup/' , views.orderCriteria_Setup.as_view() , name='ordercriteriasetup') ,
+
+
+
+    
 #---------------------------------------------------------------------------------------------   
     ## Pages that are not currently used. 
     #url(r'^blog/', views.blogview.as_view(), name='blog'), 

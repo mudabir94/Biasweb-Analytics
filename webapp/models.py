@@ -252,7 +252,7 @@ class sort_feature(models.Model):
     sh_hd=models.IntegerField(null=True)
     # roles=models.IntegerField(null=True)
     roles = models.ForeignKey(Role, on_delete=models.CASCADE,default=None,null=True)
-
+    exp_sets=models.CharField(max_length=200,null=True)
 
     def __str__(self):
         return self.feature
@@ -293,9 +293,18 @@ class userroles(models.Model):
     userrole=models.CharField(max_length=200,null=True)
 
 class selectedAdminPhones(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    exp = models.ForeignKey(experiment, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    exp = models.ForeignKey(experiment, on_delete=models.CASCADE,null=True)
     block = models.ForeignKey(Block, on_delete=models.CASCADE, null=True)
-    pset_id = models.CharField(max_length=10, null=True)
-    mob = models.ForeignKey(mobilephones, on_delete=models.CASCADE)
+    pset_id = models.CharField(max_length=10,null=True)
+    mob = models.ForeignKey(mobilephones, on_delete=models.CASCADE,null=True)
     p_order = models.IntegerField(null=True)
+
+class ExpCriteriaOrder(models.Model):
+    exp = models.ForeignKey(experiment, on_delete=models.CASCADE,null=True)
+    block = models.ForeignKey(Block, on_delete=models.CASCADE,null=True)
+    cOrder_id = models.CharField(max_length=10,null=True)
+    #NEED TO KEEP A RECORD OF THE EXISTING SET OF AVAILABLE CRITERIA IN THE MOBILE PHONES TABLE
+    pCriteria = models.CharField(max_length=200, null=True)
+    position = models.IntegerField(null=True)
+    sh_hd=models.IntegerField(null=True)

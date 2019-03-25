@@ -38,6 +38,7 @@ class ExperimentController:
         self.subjects = Subject()
         self.idField = None
         self.assigner = Assigner()
+        # check is to be made if the user wants to save the current exp so that its status changes from design mode to active and the previous exps status changes to inactive.
         if e_id:
             self.exp = Experiment.objects.get(id=e_id)
             self.fSet = self.exp.experiment_feature_set.select_related('p_feature')

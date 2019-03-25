@@ -31,7 +31,7 @@ import numpy as np
 import pandas as pd
 from pandas.compat import StringIO
 #--------------------------------------------------------------------------------------
-from biasweb.experiment.controller import ExperimentController
+from biasweb.experiment.controller import ExperimentController,SubjCont
 from biasweb.pythonscripts.experiment_admin import Experiment_Admin
 from biasweb.pythonscripts.getdata import get
 from biasweb.pythonscripts.insertcsvfiletotable import populate_Table
@@ -44,7 +44,7 @@ from .forms import (NameForm, SignUpForm, blogForm, filterform,
 from .models import Role, User, blog
 from .models import experiment as exp
 from .models import (mobile_phone, mobilephones, platform_feature, prunedmobilephones,
-                     samsung_phone, sort_feature, userscoreRecord)
+                     samsung_phone, sort_feature, userscoreRecord,ExpCriteriaOrder)
 from.models import template_roles as tr 
 from. models import templates as tpl
 
@@ -59,7 +59,53 @@ filter_flag=None
 sizeofmob=0 # global variable assigned in filter class.
 filt_mobiles=None
 #-------------------------------------------------------------------------------------------------
-# IT IS NOT USED ANYWARE
+
+            
+@method_decorator(login_required, name='dispatch')
+class Home(TemplateView):
+    template_name='webapp/home.html'
+    def get(self,request):
+        #userobj= User.objects.values_list('role_id_id',flat=True).filter(id=request.user.id)
+        
+        #**************************************************
+        # This code gets the user id, then on bases of role we will assign the templates.
+       
+        print(request.user.id)
+        userobj=User.objects.get(pk=request.user.id)
+        print("user object",userobj.role_id_id)
+        role=userobj.role_id_id
+        roleobj=Role.objects.get(pk=role)
+        role=roleobj.role_name
+        print(role)
+
+        if role=='Super_Admin':
+            
+            template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
+            # return redirect('/filtered_mobile_view')
+            return render(request,'webapp/2by2comparemobilespecs.html')
+            # return render(request,template_sidebar)
+        elif role=='Experiment_Admin':
+            # roleobj=Role.objects.get(pk=role)
+            # role_name=roleobj.role_name
+            # print(role_name)
+            template_sidebar='webapp/sidebartemplates/sidebartemp_expadm.html'
+            
+        elif role=='Platform_Admin':
+            roleobj=Role.objects.get(pk=role)
+            role_name=roleobj.role_name
+            print(role_name)
+            template_sidebar='webapp/sidebartemplates/sidebartemp_pltfadm.html'
+        elif role=='Subject':
+            # all other conditions of subjects will be done here. 
+            
+            return render(request,'webapp/2by2comparemobilespecs.html')
+            # return redirect('/filtered_mobile_view')
+
+        #*****************************************************
+        return render(request,self.template_name,{'role_id':userobj.role_id_id,'template_sidebar':template_sidebar})
+    def post(self,request):
+        return render(request,self.template_name)
+# IT IS NOT USED ANYWHERE
 def indexAhp(request):
     return render (request,'webapp/index-ahp.html')
 # priceRangeRetrieve
@@ -84,55 +130,6 @@ def priceRangeRetrieve(request):
                 'mobilephones':mobiles_retrieved
             }
             return JsonResponse(data)
-            
-@method_decorator(login_required, name='dispatch')
-
-class Home(TemplateView):
-    template_name='webapp/home.html'
-    def get(self,request):
-        #userobj= User.objects.values_list('role_id_id',flat=True).filter(id=request.user.id)
-        
-        #**************************************************
-        # This code gets the user id, then on bases of role we will assign the templates.
-       
-        print(request.user.id)
-        userobj=User.objects.get(pk=request.user.id)
-        print("user object",userobj.role_id_id)
-        role=userobj.role_id_id
-        roleobj=Role.objects.get(pk=role)
-        role=roleobj.role_name
-        print(role)
-
-        if role=='Super_Admin':
-            
-            template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
-            # return render(request,'webapp/2by2comparemobilespecs.html')
-            # return render(request,template_sidebar)
-        elif role=='Experiment_Admin':
-            # roleobj=Role.objects.get(pk=role)
-            # role_name=roleobj.role_name
-            # print(role_name)
-            template_sidebar='webapp/sidebartemplates/sidebartemp_expadm.html'
-            
-        elif role=='Platform_Admin':
-            roleobj=Role.objects.get(pk=role)
-            role_name=roleobj.role_name
-            print(role_name)
-            template_sidebar='webapp/sidebartemplates/sidebartemp_pltfadm.html'
-        elif role=='Subject':
-            # all other conditions of subjects will be done here. 
-            
-            #  return render(request,'webapp/2by2comparemobilespecs.html')
-            return redirect('/filter')
-
-
-        #*****************************************************
-
-
-        return render(request,self.template_name,{'role_id':userobj.role_id_id,'template_sidebar':template_sidebar})
-    def post(self,request):
-
-        return render(request,self.template_name)
 
 def showScore(request):
     mobileid=0
@@ -188,21 +185,92 @@ def storeSelectedAdminPhones(request):
     if request.method == 'POST':
         if request.is_ajax:
             mobiledata = request.POST.get('mobiledata')
+            custom_exp_id = request.POST.get('custom_exp_id')
+
             mobiledata_json = json.loads(mobiledata)
-            print('mobiledata_json',mobiledata_json)
+            print('custom_exp_id',custom_exp_id)
             mobiledata_json=int(mobiledata_json)
 
            
             userobj=User.objects.get(pk=request.user.id)
-            expobj=exp.objects.get(pk=11)
+
+            expobj=exp.objects.get(custom_exp_id=custom_exp_id)
+            
+
+
+
             # smgphone=samsung_phone.objects.get(pk=mobiledata_json)
             # selphones=selectedAdminPhones(user=userobj,exp=expobj,mob=smgphone)
             phones=mobilephones.objects.get(pk=mobiledata_json)
-            cellphones=selectedAdminPhones(user=userobj,exp=expobj,mob=phones)
-            cellphones.save()
-            return JsonResponse({'data':'success'})
+            print("sel_phones",phones)
+            cellphones=selectedAdminPhones.objects.filter(user=userobj,exp=expobj,mob=phones)
+            print(cellphones)
+            # a check to see if the phone is already selected for the same exp. 
+            if not cellphones:
+                cellphones=selectedAdminPhones(user=userobj,exp=expobj,mob=phones)
+                
+                cellphones.save()
+                data={'data':'Successfully inserted in model'}
+            else:
+                data={'data':'phone already exsists in the same experiment'}
+            return JsonResponse(data)
+def removeSelectedAdminPhones(request):
+    if request.method=='POST':
+        if request.is_ajax():
+            mobiledata=request.POST.get('mobiledata')
+            custom_exp_id = request.POST.get('custom_exp_id')
+            print("custom_exp_id",custom_exp_id)
+            mobiledata_json=json.loads(mobiledata)
+            mobiledata_json=int(mobiledata_json)
+
+            
+            expobj=exp.objects.get(custom_exp_id=custom_exp_id)
+            phones=mobilephones.objects.get(pk=mobiledata_json)
+            
+            
+
+            cellphones=selectedAdminPhones.objects.filter(exp=expobj,mob=phones)
+            
+            cellphones.delete()
+            return JsonResponse({'data':'Successfully remved from model'})
 
 comp_mobiles=''    
+def getSelectedAdminPhones(request):
+    if request.method=='GET':
+        if request.is_ajax():
+
+            # expCont = getExpController(request)
+            # existExpId = expCont.exp.id
+            # print("existExpId",existExpId)
+            # expobj=exp.objects.get(custom_exp_id=existExpId)
+            # print("expobj",expobj)
+            ## A Check is to be set for knowing if the admin has created new, working on existing or have not created the exp obj yet. 
+            # if working on existing:
+           
+            cellphones=selectedAdminPhones.objects.filter(exp=187)
+
+            clist=[]
+            for c in cellphones:
+                print("mid",c.mob_id)
+                clist.append(c.mob_id)
+            phones=mobilephones.objects.filter(id__in=clist)
+
+            cellphones = list(phones.values())
+            # samsung_phones=mobiles_retrieved
+            cellphones_str=cellphones
+            print("cellphones_str",cellphones_str)
+        
+            return JsonResponse(
+            {  
+                # 'samsung_phones':samsung_phones
+                'cellphones':cellphones_str,
+                'data':'retrieved data from model'
+            })
+            
+
+            
+
+
 def showMob(request):
     if request.method=="POST":
         if request.is_ajax:
@@ -295,7 +363,10 @@ def compareMobileSpecs(request):
             #@TODO: Create test for feature level if c.pruned. Then add other to the criteria list. 
             # for m in mobiles:
             print('user id',request.user.id)
-            test_obj=selectedAdminPhones.objects.filter(user=request.user.id)
+            exp_obj=Experiment.objects.get(custom_exp_id="ses-007-0268")
+
+        
+            test_obj=selectedAdminPhones.objects.filter(user=request.user.id,exp=exp_obj,pset_id="P.1")
             print('test_obj')
             test_list=[]
             for tb in test_obj:
@@ -365,10 +436,17 @@ def updateFeaturePosition(request):
 
         print(b[0])
         count=1
+        # ExpCriteriaOrder_obj=ExpCriteriaOrder.objects.get(pCriteria="cpu")
+        # ExpCriteriaOrder_obj.position=3
+        # ExpCriteriaOrder_obj.save()
         for key,value in  enumerate(b):
             print(key)
             k=str(int(key)+1)
             print ("test", value,k)
+            ExpCriteriaOrder_obj=ExpCriteriaOrder.objects.get(pCriteria=value)
+            ExpCriteriaOrder_obj.position=count
+            ExpCriteriaOrder_obj.save()
+            
             sort_feature_selected_obj=sort_feature.objects.get(feature=value,roles=1)
             sort_feature_selected_obj.position=count
             sort_feature_selected_obj.save()
@@ -451,11 +529,29 @@ def showFeature(request):
 def globalFunc(request):
    
     if request.is_ajax:
-       # print("ajax",request.POST.get('data'))
+        #print("ajax",request.POST.get('data'))
         ####print("PST",request.POST.get('d')) 
-        d = request.POST.get('d')
-       ### print('JSONLOADS',eval(d))
-        b = json.loads(d)
+        # setnum = request.POST.get('set')
+        # ### print('JSONLOADS',eval(d))
+        # set_num = json.loads(setnum)
+        global feature_to_display
+        global feature_to_hide
+        role_name=['']
+        print(request.user.id)
+        userobj=User.objects.get(pk=request.user.id)
+        print("user object",userobj.role_id_id)
+        role_id=userobj.role_id_id
+        roleobj=Role.objects.get(pk=role_id)
+        role=roleobj.role_name
+        print(role)
+        feature_to_display=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role_id).order_by('position')
+                
+        print("feature-->",feature_to_display)
+        feature_to_hide=sort_feature.objects.filter(Q(sh_hd = 0),roles=role_id).order_by('position')    
+        print("feature2-->",feature_to_hide)
+        feature_to_display=list(feature_to_display.values())
+
+        feature_to_hide = list(feature_to_hide.values())
 
         # print("in func",b)
         # print(type(b))
@@ -466,11 +562,116 @@ def globalFunc(request):
         # UPDATE [Table] SET [Position] = $i WHERE [EntityId] = $value 
             
         #print ("test", d['color'])
+        data={
+                'feature_to_display':feature_to_display,
+                'feature_to_hide':feature_to_hide
+            }
+        return JsonResponse(data)
           
-        return render(request, 'webapp/admin_setup.html')
+        # return render(request, 'webapp/admin_setup.html',{'role_name':'role','feature_to_display':feature_to_display,'feature_to_hide':feature_to_hide})
     
 feature_to_display=''
 feature_to_hide=''
+class orderCriteria_Setup(TemplateView):
+    def get(self,request):
+        role_name=['']
+        print(request.user.id)
+        userobj=User.objects.get(pk=request.user.id)
+        print("user object",userobj.role_id_id)
+        role_id=userobj.role_id_id
+        roleobj=Role.objects.get(pk=role_id)
+        role=roleobj.role_name
+        print(role)
+        if  request.is_ajax():
+            feature_to_display=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role_id).order_by('position')
+            print("feature",feature_to_display)
+            feature_to_hide=sort_feature.objects.filter(Q(sh_hd = 0),roles=role_id).order_by('position')    
+            print("feature2",feature_to_hide)
+            feature_to_display = list(feature_to_display.values())
+            feature_to_hide = list(feature_to_hide.values())
+
+            data={
+                'feature_to_display':feature_to_display,
+                'feature_to_hide':feature_to_hide,
+            }
+            return JsonResponse(data)
+
+        
+    def post(self,request):
+         if request.is_ajax:
+                crit_order_dict = request.POST.get('crit_order_dict')
+                crit_order_dict=json.loads(crit_order_dict)
+                crit_hide_dict = request.POST.get('crit_hide_dict')
+                crit_hide_dict=json.loads(crit_hide_dict)
+                featlevels_dic=request.POST.get('featlevels_dic')
+                postedFLevels = json.loads(featlevels_dic)
+                print("crit_order_dict",crit_order_dict)
+                print("crit_hide_dict",crit_hide_dict)
+                print("featlevels_dic",featlevels_dic)
+
+                expCont = getExpController(request)
+                existExpId = expCont.exp.id
+                existCusId=expCont.exp.custom_exp_id
+                expCont.setFSet(newFLevels=postedFLevels,prompt=False)
+                block_set = expCont.generateBlocks()
+                block_list = list(block_set.all().values('serial_no','levels_set'))
+                print('<<<<<<TO DISPLAY ON PAGE>>>>>>')
+                print(block_list)
+                # save orderset Details in expCriteriaOrder
+                exp_obj=Experiment.objects.get(custom_exp_id=existCusId)
+                
+                p_levList=list()
+                for key,s in crit_order_dict.items():
+                        print(key,":",s)
+                        # o_set = mobilephones.objects.filter(id__in=s)
+
+                        p_levList.append('CO.'+str(key))
+                        for count, i in enumerate(s):
+                           
+                            print("count",count)
+                            print("ii",i)
+                            expOSets=ExpCriteriaOrder()
+                            expOSets.exp=expCont.exp
+                            expOSets.cOrder_id=key
+                            expOSets.pCriteria=i
+                            expOSets.position=count+1
+                            expOSets.sh_hd=1
+                            expOSets.save()
+                            # expPSets = selectedAdminPhones()
+                            # expPSets.exp = expCont.exp
+                            # expPSets.pset_id= key
+                            # expPSets.mob = p_set.get(id=i)
+                            # expPSets.p_order = count
+                for key,s in crit_hide_dict.items():
+                        print(key,":",s)
+                        # o_set = mobilephones.objects.filter(id__in=s)
+
+                        p_levList.append('CO.'+str(key))
+                        for count, i in enumerate(s):
+                           
+                            print("count",count)
+                            print("ii",i)
+                            expOSets=ExpCriteriaOrder()
+                            expOSets.exp=expCont.exp
+                            expOSets.cOrder_id=key
+                            expOSets.pCriteria=i
+                            expOSets.position=0
+                            expOSets.sh_hd=0
+                            expOSets.save()
+                            # expPSets = selectedAdminPhones()
+                            # expPSets.exp = expCont.exp
+                            # expPSets.pset_id= key
+                            # expPSets.mob = p_set.get(id=i)
+                            # expPSets.p_order = count
+                            
+                data={
+                'success':'success',
+                'exp_id':existExpId,
+                'custom_exp_id':expCont.exp.custom_exp_id,
+                'block_list':block_list
+                }
+                return JsonResponse(data)
+              
 class adminSetup(TemplateView):
     # global  role
     global feature_to_display
@@ -488,20 +689,21 @@ class adminSetup(TemplateView):
         print(role)
        
         if  request.is_ajax():
-            print("in ajax")
             feature_to_display = list(feature_to_display.values())
             print("feature to display",feature_to_display)
+            numofsets=['CO.1','CO.2','CO.3']
             feature_to_hide = list(feature_to_hide.values())
             print("feature to hide",feature_to_hide)
             data={
                 'feature_to_display':feature_to_display,
-                'feature_to_hide':feature_to_hide
+                'feature_to_hide':feature_to_hide,
+                'numofsets':numofsets
             }
             return JsonResponse(data)
         else:
             if role=='Super_Admin':        
                 feature_to_display=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role_id).order_by('position')
-                
+                numofsets=['CO.1','CO.2','CO.3']
                 print("feature",feature_to_display)
                 feature_to_hide=sort_feature.objects.filter(Q(sh_hd = 0),roles=role_id).order_by('position')    
                 print("feature2",feature_to_hide)
@@ -519,11 +721,31 @@ class adminSetup(TemplateView):
                 roleobj=Role.objects.get(pk=role)
                 role_name=roleobj.role_name
                 print(role_name)
-            return render(request, 'webapp/admin_setup.html',{'role_name':'role','feature_to_display':feature_to_display,'feature_to_hide':feature_to_hide})
+            return render(request, 'webapp/admin_setup.html',{'numofsets':numofsets,'feature_to_display':feature_to_display,'feature_to_hide':feature_to_hide})
 
             
     def post(self,request):
-        pass
+        if request.is_ajax():
+            print(request.user.id)
+            userobj=User.objects.get(pk=request.user.id)
+            print("user object",userobj.role_id_id)
+            role_id=userobj.role_id_id
+            roleobj=Role.objects.get(pk=role_id)
+            role=roleobj.role_name
+            print(role)
+            numofsets=request.POST.get("numofsets")
+            # get all feature/criteria 
+            feature_to_disp=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role_id,exp_sets="Set1").order_by('position')
+            feature_to_hide=sort_feature.objects.filter(Q(sh_hd = 0),roles=role_id,exp_sets="Set1").order_by('position')    
+
+            data={
+                    "numofsets":numofsets,
+                    'feature_to_display':feature_to_disp,
+                    'feature_to_hide':feature_to_hide
+                    }
+            return render(request,"webapp/admin_setup.html",data)
+
+        
         
 
     #*****************************************************
@@ -859,6 +1081,7 @@ def filteredMobileView(request):
        
         userobj=User.objects.get(pk=request.user.id)
         role=userobj.role_id_id
+
         roleobj=Role.objects.get(pk=role)
         role=roleobj.role_name
         global filt_mobiles
@@ -889,7 +1112,20 @@ def filteredMobileView(request):
                 template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
                 return render(request,template_name,{'mobiles':ex_mobile,'template_sidebar':template_sidebar})
             else:
-                print("mobiles",filt_mobiles)
+                # print("mobiles",filt_mobiles)
+                uid = request.user.username
+                print(uid)
+                tuser = User.objects.get(username=uid)
+                exp_list = tuser.subject_set.values_list('exp', flat=True) #PLEASE CHECK IF WE CAN GET PREFETCH RELATED HERE
+                exp_active = max(exp_list)                
+                phoneobjs=selectedAdminPhones.objects.filter(exp=exp_active)
+                # print(phoneobjs)
+                plist=[]
+                for pob in phoneobjs:
+                    print(pob)
+                    plist.append(pob.mob.id)
+                # print(plist)
+                filt_mobiles=mobilephones.objects.filter(pk__in=plist)
                 paginator = Paginator(filt_mobiles,9)
                 page = request.GET.get('page')
                 ex_mobile = paginator.get_page(page)
@@ -938,7 +1174,6 @@ class mobile_phone_view(TemplateView):
             return render(request,self.template_name,{'mobiles':ex_mobiles,'template_sidebar':template_sidebar})
            
         else:
-            # mobiles= samsung_phone.objects.all() 
             mobiles= mobilephones.objects.all() 
             paginator = Paginator(mobiles,9)
             page = request.GET.get('page')
@@ -1476,17 +1711,17 @@ class createExperiment(TemplateView):
             print('price_range_values1',price_range_values[0])
             print('price_range_values2',price_range_values[1])
             # mobiles_retrieved=samsung_phone.objects.filter(price_in_pkr__range=(price_range_values[0], price_range_values[1]))
-            mobiles_retrieved=mobilephones.objects.filter(price__range=(price_range_values[0], price_range_values[1])).order_by('price') 
+            mobiles_retrieved=mobilephones.objects.filter(price__range=(price_range_values[0], price_range_values[1])).order_by('id') 
             
             # else: 
             #     mobiles_retrieved=samsung_phone.objects.filter(price_in_pkr__range=(10000, 30000))
-            print("mobiles_retrieved",mobiles_retrieved)
+            # print("mobiles_retrieved",mobiles_retrieved)
 
             # print(mobiles_retrieved) 
             mobiles_retrieved = list(mobiles_retrieved.values())
             # samsung_phones=mobiles_retrieved
             mobilephones_str=mobiles_retrieved
-            print("mobilephones_str",mobilephones_str)
+            # print("mobilephones_str",mobilephones_str)
         
             return JsonResponse(
             {  
@@ -1500,7 +1735,7 @@ class createExperiment(TemplateView):
             # samsung_phones= samsung_phone.objects.all()
             
             m_p= mobilephones.objects.all() 
-            print("mobile_phones",m_p)
+            # print("mobile_phones",m_p)
             # paginator = Paginator(samsung_phones,9)
             paginator = Paginator(m_p,9)
             page = request.GET.get('page')
@@ -1514,7 +1749,7 @@ class createExperiment(TemplateView):
                 # page = request.GET.get('page')
                 # samsung_phones = paginator.get_page(page)
                 # print("samsung_phones",samsung_phones)
-                print("mobilephones",mobile_phones__str)
+                # print("mobilephones",mobile_phones__str)
             
                 creat_exp_template_sidebar='webapp/sidebartemplates/createExpSideBars/crtExpsidebartemp_exp.html'
             elif role=='Experimental_Admin':
@@ -1523,7 +1758,7 @@ class createExperiment(TemplateView):
                 # page = request.GET.get('page')
                 # samsung_phones = paginator.get_page(page)
                 # print(samsung_phones)
-                print(mobilephones)
+                # print(mobilephones)
                 creat_exp_template_sidebar='webapp/sidebartemplates/createExpSideBars/crtExpsidebartemp_exp.html'
             elif role=='Platform_Admin':
                 pass
@@ -1581,57 +1816,248 @@ class createExperiment(TemplateView):
                 }
                 return JsonResponse(data) #, safe=False)
         #return render(request,'webapp/crudexperiment/create_experiment.html',data)
-class datadefined(TemplateView):
-    template_name='webapp/crudexperiment/create_experiment.html'
-    def get(self,request):
-        pass
-    def post(self,request):  
-        platformfeatobj=platform_feature.objects.all()
-        userobj=User.objects.get(pk=request.user.id)
-        role=userobj.role_id_id
-        roleobj=Role.objects.get(pk=role)
-        role=roleobj.role_name
-        # samsung_phones=''
-        mobilephones_str=''
-        if request.is_ajax():
-            price_range_values = request.POST.get('price_range_values')
-            print(price_range_values)
-            if price_range_values:
-                print("in if ")
-                print('price_range_values',price_range_values)
-                price_range_values = json.loads(price_range_values)
-                print('price_range_values',price_range_values[0])
-                print('price_range_values1',price_range_values[1])
-                # mobiles_retrieved=samsung_phone.objects.filter(price_in_pkr__range=(price_range_values[0], price_range_values[1]))
-                mobiles_retrieved=mobilephones.objects.filter(price_in_pkr__range=(price_range_values[0], price_range_values[1]))
-            print(mobiles_retrieved) 
-            mobiles_retrieved = list(mobiles_retrieved.values())
-            # samsung_phones=mobiles_retrieved
-            mobilephones_str=mobiles_retrieved
+from webapp.models import experiment as Experiment
+def SavePhoneSets(request):
+     if request.method=="POST":
+            if request.is_ajax:
+                phoneset_dic = request.POST.get('phoneset_dic')
+                phoneset_dic=json.loads(phoneset_dic)
+                featlevels_dic=request.POST.get('featlevels_dic')
+                postedFLevels = json.loads(featlevels_dic)
+                expCont = getExpController(request)
+                existExpId = expCont.exp.id
+              
+                print("existExpId",existExpId)
+
+                expCont.setFSet(newFLevels=postedFLevels,prompt=False)
+                block_set = expCont.generateBlocks()
+                block_list = list(block_set.all().values('serial_no','levels_set'))
+                print('<<<<<<TO DISPLAY ON PAGE>>>>>>')
+                print(block_list)
+                p_levList = list()
+                print("PHONESET DICT",phoneset_dic)
+                # exp_obj=Experiment.objects.get(custom_exp_id="ses-007-0266")
+                exp_obj=Experiment.objects.get(custom_exp_id=expCont.exp.custom_exp_id)
+                # Updation check. 
+                if (selectedAdminPhones.objects.filter(exp=exp_obj).exists()):
+                    sap_objs=selectedAdminPhones.objects.filter(exp=exp_obj)
+                    pset_list=set(sap_objs.values_list('pset_id', flat=True))
+                    pset_list=list(pset_list)
+                    # pset_list=['P.1','P.2','P.3']
+
+                    print("pset_list",pset_list)
+                    keylist=list(phoneset_dic.keys())
+                    # keylist=['P.1','P.2']
+                    print("keylist",keylist)
+                    if (len(pset_list)>len(keylist)):
+                        diff_list=list(set(pset_list) - set(keylist))
+                        obj=selectedAdminPhones.objects.filter(exp=exp_obj,pset_id__in=diff_list).delete()
+                        print("object",obj)
+                        print('Difflist for db deletion',diff_list)
+                    elif (len(pset_list)<len(keylist)):
+                        diff_list=list(set(keylist) - set(pset_list))
+                        print('Difflist for db updation',diff_list)
+                        
+                        for i in diff_list:
+                            p_set = mobilephones.objects.filter(id__in=phoneset_dic[i])
+
+                            for count, m in enumerate(phoneset_dic[i]):
+                                expPSets = selectedAdminPhones()
+                                expPSets.exp = expCont.exp
+                                expPSets.pset_id= i
+                                expPSets.mob = p_set.get(id=m)
+                                expPSets.p_order = count
+                                expPSets.save()
+                            
+
+                        
+                    dum_dict={}
+                    for sap in sap_objs:
+                        
+                    # after checking if phones for exp under construction exsists
+                    # we have to get each phone obj check its pset_id and phone name/id and update its position.
+                        
+                        for key,s in phoneset_dic.items():
+                            sp=selectedAdminPhones.objects.filter(exp=exp_obj,pset_id=key)
+                            sp_list=list(sp.values_list('mob',flat=True))
+                            print("sp",sp.count())
+                            splen=sp.count()
+                            print("SAP",sap.pset_id)
+                            print("mob",sap.mob.id)
+                            print('key',key)
+                            print("s",s)
+                            print("splen",splen)
+                           
+
+                            if ((sap.mob.id in s) and sap.pset_id==key ):
+                                
+                                print("s.index(sap.mob.id)",s.index(sap.mob.id))
+                                sap.p_order=s.index(sap.mob.id)
+                                sap.save()
+                                if key in dum_dict.keys(): 
+                                    print("sap.mob.id",sap.mob.id)
+                                    print("key",key)
+                                    dum_dict[key].append(sap.mob.id)
+                                    print("DUM_DUCT",dum_dict)
+                                   
+                                else:
+                                    print("SHould Run only once for keys... ")
+                                    dum_dict[key]=[]
+                                    dum_dict[key].append(sap.mob.id)
+                                    
+
+                            elif (sap.mob.id not in s) and (sap.pset_id==key) and (splen>len(s)):
+                                print("length Greater delete")
+                                obj=selectedAdminPhones.objects.filter(exp=exp_obj,pset_id=key,mob=sap.mob.id).delete()
+                            if key in dum_dict.keys(): 
+                                if ((len(dum_dict[key])==splen) and (splen<len(s))  and (sap.pset_id==key)):
+                                    temp_list=[]
+                                    temp_list=dum_dict[key]
+
+                                    diff_list=set(s)-set(temp_list)
+                                    print("UP_DIFF",diff_list)
+                                    for i in diff_list:
+                                        p = mobilephones.objects.get(id=i)
+                                        pos=s.index(i)
+
+                                        expPSets = selectedAdminPhones()
+                                        expPSets.exp = expCont.exp
+                                        expPSets.pset_id= key
+                                        expPSets.mob = p
+                                        expPSets.p_order = pos
+                                        expPSets.save()
+                                        # print("FOR Updation")
+                                        # print("KEY")
+                                        # expPSets=selectedAdminPhones()
+                                        # expPSets.exp = expCont.exp
+                                        # expPSets.pset_id= key
+                                        # expPSets.mob = mobilephones.objects.get(id=sap.mob.id)
+                                        # expPSets.p_order = s.index(sap.mob.id)
+                                        # expPSets.save()
+                            print("dum_dict",dum_dict)
+
+                            print("----------------------------------------------")
+                    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+                            
+                    
+                            
+                        
+                            
+
+                                    
+                        
+                            
+                            
+                      
+
+                else:
+                    for key,s in phoneset_dic.items():
+                        print(key,":",s)
+                        p_set = mobilephones.objects.filter(id__in=s)
+                        p_levList.append('P.'+str(key))
+                        for count, i in enumerate(s):
+                            expPSets = selectedAdminPhones()
+                            expPSets.exp = expCont.exp
+                            expPSets.pset_id= key
+                            expPSets.mob = p_set.get(id=i)
+                            expPSets.p_order = count
+                            expPSets.save()
+                # A Check is to be made for updation...
+                    # for key,s in phoneset_dic.items():
+                    #     p_set = mobilephones.objects.filter(id__in=s)
+                    #     print("p_set",p_set)
+                    #     p_levList.append('P.'+str(key))
+                    #     print("key",key)
+                    #     print("s",s)
+                    #     for count, p in enumerate(p_set):
+                    #         print("p",p)
+                    #         print("count",count)
+                    #         expPSets = selectedAdminPhones()
+                    #         expPSets.exp = expCont.exp
+                    #         expPSets.pset_id= key
+                    #         expPSets.mob = p
+                    #         expPSets.p_order = count 
+                    #         expPSets.save()
+                # print(selectedAdminPhones.objects.filter(exp_id = expCont.exp.id))       
+                
+
+
+
+
+                data = {
+                    "data":"data",
+                     'exp_id':existExpId,
+                     'custom_exp_id':expCont.exp.custom_exp_id,
+                     'block_list':block_list
+                }
+                return JsonResponse(data) #, safe=False)
+
+
+
+class editExperiment(TemplateView):
+        def get(self,request):
+            # Get user id. 
+            # check admin status.
+            # fetch all exp created by this admin
+            # get the latest exp .. In future only get the exp which has status=active. 
+            # userid= request.user.id
+            # userobj=user.objects.get(pk=userid)
+            uid=request.user.id
+            print(uid)
+            print(Experiment.objects.filter(owner=uid).values_list('id',flat=True))
+            expList=Experiment.objects.filter(owner=uid).values_list('id',flat=True)
+            expactive=max(expList)
+            print(expactive)
+            request.session['sess_expId'] = expactive
+            expCont = getExpController(request)
+            existExpId = expCont.exp.id
+             #SET FLEVELS
+            expCont.setFSet(newFLevels=postedFLevels,prompt=False)
+            block_set = expCont.generateBlocks()
+            block_list = list(block_set.all().values('serial_no','levels_set'))
+                
+                # # blockStr = "\n".join(str(b) for b in expCont.exp.block_set.all())
+            print('<<<<<<TO DISPLAY ON PAGE>>>>>>')
+            print(block_list)
+            data = {
+                    'exp_id':existExpId,
+                    'custom_exp_id':expCont.exp.custom_exp_id,
+                    'block_list':block_list
+                }
             
-        if role=='Super_Admin':
-            # print("samsung_phones",samsung_phones)
-            creat_exp_template_sidebar='webapp/sidebartemplates/createExpSideBars/crtExpsidebartemp_exp.html'
-        elif role=='Experimental_Admin':
-            print(samsung_phones)
-            creat_exp_template_sidebar='webapp/sidebartemplates/createExpSideBars/crtExpsidebartemp_exp.html'
-        elif role=='Platform_Admin':
+
+
+            
             pass
-        try:
-            sess_expId = request.session['sess_expId']
-            print("sesid",sess_expId)
-        except KeyError:
-            sess_expId = ""
-        try:
-            sess_custExpId = request.session['sess_custExpId']
-        except KeyError:
-            sess_custExpId = "123"
-        
-        return render(request,self.template_name,
-        {  'creat_exp_template_sidebar':creat_exp_template_sidebar,
-            'platformfeatobj':platformfeatobj,
-            'sess_expId':sess_expId,
-            'sess_custExpId':sess_custExpId,
-            'mobilephones':mobilephones_str
-                                        }
-        )   
+        def post(self,request):
+            pass
+def getSpecificMobileData(request):
+    if request.is_ajax():
+        if request.method=="POST":
+            specsmobdata = request.POST.get('specsmobdata')
+            
+            specsmobdata = json.loads(specsmobdata)
+            print("specsmobdata",type(specsmobdata))
+            specmob_dic={}
+            for key,val in specsmobdata.items():
+                print(key,val)
+                specmobret=mobilephones.objects.filter(id__in=val)
+                specmobret = list(specmobret.values())   
+                specmobret_str=specmobret
+                specmob_dic[key]=specmobret_str
+            # print("specsmobdata",specmobret)
+            print(specmob_dic)
+            
+            # specmobret = list(specmobret.values())   
+            # specmobret_str=specmobret
+            return JsonResponse(
+            {  'mobilephones':specmob_dic}
+            )
+
+def getMobiledata(request):
+    if request.is_ajax():
+        if request.method=="GET":
+            mobiles_retrieved=mobilephones.objects.all()
+            mobiles_retrieved = list(mobiles_retrieved.values())   
+            mobilephones_str=mobiles_retrieved
+            return JsonResponse({'mobilephones':mobilephones_str})

@@ -119,7 +119,8 @@
 
     <script>
         var arr=[];
-       
+       // Because of this code when subject logs in and goes to filter_mobile_view first it loads all mobile 
+       // phones and then on refresh it loads the selected phones. 
         window.addEventListener( "pageshow", function ( event ) {
         var historyTraversal = event.persisted || 
         ( typeof window.performance != "undefined" && 

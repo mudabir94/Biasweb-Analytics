@@ -8,9 +8,10 @@ from webapp.models import Block
 from webapp.models import experiment_feature as ExpFeature
 from webapp.models import platform_feature as PFeature
 from webapp.models import User, Subject
-from webapp.models import selectedAdminPhones as PSets
 from webapp.forms import SubjectCreationForm as scf
+from webapp.models import selectedAdminPhones as PSets
 from webapp.models import mobilephones as Phones
+
 def setSelfDefinedBatches(expCont, defaultNo=None):
     if not defaultNo:
         no_batches = eval(input("Number of Batches? "))
@@ -38,6 +39,12 @@ def setPreDefinedBatches():
 OUT_PATH="biasweb/data/output/"
 interactive = False #Make True if you want this test to ask for field names mapping
 feature_editing = True
+
+#Initialize phone sets for adding as block feature levels
+set1 = [91,14,49]
+set2 = [43,6,101]
+setDict = {1:set1, 2:set2}
+
 ## 1. RETRIEVE AN EXISTING EXPERIMENT
 
 admin_id = "ses-007" #USING THE CUSTOM-ID OF SUPERUSER #2 (shazib [not dr.shazib]) ses-007 for Shazib
@@ -83,15 +90,12 @@ print(PSets.objects.filter(exp_id = texp.exp.id))
 
 texp.addFeature('P', p_levList)
 
-#SHOULD ask, if P is included, which sets to create
 
-#Nominate Set 1 and Set 2 (as in params-for-test.txt)
 
-#Then it should generate blocks
-print(texp.fSet.all())
+
 #newLevs = {'W': ['direct', 'AHP'], 'C': ['full', 'pruned']}
-#newLevs = {'W': ['direct', 'AHP'], 'A': ['all', '2by2','user'], 'R': ['0', '1']}
-#texp.setFSet(newFLevels=newLevs,prompt=True)
+newLevs = {'W': ['direct', 'AHP'], 'A': ['all', '2by2','user'], 'R': ['0', '1']}
+texp.setFSet(newFLevels=newLevs,prompt=True)
 texp.saveExperiment()
 #Edit feature levels
 #texp.autoSetFLevels(True)
@@ -129,7 +133,7 @@ if interactive:
         print("[",i,"]",fields[i])
     inputNo = eval(input("No of Batch Column?  "))
 else:
-    inputNo = 1 #Col 1 is assumed SECTION
+    inputNo = 999 #Col 1 is assumed SECTION
 print("INPUT NO:", inputNo)
 ##IF SELF-DEFINED BATCHING VS. PRE-DEFINED
 if inputNo == 999:
@@ -157,11 +161,9 @@ texp.updateAllBatches() #MAKE SURE TO CALL IF YOU CHANGED THE BATCHES
 
 
 texp.saveSubjects()
-#texp.deleteAllSubjects()
+texp.deleteAllSubjects()
 
 breakUp = texp.assignToBlocks() #retruns a dataframe of groupby sizes (unstacked for batchwise breakup)
-texp.saveSubjects()
-
 breakUp.to_json(orient='index') #FOR ROW-WISE printing in HTML as json object
 
 tpvt = pd.pivot_table(
