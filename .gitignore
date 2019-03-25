@@ -1,6 +1,6 @@
 *.DS_Store
 *.pyc
-__pycache__
+webapp/__pycache__/*.*
 *.code-workspace
 biasweb/settings.py
 biasweb/utils/data/~$*.xlsx
@@ -10,3 +10,13 @@ webapp/migrations/0001_initial.bk
 webapp/migrations/0001_initial.py
 node_modules
 package-lock.json
+webapp/migrations/0017_auto_20190319_0704.py
+webapp/migrations/0011_auto_20190325_1148.py
+webapp/migrations/0011_selectedadminphones_batch_label.py
+webapp/migrations/0012_sort_feature_exp_sets.py
+webapp/migrations/0013_auto_20190311_0453.py
+webapp/migrations/0014_auto_20190311_0738.py
+webapp/migrations/0015_auto_20190312_1631.py
+webapp/migrations/0016_expcriteriaorder_sh_hd.py
+webapp/__pycache__/urls.cpython-36.pyc
+webapp/__pycache__/views.cpython-36.pyc
