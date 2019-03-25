@@ -82,7 +82,7 @@ class Home(TemplateView):
             
             template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
             # return redirect('/filtered_mobile_view')
-            return render(request,'webapp/2by2comparemobilespecs.html')
+            # return render(request,'webapp/2by2comparemobilespecs.html')
             # return render(request,template_sidebar)
         elif role=='Experiment_Admin':
             # roleobj=Role.objects.get(pk=role)
