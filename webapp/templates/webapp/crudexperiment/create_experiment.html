@@ -412,6 +412,9 @@
                                         <div id="phsetnum_div"></div>
                                         <div id="ordersetnum_div"></div>
                                         <div id="defualt_criteria_popup"></div>
+                                        <div id="criteria_display_popup"></div>
+
+
                             </div>
                     </div>
             </div>
@@ -524,19 +527,19 @@ var checkbox_id_dict={};
 window.row_filedata=null;
 
 
-// When the page will this will be the first javascript function that will be called. 
-$(document).ready(function () {
-   console.log('btrn',btns)
-   
+//  runs when the page is loaded/called. 
+$(document).ready(function () {       
 
-  initializePage();
+    initializePage();
 
 });
-
-
-
+/* ** Hides all divs except feat_lvl_div.**
+   ** checks exp_id, if it exsists then asks for working on it, else discards**
+   ** if it exsists and working on it is confirmed. **
+      *** Loads all dictionaries that will be used to populate the ui such as feature levels dict, blocklist dict etc. *** 
+*/
 function initializePage(){
-    // This Will hide all the divs with class=innerchecksboxdivs
+// This Will hide all the divs with class=innercheckboxdivs
 $("#order_criteria_div").hide();
 $('.innerchecksboxdivs').hide();
 $('.map_select_label').hide();
@@ -604,7 +607,6 @@ if(exp_id===""){
      }
      else{
          
-        // populateExpPhones();
         showExpWIP();
         // TO BE IMPLEMENTED
         // Check through an ajax call if anything related to dict,blocklist etc
@@ -612,13 +614,16 @@ if(exp_id===""){
         // retrieved data into dict,checkbox_id_dict
         //else try to get data from local storage... 
         
+        //* Fetching feature_level dictionary containing feature symbol as key and its sub levels as values.*
         dict=JSON.parse(window.localStorage.getItem("feat_dict")); 
+        //* Dictionary of checkboxes already checked by the user along with sub checklevels as values ( for history of checkboxes  checked )*
         checkbox_id_dict=JSON.parse(window.localStorage.getItem("checkbox_id_dict")); 
+        //* block list contains the combinations of feature levels that will be used for display as a table*
         var blockList = JSON.parse(window.localStorage.getItem("blockList")); 
 
-        console.log("DICT",dict)
+        console.log("Feature_levels_dict",dict)
         console.log("checkbox_id_dict",checkbox_id_dict)
-
+        //* Population of block list table with block list. 
         if ( blockList===null){
                 alert('block list empty');
             }
@@ -626,6 +631,7 @@ if(exp_id===""){
             table_blocks=draw_block_table(blockList)
             display_blocktable(table_blocks);
         }
+        //* Population of feature level table with feature levels . 
 
         if (dict==null ){
             dict={}
@@ -633,17 +639,18 @@ if(exp_id===""){
         else {
             displayfeaturelevelTable();
         }
-        // Filling outer checkboxes when the page is loaded. 
-            // LOGIC TO BE IMPLEMENTED. 
-            // First Check if checbox_id_dict is empty if not then run following, else do nothing. 
-            // Then Run a SEPERATE OUTERCHECKBOX function that generates checkboxes exactly like the original one, but doesnt store data in dict.
-            // Which will run a seperate showinnerbox function to populate the innerchecboxes. 
+        /* Filling outer checkboxes when the page is loaded.  
+        ** First Check if checbox_id_dict is empty if not then run following, else do nothing. 
+        ** Runs a SEPERATE OUTERCHECKBOX function that generates checkboxes exactly like the original one, but doesnt store data in dict.
+        ** Which will run a seperate showinnerbox function to populate the innerchecboxes. 
+        */
       
         if (checkbox_id_dict==null){
             checkbox_id_dict={};
         }
 
         else{
+            /* Strong implementation which will create Outer checkboxes and tick the ones already selected */
              showcheckboxes_stored();
         }
 
@@ -654,49 +661,73 @@ if(exp_id===""){
         }
     }
 }
+/* Strong implementation which will create Outer checkboxes and tick the ones already selected */
+/*  As checkbox_id_dict is global here we will simply use it. 
+    ** It gets the keys one by one, which is basically the ids of checkboxes and set their check prop to true. 
+    ** OuterCheckBox_Store is then called, passing the value (e.g P.1,P.2) and key (e.g 6) to it. 
+*/
 function showcheckboxes_stored(){
+    p_flag=false;
     for (var key in checkbox_id_dict){
             console.log('cheCKebox value',checkbox_id_dict[key]);
             console.log('key',key);
             var outercheckbox = document.getElementById(key);
+            if (key==="7"){
+            /*
+                // IN FUTURE
+                // Create a show and edit button. 
+                // show button fuctionality will be to only show the display the CO.
+                // Edit button will reopen the CO page with the same number of sets that were set previously and the user can not edit it. 
+            // */
+                var crit_order=JSON.parse(window.localStorage.getItem("crit_order_dict"));
+                var crit_hide=JSON.parse(window.localStorage.getItem("crit_hide_dict")); 
+                crit_order_dict=crit_order
+                crit_hide_dict=crit_hide;
+            }
+            if (key==="6"){
+                p_flag=true;
+                
+                var slider_dict=JSON.parse(window.localStorage.getItem("slider_set_dict")); 
+                var brand_dict=JSON.parse(window.localStorage.getItem("brand_set_dict")); 
+                var phone_dict=JSON.parse(window.localStorage.getItem("phoneset_dic")); 
+                var pname_dic=JSON.parse(window.localStorage.getItem("phonename_dic")); 
+                slider_set_dict=slider_dict;
+                brand_set_dict=brand_dict;
+                phoneset_dic=phone_dict;
+                phonename_dic=pname_dic;
+                setlist=[];
+                for (var i in phoneset_dic){
+                    setlist.push(i)
+                }
+                console.log('slider_dict',slider_dict);
+                console.log('brand_dict',brand_dict);
+                console.log('phone_dict',phone_dict);
+                console.log('pname_dic',pname_dic);
+
+            }
+           
             outercheckbox.checked = true; 
-            
             outerCheckBox_Stored( outercheckbox.getAttribute('value') ,key )
-            
         }
-}
-function getSavedSubjectDataExpCont(){
-    $.ajax({
-        type: 'POST',
-        dataType: "json",
-        'data': {
+        // disabling Mobile Catalog button if p is not ticked!.
+        if (p_flag===false) {
+        $("#create_exp_mobile_catalog").css('background-color','black');
+        $("#create_exp_mobile_catalog").css('color','black');
+        $("#create_exp_mobile_catalog").css('cursor','not-allowed');
 
-            'csrfmiddlewaretoken': '{{ csrf_token }}',
-        },
-        // the ajax call is sent to subdetails url name in the post function.  
-        url: "{% url 'get_saved_subject_data_expcont' %}",
-        success: function(data){
-        console.log("data['subject_data']",data['subject_data'])
-        
-        // console.log('keys',Object.keys(data['subject_data'])[0])
-        // console.log(Object.keys(data['subject_data'][Object.keys(data['subject_data'])[0]]).length);
-        //  for (var i=0;i<Object.keys(data['subject_data'][Object.keys(data['subject_data'])[0]]).length;i++){
+        $("#create_exp_mobile_catalog").attr("disabled", true); 
+        }
 
-        //  }
-         }
-                     
-    }); 
 }
+
 function outerCheckBox_Stored(outercheckval,outercheckid) {
-console.log("checkbox");
-console.log(outercheckval);
-console.log(outercheckid);
-// Ajax call is made to send the outercheckboxid to the controller. 
-// The controller will fetch the sub-details of that feature from model and return back in
-// in success function. 
-// Success funtion will first check if the outercheckbox is checked or unchecked. 
-// If unchecked it'll simply hide the innercheckboxdiv or do nothing as by default its hidden.
-// else will populate data in that div and show to user.  
+
+/* Ajax call is made to send the outercheckboxid to the controller/server. 
+    // The controller will fetch the sub-details of that feature from model and return back in success function. 
+    // Success funtion will first check if the outercheckbox is checked or unchecked. 
+    // If unchecked it'll simply hide the innercheckboxdiv or do nothing as by default its hidden.
+    // else will populate data in that div and show to user.
+*/  
 $.ajax({
 type: 'POST',
 dataType: "json",
@@ -737,85 +768,182 @@ console.log('outercheckbox obj',outerckbox);
 }); 
 }
 
+
 function showInnerCheckBoxDivs_Stored(outercheckid,data){
-console.log('#'+outercheckid+'-innercheckboxdiv')
-// Creating inner checks and populating them with data. 
-console.log(checkbox_id_dict)
-var k=checkbox_id_dict;
-var innercheckbox_id_list=[];
-var value_found=''
-if (outercheckid==="6"){
-   
-    console.log("DICT<<<<<!!!!")
-    console.log(dict)
-    $('#6-innercheckboxdiv').empty();
-    $('#6-innercheckboxdiv').append(dict['P']);
-    $('#6-innercheckboxdiv').show();
+        console.log('#'+outercheckid+'-innercheckboxdiv')
+        // Creating inner checks and populating them with data. 
+        console.log(checkbox_id_dict)
+        var k=checkbox_id_dict;
+        var innercheckbox_id_list=[];
+        var value_found=''
+        /* Phone set and Criteria Ordering are the Anamolies
+            ** For both of them different checks but same functionality. **
+            ** Fetching the innerCheckBox Div it will first clear it.**
+            ** FOR NOW, Getting the data from dict while the others from subdetails/-> Data. **
+            ** Load the Data Present in feature level dict in it. **
+            ** And simply display the div. **
 
-}
-else{
-for (var o in data){
-        console.log('A',o);    
-        var innercheck_element =  $(document.createElement("input")).attr({
-                id: o +'-innercheckbox-'+outercheckid,
-                name:  '',
-                value: data[o],
-                text :'',
-                type:  'checkbox',
-                checked:true,
-                onclick:"innerCheckBox($(this).attr('value'),$(this).attr('id'),\
-                $(this).parent().attr('title'), $(this).parent().attr('id')\
-                )"
+         */
+        
+        if (outercheckid==="6"){
+
+            console.log(dict);
+            $('#6-innercheckboxdiv').empty();
+            var row_div=document.createElement("div");
+            row_div.setAttribute("class",'row');
+            var col_md_6_div=document.createElement("div");
+            col_md_6_div.setAttribute("class","col-md-12");
+            row_div.append(col_md_6_div);
+            col_md_6_div.append(dict['P'])
+            var col_md_6_div_2=document.createElement("div");
+            col_md_6_div_2.setAttribute("class","col-md-12");
+            row_div.append(col_md_6_div_2);
+            var edit_href=document.createElement("a");
+            edit_href.setAttribute("onclick","mobileCatalog()");
+            edit_href.setAttribute("class","edit_href")
+
+            edit_href.innerHTML="Edit";
+            col_md_6_div_2.append(edit_href)
+        
+            $('#'+outercheckid+'-innercheckboxdiv').append(row_div);
+            $('#'+outercheckid+'-innercheckboxdiv').show();
+
+
+
+        }
+        else if (outercheckid==="7"){
+            $('#'+outercheckid+'-innercheckboxdiv').empty();
+            $('#'+outercheckid+'-innercheckboxdiv').show();
+
+            var row_div=document.createElement("div");
+            row_div.setAttribute("class",'row');
+            var innercheckboxdiv=document.getElementById('7-innercheckboxdiv')
+            innercheckboxdiv.append(row_div);
+            var col_md_6_div=document.createElement("div");
+            col_md_6_div.setAttribute("class","col-md-12");
+            row_div.append(col_md_6_div);
+            col_md_6_div.append(dict["CO"])
+            var col_md_6_div_2=document.createElement("div");
+            col_md_6_div_2.setAttribute("class","col-md-12");
+            row_div.append(col_md_6_div_2);
+            var view_href=document.createElement("a");
+            view_href.setAttribute("onclick","criteriaDispPopup()");
+            view_href.setAttribute("class","view_href")
+
+            view_href.innerHTML="View";
+            col_md_6_div_2.append(view_href);
             
-        })
-        var inner_id=innercheck_element.attr('id')
-        console.log('inner_id',inner_id)
-        console.log('outercheckid',outercheckid);
-        console.log('INNERCHECK FUNC CHECKBOX DICT',k);
-        console.log('array',k[outercheckid])
-
-        var stored_innercheckbox_id_list=k[outercheckid]
-        console.log('stored_innercheckbox_id_list',stored_innercheckbox_id_list);
-        delete stored_innercheckbox_id_list[value_found];
-           console.log(stored_innercheckbox_id_list)
-           if (jQuery.isEmptyObject(stored_innercheckbox_id_list)){
            
-            innercheck_element.prop('checked',false)
-           }
-           else {
-                for (var value_id in stored_innercheckbox_id_list){
+            $('#'+outercheckid+'-innercheckboxdiv').show();
+           
+        }
+        /* For all others */
+        else{
+            for (var o in data){
+                    console.log('A',o);    
+                    var innercheck_element =  $(document.createElement("input")).attr({
+                            id: o +'-innercheckbox-'+outercheckid,
+                            name:  '',
+                            value: data[o],
+                            text :'',
+                            type:  'checkbox',
+                            checked:true,
+                            onclick:"innerCheckBox($(this).attr('value'),$(this).attr('id'),\
+                            $(this).parent().attr('title'), $(this).parent().attr('id')\
+                            )"
+                            })
+                    var inner_id=innercheck_element.attr('id')
+                    console.log('inner_id',inner_id)
+                    console.log('outercheckid',outercheckid);
+                    console.log('INNERCHECK FUNC CHECKBOX DICT',k);
+                    console.log('array',k[outercheckid])
+
+                    var stored_innercheckbox_id_list=k[outercheckid]
+                    console.log('stored_innercheckbox_id_list',stored_innercheckbox_id_list);
+                    delete stored_innercheckbox_id_list[value_found];
+                    console.log(stored_innercheckbox_id_list)
+                    if (jQuery.isEmptyObject(stored_innercheckbox_id_list)){
                     
-                    console.log("stored_innercheckbox_id_list[value_id]",stored_innercheckbox_id_list[value_id]);
-                    console.log ('inner_id',inner_id)
-                            if (stored_innercheckbox_id_list[value_id]===inner_id)
-                            {    console.log('in if cond')
-                                innercheckbox_id_list.push(inner_id)
-
-                                value_found=value_id
-                                console.log("stored_innercheckbox_id_list",stored_innercheckbox_id_list);
+                        innercheck_element.prop('checked',false)
+                    }
+                    else {
+                            for (var value_id in stored_innercheckbox_id_list){
                                 
-                                break;
-                            }
-                            else{
-                                console.log('in else cond')
-                                innercheck_element.prop('checked',false)
+                                console.log("stored_innercheckbox_id_list[value_id]",stored_innercheckbox_id_list[value_id]);
+                                console.log ('inner_id',inner_id)
+                                        if (stored_innercheckbox_id_list[value_id]===inner_id)
+                                        {    console.log('in if cond')
+                                            innercheckbox_id_list.push(inner_id)
 
+                                            value_found=value_id
+                                            console.log("stored_innercheckbox_id_list",stored_innercheckbox_id_list);
+                                            
+                                            break;
+                                        }
+                                        else{
+                                            console.log('in else cond')
+                                            innercheck_element.prop('checked',false)
+
+                                        }
                             }
+                    }
+                    // adding input attributes to a div
+                    $('#'+outercheckid+'-innercheckboxdiv').append(innercheck_element);
+                    $('#'+outercheckid+'-innercheckboxdiv').append(data[o]);
+                    $('#'+outercheckid+'-innercheckboxdiv').show();
                 }
-           }
-        // adding input attributes to a div
-        $('#'+outercheckid+'-innercheckboxdiv').append(innercheck_element);
-        $('#'+outercheckid+'-innercheckboxdiv').append(data[o]);
-        $('#'+outercheckid+'-innercheckboxdiv').show();
-    }
-  
+            
+            }
+
+            checkbox_id_dict[outercheckid]=innercheckbox_id_list;
+            console.log('DICTionary',dict);
+
+            console.log('All innercheck boxid added to checkbox dict',checkbox_id_dict);
 }
 
-    checkbox_id_dict[outercheckid]=innercheckbox_id_list;
-    console.log('DICTionary',dict);
 
-    console.log('All innercheck boxid added to checkbox dict',checkbox_id_dict);
+/* 
+   *Function that hides the divs containing innercheckbox*
+   *No Func for phoneset and CO, and might not need it.*
+
+*/
+function hideInnerCheckBoxDivs(outercheckid){
+    delete checkbox_id_dict[outercheckid];
+    var get_chkbx_id_dict=JSON.parse(window.localStorage.getItem("checkbox_id_dict")); 
+    var get_chkbx_id_dict=checkbox_id_dict;
+    var set_chkbx_id_dict=get_chkbx_id_dict;
+    window.localStorage.setItem("checkbox_id_dict", JSON.stringify(set_chkbx_id_dict));
+
+    console.log("checkbox_id_dict",checkbox_id_dict);
+$('#'+outercheckid+'-innercheckboxdiv').hide();
+$('#'+outercheckid+'-innercheckboxdiv').empty();
+
 }
+
+
+function getSavedSubjectDataExpCont(){
+    $.ajax({
+        type: 'POST',
+        dataType: "json",
+        'data': {
+
+            'csrfmiddlewaretoken': '{{ csrf_token }}',
+        },
+        // the ajax call is sent to subdetails url name in the post function.  
+        url: "{% url 'get_saved_subject_data_expcont' %}",
+        success: function(data){
+        console.log("data['subject_data']",data['subject_data'])
+        
+        // console.log('keys',Object.keys(data['subject_data'])[0])
+        // console.log(Object.keys(data['subject_data'][Object.keys(data['subject_data'])[0]]).length);
+        //  for (var i=0;i<Object.keys(data['subject_data'][Object.keys(data['subject_data'])[0]]).length;i++){
+
+        //  }
+         }
+                     
+    }); 
+}
+
 
 function defaultFeatLevel_Table(){
     var defaultdic={};
@@ -990,6 +1118,8 @@ function ProcessExcel(data) {
        
 };
 
+
+// Don't know it is used or not
 // Code for changing the background colour of the custom_nav_bt
 for (var i = 0; i < btns.length; i++) {
       btns[i].addEventListener("click", function() {
@@ -999,6 +1129,8 @@ for (var i = 0; i < btns.length; i++) {
     console.log('classname',this.className);
   });
 }
+
+
 // Uploading file Function . 
 function showImportSubdiv(){
     // setting current active btn.
@@ -1098,6 +1230,7 @@ function showFeatureLvls(){
     $('#batchmngprvbtn_div').hide();
     $('#dataDiv').hide();
     $('#mobile_catalog_div').hide();
+    
     $('#phones_main_button_div').hide();
     $('#expphonelist_div').hide();
     $('#price_slider_div').hide();
@@ -1105,6 +1238,7 @@ function showFeatureLvls(){
     $("#exp_sel_phones_div").hide();
     $("#searchfilter_head_div").hide();
     $('#blkoutputsDiv').hide();
+    $('#order_criteria_div').hide();
 
 
     $('#feat_lvl_div').slideDown(500);
@@ -1116,7 +1250,6 @@ function showFeatureLvls(){
     
 
 }
-
 function showBatchManagement(){
     $("#exp_sel_phones_div").hide();
     $("#searchfilter_head_div").hide();
@@ -2361,8 +2494,7 @@ if (outerckbox.is(':checked')) {
         // alert('You Checked');
         console.log('outercheckval',outercheckval);
         console.log('data retrieved',data);
-    if (outercheckval==="P"){
-        
+    if (outercheckval==="P"){ 
                 $('#phsetnum_div').empty();
                 $('#phsetnum_div').dialog({ 
                 title: "Phone Set",
@@ -2386,8 +2518,8 @@ if (outerckbox.is(':checked')) {
                                 text:"cancel",
                                 click: function() {
                                     $( this ).dialog( "close" );
+                                    $("#6").prop('checked', false);
                                  
-
                                 }
 
                             },
@@ -2395,13 +2527,18 @@ if (outerckbox.is(':checked')) {
                             {
                             text: "Save",
                             click: function() {
-                               // alert('aa');
+                            // alert('aa');
                                
                                 $( this ).dialog( "close" );
+                            // Enabling mobile Catalog button if p is not ticked!.
 
-                                console.log("checkbos6",$("#6"))
+                                $("#create_exp_mobile_catalog").css('background-color','');
+                                $("#create_exp_mobile_catalog").css('color','');
+                                $("#create_exp_mobile_catalog").css('cursor','pointer');
+
+                                $("#create_exp_mobile_catalog").attr("disabled", false); 
+
                                 $("#6").prop('checked', true);
-                                document.getElementById("6").checked=true;
                                 console.log("vale",$('#inputset_num').val())
                                 numofsets=$('#inputset_num').val();
                                 setlist=[]
@@ -2417,11 +2554,29 @@ if (outerckbox.is(':checked')) {
                                     dict[outercheckval]=setlist;
                                 }
                                 $('#'+outercheckid+'-innercheckboxdiv').empty();
-                                
-                                $('#'+outercheckid+'-innercheckboxdiv').append(dict[outercheckval]);
+                                var row_div=document.createElement("div");
+                                row_div.setAttribute("class",'row');
+                                var col_md_6_div=document.createElement("div");
+                                col_md_6_div.setAttribute("class","col-md-12 col-sm-12");
+                                row_div.append(col_md_6_div);
+                                col_md_6_div.append(dict[outercheckval])
+                                var col_md_6_div_2=document.createElement("div");
+                                col_md_6_div_2.setAttribute("class","col-md-12 col-sm-12");
+                                row_div.append(col_md_6_div_2);
+                                var edit_href=document.createElement("a");
+                                edit_href.setAttribute("onclick","mobileCatalog()");
+                                edit_href.setAttribute("class","edit_href")
+                                edit_href.innerHTML="Edit";
+                                col_md_6_div_2.append(edit_href);
+                               
+                                $('#'+outercheckid+'-innercheckboxdiv').append(row_div);
                                 $('#'+outercheckid+'-innercheckboxdiv').show();
+                                
+                                
+
+
                                 window.localStorage.setItem("feat_dict", JSON.stringify(dict));
-                                checkbox_id_dict[6]=[];
+                                checkbox_id_dict[outercheckid]=[];
                                 window.localStorage.setItem("checkbox_id_dict", JSON.stringify(checkbox_id_dict));
    
 
@@ -2449,7 +2604,7 @@ if (outerckbox.is(':checked')) {
                 row_d1.setAttribute('class','row');
                 row_div.append(row_d1);
                 var col_md_12_div=document.createElement('DIV');
-                col_md_12_div.setAttribute('class','col-md-12');
+                col_md_12_div.setAttribute('class','col-md-12 col-sm-12');
                 row_d1.append(col_md_12_div)
                 var p_text=document.createElement('p');
                 p_text.innerHTML="Number of sets"
@@ -2458,7 +2613,7 @@ if (outerckbox.is(':checked')) {
                 row_d2.setAttribute('class','row');
                 row_div.append(row_d2);
                 var col_md_12_div2=document.createElement('DIV');
-                col_md_12_div2.setAttribute('class','col-md-12');
+                col_md_12_div2.setAttribute('class','col-md-12 col-sm-12');
                 row_d2.append(col_md_12_div2)
                 var input = document.createElement("INPUT");
                 input.setAttribute("type", "number");
@@ -2470,8 +2625,6 @@ if (outerckbox.is(':checked')) {
     else if(outercheckval==="CO"){
         var numofsets=0;
         $('order_criteria_div').empty();
-
-
         $('#ordersetnum_div').empty();
         $('#ordersetnum_div').dialog({ 
         title: "Order Criteria",
@@ -2488,17 +2641,50 @@ if (outerckbox.is(':checked')) {
             console.log("vale",$('#inputset_num_co').val())
             numofsets=$('#inputset_num_co').val();
             HideALL();
-            setlist=[];
+            var setlst=[];
             for (var i=0;i<numofsets;i++){
                 var j=i+1
                 var str="CO."+j;
-                setlist.push(str);
+                setlst.push(str);
             }
-            console.log("SetList",setlist);
-            dict[outercheckval]=setlist;
-            orderCriteriaHtmlSetup(outercheckval,setlist);
-            $('#'+outercheckid+'-innercheckboxdiv').append(dict[outercheckval]);
+            console.log("SetList",setlst);
+            dict[outercheckval]=setlst;
+            orderCriteriaHtmlSetup(outercheckval,setlst);
+            
+
+            if (dict[outercheckval]===undefined){
+                dict[outercheckval]=[];
+            }
+            $('#'+outercheckid+'-innercheckboxdiv').empty();
+           
+            var row_div=document.createElement("div");
+            row_div.setAttribute("class",'row');
+            var innercheckboxdiv=document.getElementById('7-innercheckboxdiv')
+            innercheckboxdiv.append(row_div);
+            
+
+            var col_md_6_div=document.createElement("div");
+            col_md_6_div.setAttribute("class","col-md-12");
+            row_div.append(col_md_6_div);
+            col_md_6_div.append(dict[outercheckval])
+
+            var col_md_6_div_2=document.createElement("div");
+            col_md_6_div_2.setAttribute("class","col-md-12");
+            row_div.append(col_md_6_div_2);
+
+            var view_href=document.createElement("a");
+            view_href.setAttribute("onclick","criteriaDispPopup()");
+            view_href.setAttribute("class","view_href")
+
+            view_href.innerHTML="View";
+            col_md_6_div_2.append(view_href);
+            
             $('#'+outercheckid+'-innercheckboxdiv').show();
+
+
+            window.localStorage.setItem("feat_dict", JSON.stringify(dict));
+            checkbox_id_dict[7]=[];
+            window.localStorage.setItem("checkbox_id_dict", JSON.stringify(checkbox_id_dict));
             
             updateFeatureLvls();
          
@@ -2570,8 +2756,18 @@ if (outerckbox.is(':checked')) {
         // For now its purpose is simply to hide the innercheckdivs.  
         if (outercheckval==="P"){
             if(exp_id!==""){
+                    // removing every thing related to phoneset
                     phoneset_dic={};
                     phonename_dic={};
+                    brand_set_dict={};
+                    slider_set_dict={};
+                    // disabling mobile Catalog button if p is not ticked!.
+
+                    $("#create_exp_mobile_catalog").css('background-color','black');
+                    $("#create_exp_mobile_catalog").css('color','black');
+                    $("#create_exp_mobile_catalog").css('cursor','not-allowed');
+
+                    $("#create_exp_mobile_catalog").attr("disabled", true); 
                 }
 
         }
@@ -2599,7 +2795,46 @@ if (outerckbox.is(':checked')) {
     }
   }});  
  }
+function criteriaDispPopup(){
+        $('#criteria_display_popup').empty();
+        $('#criteria_display_popup').dialog({ 
+        title: "Criteria Display",
+        autoOpen: false,
+        minHeight: 200,
+        maxHeight: 300,
+        closeOnEscape: true,
+        hide: { effect: "highlight", duration: 1000 },
+    });
+    $('#criteria_display_popup').dialog("open");
+    var row_content_div = document.createElement('div');
+    row_content_div.setAttribute('class','row-content');
+    $('#criteria_display_popup').append(row_content_div);
+    console.log("crit_order_dict_test",crit_order_dict);
+    if (!Object.keys(crit_order_dict).length){
+        alert("Data for criteria order not loaded")
+    }
+    for (var i in crit_order_dict){
+        var row_d1=document.createElement('div');
+        row_d1.setAttribute('class','row');
+        row_content_div.append(row_d1);
+        var col_md_12_div=document.createElement('DIV');
+        col_md_12_div.setAttribute('class','col-md-12');
+        row_d1.append(col_md_12_div)
+        col_md_12_div.append(i);
+        var row_d2=document.createElement('DIV');
+        row_d2.setAttribute('class','row');
+        row_content_div.append(row_d2);
+        var col_md_12_div_2=document.createElement('DIV');
+        col_md_12_div_2.setAttribute('class','col-md-12');
+        row_d2.append(col_md_12_div_2)
+        col_md_12_div_2.append(crit_order_dict[i])
 
+
+    }
+       
+
+       
+}
 
 // once the onclick function=>(innercheckbox) of inner checks are called it 
 // shows three things. innercheck value , id and outer check value/title.
@@ -2798,22 +3033,6 @@ for (var o in data){
      console.log('All innercheck boxid added to checkbox dict',checkbox_id_dict);
 }
 
-// function that hides the divs containing innercheckbox
-function hideInnerCheckBoxDivs(outercheckid){
-    delete checkbox_id_dict[outercheckid];
-    var get_chkbx_id_dict=JSON.parse(window.localStorage.getItem("checkbox_id_dict")); 
-    var get_chkbx_id_dict=checkbox_id_dict;
-    var set_chkbx_id_dict=get_chkbx_id_dict;
-    window.localStorage.setItem("checkbox_id_dict", JSON.stringify(set_chkbx_id_dict));
-
-    console.log("checkbox_id_dict",checkbox_id_dict);
-$('#'+outercheckid+'-innercheckboxdiv').hide();
-$('#'+outercheckid+'-innercheckboxdiv').empty();
-
-}
-
-
-
 function sendFeatureLevels(){ 
 if (dict['C']===undefined){
     
@@ -2859,15 +3078,15 @@ if (dict['C']===undefined){
                                         console.log("vale",$('#inputset_num_co').val())
                                         numofsets=$('#inputset_num_co').val();
                                         HideALL();
-                                        setlist=[];
+                                        var setlst=[];
                                         for (var i=0;i<numofsets;i++){
                                             var j=i+1
                                             var str="CO."+j;
-                                            setlist.push(str);
+                                            setlst.push(str);
                                         }
-                                        console.log("SetList",setlist);
-                                        dict["CO"]=setlist;
-                                        orderCriteriaHtmlSetup("CO",setlist);
+                                        console.log("SetLst",setlst);
+                                        dict["CO"]=setlst;
+                                        orderCriteriaHtmlSetup("CO",setlst);
                                         $('#'+7+'-innercheckboxdiv').append(dict["CO"]);
                                         $('#'+7+'-innercheckboxdiv').show();
                                         
@@ -3095,6 +3314,16 @@ function sendFilePath(id){
 <script>
     // Warning before leaving the page (back button, or outgoinglink)
     window.onbeforeunload = function() {
+        window.localStorage.setItem("slider_set_dict", JSON.stringify(slider_set_dict));
+        window.localStorage.setItem("brand_set_dict", JSON.stringify(brand_set_dict));
+        window.localStorage.setItem("phoneset_dic", JSON.stringify(phoneset_dic));
+        window.localStorage.setItem("phonename_dic", JSON.stringify(phonename_dic));
+        window.localStorage.setItem("crit_order_dict", JSON.stringify(crit_order_dict));
+        window.localStorage.setItem("crit_hide_dict", JSON.stringify(crit_hide_dict));
+
+
+
+
        return "Do you really want to leave our brilliant application?";
        //if we return nothing here (just calling return;) then there will be no pop-up question at all
        //return;
@@ -3110,7 +3339,7 @@ function sendFilePath(id){
     // var btns = document.getElementsByClassName("custom_nav_btn");
 var slider_set_dict={};
 var brand_set_dict={};
-        $(document).ready(function () {
+$(document).ready(function () {
             // console.log('btns',btns)
             $('#mobile_catalog_div').hide();
             $('#pager').hide();
@@ -3217,10 +3446,8 @@ var brand_set_dict={};
         // });
 
         });
-    function mobileCatalog(){
+function mobileCatalog(){
         
-
-       
         $('#importSubdiv').hide();
         $('#dispFileFeatLvldiv').hide();
         $('#subj_split_batch_rowdiv').hide();
@@ -3232,7 +3459,6 @@ var brand_set_dict={};
         $('#expphonelist_div').show();
         $('#mobile_catalog_div').show();
         $("#price_slider_div").show(); 
-        
         $('#brand_check_div').show();
         $("#exp_sel_phones_div").show();
         $("#searchfilter_head_div").show();
@@ -3416,10 +3642,6 @@ var brand_set_dict={};
         col_md_2.id="save_button"
         row.append(col_md_2);
        
-
-
-
-
         for (var i=0;i<setlist.length;i++){
             var button=document.createElement('button')
             button.id=setlist[i]
@@ -3440,6 +3662,9 @@ var brand_set_dict={};
         // $('#selfbuttondiv').hide();
         // $('#prebuttondiv').hide();
         // $('#upload').prop('disabled',true);
+        var current=$(".active");
+        current.prop('class',current.attr('class').replace('active',""));
+        $('#create_exp_mobile_catalog').prop('class', 'custom_nav_btn active');
     }
     var specmobphones={}
     
@@ -3756,7 +3981,7 @@ var brand_set_dict={};
             // $('#expphonelist_div').append(phonename_dic[active_button])
         
 
-        // 
+        // red color
         document.getElementById(active_button).style.backgroundColor = "#94000e"
         // check if back button exists
         var temp_list=[]
@@ -4465,7 +4690,7 @@ var brand_set_dict={};
         main_row.append(col_md_1);
         var back_to_main_setup_btn=document.createElement('button');
         back_to_main_setup_btn.innerHTML="Back";
-        back_to_main_setup_btn.setAttribute('onclick','initializePage()')
+        back_to_main_setup_btn.setAttribute('onclick','showFeatureLvls()')
         col_md_1.append(back_to_main_setup_btn);
         var col_md_5=document.createElement('div');
         col_md_5.setAttribute('class','col-md-5 text-left');
@@ -4692,7 +4917,10 @@ var brand_set_dict={};
                                                         window.localStorage.setItem("blockList", JSON.stringify(blockList));
                                                     }
                                                     alert("HERE")
-                                                    showFeatLvlDiv();                                        
+
+                                                    showFeatureLvls();    
+                                                    // not a good sol
+                                                    $('#6-innercheckboxdiv').show();                               
                                         }
                                     });
 
@@ -5385,7 +5613,10 @@ var brand_set_dict={};
         
           $("#brand_check_div").empty();
           var brand_check_div=document.getElementById("brand_check_div");
-
+          var col_md_12=document.createElement('div');
+          col_md_12.setAttribute("class",'col-md-12');
+          brand_check_div.append(col_md_12);
+          col_md_12.append("BRANDS")
           var col_md_12=document.createElement('div');
           col_md_12.setAttribute("class",'col-md-12');
           brand_check_div.append(col_md_12);

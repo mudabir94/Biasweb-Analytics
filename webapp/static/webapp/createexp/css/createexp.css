@@ -59,9 +59,30 @@
 #nextbtn_to_batch{
     background: #105796;
     color: white; 
-    padding: 10px 20px; /* Some padding */
+    padding: 10px 10px; /* Some padding */
     /* box-shadow: 0 0 0.5px 0.5px #105796; */
     cursor: pointer;
     border:none;
+
+}
+#exp_sel_phones_div{
+  color:palegoldenrod;
+}
+#expphonelist_div{
+  color:palegoldenrod;
+
+}
+/* #create_exp_mobile_catalog{
+  background: black;
+} */
+.edit_href{
+  color:brown   !important;
+  cursor: pointer;
+
+}
+.view_href{
+  color: rgb(74, 116, 89)  !important;
+  cursor: pointer;
+
 
 }
