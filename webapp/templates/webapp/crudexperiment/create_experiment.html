@@ -566,15 +566,23 @@ $("#exp_sel_phones_div").hide();
 $("#searchfilter_head_div").hide();
 
 $('#feat_lvl_div').show();
-//defaultFeatLevel_Table();
-//TODO@MUDABIR:
+
+// Exp id is null//
 if(exp_id===""){
-    // $('#feat_lvl_div').hide();
-    
-    //test to see if session exp empty
-    //if not, then alert that session exists
-    //if ok, load the experiment details as were
-    //else, set sess_expId to None
+    /*
+        *test to see if session exp empty
+        *if not, then alert that session exists
+        *if ok, load the experiment details as were
+        *else, set sess_expId to None
+    */
+    /*
+        * By default hide mobile catalog div...
+    */
+    $("#create_exp_mobile_catalog").css('background-color','black');
+    $("#create_exp_mobile_catalog").css('color','black');
+    $("#create_exp_mobile_catalog").css('cursor','not-allowed');
+    $("#create_exp_mobile_catalog").attr("disabled", true); 
+
 } else {
 
     let contin = confirm("Continue working on Experiment: "+custom_exp_id+"?");
