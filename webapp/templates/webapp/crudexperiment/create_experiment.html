@@ -4413,12 +4413,11 @@ var slider_set_dict={};
 
                 list.splice(list.indexOf(mob_id),1);
                 if (list.length===0){
-                    alert("EM")
                     delete phoneset_dic[active_button];
                     delete phonename_dic[active_button];
                     var col_div=document.getElementById(active_button+"unq");
                     col_div.parentNode.removeChild(col_div);
-                    console.log("<<---phonename_dic",phonename_dic)
+                    console.log("<<---phonename_dic",phonename_dic);
 
                     if ($('#backbutton_id').text()==="Back"){
                         $(element).parent().parent().remove();
