@@ -308,3 +308,14 @@ class ExpCriteriaOrder(models.Model):
     pCriteria = models.CharField(max_length=200, null=True)
     position = models.IntegerField(null=True)
     sh_hd=models.IntegerField(null=True)
+class ExpCriteriaOrderSet(models.Model):
+    exp = models.ForeignKey(experiment, on_delete=models.CASCADE,null=True)
+    block = models.ForeignKey(Block, on_delete=models.CASCADE,null=True)
+    cOrder_id = models.CharField(max_length=10,null=True)
+    #NEED TO KEEP A RECORD OF THE EXISTING SET OF AVAILABLE CRITERIA IN THE MOBILE PHONES TABLE
+    criteria=models.CharField(max_length=10,null=True)
+    pCriteria = models.CharField(max_length=200, null=True)
+    position = models.IntegerField(null=True)
+    sh_hd=models.IntegerField(null=True)
+class criteriaTable(models.Model):
+    criteria_name=models.CharField(max_length=20,null=True)

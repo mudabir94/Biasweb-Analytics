@@ -63,9 +63,14 @@ urlpatterns = [
     url(r'^price_range_retrieve/',views.priceRangeRetrieve, name='price_range_retrieve'),
     url(r'^get_selectedadmin_phones/',views.getSelectedAdminPhones, name='get_selectedadmin_phones'),
     url(r'^get_mobile_data/',views.getMobiledata,name='get_mobile_data'),
+    url(r'^getbrandphones/',views.getBrandPhones,name='getbrandphones'),
+
+    
+    url(r'^retspecmobilephone/',views.retSpecMobilePhone, name='retspecmobilephone'),
     url(r'^get_specificmobile_data/',views.getSpecificMobileData,name='get_specificmobile_data'),
     url(r'^savephonesets/',views.SavePhoneSets,name='savephonesets'),
     url(r'^ordercriteriasetup/' , views.orderCriteria_Setup.as_view() , name='ordercriteriasetup') ,
+
 
 
 

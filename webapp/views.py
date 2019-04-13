@@ -82,7 +82,7 @@ class Home(TemplateView):
             
             template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
             # return redirect('/filtered_mobile_view')
-            return render(request,'webapp/2by2comparemobilespecs.html')
+            # return render(request,'webapp/2by2comparemobilespecs.html')
             # return render(request,template_sidebar)
         elif role=='Experiment_Admin':
             # roleobj=Role.objects.get(pk=role)
@@ -239,15 +239,15 @@ def getSelectedAdminPhones(request):
     if request.method=='GET':
         if request.is_ajax():
 
-            # expCont = getExpController(request)
-            # existExpId = expCont.exp.id
+            expCont = getExpController(request)
+            existExpId = expCont.exp.id
             # print("existExpId",existExpId)
-            # expobj=exp.objects.get(custom_exp_id=existExpId)
+            expobj=exp.objects.get(custom_exp_id=existExpId)
             # print("expobj",expobj)
             ## A Check is to be set for knowing if the admin has created new, working on existing or have not created the exp obj yet. 
             # if working on existing:
            
-            cellphones=selectedAdminPhones.objects.filter(exp=187)
+            cellphones=selectedAdminPhones.objects.filter(exp=expobj)
 
             clist=[]
             for c in cellphones:
@@ -266,9 +266,7 @@ def getSelectedAdminPhones(request):
                 'cellphones':cellphones_str,
                 'data':'retrieved data from model'
             })
-            
 
-            
 
 
 def showMob(request):
@@ -1708,8 +1706,10 @@ class createExperiment(TemplateView):
             print("in if ")
             print('price_range_values',price_range_values)
             price_range_values = json.loads(price_range_values)
-            print('price_range_values1',price_range_values[0])
-            print('price_range_values2',price_range_values[1])
+            price_range=[]
+            price_range.append(int(price_range_values[0]))
+            price_range.append(int(price_range_values[1]))
+
             # mobiles_retrieved=samsung_phone.objects.filter(price_in_pkr__range=(price_range_values[0], price_range_values[1]))
             mobiles_retrieved=mobilephones.objects.filter(price__range=(price_range_values[0], price_range_values[1])).order_by('id') 
             
@@ -1722,11 +1722,12 @@ class createExperiment(TemplateView):
             # samsung_phones=mobiles_retrieved
             mobilephones_str=mobiles_retrieved
             # print("mobilephones_str",mobilephones_str)
-        
+            print("price_range",price_range)
             return JsonResponse(
             {  
                 # 'samsung_phones':samsung_phones
-                'mobilephones':mobilephones_str
+                'mobilephones':mobilephones_str,
+                "price_range_values":price_range
             }
             )
             
@@ -1752,6 +1753,8 @@ class createExperiment(TemplateView):
                 # print("mobilephones",mobile_phones__str)
             
                 creat_exp_template_sidebar='webapp/sidebartemplates/createExpSideBars/crtExpsidebartemp_exp.html'
+                creat_exp_template_sidebar2='webapp/sidebartemplates/createExpSideBars/crtExpsidebartemp_exp2.html'
+
             elif role=='Experimental_Admin':
                 # samsung_phones= samsung_phone.objects.all() 
                 # paginator = Paginator(samsung_phones,9)
@@ -1774,6 +1777,7 @@ class createExperiment(TemplateView):
             
             return render(request,self.template_name,
             {  'creat_exp_template_sidebar':creat_exp_template_sidebar,
+               'creat_exp_template_sidebar2':creat_exp_template_sidebar2,
                 'platformfeatobj':platformfeatobj,
                 'sess_expId':sess_expId,
                 'sess_custExpId':sess_custExpId,
@@ -2061,3 +2065,34 @@ def getMobiledata(request):
             mobiles_retrieved = list(mobiles_retrieved.values())   
             mobilephones_str=mobiles_retrieved
             return JsonResponse({'mobilephones':mobilephones_str})
+            
+def getBrandPhones(request):
+    if request.method=="POST":
+        if request.is_ajax:
+            brandname=request.POST.get("brandname") 
+            brandname = json.loads(brandname)
+
+            print ("brand name",brandname)
+            filtmob=mobilephones.objects.filter(Mobile_Companny=brandname)
+            listofmob=list(filtmob.values())
+            print("list of mob",listofmob)
+            data={
+                'mobilephones':listofmob
+            }
+            return JsonResponse(data)
+def retSpecMobilePhone(request):
+
+    if request.method=="POST":
+        if request.is_ajax:
+            mobile_id=request.POST.get("mobile_id") 
+            # based on mobile id ret phone from mobilephones model.
+            print("mobile_id",mobile_id) 
+            mobile=mobilephones.objects.get(id=mobile_id)
+            phone=mobile.Mobile_Name
+            
+            data={
+                "phone":phone
+            }
+            return JsonResponse(data)
+
+            
