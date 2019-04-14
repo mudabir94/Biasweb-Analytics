@@ -7,14 +7,45 @@
         </div>
 </div> -->
 
-<div class="row"> 
+<div class="row" id="searchfilter_head_div"> 
         <div class="col-md-12">
                <div>
                        <h4>Search Filters</h4>
                </div>
         </div>
 </div>
-<div class="row"> 
+
+<div class="row-fluid" id="price_slider_div"></div>
+<div class="row" id="brand_check_div">
+                <div class="col-md-12">
+                        <div class="row">
+                                <div class="col-md-6">
+                                        <p>Samsung</p>
+                                </div>
+                                <div class="col-md-6">
+                                        <input type="checkbox" name="Samsung_check" value="Samsung" onchange="brandCheck_box(this)" >
+                                </div>
+                        </div>
+                        <div class="row">
+                                        <div class="col-md-6">
+                                                <p>QMobile</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                                <input type="checkbox" name="QMobile_check" value="QMobile" onchange="brandCheck_box(this)"  >
+                                        </div>
+                        </div>
+                        <div class="row">
+                                        <div class="col-md-6">
+                                                <p>Oppo</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                                <input type="checkbox" name="Oppo_check" value="Oppo" onchange="brandCheck_box(this)" >
+                                        </div>
+                        </div>
+
+                </div>
+               
+        
         <!-- <div class="col-md-4">
                <button id="Samsung" onclick="retBrandMobs($(this))">SAMSUNG</button>
         </div>

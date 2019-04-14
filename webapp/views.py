@@ -1701,17 +1701,27 @@ class createExperiment(TemplateView):
         if request.is_ajax():
             print('Ajax')
             price_range_values = request.GET.get('price_range_values')
+            brandnames = request.GET.get('brandnames')
+
             print(price_range_values)
            
             print("in if ")
             print('price_range_values',price_range_values)
             price_range_values = json.loads(price_range_values)
+            if brandnames:
+                brandnames = json.loads(brandnames)
+
             price_range=[]
             price_range.append(int(price_range_values[0]))
             price_range.append(int(price_range_values[1]))
 
             # mobiles_retrieved=samsung_phone.objects.filter(price_in_pkr__range=(price_range_values[0], price_range_values[1]))
-            mobiles_retrieved=mobilephones.objects.filter(price__range=(price_range_values[0], price_range_values[1])).order_by('id') 
+            if not brandnames:
+                mobiles_retrieved=mobilephones.objects.filter(price__range=(price_range_values[0], price_range_values[1])).order_by('id') 
+            else:
+                mobiles_retrieved=mobilephones.objects.filter(price__range=(price_range_values[0], price_range_values[1]),Mobile_Companny__in=brandnames).order_by('id') 
+
+
             
             # else: 
             #     mobiles_retrieved=samsung_phone.objects.filter(price_in_pkr__range=(10000, 30000))
@@ -1797,6 +1807,8 @@ class createExperiment(TemplateView):
                 print(request.POST.get('price_range_values'))
                 #print('d',d)
                 postedFLevels = json.loads(d)
+                print('postedFLevels',postedFLevels)
+                # if postedFLevels is none then remove everything ..... 
                 print('b',type(postedFLevels),postedFLevels)
                 
                 #CREATE EXPERIMENT CONTROLLER AND INITIALIZE
@@ -2066,15 +2078,26 @@ def getMobiledata(request):
             mobilephones_str=mobiles_retrieved
             return JsonResponse({'mobilephones':mobilephones_str})
             
-def getBrandPhones(request):
+def getReqPhones(request):
     if request.method=="POST":
         if request.is_ajax:
-            brandname=request.POST.get("brandname") 
+            brandname=request.POST.get("brands")
             brandname = json.loads(brandname)
+            price_range=request.POST.get("price")
+            price_range = json.loads(price_range)
 
             print ("brand name",brandname)
-            filtmob=mobilephones.objects.filter(Mobile_Companny=brandname)
-            listofmob=list(filtmob.values())
+
+            print ("price_range",price_range)
+            # fetch mobile phones based on these... 
+            if not brandname:
+                mobiles_retrieved=mobilephones.objects.filter(price__range=(price_range[0], price_range[1])).order_by('id') 
+            else:
+                mobiles_retrieved=mobilephones.objects.filter(price__range=(price_range[0], price_range[1]),Mobile_Companny__in=brandname).order_by('id') 
+
+            print("MOBILES RETR")
+            print(mobiles_retrieved)
+            listofmob=list(mobiles_retrieved.values())
             print("list of mob",listofmob)
             data={
                 'mobilephones':listofmob

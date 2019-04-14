@@ -317,5 +317,6 @@ class ExpCriteriaOrderSet(models.Model):
     pCriteria = models.CharField(max_length=200, null=True)
     position = models.IntegerField(null=True)
     sh_hd=models.IntegerField(null=True)
+
 class criteriaTable(models.Model):
     criteria_name=models.CharField(max_length=20,null=True)
