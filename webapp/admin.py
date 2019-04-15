@@ -8,8 +8,9 @@ from import_export.admin import ImportExportActionModelAdmin
 from .models import User
 from .models import signup_table,blog,mobile_phone,mobilephones,experiment
 from .models import samsung_phone,sort_feature,userscoreRecord,Role,platform_feature
-from .models import template_roles,templates,feature,selectedAdminPhones
+from .models import template_roles,templates,feature,selectedAdminPhones,PhoneCriteria
 from .models import Subject,experiment_feature,Batch,Block,prunedmobilephones,ExpCriteriaOrder
+
 
 class MyUserChangeForm(UserChangeForm):
     class Meta(UserChangeForm.Meta):
@@ -37,7 +38,10 @@ class templateRoleAdmin(admin.ModelAdmin):
     'created_at','update_at',)    
 
 class ExpCriteriaOrderAdmin(admin.ModelAdmin):
-    list_display=('id','exp','cOrder_id','pCriteria','position','sh_hd')
+    list_display=('id','exp','cOrder_id','pCriteria','fvp','position','sh_hd')
+class PhoneCriteriaAdmin(admin.ModelAdmin):
+    list_display=('id','criteria_name','status','priority','position')
+
 class ExperimentAdmin(admin.ModelAdmin):
     list_display= ('id','custom_exp_id')
 #----------------------------------------------------------------------------
@@ -101,7 +105,7 @@ class mobilephonesAdmin(ImportExportActionModelAdmin):
 admin.site.register(User, MyUserAdmin)
 admin.site.register(ExpCriteriaOrder, ExpCriteriaOrderAdmin)
 admin.site.register(selectedAdminPhones, selectedAdminPhones_Admin)
-
+admin.site.register(PhoneCriteria, PhoneCriteriaAdmin)
 admin.site.register(samsung_phone,SamsungAdmin)
 admin.site.register(Role,RoleAdmin)
 admin.site.register(platform_feature,PlatformFeatureAdmin)

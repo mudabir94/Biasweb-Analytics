@@ -3,6 +3,12 @@ PART 1: DECIDE THE CRITERIA TO SHOW THE SUBJECT
 1.1 The main feature that controls this is "Criteria Display Mehtod"
 1.2 When unselected, this means the exp.admin wants to show "FULL" criteria (C.full)
 --->1.2.1 So, if it is not ticked, then we must prompt the exp.admin to "OK" the full DEFAULT list
+--------> 1.2.1.a: Create a Model (Table) "PhoneCriteria" to store the current fields of Mobilephones table (dynamically - should
+refresh every time the admin logs in). It will have an extra column/field called "Default", which is 0 or 1 (or 2 
+for obligatory?) depending on admin choice
+(initially, we will set it for the admin)
+---------> 1.2.1.b: The PhoneCriteria model will also track if certain fields are mandatory (Mandatory)
+---------> 1.2.1.c: PLEASE NOTE, THIS DEFAULT FULL CRITERIA SET WILL BE saved in ExpCriteriaOrder BUT WILL __NOT___ APPEAR IN BLOCKS AS A FEATURE LEVEL (REMAINS UNTICKED)
 --->1.2.2 The admin at this point can unselect from the default offered criteria.
 --->1.2.3 Save admin choice in a table called ExpCriteriaSet [Exp, Block (null=true), FvP, CO-pos, Cr-Name ]
 
@@ -23,4 +29,5 @@ C.prune - Co.P.1
 c.prune - co.p.2
 [BY DEFAULT, THE ORDERING VERSIONS OF FULL WILL CARRY TO PRUNE AS P.1 AND P.2, UNLESS ADMIN CHANGES IT]
 
+NOTE: If a default criteria set is used (Criteria Display Method is OFF), then instead of CO.F.1, simply save as "default".  This should not be included as a "Feature Level" in any blocks of the experiment.
 

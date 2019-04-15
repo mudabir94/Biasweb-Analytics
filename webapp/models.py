@@ -216,7 +216,7 @@ class mobilephones(models.Model):
     
     class Meta:
         verbose_name_plural="mobilephones"
-        
+    
 
 class samsung_phone(models.Model):
     Mobile_Companny= models.CharField(max_length=200, null= True)
@@ -300,13 +300,28 @@ class selectedAdminPhones(models.Model):
     mob = models.ForeignKey(mobilephones, on_delete=models.CASCADE,null=True)
     p_order = models.IntegerField(null=True)
 
+class PhoneCriteria(models.Model):
+    criteria_name=models.CharField(max_length=20,null=True)
+    status=models.CharField(max_length=20,null=True)
+    priority=models.CharField(max_length=20,null=True)
+    position=models.IntegerField(null=True)
+    def __str__(self):
+        return self.criteria_name
+    class Meta:
+       verbose_name_plural="Phone Criteria"
+
+
 class ExpCriteriaOrder(models.Model):
     exp = models.ForeignKey(experiment, on_delete=models.CASCADE,null=True)
     block = models.ForeignKey(Block, on_delete=models.CASCADE,null=True)
     cOrder_id = models.CharField(max_length=10,null=True)
+    fvp=models.CharField(max_length=10,null=True)
     #NEED TO KEEP A RECORD OF THE EXISTING SET OF AVAILABLE CRITERIA IN THE MOBILE PHONES TABLE
-    pCriteria = models.CharField(max_length=200, null=True)
+    pCriteria = models.ForeignKey(PhoneCriteria, on_delete=models.CASCADE,null=True)
+
+    # pCriteria = models.CharField(max_length=200, null=True)
     position = models.IntegerField(null=True)
+
     sh_hd=models.IntegerField(null=True)
 class ExpCriteriaOrderSet(models.Model):
     exp = models.ForeignKey(experiment, on_delete=models.CASCADE,null=True)
@@ -314,9 +329,9 @@ class ExpCriteriaOrderSet(models.Model):
     cOrder_id = models.CharField(max_length=10,null=True)
     #NEED TO KEEP A RECORD OF THE EXISTING SET OF AVAILABLE CRITERIA IN THE MOBILE PHONES TABLE
     criteria=models.CharField(max_length=10,null=True)
+
     pCriteria = models.CharField(max_length=200, null=True)
     position = models.IntegerField(null=True)
     sh_hd=models.IntegerField(null=True)
 
-class criteriaTable(models.Model):
-    criteria_name=models.CharField(max_length=20,null=True)
+

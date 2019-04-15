@@ -44,7 +44,7 @@ from .forms import (NameForm, SignUpForm, blogForm, filterform,
 from .models import Role, User, blog
 from .models import experiment as exp
 from .models import (mobile_phone, mobilephones, platform_feature, prunedmobilephones,
-                     samsung_phone, sort_feature, userscoreRecord,ExpCriteriaOrder)
+                     samsung_phone, sort_feature, userscoreRecord,ExpCriteriaOrder,PhoneCriteria)
 from.models import template_roles as tr 
 from. models import templates as tpl
 
@@ -567,9 +567,173 @@ def globalFunc(request):
         return JsonResponse(data)
           
         # return render(request, 'webapp/admin_setup.html',{'role_name':'role','feature_to_display':feature_to_display,'feature_to_hide':feature_to_hide})
-    
+#* Variable for features to display and hide.  *#
 feature_to_display=''
 feature_to_hide=''
+class defaultCriteria_Setup(TemplateView):
+    def get(self,request):
+        flag="false"
+        role_name=['']
+        userobj=User.objects.get(pk=request.user.id)
+        print("user object",userobj.role_id_id)
+        role_id=userobj.role_id_id
+        roleobj=Role.objects.get(pk=role_id)
+        role=roleobj.role_name
+        if  request.is_ajax():
+            # Based on querry check priority as well. the ones with mandatory, add them to mandatory list. 
+            # As the status is default, we can't allow ordering as well. 
+            # Two Things are needed to be disabled. 
+            # Hide buttons for mandatory features. 
+            # Sortable option. 
+            expCont = getExpController(request)
+            existExpId = expCont.exp.id
+            existCusId="ses-007-0409"
+            # existCusId=""
+            try:
+                exp_obj=Experiment.objects.get(custom_exp_id=existCusId)
+                print("exp_obj",exp_obj)
+                try:
+                    ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1,pCriteria_id__status="default",pCriteria_id__priority="mendatory").order_by("id")
+                    mandatory=list(ExpCrtOrd.values_list("pCriteria_id__criteria_name",flat=True))
+                    print("Man",mandatory)
+                    # print("ExpCrtOrd",ExpCrtOrd.values_list("pCriteria_id__criteria_name",flat=True))
+                    ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=0,pCriteria_id__status="default").order_by("id")
+                    feature_to_hide=list(ExpCrtOrd.values_list("pCriteria_id__criteria_name",flat=True))
+                    print("hide",feature_to_hide)
+                    ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1,pCriteria_id__status="default").order_by("id")
+                    feature_to_display=list(ExpCrtOrd.values_list("pCriteria_id__criteria_name","position"))
+                    print("display",feature_to_display)
+                    flag="true"
+                except:
+                    pass
+                   
+            except:
+                feature_mand=PhoneCriteria.objects.filter(status="default",priority="mendatory").order_by('id')
+                mandatory=list(feature_mand.values_list("criteria_name",flat=True))
+                feature_to_display=PhoneCriteria.objects.filter(status="default").order_by('id')
+                feature_to_display = list(feature_to_display.values())
+                print("feature_mand",mandatory)
+                feature_to_hide=list()
+                
+                
+                
+
+            # if exp_obj:
+
+            #     # use this exp_obj to see if the exp obj exists, then check if that exp is in ExpCriteriaOrder if it exists then use the obj to retrieve all the rows, having pos, sh_hd, 
+
+            #     # In future we have to foriegn key with phone criteria , through which we'll get the criteria_name, priority and status. .. 
+            #     # ExpCriteriaOrder.objects.filter(exp=exp_obj).exists()
+            #     pass
+            # else:
+
+           
+        
+            # feature_to_display=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role_id).order_by('position')
+           
+            print("feature",feature_to_display)
+            # feature_to_hide=sort_feature.objects.filter(Q(sh_hd = 0),roles=role_id).order_by('position')    
+            print("feature_to hide",feature_to_hide)
+           
+            # feature_to_hide = list(feature_to_hide.values())
+            print("mandatory",mandatory)
+            data={
+                'feature_to_display':feature_to_display,
+                'feature_to_hide':feature_to_hide,
+                'mandatory':mandatory,
+                'flag':flag
+            }
+            return JsonResponse(data)
+    def post(self,request):
+        if request.is_ajax:
+                default_crit_show_dict = request.POST.get('default_crit_show_dict')
+                default_crit_show_dict= json.loads(default_crit_show_dict)
+                default_crit_hide_dict = request.POST.get('default_crit_hide_dict')
+                default_crit_hide_dict= json.loads(default_crit_hide_dict)
+                featlevels_dic=request.POST.get('featlevels_dic')
+                postedFLevels = json.loads(featlevels_dic)
+                print("default_crit_show_dict",default_crit_show_dict)
+                print("default_crit_hide_dict",default_crit_hide_dict)
+                
+                expCont = getExpController(request)
+                existExpId = expCont.exp.id
+                existCusId=expCont.exp.custom_exp_id
+                
+                # expCont.setFSet(newFLevels=postedFLevels,prompt=False)
+                # block_set = expCont.generateBlocks()
+                # block_list = list(block_set.all().values('serial_no','levels_set'))
+                # print('<<<<<<TO DISPLAY ON PAGE>>>>>>')
+                # print(block_list)
+                # save orderset Details in expCriteriaOrder
+                # Check to see if the exp obj already exists in the table. if it does then we need to update position and show_hide prop of  the rows containing the exp id. 
+                # 1. based on the exp obj check if exp exists. if it does then 
+                # 2. With the help of dict see the criteria_name, and fetch that row and update it the new position, sh_hd
+                exp_obj=Experiment.objects.get(custom_exp_id=existCusId)
+                if (ExpCriteriaOrder.objects.filter(exp=exp_obj).exists()):
+                     for key,s in default_crit_show_dict.items():
+                        print(key,":",s)
+                        for count, i in enumerate(s):
+                            PcObj=PhoneCriteria.objects.get(criteria_name=i)
+                            expOS_obj=ExpCriteriaOrder.objects.get(exp=exp_obj,pCriteria=PcObj)
+                            expOS_obj.position=count+1
+                            expOS_obj.sh_hd=1
+                            expOS_obj.save()
+                     for key,s in default_crit_hide_dict.items():
+                        print(key,":",s)
+                        for count, i in enumerate(s):
+                            PcObj=PhoneCriteria.objects.get(criteria_name=i)
+                            expOS_obj=ExpCriteriaOrder.objects.get(exp=exp_obj,pCriteria=PcObj)
+                            expOS_obj.position=0
+                            expOS_obj.sh_hd=0
+                            expOS_obj.save()
+                else:
+                    p_levList=list()
+                    for key,s in default_crit_show_dict.items():
+                            print(key,":",s)
+                            p_levList.append('Def.'+str(key))
+                            for count, i in enumerate(s):
+                                print("count",count)
+                                print("ii",i)
+                                
+                                try:
+                                    pCObj=PhoneCriteria.objects.get(criteria_name=i)
+                                    expOSets=ExpCriteriaOrder()
+                                    expOSets.exp=expCont.exp
+                                    expOSets.cOrder_id=key
+                                    expOSets.pCriteria=pCObj
+                                    expOSets.fvp="Full"
+                                    expOSets.position=count+1
+                                    expOSets.sh_hd=1
+                                    expOSets.save()
+                                except (PhoneCriteria.DoesNotExist):
+                                    pass
+                    for key,s in default_crit_hide_dict.items():
+                            print(key,":",s)
+                            p_levList.append('Def.'+str(key))
+                            for count, i in enumerate(s):
+                                try:
+                                    pCObj=PhoneCriteria.objects.get(criteria_name=i)
+                                    expOSets=ExpCriteriaOrder()
+                                    expOSets.exp=expCont.exp
+                                    expOSets.cOrder_id=key
+                                    expOSets.fvp="Full"
+                                    expOSets.pCriteria=pCObj
+                                    expOSets.position=0
+                                    expOSets.sh_hd=0
+                                    expOSets.save()
+                                except (PhoneCriteria.DoesNotExist):
+                                    pass
+
+                              
+                data={
+                'success':'success',
+                'exp_id':existExpId,
+                'custom_exp_id':expCont.exp.custom_exp_id,
+                # 'block_list':block_list
+                }
+                return JsonResponse(data)
+
+               
 class orderCriteria_Setup(TemplateView):
     def get(self,request):
         role_name=['']
@@ -1158,8 +1322,11 @@ class mobile_phone_view(TemplateView):
             mobiles= mobilephones.objects.all() 
             print("mobiles ---<>",mobiles)
             paginator = Paginator(mobiles,9)
+            print("paginator",paginator)
             page = request.GET.get('page')
+            print("page",page)
             ex_mobiles = paginator.get_page(page)
+            print("EX_MONILES",ex_mobiles)
             template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
             return render(request,self.template_name,{'mobiles':ex_mobiles,'template_sidebar':template_sidebar,'role':"Super_Admin"})
         elif role=='Subject':
@@ -1699,6 +1866,8 @@ class createExperiment(TemplateView):
         # samsung_phones=''
         mobilephones_str=''
         if request.is_ajax():
+           
+                
             print('Ajax')
             price_range_values = request.GET.get('price_range_values')
             brandnames = request.GET.get('brandnames')
@@ -1718,25 +1887,21 @@ class createExperiment(TemplateView):
             # mobiles_retrieved=samsung_phone.objects.filter(price_in_pkr__range=(price_range_values[0], price_range_values[1]))
             if not brandnames:
                 mobiles_retrieved=mobilephones.objects.filter(price__range=(price_range_values[0], price_range_values[1])).order_by('id') 
+              
             else:
                 mobiles_retrieved=mobilephones.objects.filter(price__range=(price_range_values[0], price_range_values[1]),Mobile_Companny__in=brandnames).order_by('id') 
-
-
-            
-            # else: 
-            #     mobiles_retrieved=samsung_phone.objects.filter(price_in_pkr__range=(10000, 30000))
-            # print("mobiles_retrieved",mobiles_retrieved)
+                
 
             # print(mobiles_retrieved) 
-            mobiles_retrieved = list(mobiles_retrieved.values())
-            # samsung_phones=mobiles_retrieved
-            mobilephones_str=mobiles_retrieved
+            mobiles_retrieved_list = list(mobiles_retrieved.values())
+            mobilephones_str=mobiles_retrieved_list
+            
+
             # print("mobilephones_str",mobilephones_str)
             print("price_range",price_range)
             return JsonResponse(
             {  
-                # 'samsung_phones':samsung_phones
-                'mobilephones':mobilephones_str,
+                 'mobilephones':mobilephones_str,
                 "price_range_values":price_range
             }
             )
@@ -1744,14 +1909,32 @@ class createExperiment(TemplateView):
         else:
             print("NOT AJAX")
             # samsung_phones= samsung_phone.objects.all()
-            
+            phonecritlist=[]
+
+            exclfields=['selectedadminphones','id','imagepath1','imagepath2','Whats_new',"Mobile_Name","Mobile_Companny","price_in_usd"]
+            # Get the mobile phone fields and then save the fields in phone criteria
+            [phonecritlist.append(f.name) for f in mobilephones._meta.get_fields() if f.name not in exclfields]
+            print("PGONECrit")
+            print(phonecritlist)
+            for count,crit in enumerate(phonecritlist):
+                if (PhoneCriteria.objects.filter(criteria_name=crit).exists()):
+                    pcrt_obj=PhoneCriteria.objects.get(criteria_name=crit)
+                    pcrt_obj.position=count
+                    pcrt_obj.save()
+
+                else: 
+                    pcrt_obj=PhoneCriteria()
+                    pcrt_obj.criteria_name=crit
+                    pcrt_obj.status="default"
+                    pcrt_obj.priority="mendatory"
+                    pcrt_obj.position=count
+                    pcrt_obj.save()
+
             m_p= mobilephones.objects.all() 
             # print("mobile_phones",m_p)
-            # paginator = Paginator(samsung_phones,9)
-            paginator = Paginator(m_p,9)
-            page = request.GET.get('page')
-            # samsung_phones = paginator.get_page(page)
-            mobile_phones__str = paginator.get_page(page)
+            # paginator = Paginator(m_p,9)
+            # page = request.GET.get('page')
+            # mobile_phones__str = paginator.get_page(page)
 
         
             if role=='Super_Admin':
@@ -1792,7 +1975,6 @@ class createExperiment(TemplateView):
                 'sess_expId':sess_expId,
                 'sess_custExpId':sess_custExpId,
                 # 'samsung_phones':samsung_phones
-                'mobilephones':mobile_phones__str
                                             }
             )
                                         

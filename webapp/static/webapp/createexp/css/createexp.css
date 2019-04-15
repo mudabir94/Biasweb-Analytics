@@ -86,3 +86,44 @@
 
 
 }
+
+.row.is-flex {
+  display: flex !important;
+  flex-wrap: wrap !important;
+}
+.row.is-flex > [class*='col-'] {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/*
+* And with max cross-browser enabled.
+* Nobody should ever write this by hand. 
+* Use a preprocesser with autoprefixing.
+*/
+.row.is-flex {
+  display: -webkit-box !important;
+  display: -webkit-flex !important;
+  display: -ms-flexbox !important;
+  display: flex !important;
+  -webkit-flex-wrap: wrap !important;
+  -ms-flex-wrap: wrap !important;
+  flex-wrap: wrap !important;
+}
+
+.row.is-flex > [class*='col-'] {
+  display: -webkit-box !important;
+  display: -webkit-flex !important;
+  display: -ms-flexbox !important;
+  display: flex !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-box-direction: normal !important;
+  -webkit-flex-direction: column !important;
+  -ms-flex-direction: column !important;
+  flex-direction: column !important;
+}
+#h2_feature{
+  background:lightskyblue;
+  border: 1px solid  lightskyblue;
+  color: white; /* White text */
+}

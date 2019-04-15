@@ -46,7 +46,6 @@ urlpatterns = [
     url(r'^manageshortlist/',views.ManageShortList.as_view(), name='manage_shortlisting'),
     url(r'^createexp/',views.createExperiment.as_view(), name='createexp'),
     url(r'^editexp/',views.editExperiment.as_view(), name='editexp'),
-
     url(r'^subdetails/',views.subDetails, name='subdetails'),
     url(r'^uploadsamplefile/',views.uploadSampleFile, name='uploadsamplefile'),
     url(r'^postexp/',views.postExp, name='postexp'),
@@ -70,6 +69,8 @@ urlpatterns = [
     url(r'^get_specificmobile_data/',views.getSpecificMobileData,name='get_specificmobile_data'),
     url(r'^savephonesets/',views.SavePhoneSets,name='savephonesets'),
     url(r'^ordercriteriasetup/' , views.orderCriteria_Setup.as_view() , name='ordercriteriasetup') ,
+    url(r'^defaultcriteriasetup/' , views.defaultCriteria_Setup.as_view() , name='defaultcriteriasetup') ,
+
 
 
 
