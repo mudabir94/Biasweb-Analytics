@@ -572,7 +572,7 @@ feature_to_display=''
 feature_to_hide=''
 class defaultCriteria_Setup(TemplateView):
     def get(self,request):
-        flag="false"
+        flag="true"
         role_name=['']
         userobj=User.objects.get(pk=request.user.id)
         print("user object",userobj.role_id_id)
@@ -580,62 +580,70 @@ class defaultCriteria_Setup(TemplateView):
         roleobj=Role.objects.get(pk=role_id)
         role=roleobj.role_name
         if  request.is_ajax():
-            # Based on querry check priority as well. the ones with mandatory, add them to mandatory list. 
-            # As the status is default, we can't allow ordering as well. 
-            # Two Things are needed to be disabled. 
-            # Hide buttons for mandatory features. 
-            # Sortable option. 
-            expCont = getExpController(request)
-            existExpId = expCont.exp.id
-            existCusId="ses-007-0409"
-            # existCusId=""
+           
+            # A new check exp controller is made to only see if the exp 
+            # exsists or not. if it exsists return its data other wise 
+            # return none .
+            expCont = checkExpController(request)
+            print("EXPCONTSS",expCont)
+            if expCont:
+                existExpId = expCont.exp.id
+                existCusId=expCont.exp.custom_exp_id
+            else:
+                existCusId=""
+
             try:
-                exp_obj=Experiment.objects.get(custom_exp_id=existCusId)
+                exp_obj=Experiment.objects.get(custom_exp_id=existCusId)            
                 print("exp_obj",exp_obj)
-                try:
-                    ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1,pCriteria_id__status="default",pCriteria_id__priority="mendatory").order_by("id")
+                if (ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="default").exists()):
+                    ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1,cOrder_id__icontains="default",pCriteria_id__status="default",pCriteria_id__priority="mendatory").order_by("id")
                     mandatory=list(ExpCrtOrd.values_list("pCriteria_id__criteria_name",flat=True))
                     print("Man",mandatory)
                     # print("ExpCrtOrd",ExpCrtOrd.values_list("pCriteria_id__criteria_name",flat=True))
-                    ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=0,pCriteria_id__status="default").order_by("id")
+                    ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=0,cOrder_id__icontains="default",pCriteria_id__status="default").order_by("id")
                     feature_to_hide=list(ExpCrtOrd.values_list("pCriteria_id__criteria_name",flat=True))
+                    # feature_to_hide = [item[0] for item in feature_to_hide]
                     print("hide",feature_to_hide)
-                    ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1,pCriteria_id__status="default").order_by("id")
+                    ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1,cOrder_id__icontains="default",pCriteria_id__status="default").order_by("id")
                     feature_to_display=list(ExpCrtOrd.values_list("pCriteria_id__criteria_name","position"))
+                    feature_to_display = [item[0] for item in feature_to_display]
                     print("display",feature_to_display)
                     flag="true"
-                except:
-                    pass
-                   
+                else:
+                    print("Default Else")
+
+                    feature_mand=PhoneCriteria.objects.filter(status="default",priority="mendatory").order_by('id')
+                    mandatory=list(feature_mand.values_list("criteria_name",flat=True))
+                    feature_to_display=PhoneCriteria.objects.filter(status="default").order_by('id')
+                    # feature_to_display = list(feature_to_display.values())
+                    feature_to_display =  list(feature_to_display.values_list("criteria_name","position"))
+                    feature_to_display = [item[0] for item in feature_to_display]
+                    print("feature_to_display--",feature_to_display)
+                    print("feature_mand",mandatory)
+                    feature_to_hide=list()
+                    flag="true"
             except:
+                print("Default Exception")
                 feature_mand=PhoneCriteria.objects.filter(status="default",priority="mendatory").order_by('id')
                 mandatory=list(feature_mand.values_list("criteria_name",flat=True))
                 feature_to_display=PhoneCriteria.objects.filter(status="default").order_by('id')
-                feature_to_display = list(feature_to_display.values())
+                # feature_to_display = list(feature_to_display.values())
+                feature_to_display =  list(feature_to_display.values_list("criteria_name","position"))
+                feature_to_display = [item[0] for item in feature_to_display]
+                print("feature_to_display--",feature_to_display)
                 print("feature_mand",mandatory)
                 feature_to_hide=list()
+                flag="true"
+
                 
                 
                 
-
-            # if exp_obj:
-
-            #     # use this exp_obj to see if the exp obj exists, then check if that exp is in ExpCriteriaOrder if it exists then use the obj to retrieve all the rows, having pos, sh_hd, 
-
-            #     # In future we have to foriegn key with phone criteria , through which we'll get the criteria_name, priority and status. .. 
-            #     # ExpCriteriaOrder.objects.filter(exp=exp_obj).exists()
-            #     pass
-            # else:
 
            
         
-            # feature_to_display=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role_id).order_by('position')
            
             print("feature",feature_to_display)
-            # feature_to_hide=sort_feature.objects.filter(Q(sh_hd = 0),roles=role_id).order_by('position')    
             print("feature_to hide",feature_to_hide)
-           
-            # feature_to_hide = list(feature_to_hide.values())
             print("mandatory",mandatory)
             data={
                 'feature_to_display':feature_to_display,
@@ -652,84 +660,135 @@ class defaultCriteria_Setup(TemplateView):
                 default_crit_hide_dict= json.loads(default_crit_hide_dict)
                 featlevels_dic=request.POST.get('featlevels_dic')
                 postedFLevels = json.loads(featlevels_dic)
+                print("postedFLevels",postedFLevels)
                 print("default_crit_show_dict",default_crit_show_dict)
                 print("default_crit_hide_dict",default_crit_hide_dict)
                 
                 expCont = getExpController(request)
                 existExpId = expCont.exp.id
                 existCusId=expCont.exp.custom_exp_id
-                
-                # expCont.setFSet(newFLevels=postedFLevels,prompt=False)
-                # block_set = expCont.generateBlocks()
-                # block_list = list(block_set.all().values('serial_no','levels_set'))
-                # print('<<<<<<TO DISPLAY ON PAGE>>>>>>')
-                # print(block_list)
+                if postedFLevels:
+                    expCont.setFSet(newFLevels=postedFLevels,prompt=False)
+                    block_set = expCont.generateBlocks()
+                    block_list = list(block_set.all().values('serial_no','levels_set'))
+                    print('<<<<<<TO DISPLAY ON PAGE>>>>>>')
+                else:
+                    block_list=""
+                print("block_list",block_list)
                 # save orderset Details in expCriteriaOrder
                 # Check to see if the exp obj already exists in the table. if it does then we need to update position and show_hide prop of  the rows containing the exp id. 
                 # 1. based on the exp obj check if exp exists. if it does then 
                 # 2. With the help of dict see the criteria_name, and fetch that row and update it the new position, sh_hd
                 exp_obj=Experiment.objects.get(custom_exp_id=existCusId)
                 if (ExpCriteriaOrder.objects.filter(exp=exp_obj).exists()):
-                     for key,s in default_crit_show_dict.items():
-                        print(key,":",s)
-                        for count, i in enumerate(s):
-                            PcObj=PhoneCriteria.objects.get(criteria_name=i)
-                            expOS_obj=ExpCriteriaOrder.objects.get(exp=exp_obj,pCriteria=PcObj)
-                            expOS_obj.position=count+1
-                            expOS_obj.sh_hd=1
-                            expOS_obj.save()
-                     for key,s in default_crit_hide_dict.items():
-                        print(key,":",s)
-                        for count, i in enumerate(s):
-                            PcObj=PhoneCriteria.objects.get(criteria_name=i)
-                            expOS_obj=ExpCriteriaOrder.objects.get(exp=exp_obj,pCriteria=PcObj)
-                            expOS_obj.position=0
-                            expOS_obj.sh_hd=0
-                            expOS_obj.save()
+                    ECO_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj)
+                    ECO_obj.delete()
                 else:
-                    p_levList=list()
-                    for key,s in default_crit_show_dict.items():
-                            print(key,":",s)
-                            p_levList.append('Def.'+str(key))
-                            for count, i in enumerate(s):
+                    pass
+                print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+                p_levList=list()
+
+                for key,s in default_crit_show_dict.items():
+                        print(key,":",s)
+                        p_levList.append('Def.'+str(key))
+                        for count, i in enumerate(s):
+                            print("count",count)
+                            print("ii",i)
+                            
+                            try:
+                                pCObj=PhoneCriteria.objects.get(criteria_name=i)
+                                expOSets=ExpCriteriaOrder()
+                                expOSets.exp=expCont.exp
+                                expOSets.cOrder_id=key
+                                expOSets.pCriteria=pCObj
+                                expOSets.fvp="Default"
+                                expOSets.position=count+1
+                                expOSets.sh_hd=1
+                                expOSets.save()
+                            except (PhoneCriteria.DoesNotExist):
+                                pass
+                for key,s in default_crit_hide_dict.items():
+                        print(key,":",s)
+                        p_levList.append('Def.'+str(key))
+                        for count, i in enumerate(s):
+                            try:
                                 print("count",count)
                                 print("ii",i)
+                                pCObj=PhoneCriteria.objects.get(criteria_name=i)
+                                expOSets=ExpCriteriaOrder()
+                                expOSets.exp=expCont.exp
+                                expOSets.cOrder_id=key
+                                expOSets.fvp="Default"
+                                expOSets.pCriteria=pCObj
+                                expOSets.position=0
+                                expOSets.sh_hd=0
+                                expOSets.save()
+                            except (PhoneCriteria.DoesNotExist):
+                                pass
+                                    
+
+
+                # if (ExpCriteriaOrder.objects.filter(exp=exp_obj).exists()):
+                #      for key,s in default_crit_show_dict.items():
+                #         print(key,":",s)
+                #         for count, i in enumerate(s):
+                #             PcObj=PhoneCriteria.objects.get(criteria_name=i)
+                #             expOS_obj=ExpCriteriaOrder.objects.get(exp=exp_obj,pCriteria=PcObj)
+                #             expOS_obj.position=count+1
+                #             expOS_obj.sh_hd=1
+                #             expOS_obj.save()
+                #      for key,s in default_crit_hide_dict.items():
+                #         print(key,":",s)
+                #         for count, i in enumerate(s):
+                #             PcObj=PhoneCriteria.objects.get(criteria_name=i)
+                #             expOS_obj=ExpCriteriaOrder.objects.get(exp=exp_obj,pCriteria=PcObj)
+                #             expOS_obj.position=0
+                #             expOS_obj.sh_hd=0
+                #             expOS_obj.save()
+                # else:
+                #     p_levList=list()
+                #     for key,s in default_crit_show_dict.items():
+                #             print(key,":",s)
+                #             p_levList.append('Def.'+str(key))
+                #             for count, i in enumerate(s):
+                #                 print("count",count)
+                #                 print("ii",i)
                                 
-                                try:
-                                    pCObj=PhoneCriteria.objects.get(criteria_name=i)
-                                    expOSets=ExpCriteriaOrder()
-                                    expOSets.exp=expCont.exp
-                                    expOSets.cOrder_id=key
-                                    expOSets.pCriteria=pCObj
-                                    expOSets.fvp="Full"
-                                    expOSets.position=count+1
-                                    expOSets.sh_hd=1
-                                    expOSets.save()
-                                except (PhoneCriteria.DoesNotExist):
-                                    pass
-                    for key,s in default_crit_hide_dict.items():
-                            print(key,":",s)
-                            p_levList.append('Def.'+str(key))
-                            for count, i in enumerate(s):
-                                try:
-                                    pCObj=PhoneCriteria.objects.get(criteria_name=i)
-                                    expOSets=ExpCriteriaOrder()
-                                    expOSets.exp=expCont.exp
-                                    expOSets.cOrder_id=key
-                                    expOSets.fvp="Full"
-                                    expOSets.pCriteria=pCObj
-                                    expOSets.position=0
-                                    expOSets.sh_hd=0
-                                    expOSets.save()
-                                except (PhoneCriteria.DoesNotExist):
-                                    pass
+                #                 try:
+                #                     pCObj=PhoneCriteria.objects.get(criteria_name=i)
+                #                     expOSets=ExpCriteriaOrder()
+                #                     expOSets.exp=expCont.exp
+                #                     expOSets.cOrder_id=key
+                #                     expOSets.pCriteria=pCObj
+                #                     expOSets.fvp="Full"
+                #                     expOSets.position=count+1
+                #                     expOSets.sh_hd=1
+                #                     expOSets.save()
+                #                 except (PhoneCriteria.DoesNotExist):
+                #                     pass
+                #     for key,s in default_crit_hide_dict.items():
+                #             print(key,":",s)
+                #             p_levList.append('Def.'+str(key))
+                #             for count, i in enumerate(s):
+                #                 try:
+                #                     pCObj=PhoneCriteria.objects.get(criteria_name=i)
+                #                     expOSets=ExpCriteriaOrder()
+                #                     expOSets.exp=expCont.exp
+                #                     expOSets.cOrder_id=key
+                #                     expOSets.fvp="Full"
+                #                     expOSets.pCriteria=pCObj
+                #                     expOSets.position=0
+                #                     expOSets.sh_hd=0
+                #                     expOSets.save()
+                #                 except (PhoneCriteria.DoesNotExist):
+                #                     pass
 
                               
                 data={
                 'success':'success',
                 'exp_id':existExpId,
                 'custom_exp_id':expCont.exp.custom_exp_id,
-                # 'block_list':block_list
+                'block_list':block_list
                 }
                 return JsonResponse(data)
 
@@ -743,18 +802,136 @@ class orderCriteria_Setup(TemplateView):
         role_id=userobj.role_id_id
         roleobj=Role.objects.get(pk=role_id)
         role=roleobj.role_name
+        flag="true"
         print(role)
         if  request.is_ajax():
-            feature_to_display=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role_id).order_by('position')
-            print("feature",feature_to_display)
-            feature_to_hide=sort_feature.objects.filter(Q(sh_hd = 0),roles=role_id).order_by('position')    
-            print("feature2",feature_to_hide)
-            feature_to_display = list(feature_to_display.values())
-            feature_to_hide = list(feature_to_hide.values())
+            expCont = checkExpController(request)
+            print("EXPCONTSS",expCont)
+            if expCont:
+                existExpId = expCont.exp.id
+                existCusId=expCont.exp.custom_exp_id
+                print("existCusId",existCusId)
+            else:
+                existCusId=""
+                print("existCusId",existCusId)
 
+            co_set_list=[]
+            co_set_flag_length="one"
+            co_set_show_dict={}
+            co_set_hide_dict={}
+            co_set_list=["CO.1","CO.2"]
+            try:
+                exp_obj=Experiment.objects.get(custom_exp_id=existCusId)
+                if (ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_C.Def").exists()):
+                    if len(co_set_list)>1:
+                        
+                        for co in co_set_list:
+                            ECO_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains=co+"_C.Def",sh_hd=1,pCriteria_id__status="default",pCriteria_id__priority="mendatory").order_by("id")
+                            print("ECO_KNE",ECO_obj)
+                            mandatory=list(ECO_obj.values_list("pCriteria_id__criteria_name",flat=True))
+                            print("Man",mandatory)
+                            # print("ExpCrtOrd",ExpCrtOrd.values_list("pCriteria_id__criteria_name",flat=True))
+                            ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains=co+"_C.Def",sh_hd=0,pCriteria_id__status="default").order_by("id")
+                            feature_to_hide=list(ExpCrtOrd.values_list("pCriteria_id__criteria_name",flat=True))
+                            # list comprehension
+                            feature_to_hide = [item[0] for item in feature_to_hide]
+                            co_set_hide_dict[co]=feature_to_hide
+                            print("hide",feature_to_hide)
+                            ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains=co+"_C.Def",sh_hd=1,pCriteria_id__status="default").order_by("id")
+                            feature_to_display=list(ExpCrtOrd.values_list("pCriteria_id__criteria_name","position"))
+                            feature_to_display = [item[0] for item in feature_to_display]
+                            co_set_show_dict[co]=feature_to_display
+                            print("display",feature_to_display)
+                            
+                            co_set_flag_length="multiple"
+                            print("co_set_show_dict",co_set_show_dict)
+                            print("co_set_hide_dict",co_set_hide_dict)
+                            flag="true"
+
+                    else:
+                        ECO_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_C.Def",sh_hd=1,pCriteria_id__status="default",pCriteria_id__priority="mendatory").order_by("id")
+                        print("ECO_KNE",ECO_obj)
+                        mandatory=list(ECO_obj.values_list("pCriteria_id__criteria_name",flat=True))
+                        print("Man",mandatory)
+                        # print("ExpCrtOrd",ExpCrtOrd.values_list("pCriteria_id__criteria_name",flat=True))
+                        ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_C.Def",sh_hd=0,pCriteria_id__status="default").order_by("id")
+                        feature_to_hide=list(ExpCrtOrd.values_list("pCriteria_id__criteria_name",flat=True))
+                        print("hide",feature_to_hide)
+                        ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_C.Def",sh_hd=1,pCriteria_id__status="default").order_by("id")
+                        feature_to_display=list(ExpCrtOrd.values_list("pCriteria_id__criteria_name","position"))
+                        feature_to_display = [item[0] for item in feature_to_display]
+                        print("display",feature_to_display)
+                        flag="true"
+                else:
+                    print("CO ELSE")
+                    feature_mand=PhoneCriteria.objects.filter(status="default",priority="mendatory").order_by('id')
+                    mandatory=list(feature_mand.values_list("criteria_name",flat=True))
+                    feature_to_display=PhoneCriteria.objects.filter(status="default").order_by('id')
+                    feature_to_display = list(feature_to_display.values_list("criteria_name","position"))
+                    feature_to_display = [item[0] for item in feature_to_display]
+
+                    print("feaeature_to_display",feature_to_display)
+                    print("feature_mand",mandatory)
+                    
+                    feature_to_hide=list()
+                    flag="true"
+            except:
+                    print("CO EXCEPTION")
+                    feature_mand=PhoneCriteria.objects.filter(status="default",priority="mendatory").order_by('id')
+                    mandatory=list(feature_mand.values_list("criteria_name",flat=True))
+                    feature_to_display=PhoneCriteria.objects.filter(status="default").order_by('id')
+                    feature_to_display = list(feature_to_display.values_list("criteria_name","position"))
+                    feature_to_display = [item[0] for item in feature_to_display]
+
+                    print("feaeature_to_disp",feature_to_display)
+                    print("feature_mand",mandatory)
+                    
+                    feature_to_hide=list()
+                    flag="true"
+            # try:
+            #     exp_obj=Experiment.objects.get(custom_exp_id=existCusId)
+            #     print("exp_obj",exp_obj)
+            #     try:
+            #         ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_C.Def",sh_hd=1,pCriteria_id__status="default",pCriteria_id__priority="mendatory").order_by("id")
+            #         print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
+            #         print(ExpCrtOrd)
+            #         mandatory=list(ExpCrtOrd.values_list("pCriteria_id__criteria_name",flat=True))
+            #         print("Man",mandatory)
+            #         # print("ExpCrtOrd",ExpCrtOrd.values_list("pCriteria_id__criteria_name",flat=True))
+            #         ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_C.Def",sh_hd=0,pCriteria_id__status="default").order_by("id")
+            #         feature_to_hide=list(ExpCrtOrd.values_list("pCriteria_id__criteria_name",flat=True))
+            #         print("hide",feature_to_hide)
+            #         ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_C.Def",sh_hd=1,pCriteria_id__status="default").order_by("id")
+            #         feature_to_display=list(ExpCrtOrd.values_list("pCriteria_id__criteria_name","position"))
+            #         print("display",feature_to_display)
+            #     except:
+            #         pass
+                   
+            # except:
+            #     feature_mand=PhoneCriteria.objects.filter(status="default",priority="mendatory").order_by('id')
+            #     mandatory=list(feature_mand.values_list("criteria_name",flat=True))
+            #     feature_to_display=PhoneCriteria.objects.filter(status="default").order_by('id')
+            #     feature_to_display = list(feature_to_display.values_list("criteria_name","position"))
+            #     print("feaeature_to_dosp",feature_to_display)
+            #     print("feature_mand",mandatory)
+            #     feature_to_hide=list()
+            #     flag="false"
+                
+
+
+
+
+
+          
             data={
                 'feature_to_display':feature_to_display,
                 'feature_to_hide':feature_to_hide,
+                'mandatory':mandatory,
+                'flag':flag,
+                'co_set_show_dict':json.dumps(co_set_show_dict),
+                "co_set_hide_dict":json.dumps(co_set_hide_dict),
+                "co_set_flag_length":co_set_flag_length
+
             }
             return JsonResponse(data)
 
@@ -783,48 +960,114 @@ class orderCriteria_Setup(TemplateView):
                 exp_obj=Experiment.objects.get(custom_exp_id=existCusId)
                 
                 p_levList=list()
+                if (ExpCriteriaOrder.objects.filter(exp=exp_obj).exists()):
+                    ECO_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj)
+                    ECO_obj.delete()
+                else:
+                    pass
                 for key,s in crit_order_dict.items():
-                        print(key,":",s)
-                        # o_set = mobilephones.objects.filter(id__in=s)
-
-                        p_levList.append('CO.'+str(key))
-                        for count, i in enumerate(s):
-                           
-                            print("count",count)
-                            print("ii",i)
+                    print(key,":",s)
+                    p_levList.append(str(key))
+                    for count, i in enumerate(s):
+                        print("count",count)
+                        print("ii",i)
+                        try:
+                            pCObj=PhoneCriteria.objects.get(criteria_name=i)
                             expOSets=ExpCriteriaOrder()
                             expOSets.exp=expCont.exp
-                            expOSets.cOrder_id=key
-                            expOSets.pCriteria=i
+                            expOSets.cOrder_id=str(key)
+                            expOSets.pCriteria=pCObj
+                            expOSets.fvp=str(key)
                             expOSets.position=count+1
                             expOSets.sh_hd=1
                             expOSets.save()
-                            # expPSets = selectedAdminPhones()
-                            # expPSets.exp = expCont.exp
-                            # expPSets.pset_id= key
-                            # expPSets.mob = p_set.get(id=i)
-                            # expPSets.p_order = count
+                        except (PhoneCriteria.DoesNotExist):
+                            pass
+
                 for key,s in crit_hide_dict.items():
                         print(key,":",s)
-                        # o_set = mobilephones.objects.filter(id__in=s)
-
-                        p_levList.append('CO.'+str(key))
+                        p_levList.append(str(key))
                         for count, i in enumerate(s):
-                           
                             print("count",count)
                             print("ii",i)
-                            expOSets=ExpCriteriaOrder()
-                            expOSets.exp=expCont.exp
-                            expOSets.cOrder_id=key
-                            expOSets.pCriteria=i
-                            expOSets.position=0
-                            expOSets.sh_hd=0
-                            expOSets.save()
-                            # expPSets = selectedAdminPhones()
-                            # expPSets.exp = expCont.exp
-                            # expPSets.pset_id= key
-                            # expPSets.mob = p_set.get(id=i)
-                            # expPSets.p_order = count
+                            try:
+                                pCObj=PhoneCriteria.objects.get(criteria_name=i)
+                                expOSets=ExpCriteriaOrder()
+                                expOSets.exp=expCont.exp
+                                expOSets.cOrder_id=str(key)
+                                expOSets.fvp=str(key)
+                                expOSets.pCriteria=pCObj
+                                expOSets.position=0
+                                expOSets.sh_hd=0
+                                expOSets.save()
+                            except (PhoneCriteria.DoesNotExist):
+                                pass
+
+
+                # if (ExpCriteriaOrder.objects.filter(exp=exp_obj).exists()):
+                #     for key,s in crit_order_dict.items():
+                #         print(key,":",s)
+                #         for count, i in enumerate(s):
+                #             PcObj=PhoneCriteria.objects.get(criteria_name=i)
+                #             expOS_obj=ExpCriteriaOrder.objects.get(exp=exp_obj,pCriteria=PcObj,cOrder_id='CO.'+str(key)+"C.Def")
+                #             expOS_obj.position=count+1
+                #             expOS_obj.sh_hd=1
+                #             expOS_obj.save()
+                #     for key,s in crit_hide_dict.items():
+                #         print(key,":",s)
+                #         for count, i in enumerate(s):
+                #             PcObj=PhoneCriteria.objects.get(criteria_name=i)
+                #             expOS_obj=ExpCriteriaOrder.objects.get(exp=exp_obj,pCriteria=PcObj,cOrder_id='CO.'+str(key)+"C.Def")
+                #             expOS_obj.position=0
+                #             expOS_obj.sh_hd=0
+                #             expOS_obj.save()
+                    
+                # else:
+                #     for key,s in crit_order_dict.items():
+                #             print(key,":",s)
+                #             # o_set = mobilephones.objects.filter(id__in=s)
+
+                #             p_levList.append(str(key))
+                #             for count, i in enumerate(s):
+                            
+                #                 print("count",count)
+                #                 print("ii",i)
+                                  
+                #                 try:
+                #                     pCObj=PhoneCriteria.objects.get(criteria_name=i)
+                #                     expOSets=ExpCriteriaOrder()
+                #                     expOSets.exp=expCont.exp
+                #                     expOSets.cOrder_id=str(key)
+                #                     expOSets.pCriteria=pCObj
+                #                     expOSets.fvp=str(key)
+                #                     expOSets.position=count+1
+                #                     expOSets.sh_hd=1
+                #                     expOSets.save()
+                #                 except (PhoneCriteria.DoesNotExist):
+                #                     pass
+
+                #     for key,s in crit_hide_dict.items():
+                #             print(key,":",s)
+                #             # o_set = mobilephones.objects.filter(id__in=s)
+
+                #             p_levList.append(str(key))
+                #             for count, i in enumerate(s):
+                            
+                #                 print("count",count)
+                #                 print("ii",i)
+                #                 try:
+                #                     pCObj=PhoneCriteria.objects.get(criteria_name=i)
+                #                     expOSets=ExpCriteriaOrder()
+                #                     expOSets.exp=expCont.exp
+                #                     expOSets.cOrder_id=str(key)
+                #                     expOSets.fvp=str(key)
+                #                     expOSets.pCriteria=pCObj
+                #                     expOSets.position=0
+                #                     expOSets.sh_hd=0
+                #                     expOSets.save()
+                #                 except (PhoneCriteria.DoesNotExist):
+                #                     pass
+
                             
                 data={
                 'success':'success',
@@ -833,7 +1076,159 @@ class orderCriteria_Setup(TemplateView):
                 'block_list':block_list
                 }
                 return JsonResponse(data)
-              
+
+class cdmCriteria_Setup(TemplateView):
+    def get(self,request):
+        pass
+    def post(self,request): 
+           if request.is_ajax:
+                cdm_crit_show_dict = request.POST.get('cdm_crit_show_dict')
+                cdm_crit_show_dict= json.loads(cdm_crit_show_dict)
+                cdm_crit_hide_dict = request.POST.get('cdm_crit_hide_dict')
+                cdm_crit_hide_dict= json.loads(cdm_crit_hide_dict)
+                featlevels_dic=request.POST.get('featlevels_dic')
+                postedFLevels = json.loads(featlevels_dic)
+                print("cdm_crit_show_dict",cdm_crit_show_dict)
+                print("cdm_crit_hide_dict",cdm_crit_hide_dict)
+                
+                expCont = getExpController(request)
+                existExpId = expCont.exp.id
+                existCusId=expCont.exp.custom_exp_id
+                
+                # expCont.setFSet(newFLevels=postedFLevels,prompt=False)
+                # block_set = expCont.generateBlocks()
+                # block_list = list(block_set.all().values('serial_no','levels_set'))
+                # print('<<<<<<TO DISPLAY ON PAGE>>>>>>')
+                # print(block_list)
+                # save orderset Details in expCriteriaOrder
+                # Check to see if the exp obj already exists in the table. if it does then we need to update position and show_hide prop of  the rows containing the exp id. 
+                # 1. based on the exp obj check if exp exists. if it does then 
+                # 2. With the help of dict see the criteria_name, and fetch that row and update it the new position, sh_hd
+                print("---------------88888888888888888888888888---------------")
+
+                exp_obj=Experiment.objects.get(custom_exp_id=existCusId)
+                if (ExpCriteriaOrder.objects.filter(exp=exp_obj).exists()):
+                    ECO_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj)
+                    ECO_obj.delete()
+                else:
+                    pass
+                p_levList=list()
+                for key,s in cdm_crit_show_dict.items():
+                        print(key,":",s)
+                        for count, i in enumerate(s):
+                            print("count",count)
+                            print("ii",i)
+                            
+                            try:
+                                pCObj=PhoneCriteria.objects.get(criteria_name=i)
+                                expOSets=ExpCriteriaOrder()
+                                expOSets.exp=expCont.exp
+                                expOSets.cOrder_id=key
+                                expOSets.pCriteria=pCObj
+                                expOSets.fvp=key
+                                expOSets.position=count+1
+                                expOSets.sh_hd=1
+                                expOSets.save()
+                            except (PhoneCriteria.DoesNotExist):
+                                pass
+                for key,s in cdm_crit_hide_dict.items():
+                        print(key,":",s)
+                        for count, i in enumerate(s):
+                            try:
+                                pCObj=PhoneCriteria.objects.get(criteria_name=i)
+                                expOSets=ExpCriteriaOrder()
+                                expOSets.exp=expCont.exp
+                                expOSets.cOrder_id=key
+                                expOSets.fvp=key
+                                expOSets.pCriteria=pCObj
+                                expOSets.position=0
+                                expOSets.sh_hd=0
+                                expOSets.save()
+                            except (PhoneCriteria.DoesNotExist):
+                                pass
+
+                
+                # if (ExpCriteriaOrder.objects.filter(exp=exp_obj).exists()):
+                #     for key,s in cdm_crit_show_dict.items():
+                #         expOS_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,fvp=str(key),sh_hd=1)
+                #         expOS_obj.delete()
+                #         for count, i in enumerate(s):
+                           
+                #             try:
+                #                 pCObj=PhoneCriteria.objects.get(criteria_name=i)
+                #                 expOSets=ExpCriteriaOrder()
+                #                 expOSets.exp=expCont.exp
+                #                 expOSets.cOrder_id=key
+                #                 expOSets.pCriteria=pCObj
+                #                 expOSets.fvp=key
+                #                 expOSets.position=count+1
+                #                 expOSets.sh_hd=1
+                #                 expOSets.save()
+                #             except (PhoneCriteria.DoesNotExist):
+                #                 pass
+                #     for key,s in cdm_crit_hide_dict.items():
+                #         expOS_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,fvp=str(key),sh_hd=0)
+                #         expOS_obj.delete()
+                #         for count, i in enumerate(s):
+                #             try:
+                #                 pCObj=PhoneCriteria.objects.get(criteria_name=i)
+                #                 expOSets=ExpCriteriaOrder()
+                #                 expOSets.exp=expCont.exp
+                #                 expOSets.cOrder_id=key
+                #                 expOSets.fvp=key
+                #                 expOSets.pCriteria=pCObj
+                #                 expOSets.position=0
+                #                 expOSets.sh_hd=0
+                #                 expOSets.save()
+                #             except (PhoneCriteria.DoesNotExist):
+                #                 pass
+                                           
+                 
+                # else:
+                #     p_levList=list()
+                #     for key,s in cdm_crit_show_dict.items():
+                #             print(key,":",s)
+                #             for count, i in enumerate(s):
+                #                 print("count",count)
+                #                 print("ii",i)
+                                
+                #                 try:
+                #                     pCObj=PhoneCriteria.objects.get(criteria_name=i)
+                #                     expOSets=ExpCriteriaOrder()
+                #                     expOSets.exp=expCont.exp
+                #                     expOSets.cOrder_id=key
+                #                     expOSets.pCriteria=pCObj
+                #                     expOSets.fvp=key
+                #                     expOSets.position=count+1
+                #                     expOSets.sh_hd=1
+                #                     expOSets.save()
+                #                 except (PhoneCriteria.DoesNotExist):
+                #                     pass
+                #     for key,s in cdm_crit_hide_dict.items():
+                #             print(key,":",s)
+                #             for count, i in enumerate(s):
+                #                 try:
+                #                     pCObj=PhoneCriteria.objects.get(criteria_name=i)
+                #                     expOSets=ExpCriteriaOrder()
+                #                     expOSets.exp=expCont.exp
+                #                     expOSets.cOrder_id=key
+                #                     expOSets.fvp=key
+                #                     expOSets.pCriteria=pCObj
+                #                     expOSets.position=0
+                #                     expOSets.sh_hd=0
+                #                     expOSets.save()
+                #                 except (PhoneCriteria.DoesNotExist):
+                #                     pass
+
+                              
+                data={
+                'success':'success',
+                'exp_id':existExpId,
+                'custom_exp_id':expCont.exp.custom_exp_id,
+                # 'block_list':block_list
+                }
+                return JsonResponse(data)      
+         
 class adminSetup(TemplateView):
     # global  role
     global feature_to_display
@@ -1716,6 +2111,22 @@ def getExpController(request):
         print("SAVED NEW EXPERIMENT TO SESSION---->>>>>>")
 
     return expCont
+
+def checkExpController(request):
+    try:
+        sess_expId = request.session['sess_expId']
+        print('SESSION ID',sess_expId)
+    except KeyError:
+        sess_expId = None
+    if sess_expId:
+        expAdminId = request.user.custom_id
+        expCont = ExperimentController(a_id=expAdminId,e_id=sess_expId)
+    else: 
+        expCont=None
+    
+    return expCont
+
+
 
 def pickleExpController(expCont):
     pickle.dump(expCont, open('expCont4.p','wb'))
