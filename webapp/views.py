@@ -1079,7 +1079,84 @@ class orderCriteria_Setup(TemplateView):
 
 class cdmCriteria_Setup(TemplateView):
     def get(self,request):
-        pass
+        flag="true"
+        role_name=['']
+        userobj=User.objects.get(pk=request.user.id)
+        print("user object",userobj.role_id_id)
+        role_id=userobj.role_id_id
+        roleobj=Role.objects.get(pk=role_id)
+        role=roleobj.role_name
+        if  request.is_ajax():
+           
+            # A new check exp controller is made to only see if the exp 
+            # exsists or not. if it exsists return its data other wise 
+            # return none .
+            expCont = checkExpController(request)
+            print("EXPCONTSS",expCont)
+            if expCont:
+                existExpId = expCont.exp.id
+                existCusId=expCont.exp.custom_exp_id
+            else:
+                existCusId=""
+
+            try:
+                exp_obj=Experiment.objects.get(custom_exp_id=existCusId)            
+                print("exp_obj",exp_obj)
+                if (ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="default").exists()):
+                    ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1,cOrder_id__icontains="default",pCriteria_id__status="default",pCriteria_id__priority="mendatory").order_by("id")
+                    mandatory=list(ExpCrtOrd.values_list("pCriteria_id__criteria_name",flat=True))
+                    print("Man",mandatory)
+                    # print("ExpCrtOrd",ExpCrtOrd.values_list("pCriteria_id__criteria_name",flat=True))
+                    ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=0,cOrder_id__icontains="default",pCriteria_id__status="default").order_by("id")
+                    feature_to_hide=list(ExpCrtOrd.values_list("pCriteria_id__criteria_name",flat=True))
+                    # feature_to_hide = [item[0] for item in feature_to_hide]
+                    print("hide",feature_to_hide)
+                    ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1,cOrder_id__icontains="default",pCriteria_id__status="default").order_by("id")
+                    feature_to_display=list(ExpCrtOrd.values_list("pCriteria_id__criteria_name","position"))
+                    feature_to_display = [item[0] for item in feature_to_display]
+                    print("display",feature_to_display)
+                    flag="true"
+                else:
+                    print("CDM Else")
+
+                    feature_mand=PhoneCriteria.objects.filter(status="default",priority="mendatory").order_by('id')
+                    mandatory=list(feature_mand.values_list("criteria_name",flat=True))
+                    feature_to_display=PhoneCriteria.objects.filter(status="default").order_by('id')
+                    # feature_to_display = list(feature_to_display.values())
+                    feature_to_display =  list(feature_to_display.values_list("criteria_name","position"))
+                    feature_to_display = [item[0] for item in feature_to_display]
+                    print("feature_to_display--",feature_to_display)
+                    print("feature_mand",mandatory)
+                    feature_to_hide=list()
+                    flag="true"
+            except:
+                print("CDM Exception")
+                feature_mand=PhoneCriteria.objects.filter(status="default",priority="mendatory").order_by('id')
+                mandatory=list(feature_mand.values_list("criteria_name",flat=True))
+                feature_to_display=PhoneCriteria.objects.filter(status="default").order_by('id')
+                # feature_to_display = list(feature_to_display.values())
+                feature_to_display =  list(feature_to_display.values_list("criteria_name","position"))
+                feature_to_display = [item[0] for item in feature_to_display]
+                feature_to_hide=list()
+                flag="true"
+
+                
+                
+                
+
+           
+        
+           
+            print("feature",feature_to_display)
+            print("feature_to hide",feature_to_hide)
+            print("mandatory",mandatory)
+            data={
+                'feature_to_display':feature_to_display,
+                'feature_to_hide':feature_to_hide,
+                'mandatory':mandatory,
+                'flag':flag
+            }
+            return JsonResponse(data)
     def post(self,request): 
            if request.is_ajax:
                 cdm_crit_show_dict = request.POST.get('cdm_crit_show_dict')
