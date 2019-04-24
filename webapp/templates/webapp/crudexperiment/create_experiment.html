@@ -3201,7 +3201,7 @@ else if (dict['C']!==undefined && dict['CO']===undefined){
         // Admin will be redirected to the Feature level div/page. 
         // If admin presses c.full button after c.prune being enabled then what?? 
         // Idealy if the admin makes changes to the list then c.pruned list should automatically be updated. 
-        // CFID: C.Def
+        // CFID: Default
     */
 }
 else if (dict['C']===undefined && dict['CO']!==undefined){
@@ -4910,7 +4910,7 @@ function SetFunc(active_id){
     function get_data_Ajax_Co(colist){
         // ajax call to get feature_to_display, feature_to_hide
         colist=dict["CO"]
-        if (default_crit_show_dict["C.Def"]!==undefined && default_crit_hide_dict["C.Def"]!==undefined){
+        if (default_crit_show_dict["Cdm.Default"]!==undefined && default_crit_hide_dict["Cdm.Default"]!==undefined){
             var select=document.createElement('select');
             select.setAttribute('id', 'sel_options');
             select.setAttribute('onchange',"selChangeFunc($(this))")
@@ -4924,10 +4924,10 @@ function SetFunc(active_id){
             $('#select_div').append(select);   
             var shw_disp=[];
             var hide_disp=[];
-            var feat_dsp=crit_order_dict["CO.1_C.Def"];
+            var feat_dsp=crit_order_dict["CO.1_Cdm.Default"];
             console.log("feat_dsp",feat_dsp)
             feat_to_disp=feat_dsp;
-            var feat_hide=crit_hide_dict["CO.1_C.Def"];
+            var feat_hide=crit_hide_dict["CO.1_Cdm.Default"];
             console.log("feat_hide",feat_hide);
             var flg="true";
             data=htmlF(shw_disp,hide_disp,mandatory_list,feat_dsp,feat_hide,flg)
@@ -4970,13 +4970,13 @@ function SetFunc(active_id){
                         default_crit_hide_disp=data['feature_to_hide'];
                         
                         mandatory_list=mand;
-                        default_crit_show_dict['C.Def']=default_crit_show_disp;
-                        default_crit_hide_dict["C.Def"]=default_crit_hide_disp;
+                        default_crit_show_dict['Cdm.Default']=default_crit_show_disp;
+                        default_crit_hide_dict["Cdm.Default"]=default_crit_hide_disp;
                         data=htmlF(shw_disp,hide_disp,mand,feat_dsp,feat_hide,flg)
                         if(default_active==="true"){
                             for (var co in colist){
-                            crit_order_dict[colist[co]+"_C.Def"]=data['shw_disp'];
-                            crit_hide_dict[colist[co]+"_C.Def"]=data['hide_disp'];
+                            crit_order_dict[colist[co]+"_Cdm.Default"]=data['shw_disp'];
+                            crit_hide_dict[colist[co]+"_Cdm.Default"]=data['hide_disp'];
                             }
                         }
                     }
@@ -4995,15 +4995,15 @@ function SetFunc(active_id){
                         default_crit_hide_disp=feat_to_hide;
                         
                         mandatory_list=mand;
-                        default_crit_show_dict['C.Def']=default_crit_show_disp;
-                        default_crit_hide_dict["C.Def"]=default_crit_hide_disp;
+                        default_crit_show_dict['Cdm.Default']=default_crit_show_disp;
+                        default_crit_hide_dict["Cdm.Default"]=default_crit_hide_disp;
                         data=htmlF(shw_disp,hide_disp,mand,feat_dsp,feat_hide,flg)
                        
                             for (var co in colist){
                             console.log("CCCC",colist[co])
                             console.log("****",co_set_show_dict["CO.1"])
-                            crit_order_dict[colist[co]+"_C.Def"]=co_set_show_dict[colist[co]];
-                            crit_hide_dict[colist[co]+"_C.Def"]=co_set_hide_dict[colist[co]];
+                            crit_order_dict[colist[co]+"_Cdm.Default"]=co_set_show_dict[colist[co]];
+                            crit_hide_dict[colist[co]+"_Cdm.Default"]=co_set_hide_dict[colist[co]];
                             }
                     }
                    
@@ -5034,12 +5034,12 @@ function SetFunc(active_id){
 
                         $('span').text(data);
                         if (default_active==="true"){
-                            if (crit_order_dict[active_co+"_C.Def"]===undefined){
-                            crit_order_dict[active_co+"_C.Def"]=[]
+                            if (crit_order_dict[active_co+"_Cdm.Default"]===undefined){
+                            crit_order_dict[active_co+"_Cdm.Default"]=[]
                             }
                             else{
-                                crit_order_dict[active_co+"_C.Def"]=arr;
-                                crit_hide_dict[active_co+"_C.Def"]=hide_disp;
+                                crit_order_dict[active_co+"_Cdm.Default"]=arr;
+                                crit_hide_dict[active_co+"_Cdm.Default"]=hide_disp;
                                 
                                 console.log("crit_order_dict-",crit_order_dict)
                                 console.log("crit_hide_dict-",crit_hide_dict);
@@ -6035,7 +6035,6 @@ function SetFunc(active_id){
         var current=$(".active");
         current.prop('class',current.attr('class').replace('active',""));
         $('#ftlvl').prop('class', 'custom_nav_btn active');
-
     }
     /*
         // First HTML For C.full will be created here(having next button). 
@@ -6570,15 +6569,15 @@ function SetFunc(active_id){
         // hide_feature_div.append(ul_hiddenfeat);
         // have to change the checks as well... 
         if(default_active==="true"){
-            if(crit_order_dict[active_co+"_C.Def"]===undefined || crit_hide_dict[active_co+"_C.Def"]===undefined){
+            if(crit_order_dict[active_co+"_Cdm.Default"]===undefined || crit_hide_dict[active_co+"_Cdm.Default"]===undefined){
                 // set the default feature disp and hide here. along with mand and flag
                 var feat_dsp=default_crit_show_disp;
                 var feat_hide=default_crit_hide_disp;
                 
             }
             else{
-                var feat_dsp =crit_order_dict[active_co+"_C.Def"];
-                var feat_hide=crit_hide_dict[active_co+"_C.Def"];
+                var feat_dsp =crit_order_dict[active_co+"_Cdm.Default"];
+                var feat_hide=crit_hide_dict[active_co+"_Cdm.Default"];
                 crit_flag="true";
             }  
         }
@@ -6605,8 +6604,8 @@ function SetFunc(active_id){
 
         
         if(default_active==="true"){
-            crit_order_dict[active_co+"_C.Def"]=data['shw_disp'];
-            crit_hide_dict[active_co+"_C.Def"]=data['hide_disp'];
+            crit_order_dict[active_co+"_Cdm.Default"]=data['shw_disp'];
+            crit_hide_dict[active_co+"_Cdm.Default"]=data['hide_disp'];
         }else{
             crit_order_dict[active_co+co_feature_active]=data['shw_disp'];
             crit_hide_dict[active_co+co_feature_active]=data['hide_disp'];
@@ -6628,12 +6627,12 @@ function SetFunc(active_id){
         
                                     $('span').text(data);
                                     if (default_active==="true"){
-                                        if (crit_order_dict[active_co+"_C.Def"]===undefined){
-                                        crit_order_dict[active_co+"_C.Def"]=[]
+                                        if (crit_order_dict[active_co+"_Cdm.Default"]===undefined){
+                                        crit_order_dict[active_co+"_Cdm.Default"]=[]
                                         }
                                         else{
-                                            crit_order_dict[active_co+"_C.Def"]=arr;
-                                            crit_hide_dict[active_co+"_C.Def"]=hide_disp;
+                                            crit_order_dict[active_co+"_Cdm.Default"]=arr;
+                                            crit_hide_dict[active_co+"_Cdm.Default"]=hide_disp;
                                             
                                             console.log("crit_order_dict-",crit_order_dict)
                                             console.log("crit_hide_dict-",crit_hide_dict);
@@ -6782,23 +6781,23 @@ function SetFunc(active_id){
             // check if active_co exists, if it doesn't then simply 
             // run default_crit_show_dict['default'].indexOf(elem);;;;
             if(default_active==="true"){
-                if(crit_order_dict[active_co+"_C.Def"]===undefined || crit_hide_dict[active_co+"_C.Def"]===undefined){
+                if(crit_order_dict[active_co+"_Cdm.Default"]===undefined || crit_hide_dict[active_co+"_Cdm.Default"]===undefined){
                     var index =  default_crit_show_dict['default'].indexOf(elem);
                     if (index > -1) {
-                    default_crit_show_dict['C.Def'].splice(index, 1);
+                    default_crit_show_dict['Cdm.Default'].splice(index, 1);
                     }
-                    default_crit_hide_dict['C.Def'].push(elem);
+                    default_crit_hide_dict['Cdm.Default'].push(elem);
                 }
                 else{
                     console.log("active_co",active_co)
                     console.log("crit_order_dict",crit_order_dict)
 
-                    var index = crit_order_dict[active_co+"_C.Def"].indexOf(elem);
+                    var index = crit_order_dict[active_co+"_Cdm.Default"].indexOf(elem);
                     if (index > -1) {
-                    crit_order_dict[active_co+"_C.Def"].splice(index, 1);
+                    crit_order_dict[active_co+"_Cdm.Default"].splice(index, 1);
                         }
                 
-                    crit_hide_dict[active_co+"_C.Def"].push(elem);
+                    crit_hide_dict[active_co+"_Cdm.Default"].push(elem);
                     console.log("crit_order_dict###",crit_order_dict);
                     console.log("crit_hide_dict###",crit_hide_dict);
                     console.log("default_crit_show_dict>>>>",default_crit_show_dict);
@@ -6813,9 +6812,9 @@ function SetFunc(active_id){
                 if(crit_order_dict[koool]===undefined || crit_hide_dict[koool]===undefined){
                     var index =  default_crit_show_dict['default'].indexOf(elem);
                     if (index > -1) {
-                    default_crit_show_dict['C.Def'].splice(index, 1);
+                    default_crit_show_dict['Cdm.Default'].splice(index, 1);
                     }
-                    default_crit_hide_dict['C.Def'].push(elem);
+                    default_crit_hide_dict['Cdm.Default'].push(elem);
                 }
                 else{
                     console.log("active_co",active_co)
@@ -6918,24 +6917,24 @@ function SetFunc(active_id){
                     // run default_crit_hide_dict['default'].indexOf(elem);;;;
             */
             if(default_active==="true"){
-                if(crit_order_dict[active_co+"_C.Def"]===undefined || crit_hide_dict[active_co+"_C.Def"]===undefined){
-                    var index = default_crit_hide_dict['C.Def'].indexOf(elem);
+                if(crit_order_dict[active_co+"_Cdm.Default"]===undefined || crit_hide_dict[active_co+"_Cdm.Default"]===undefined){
+                    var index = default_crit_hide_dict['Cdm.Default'].indexOf(elem);
                         if (index > -1) {
-                            default_crit_hide_dict['C.Def'].splice(index, 1);
+                            default_crit_hide_dict['Cdm.Default'].splice(index, 1);
                             }
-                    default_crit_show_dict['C.Def'].push(elem);
+                    default_crit_show_dict['Cdm.Default'].push(elem);
                     console.log("default_crit_show_dict>>>>",default_crit_show_dict);
                     console.log("default_crit_hide_dict>>>>",default_crit_hide_dict);
 
                 }
                 else{
-                    var index = crit_hide_dict[active_co+"_C.Def"].indexOf(elem);
+                    var index = crit_hide_dict[active_co+"_Cdm.Default"].indexOf(elem);
                     console.log("INDEX",index)
                             if (index > -1) {
-                            crit_hide_dict[active_co+"_C.Def"].splice(index, 1);
+                            crit_hide_dict[active_co+"_Cdm.Default"].splice(index, 1);
                                     }
                     
-                    crit_order_dict[active_co+"_C.Def"].push(elem);
+                    crit_order_dict[active_co+"_Cdm.Default"].push(elem);
                     console.log("crit_order_dict>>>>",crit_order_dict);
                     console.log("crit_hide_dict>>>>",crit_hide_dict);
                     console.log("default_crit_show_dict>>>>",default_crit_show_dict);

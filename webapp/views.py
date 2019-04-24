@@ -822,22 +822,22 @@ class orderCriteria_Setup(TemplateView):
             co_set_list=["CO.1","CO.2"]
             try:
                 exp_obj=Experiment.objects.get(custom_exp_id=existCusId)
-                if (ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_C.Def").exists()):
+                if (ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_Cdm.Default").exists()):
                     if len(co_set_list)>1:
                         
                         for co in co_set_list:
-                            ECO_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains=co+"_C.Def",sh_hd=1,pCriteria_id__status="default",pCriteria_id__priority="mendatory").order_by("id")
+                            ECO_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains=co+"_Cdm.Default",sh_hd=1,pCriteria_id__status="default",pCriteria_id__priority="mendatory").order_by("id")
                             print("ECO_KNE",ECO_obj)
                             mandatory=list(ECO_obj.values_list("pCriteria_id__criteria_name",flat=True))
                             print("Man",mandatory)
                             # print("ExpCrtOrd",ExpCrtOrd.values_list("pCriteria_id__criteria_name",flat=True))
-                            ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains=co+"_C.Def",sh_hd=0,pCriteria_id__status="default").order_by("id")
+                            ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains=co+"_Cdm.Default",sh_hd=0,pCriteria_id__status="default").order_by("id")
                             feature_to_hide=list(ExpCrtOrd.values_list("pCriteria_id__criteria_name",flat=True))
                             # list comprehension
                             feature_to_hide = [item[0] for item in feature_to_hide]
                             co_set_hide_dict[co]=feature_to_hide
                             print("hide",feature_to_hide)
-                            ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains=co+"_C.Def",sh_hd=1,pCriteria_id__status="default").order_by("id")
+                            ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains=co+"_Cdm.Default",sh_hd=1,pCriteria_id__status="default").order_by("id")
                             feature_to_display=list(ExpCrtOrd.values_list("pCriteria_id__criteria_name","position"))
                             feature_to_display = [item[0] for item in feature_to_display]
                             co_set_show_dict[co]=feature_to_display
@@ -849,15 +849,15 @@ class orderCriteria_Setup(TemplateView):
                             flag="true"
 
                     else:
-                        ECO_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_C.Def",sh_hd=1,pCriteria_id__status="default",pCriteria_id__priority="mendatory").order_by("id")
+                        ECO_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_Cdm.Default",sh_hd=1,pCriteria_id__status="default",pCriteria_id__priority="mendatory").order_by("id")
                         print("ECO_KNE",ECO_obj)
                         mandatory=list(ECO_obj.values_list("pCriteria_id__criteria_name",flat=True))
                         print("Man",mandatory)
                         # print("ExpCrtOrd",ExpCrtOrd.values_list("pCriteria_id__criteria_name",flat=True))
-                        ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_C.Def",sh_hd=0,pCriteria_id__status="default").order_by("id")
+                        ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_Cdm.Default",sh_hd=0,pCriteria_id__status="default").order_by("id")
                         feature_to_hide=list(ExpCrtOrd.values_list("pCriteria_id__criteria_name",flat=True))
                         print("hide",feature_to_hide)
-                        ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_C.Def",sh_hd=1,pCriteria_id__status="default").order_by("id")
+                        ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_Cdm.Default",sh_hd=1,pCriteria_id__status="default").order_by("id")
                         feature_to_display=list(ExpCrtOrd.values_list("pCriteria_id__criteria_name","position"))
                         feature_to_display = [item[0] for item in feature_to_display]
                         print("display",feature_to_display)
@@ -892,16 +892,16 @@ class orderCriteria_Setup(TemplateView):
             #     exp_obj=Experiment.objects.get(custom_exp_id=existCusId)
             #     print("exp_obj",exp_obj)
             #     try:
-            #         ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_C.Def",sh_hd=1,pCriteria_id__status="default",pCriteria_id__priority="mendatory").order_by("id")
+            #         ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_Cdm.Default",sh_hd=1,pCriteria_id__status="default",pCriteria_id__priority="mendatory").order_by("id")
             #         print("$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$")
             #         print(ExpCrtOrd)
             #         mandatory=list(ExpCrtOrd.values_list("pCriteria_id__criteria_name",flat=True))
             #         print("Man",mandatory)
             #         # print("ExpCrtOrd",ExpCrtOrd.values_list("pCriteria_id__criteria_name",flat=True))
-            #         ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_C.Def",sh_hd=0,pCriteria_id__status="default").order_by("id")
+            #         ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_Cdm.Default",sh_hd=0,pCriteria_id__status="default").order_by("id")
             #         feature_to_hide=list(ExpCrtOrd.values_list("pCriteria_id__criteria_name",flat=True))
             #         print("hide",feature_to_hide)
-            #         ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_C.Def",sh_hd=1,pCriteria_id__status="default").order_by("id")
+            #         ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_Cdm.Default",sh_hd=1,pCriteria_id__status="default").order_by("id")
             #         feature_to_display=list(ExpCrtOrd.values_list("pCriteria_id__criteria_name","position"))
             #         print("display",feature_to_display)
             #     except:
@@ -1009,7 +1009,7 @@ class orderCriteria_Setup(TemplateView):
                 #         print(key,":",s)
                 #         for count, i in enumerate(s):
                 #             PcObj=PhoneCriteria.objects.get(criteria_name=i)
-                #             expOS_obj=ExpCriteriaOrder.objects.get(exp=exp_obj,pCriteria=PcObj,cOrder_id='CO.'+str(key)+"C.Def")
+                #             expOS_obj=ExpCriteriaOrder.objects.get(exp=exp_obj,pCriteria=PcObj,cOrder_id='CO.'+str(key)+"Cdm.Default")
                 #             expOS_obj.position=count+1
                 #             expOS_obj.sh_hd=1
                 #             expOS_obj.save()
@@ -1017,7 +1017,7 @@ class orderCriteria_Setup(TemplateView):
                 #         print(key,":",s)
                 #         for count, i in enumerate(s):
                 #             PcObj=PhoneCriteria.objects.get(criteria_name=i)
-                #             expOS_obj=ExpCriteriaOrder.objects.get(exp=exp_obj,pCriteria=PcObj,cOrder_id='CO.'+str(key)+"C.Def")
+                #             expOS_obj=ExpCriteriaOrder.objects.get(exp=exp_obj,pCriteria=PcObj,cOrder_id='CO.'+str(key)+"Cdm.Default")
                 #             expOS_obj.position=0
                 #             expOS_obj.sh_hd=0
                 #             expOS_obj.save()
