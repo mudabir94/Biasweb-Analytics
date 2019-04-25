@@ -17,8 +17,8 @@
                 <div class='row-fluid'>
                         <div class='row' id='custom_nav_div' >
                             <div class='col'><button id='ftlvl' class='custom_nav_btn active 'onclick='showFeatureLvls($(this))'>Feature Levels</button> </div>
-                            <div class='col'><button id='btchmng' class='custom_nav_btn'onclick='showBatchManagement()'>Batch Management</button></div>
-                            <div class='col'><button id='blkmng' class='custom_nav_btn' onclick='showBlockManagement()'>Block Management</button></div>
+                            <div class='col'><button id='btchmng' class='custom_nav_btn'onclick='showBatchManagement()'>Manage Batch </button></div>
+                            <div class='col'><button id='blkmng' class='custom_nav_btn' onclick='showBlockManagement()'>Manage Block</button></div>
                             <div class='col'><button id='create_exp_mobile_catalog' class='custom_nav_btn' onclick='mobileCatalog()'>Mobile catalog</button></div>
                             <div class='col'><button id='def_crit_list_btn' class='custom_nav_btn' onclick='showCritrtia()'>Criteria List</button></div>
 
@@ -592,10 +592,13 @@ if(exp_id===""){
     /*
         * By default hide mobile catalog div...
     */
-    $("#create_exp_mobile_catalog").css('background-color','black');
-    $("#create_exp_mobile_catalog").css('color','black');
-    $("#create_exp_mobile_catalog").css('cursor','not-allowed');
-    $("#create_exp_mobile_catalog").attr("disabled", true); 
+    // $("#create_exp_mobile_catalog").css('background-color','black');
+    // $("#create_exp_mobile_catalog").css('color','black');
+    // $("#create_exp_mobile_catalog").css('cursor','not-allowed');
+    // $("#create_exp_mobile_catalog").attr("disabled", true); 
+    disableMobileCatalogButton();
+    disableCriteriaButton();
+
 
 } else {
 
@@ -627,10 +630,9 @@ if(exp_id===""){
     /*
         * By default hide mobile catalog div...
     */
-            $("#create_exp_mobile_catalog").css('background-color','black');
-            $("#create_exp_mobile_catalog").css('color','black');
-            $("#create_exp_mobile_catalog").css('cursor','not-allowed');
-            $("#create_exp_mobile_catalog").attr("disabled", true); 
+         
+            disableMobileCatalogButton();
+            disableCriteriaButton();
 
 
 
@@ -741,11 +743,12 @@ function showcheckboxes_stored(){
         }
         // disabling Mobile Catalog button if p is not ticked!.
         if (p_flag===false) {
-        $("#create_exp_mobile_catalog").css('background-color','black');
-        $("#create_exp_mobile_catalog").css('color','black');
-        $("#create_exp_mobile_catalog").css('cursor','not-allowed');
+        // $("#create_exp_mobile_catalog").css('background-color','black');
+        // $("#create_exp_mobile_catalog").css('color','black');
+        // $("#create_exp_mobile_catalog").css('cursor','not-allowed');
 
-        $("#create_exp_mobile_catalog").attr("disabled", true); 
+        // $("#create_exp_mobile_catalog").attr("disabled", true); 
+        disableMobileCatalogButton();
         }
 
 }
@@ -1379,7 +1382,11 @@ function showCritrtia(){
 
     }
     else if (CO_CDM_COMB==="CDM_on_CO_on"){
+        cdm_crit_order_on_flag="false";
         cdm_On_Full_Co_HtmlSetup();
+    }
+    else{
+        alert("NOthing Present in Session")
     }
 
 }
@@ -1388,6 +1395,32 @@ function showExpWIP(){
     $('#cr_exp_header').append("<p>"+custom_exp_id+" is UNDER CONSTRUCITON</p>");
 }
 
+
+function disableCriteriaButton(){
+    $("#def_crit_list_btn").css('background-color','black');
+    $("#def_crit_list_btn").css('color','black');
+    $("#def_crit_list_btn").css('cursor','not-allowed');
+    $("#def_crit_list_btn").attr("disabled", true); 
+}
+function enableCriteriaButton(){
+    $("#def_crit_list_btn").css('background-color','');
+    $("#def_crit_list_btn").css('color','');
+    $("#def_crit_list_btn").css('cursor','pointer');
+    $("#def_crit_list_btn").attr("disabled", false); 
+}
+function disableMobileCatalogButton(){
+    $("#create_exp_mobile_catalog").css('background-color','black');
+    $("#create_exp_mobile_catalog").css('color','black');
+    $("#create_exp_mobile_catalog").css('cursor','not-allowed');
+    $("#create_exp_mobile_catalog").attr("disabled", true); 
+}
+function enableMobileCatalogButton(){
+    $("#create_exp_mobile_catalog").css('background-color','');
+    $("#create_exp_mobile_catalog").css('color','');
+    $("#create_exp_mobile_catalog").css('cursor','pointer');
+    $("#create_exp_mobile_catalog").attr("disabled", false); 
+
+}
 function saveExperiment(){
     // Getting all data from local storage and sending to server
     alert (' Getting all data from local storage and sending to server')
@@ -2594,12 +2627,11 @@ if (outerckbox.is(':checked')) {
                                
                                 $( this ).dialog( "close" );
                             // Enabling mobile Catalog button if p is not ticked!.
-
-                                $("#create_exp_mobile_catalog").css('background-color','');
-                                $("#create_exp_mobile_catalog").css('color','');
-                                $("#create_exp_mobile_catalog").css('cursor','pointer');
-
-                                $("#create_exp_mobile_catalog").attr("disabled", false); 
+                                enableMobileCatalogButton();
+                                // $("#create_exp_mobile_catalog").css('background-color','');
+                                // $("#create_exp_mobile_catalog").css('color','');
+                                // $("#create_exp_mobile_catalog").css('cursor','pointer');
+                                // $("#create_exp_mobile_catalog").attr("disabled", false); 
 
                                 $("#6").prop('checked', true);
                                 console.log("vale",$('#inputset_num').val())
@@ -2827,12 +2859,12 @@ if (outerckbox.is(':checked')) {
                     brand_set_dict={};
                     slider_set_dict={};
                     // disabling mobile Catalog button if p is not ticked!.
+                    disableMobileCatalogButton();
+                    // $("#create_exp_mobile_catalog").css('background-color','black');
+                    // $("#create_exp_mobile_catalog").css('color','black');
+                    // $("#create_exp_mobile_catalog").css('cursor','not-allowed');
 
-                    $("#create_exp_mobile_catalog").css('background-color','black');
-                    $("#create_exp_mobile_catalog").css('color','black');
-                    $("#create_exp_mobile_catalog").css('cursor','not-allowed');
-
-                    $("#create_exp_mobile_catalog").attr("disabled", true); 
+                    // $("#create_exp_mobile_catalog").attr("disabled", true); 
                 }
 
         }
@@ -2842,8 +2874,25 @@ if (outerckbox.is(':checked')) {
         dict[outercheckval]=null;
         if (dict[outercheckval]===null || dict[outercheckval].length===0){
             delete dict[outercheckval];
-            default_
+            
         }
+        alert(outercheckval)
+        if (outercheckval==="CO"){
+            cdm_crit_order_on_flag="false";
+            alert(cdm_crit_order_on_flag)
+
+        }
+        else if (outercheckval==="C"){
+            console.log("default_crit_show_dict['cdm']",default_crit_show_dict['cdm'])
+            console.log("default_crit_hide_dict['cdm']",default_crit_hide_dict['cdm'])
+
+            delete default_crit_show_dict['cdm'];
+            delete default_crit_hide_dict['cdm'];
+            console.log("default_crit_show_dict['cdm']",default_crit_show_dict['cdm'])
+            console.log("default_crit_hide_dict['cdm']",default_crit_hide_dict['cdm'])
+
+        }
+
         console.log("OOOOOOOOOOOOOOOOOOOOOOOO",dict[outercheckval])
         console.log("phoneset_dic--",phoneset_dic)
         // empty phoneset_dic 
@@ -3102,10 +3151,23 @@ for (var o in data){
 var cdm_full_btn_on="false"; var default_active="false";
 var CO_CDM_COMB="";
 function sendFeatureLevels(){ 
-    
+    console.log("dictionary",dict)
 if (dict['C']===undefined && dict['CO']===undefined){
     // alert("Please Choose Criteria Display Method ")
+    delete default_crit_show_dict["C.Full"];
+    delete default_crit_show_dict['C.Prune'];
+    delete default_crit_show_dict['cdm'];
+    delete default_crit_show_dict['Cdm.Def'];
+
+    delete default_crit_hide_dict["C.Full"];
+    delete default_crit_hide_dict['C.Prune'];
+    delete default_crit_hide_dict['cdm'];
+    delete default_crit_hide_dict['Cdm.Def'];
+
+
     CO_CDM_COMB="CDM_off_CO_off";
+    alert(CO_CDM_COMB);
+
     console.log("default_crit_show_dict!!!",default_crit_show_dict);
     if (default_crit_show_dict['default']===undefined || default_crit_hide_dict['default']===undefined ){
         $('#defualt_criteria_popup').empty();
@@ -3123,6 +3185,7 @@ if (dict['C']===undefined && dict['CO']===undefined){
                                 click: function() {
                                 $( this ).dialog( "close" );
                                 HideALL();
+                                enableCriteriaButton();
 
                                 defualtCriteriaHtmlSetup();
                                 var current=$(".active");
@@ -3156,15 +3219,19 @@ if (dict['C']===undefined && dict['CO']===undefined){
                 col_md_12_div2.setAttribute('class','col-md-12');
                 row_d2.append(col_md_12_div2);
                 var p_text=document.createElement('p');
-                p_text.innerHTML="Do wish to proceed with defualt(Full) Criterias?";
+                p_text.innerHTML="Do wish to proceed with defualt(Full) Criterias and Ordering?";
                 col_md_12_div.append(p_text);
                 // var input = document.createElement("INPUT");
                 // input.setAttribute("type", "number");
                 // input.id='inputset_num_co';
                 // col_md_12_div2.append(input);
+                $("#criteria_option_name").empty();
+                $("#criteria_option_name").append("<h4> Default CDM and Default CO</h4>");
+                
                 return;
     }
     else{
+        
         let defualt_update_alert = confirm("Do You want to update the exsisting Experiment Settings?")
         if(defualt_update_alert===true){
             alert("Updating...")
@@ -3185,13 +3252,28 @@ if (dict['C']===undefined && dict['CO']===undefined){
     
 }
 else if (dict['C']!==undefined && dict['CO']===undefined){
-    CO_CDM_COMB="CDM_on_CO_off"
+    CO_CDM_COMB="CDM_on_CO_off";
+    delete default_crit_show_dict["C.Full"];
+    delete default_crit_show_dict['C.Prune'];
+    delete default_crit_show_dict['default'];
+    delete default_crit_show_dict['Cdm.Def'];
+    
+    delete default_crit_hide_dict["C.Full"];
+    delete default_crit_hide_dict['C.Prune'];
+    delete default_crit_hide_dict['default'];
+    delete default_crit_hide_dict['Cdm.Def'];
+    alert(CO_CDM_COMB);
+
     HideALL();
+    enableCriteriaButton();
+
     CdmCriteriaHTMLSetup();
     var current=$(".active");
     current.prop('class',current.attr('class').replace('active',""));
     $('#def_crit_list_btn').prop('class', 'custom_nav_btn active');
-    
+    $("#criteria_option_name").empty();
+    $("#criteria_option_name").append("<h4> Active CDM and Default CO</h4>");
+                
     return;
     /*
         // This means C.Full and C.Prune level active. 
@@ -3206,13 +3288,28 @@ else if (dict['C']!==undefined && dict['CO']===undefined){
 }
 else if (dict['C']===undefined && dict['CO']!==undefined){
     default_active="true"
+    crit_order_dict={};
+    crit_hide_dict={};
     CO_CDM_COMB="CDM_off_CO_on"
+    delete default_crit_show_dict["C.Full"];
+    delete default_crit_show_dict['C.Prune'];
+    delete default_crit_show_dict['cdm'];
+    delete default_crit_show_dict['default'];
+    
+    delete default_crit_hide_dict["C.Full"];
+    delete default_crit_hide_dict['C.Prune'];
+    delete default_crit_hide_dict['cdm'];
+    delete default_crit_hide_dict['default'];
+
+    alert(CO_CDM_COMB)
+    
     HideALL();
     orderCriteriaHtmlSetup("CO",dict["CO"],default_active);
     var current=$(".active");
     current.prop('class',current.attr('class').replace('active',""));
     $('#def_crit_list_btn').prop('class', 'custom_nav_btn active');
-    
+    $("#criteria_option_name").empty();
+    $("#criteria_option_name").append("<h4> Default CDM and Active CO</h4>");
     return;
     /*
         // Now first we get number of sets admin wants. 
@@ -3224,14 +3321,28 @@ else if (dict['C']===undefined && dict['CO']!==undefined){
 }
 else if (dict['C']!==undefined && dict['CO']!==undefined){
     // orderCriteriaHtmlSetup("CO",dict["CO"],default_active);
+    crit_order_dict={};
+    crit_hide_dict={};
+    delete default_crit_show_dict["cdm"];
+    delete default_crit_show_dict['default'];
+    delete default_crit_show_dict['Cdm.Def'];
+    
+    delete default_crit_hide_dict["cdm"];
+    delete default_crit_hide_dict['default'];
+    delete default_crit_hide_dict['Cdm.Def'];
     CO_CDM_COMB="CDM_on_CO_on"
+    cdm_crit_order_on_flag="false";
+
+    alert(CO_CDM_COMB)
     HideALL();
 
     cdm_On_Full_Co_HtmlSetup();
     var current=$(".active");
     current.prop('class',current.attr('class').replace('active',""));
     $('#def_crit_list_btn').prop('class', 'custom_nav_btn active');
-    
+    $("#criteria_option_name").empty();
+    $("#criteria_option_name").append("<h4> Active CDM and Active CO</h4>");
+                
     return;
     /*
         // Now as both are checked, 
@@ -4806,8 +4917,10 @@ function SetFunc(active_id){
         // setting no of co sets. 
         var colist=CO_list;
         /* emptying and showing order criteria div */
-        $("#order_criteria_div").empty();
         $("#default_criteria_div").empty();
+        $("#order_criteria_div").empty();
+        $("#cdm_criteria_div").empty();
+        $("#cdm_co_on_div").empty();
         // CREATING HTML LAYOUT <-->
         var order_criteria_div=document.getElementById("order_criteria_div");
         var container=document.createElement("div");
@@ -4910,7 +5023,7 @@ function SetFunc(active_id){
     function get_data_Ajax_Co(colist){
         // ajax call to get feature_to_display, feature_to_hide
         colist=dict["CO"]
-        if (default_crit_show_dict["Cdm.Default"]!==undefined && default_crit_hide_dict["Cdm.Default"]!==undefined){
+        if (default_crit_show_dict["Cdm.Def"]!==undefined && default_crit_hide_dict["Cdm.Def"]!==undefined){
             var select=document.createElement('select');
             select.setAttribute('id', 'sel_options');
             select.setAttribute('onchange',"selChangeFunc($(this))")
@@ -4924,10 +5037,10 @@ function SetFunc(active_id){
             $('#select_div').append(select);   
             var shw_disp=[];
             var hide_disp=[];
-            var feat_dsp=crit_order_dict["CO.1_Cdm.Default"];
+            var feat_dsp=crit_order_dict["CO.1_Cdm.Def"];
             console.log("feat_dsp",feat_dsp)
             feat_to_disp=feat_dsp;
-            var feat_hide=crit_hide_dict["CO.1_Cdm.Default"];
+            var feat_hide=crit_hide_dict["CO.1_Cdm.Def"];
             console.log("feat_hide",feat_hide);
             var flg="true";
             data=htmlF(shw_disp,hide_disp,mandatory_list,feat_dsp,feat_hide,flg)
@@ -4970,13 +5083,13 @@ function SetFunc(active_id){
                         default_crit_hide_disp=data['feature_to_hide'];
                         
                         mandatory_list=mand;
-                        default_crit_show_dict['Cdm.Default']=default_crit_show_disp;
-                        default_crit_hide_dict["Cdm.Default"]=default_crit_hide_disp;
+                        default_crit_show_dict['Cdm.Def']=default_crit_show_disp;
+                        default_crit_hide_dict["Cdm.Def"]=default_crit_hide_disp;
                         data=htmlF(shw_disp,hide_disp,mand,feat_dsp,feat_hide,flg)
                         if(default_active==="true"){
                             for (var co in colist){
-                            crit_order_dict[colist[co]+"_Cdm.Default"]=data['shw_disp'];
-                            crit_hide_dict[colist[co]+"_Cdm.Default"]=data['hide_disp'];
+                            crit_order_dict[colist[co]+"_Cdm.Def"]=data['shw_disp'];
+                            crit_hide_dict[colist[co]+"_Cdm.Def"]=data['hide_disp'];
                             }
                         }
                     }
@@ -4995,15 +5108,15 @@ function SetFunc(active_id){
                         default_crit_hide_disp=feat_to_hide;
                         
                         mandatory_list=mand;
-                        default_crit_show_dict['Cdm.Default']=default_crit_show_disp;
-                        default_crit_hide_dict["Cdm.Default"]=default_crit_hide_disp;
+                        default_crit_show_dict['Cdm.Def']=default_crit_show_disp;
+                        default_crit_hide_dict["Cdm.Def"]=default_crit_hide_disp;
                         data=htmlF(shw_disp,hide_disp,mand,feat_dsp,feat_hide,flg)
                        
                             for (var co in colist){
                             console.log("CCCC",colist[co])
                             console.log("****",co_set_show_dict["CO.1"])
-                            crit_order_dict[colist[co]+"_Cdm.Default"]=co_set_show_dict[colist[co]];
-                            crit_hide_dict[colist[co]+"_Cdm.Default"]=co_set_hide_dict[colist[co]];
+                            crit_order_dict[colist[co]+"_Cdm.Def"]=co_set_show_dict[colist[co]];
+                            crit_hide_dict[colist[co]+"_Cdm.Def"]=co_set_hide_dict[colist[co]];
                             }
                     }
                    
@@ -5014,9 +5127,11 @@ function SetFunc(active_id){
                 
                     console.log("crit_order_dict-->",crit_order_dict);
                     console.log("crit_hide_dict-->",crit_hide_dict);
+                     
+                    console.log("default_crit_show_dict-->",default_crit_show_dict);
+                    console.log("default_crit_hide_dict-->",default_crit_hide_dict);
                     
-                    console.log("default_crit_show_disp-->",default_crit_show_disp);
-                    console.log("default_crit_hide_disp-->",default_crit_hide_disp);
+                   
                     
                     $('ul').sortable({
                         axis: 'y',
@@ -5034,12 +5149,12 @@ function SetFunc(active_id){
 
                         $('span').text(data);
                         if (default_active==="true"){
-                            if (crit_order_dict[active_co+"_Cdm.Default"]===undefined){
-                            crit_order_dict[active_co+"_Cdm.Default"]=[]
+                            if (crit_order_dict[active_co+"_Cdm.Def"]===undefined){
+                            crit_order_dict[active_co+"_Cdm.Def"]=[]
                             }
                             else{
-                                crit_order_dict[active_co+"_Cdm.Default"]=arr;
-                                crit_hide_dict[active_co+"_Cdm.Default"]=hide_disp;
+                                crit_order_dict[active_co+"_Cdm.Def"]=arr;
+                                crit_hide_dict[active_co+"_Cdm.Def"]=hide_disp;
                                 
                                 console.log("crit_order_dict-",crit_order_dict)
                                 console.log("crit_hide_dict-",crit_hide_dict);
@@ -5119,6 +5234,10 @@ function SetFunc(active_id){
          
         /* emptying and showing order criteria div */
         $("#default_criteria_div").empty();
+        $("#order_criteria_div").empty();
+        $("#cdm_criteria_div").empty();
+        $("#cdm_co_on_div").empty();
+
         $("#default_criteria_div").show();
         // CREATING HTML <-->
         var default_criteria_div=document.getElementById("default_criteria_div");
@@ -5130,6 +5249,8 @@ function SetFunc(active_id){
         container.append(heading_row_div);
         var heading_content=document.createElement("H2");
         heading_content.innerHTML="Default CDM and Default CO";
+          
+        
         heading_row_div.append(heading_content);
         var main_row=document.createElement('div');
         main_row.setAttribute('class','row content');
@@ -5185,7 +5306,9 @@ function SetFunc(active_id){
         col_md_1.append(save_to_main_setup_btn);
 
         if (default_crit_show_dict["default"]!==undefined && default_crit_hide_dict["default"]!==undefined){
-            alert("DEF COn")
+            alert("Inserting data from dictionary")
+            // alert(CO_CDM_COMB)
+            // alert(cdm_crit_order_on_flag)
             var shw_disp=[];
             var hide_disp=[];
             var feat_dsp=default_crit_show_dict["default"];
@@ -5197,7 +5320,7 @@ function SetFunc(active_id){
 
         }
         else{
-            alert("LL")
+            alert("MAking Ajax Call to get default data")
         $.ajax({
                                 url: "{% url 'defaultcriteriasetup' %}",
                                 type:'GET',
@@ -5227,161 +5350,7 @@ function SetFunc(active_id){
                                 console.log("default_crit_show_dict-->",default_crit_show_dict);
                                 console.log("default_crit_hide_dict-->",default_crit_hide_dict);
 
-                                // var disp_feat_div=document.getElementById('display_feature_div');
-
-                                // /* 
-                                //     Creating ul and li for displaying and hidding features. 
-                                // */
-                                // var ul_sortable=document.createElement('ul');
-                                // ul_sortable.setAttribute('id','sortable');
-                                // disp_feat_div.append(ul_sortable);
-                                // // Loop for getting the features to display... and creating html for them. 
-                                // for (var i in feat_dsp){
-                                // var li_sortable=document.createElement('li');
-                                // // li_sortable.id=feat_dsp[i].feature+"_"+feat_dsp[i].position;
-                                // if (flg==="true"){
-                                //     // li_sortable.id=feat_dsp[i][0]+"_"+feat_dsp[i][1];
-                                //     li_sortable.id=feat_dsp[i]+"_"+parseInt(i);
-
-                                // }else{
-                                //     li_sortable.id=feat_dsp[i].criteria_name+"_"+feat_dsp[i].position;
-
-                                // }
-                                // ul_sortable.append(li_sortable);
-                                // var div_row=document.createElement('div');
-                                // div_row.setAttribute("class",'row');
-                                // li_sortable.append(div_row);    
-                                // var div_col_md_6_1=document.createElement('div');
-                                // div_col_md_6_1.setAttribute("class","col-md-6");
-                                // div_row.append(div_col_md_6_1);
-                                // var btn_btn_primary=document.createElement('p');
-                                // btn_btn_primary.setAttribute("class","h2_feature");
-                                // // btn_btn_primary.innerHTML=feat_dsp[i].feature;
-                                // if (flg==="true"){
-                                //     // btn_btn_primary.innerHTML=feat_dsp[i][0];
-                                //     btn_btn_primary.innerHTML=feat_dsp[i];
-
-                                // }else{
-                                //     btn_btn_primary.innerHTML=feat_dsp[i].criteria_name;
-                                // }
-                                // // btn_btn_primary.innerHTML=feat_dsp[i].criteria_name;
-                                
-                                // div_col_md_6_1.appendChild(btn_btn_primary);
-                                // var div_col_md_6_2=document.createElement('div');
-                                // div_col_md_6_2.setAttribute('class',"col-md-6");
-                                // div_row.append(div_col_md_6_2);
-                                // // check if i present in mandatory list. If it does dont show the hide button
-                                // if (flg==="true"){
-                                //     // var fet_dsp=feat_dsp[i][0];
-                                //     var fet_dsp=feat_dsp[i];
-                                // }else{
-                                //     var fet_dsp=feat_dsp[i].criteria_name;
-                                // }
-                                // if(mand.includes(fet_dsp)){
-                                //     console.log("HIDE THE HIDE buttOn")
-                                // }
-                                // else {
-                                //     var btn_show_hide=document.createElement('button');
-                                //     btn_show_hide.setAttribute("class","show_hide");
-                                //     btn_show_hide.setAttribute("onclick","hideFromDisplay_Default($(this).parent().parent().parent().attr('id'))");
-                                //     btn_show_hide.innerHTML="Hide";
-                                //     div_col_md_6_2.appendChild(btn_show_hide);
-                                    
-                                // }
-                                // // shw_disp.push(feat_dsp[i].feature);
-                                // if (flg==="true"){
-                                //     // shw_disp.push(feat_dsp[i][0]);
-                                //     shw_disp.push(feat_dsp[i]);
-
-                                // }else{
-                                //     shw_disp.push(feat_dsp[i].criteria_name);
-                                // }
-
-                                // }
-                                // var feat_hide=data['feature_to_hide'];
-                                // feat_to_hide=data['feature_to_hide'];
-                                // console.log("feat-to-hide",feat_to_hide)
-                                // var hide_feat_div=document.getElementById('hide_feature_div');
-                                // var ul_hiddenfeat=document.createElement('ul');
-                                // ul_hiddenfeat.setAttribute("id","hiddenfeat");
-                                // hide_feat_div.append(ul_hiddenfeat);
-                                // for (var i in feat_hide){
-
-                                //     var li_hiddenfeat=document.createElement('li');
-                                //     // li_hiddenfeat.id=feat_hide[i].feature+"_"+feat_hide[i].position
-                                // if (flg==="true"){
-                                //         // li_hiddenfeat.id=feat_hide[i]+"_"+0
-                                //         li_hiddenfeat.id=feat_hide[i]+"_"+0
-                                // }else{
-                                //     li_hiddenfeat.id=feat_hide[i].criteria_name+"_"+feat_hide[i].position
-
-                                // }
-
-                                //     ul_hiddenfeat.append(li_hiddenfeat);
-
-                                //     var div_row=document.createElement('div')
-                                //     div_row.setAttribute('class','row');
-                                //     li_hiddenfeat.append(div_row);
-                                //     var div_col_md_6_1=document.createElement('div');
-                                //     div_col_md_6_1.setAttribute('class','col-md-6');
-                                //     div_row.append(div_col_md_6_1);
-                                //     var div_col_md_6_2=document.createElement('div');
-                                //     div_col_md_6_2.setAttribute('class','col-md-6');
-                                //     div_row.append(div_col_md_6_2);
-                                //     var btn_btn_primary=document.createElement('btn');
-                                //     btn_btn_primary.setAttribute('class','btn btn-primary');
-                                //     // btn_btn_primary.innerHTML=feat_hide[i].feature;
-                                //     if (flg==="true"){
-                                //         btn_btn_primary.innerHTML=feat_hide[i];
-
-                                // }else{
-                                //         btn_btn_primary.innerHTML=feat_hide[i].criteria_name;
-
-                                // }
-
-
-                                //     div_col_md_6_1.append(btn_btn_primary);
-                                //     var btn_show_hide=document.createElement('button');
-                                //     btn_show_hide.setAttribute('class','show_hide');
-                                //     btn_show_hide.setAttribute('onclick','showToDisplay_Default($(this).parent().parent().parent().attr("id"))');
-                                //     btn_show_hide.innerHTML="show";
-                                //     div_col_md_6_2.append(btn_show_hide);
-                                //     // hide_disp.push(feat_hide[i].feature)
-                                //       if (flg==="true"){
-                                //         hide_disp.push(feat_hide[i])
-
-                                //         }else{
-                                //             hide_disp.push(feat_hide[i].criteria_name)
-                                //         }
-
-                               
-                                // }
-                                /// add the show_disp and hide_disp to default_crit_disp....
-                               
-
-                                // $('ul').sortable({
-                                //     axis: 'y',
-                                //     stop: function (event, ui) {
-                                //     var data = $(this).sortable('serialize').split("&");
-                                //     var arr=[];
-                                //     for (var key in data)
-                                //     {   
-                                //         arr.push(data[key].split("=")[0].replace('[]',''));
-                                //     }
-                                //     $('span').text(data);
-                                //     if (default_crit_show_dict['default']===undefined){
-                                //         default_crit_show_dict['default']=[]
-                                //     }
-                                //     else{
-                                //     // add the arrays to new dictionary default_crit_dict
-                                //     default_crit_show_dict['default']=arr;
-                                //     default_crit_hide_dict['default']=hide_disp;
-                                //     console.log("default_crit_show_dict",default_crit_show_dict);
-                                //     console.log("default_crit_hide_dict",default_crit_hide_dict);
-
-                                //     }
-                                //     }
-                                // });
+                              
                                 
 
                             }
@@ -5444,8 +5413,11 @@ function SetFunc(active_id){
     
    
     function CdmCriteriaHTMLSetup(){
-          /* emptying and showing order criteria div */
+        /* emptying and showing order criteria div */
+        $("#default_criteria_div").empty();
+        $("#order_criteria_div").empty();
         $("#cdm_criteria_div").empty();
+        $("#cdm_co_on_div").empty();
         $("#cdm_criteria_div").show();
         // CREATING HTML <-->
         var cdm_criteria_div=document.getElementById("cdm_criteria_div");
@@ -5532,6 +5504,8 @@ function SetFunc(active_id){
         // from cdm_crit_dict[c.full]
 
         if (prune_empty_flag==="true" ){
+            alert("prune flag")
+            alert(prune_empty_flag)
                                 $.ajax({
                                 url: "{% url 'cdmcriteriasetup' %}",
                                 type:'GET',
@@ -5553,10 +5527,6 @@ function SetFunc(active_id){
                                
                                 var flg=data['flag'];
 
-                                console.log("flag",flg);
-                                console.log("featTODISP^^^^",feat_to_disp);
-                                console.log("featTODISP^^^^",feat_to_hide);
-
                                 data=htmlF(shw_disp,hide_disp,mandatory_list,feat_dsp,feat_hide,flg);
                                 
                                 data_obj_show=JSON.parse(JSON.stringify(data['shw_disp']));
@@ -5566,10 +5536,12 @@ function SetFunc(active_id){
                                 cdm_crit_show_dict["c.full"]=data_obj_show;
                                 cdm_crit_hide_dict["c.full"]=data_obj_hide;
 
-                                default_crit_show_dict['cdm']=default_crit_show_disp;
-                                default_crit_hide_dict["cdm"]=default_crit_hide_disp;
+                                default_crit_show_dict['cdm']=feat_to_disp;
+                                default_crit_hide_dict["cdm"]=feat_to_hide;
                                
-                            
+                                console.log("default_crit_show_dict",default_crit_show_dict)
+
+                                console.log("default_crit_hide_dict",default_crit_hide_dict)
                                                                 
 
                             }
@@ -5577,7 +5549,8 @@ function SetFunc(active_id){
                         });
         }
         else if (prune_empty_flag==="false" || default_crit_show_dict["cdm"]!==undefined && default_crit_hide_dict["cdm"]!==undefined ) {
-            alert("s")
+            alert("prune flag");
+            alert(prune_empty_flag);
             var shw_disp=[];var hide_disp=[];
             var feat_dsp=cdm_crit_show_dict['c.full'];
             var feat_hide=cdm_crit_hide_dict['c.full'];
@@ -5654,7 +5627,7 @@ function SetFunc(active_id){
         main_row.append(col_md_1);
         var back_to_main_setup_btn=document.createElement('button');
         back_to_main_setup_btn.innerHTML="Back";
-        back_to_main_setup_btn.setAttribute('onclick','cdmCriteriaHTMLSetup()')
+        back_to_main_setup_btn.setAttribute('onclick','CdmCriteriaHTMLSetup()')
         col_md_1.append(back_to_main_setup_btn);
         var col_md_5=document.createElement('div');
         col_md_5.setAttribute('class','col-md-5 text-left');
@@ -6057,16 +6030,24 @@ function SetFunc(active_id){
     */
 
     function cdm_On_Full_Co_HtmlSetup(){
+        $("#default_criteria_div").empty();
+        $("#order_criteria_div").empty();
+        $("#cdm_criteria_div").empty();
         $("#cdm_co_on_div").empty();
-       
+        $("#cdm_co_on_div").show();
+        co_feature_active="C.Full";
+
+        alert(co_feature_active)
         cdm_co_on_div=document.getElementById("cdm_co_on_div");
         var container=document.createElement("container");
         container.setAttribute("class","cdm_co_cont");
         cdm_co_on_div.append(container);
+
         var main_row=document.createElement('div');
         main_row.setAttribute('class','row content');
         main_row.id="main_row_co";
         container.append(main_row);
+        
         var col_md_1=document.createElement('div');
         col_md_1.setAttribute('class','col-md-1 sidenav');
         main_row.append(col_md_1);
@@ -6117,13 +6098,15 @@ function SetFunc(active_id){
         next_to_main_setup_btn.setAttribute('onclick',"cdm_On_Prune_Co_HtmlSetup()");
         col_md_1.append(next_to_main_setup_btn);
 
-        if (crit_order_dict["CO.1C.Full"]!==undefined || crit_hide_dict["CO.1C.Full"]!==undefined ){
+        if (crit_order_dict["CO.1_C.Full"]!==undefined || crit_hide_dict["CO.1_C.Full"]!==undefined ){
               
                 var shw_disp=[];
                 var hide_disp=[];
-                var feat_dsp=crit_order_dict["CO.1C.Full"];
+
+                var feat_dsp=JSON.parse(JSON.stringify(crit_order_dict["CO.1_C.Full"]));
+
                 feat_to_disp=feat_dsp;
-                var feat_hide=crit_hide_dict["CO.1C.Full"]
+                var feat_hide=JSON.parse(JSON.stringify(crit_hide_dict["CO.1_C.Full"]));
                 feat_to_hide=feat_hide
                 var flg="true";
             
@@ -6133,7 +6116,7 @@ function SetFunc(active_id){
         }
         else{
         $.ajax({
-                                url: "{% url 'ordercriteriasetup' %}",
+                                url: "{% url 'cdm_on_co_on_criteriasetup' %}",
                                 type:'GET',
                                 'data': {
                                 'csrfmiddlewaretoken': '{{ csrf_token }}',
@@ -6141,7 +6124,7 @@ function SetFunc(active_id){
                                 dataType: "json",
                                 
                                 success: function(data){
-                                // var inputdata =colist
+                                // var inputdata =dict["CO"]
                                 // var select=document.createElement('select');
                                 // select.setAttribute('id', 'sel_options');
                                 // select.setAttribute('onchange',"selChangeFunc($(this))")
@@ -6167,14 +6150,14 @@ function SetFunc(active_id){
                                 // $('#select_div').empty();
                                 // $('#select_div').append(select);   
 
-                                data=htmlF(shw_disp,hide_disp,mand,feat_dsp,feat_hide,flg)
+                                data=htmlF(shw_disp,hide_disp,mandatory_list,feat_dsp,feat_hide,flg)
                                 var colist=dict["CO"];
                                 data_obj_show=JSON.parse(JSON.stringify(data['shw_disp']));
                                 data_obj_hide=JSON.parse(JSON.stringify(data['hide_disp']));
 
                                 for (var co in colist){
-                                    crit_order_dict[colist[co]+co_feature_active]=data_obj_show;
-                                    crit_hide_dict[colist[co]+co_feature_active]=data_obj_hide;
+                                    crit_order_dict[colist[co]+"_"+co_feature_active]=data_obj_show;
+                                    crit_hide_dict[colist[co]+"_"+co_feature_active]=data_obj_hide;
 
                                 }
                                 
@@ -6184,9 +6167,9 @@ function SetFunc(active_id){
                                 console.log("crit_hide_dict-->",crit_hide_dict);
                                 default_crit_show_dict['C.Full']=default_crit_show_disp;
                                 default_crit_hide_dict["C.Full"]=default_crit_hide_disp;
+                                console.log("default_crit_show_dict",default_crit_show_dict);
+                                console.log("default_crit_hide_dict",default_crit_hide_dict);
                                
-                                
-
                             }
 
                         });
@@ -6197,6 +6180,8 @@ function SetFunc(active_id){
     }
     function cdm_On_Prune_Co_HtmlSetup(){
         $("#cdm_co_on_div").empty();
+        alert(co_feature_active)
+
         cdm_co_on_div=document.getElementById("cdm_co_on_div");
         var container=document.createElement("container");
         container.setAttribute("class","cdm_co_cont");
@@ -6261,9 +6246,9 @@ function SetFunc(active_id){
         var crit_ord_dict=JSON.parse(JSON.stringify(crit_order_dict));
         var crit_hd_dict=JSON.parse(JSON.stringify(crit_hide_dict));
 
-        console.log("crit_ord_dict['CO.1C.Full']",crit_ord_dict['CO.1C.Full'])
+        console.log("crit_ord_dict['CO.1_C.Full']",crit_ord_dict['CO.1_C.Full'])
 
-        var feat_dsp=crit_ord_dict['CO.1C.Full'];
+        var feat_dsp=crit_ord_dict['CO.1_C.Full'];
         feat_to_disp=feat_dsp;
         var feat_hide=[];
         feat_to_hide=feat_hide
@@ -6282,13 +6267,16 @@ function SetFunc(active_id){
         data_obj_hide=JSON.parse(JSON.stringify(data['hide_disp']));
 
         for (var co in colist){
-            crit_order_dict[colist[co]+co_feature_active]=data_obj_show;
-            crit_hide_dict[colist[co]+co_feature_active]=data_obj_hide;
+
+            crit_order_dict[colist[co]+"_"+co_feature_active]=data_obj_show;
+            crit_hide_dict[colist[co]+"_"+co_feature_active]=data_obj_hide;
 
         }
         
         console.log("crit_order_dict----",crit_order_dict);
         console.log("crit_hide_dict----",crit_hide_dict);
+        console.log("default_crit_show_dict----",default_crit_show_dict);
+        console.log("default_crit_hide_dict----",default_crit_hide_dict);
      
                                 
 
@@ -6368,7 +6356,7 @@ function SetFunc(active_id){
         recenthiddenfeat_div.setAttribute('id','recent_hidden_div');
         col_md_5_2.append(recenthiddenfeat_div);
         var h2=document.createElement('h2');
-        h2.innerHTML="Recent  Hidden Features";
+        // h2.innerHTML="Recent  Hidden Features";
 
         var ul_mylist=document.createElement('ul');
         ul_mylist.setAttribute('id','myList');
@@ -6400,11 +6388,11 @@ function SetFunc(active_id){
         var crit_ord_dict=JSON.parse(JSON.stringify(crit_order_dict));
         var crit_hd_dict=JSON.parse(JSON.stringify(crit_hide_dict));
 
-        console.log("crit_ord_dict['CO.1C.Full']",crit_ord_dict['CO.1C.Full'])
+        console.log("crit_ord_dict['CO.1_C.Full']",crit_ord_dict['CO.1_C.Full'])
 
-        var feat_dsp=crit_ord_dict['CO.1C.Full'];
+        var feat_dsp=crit_ord_dict['CO.1_C.Full'];
         feat_to_disp=feat_dsp;
-        var feat_hide=crit_hd_dict['CO.1C.Full'];
+        var feat_hide=crit_hd_dict['CO.1_C.Full'];
         feat_to_hide=feat_hide;
         var flg="true";
         default_crit_show_disp=feat_to_disp;
@@ -6443,12 +6431,12 @@ function SetFunc(active_id){
 
                                     $('span').text(data);
                                    
-                                        if (crit_order_dict[active_co+co_feature_active]===undefined){
-                                        crit_order_dict[active_co+co_feature_active]=[]
+                                        if (crit_order_dict[active_co+"_"+co_feature_active]===undefined){
+                                        crit_order_dict[active_co+"_"+co_feature_active]=[]
                                         }
                                         else{
-                                            crit_order_dict[active_co+co_feature_active]=arr;
-                                            crit_hide_dict[active_co+co_feature_active]=hide_disp;
+                                            crit_order_dict[active_co+"_"+co_feature_active]=arr;
+                                            crit_hide_dict[active_co+"_"+co_feature_active]=hide_disp;
                                             
                                             console.log("crit_order_dict-",crit_order_dict)
                                             console.log("crit_hide_dict-",crit_hide_dict);
@@ -6466,7 +6454,7 @@ function SetFunc(active_id){
         var recenthiddenfeat_div=document.getElementById('recent_hidden_div');
         console.log("recenthiddenfeat_div",recenthiddenfeat_div)
         var h2=document.createElement('h2');
-        h2.innerHTML="Recent  Hidden Features";
+        // h2.innerHTML="Recent  Hidden Features";
         var ul_mylist=document.createElement('ul');
         ul_mylist.setAttribute('id','myList');
         recenthiddenfeat_div.append(h2);
@@ -6485,9 +6473,9 @@ function SetFunc(active_id){
         var crit_hd_dict=JSON.parse(JSON.stringify(crit_hide_dict));
 
 
-        var feat_dsp=crit_ord_dict[active_co+co_feature_active];
+        var feat_dsp=crit_ord_dict[active_co+"_"+co_feature_active];
         feat_to_disp=feat_dsp;
-        var feat_hide=crit_hd_dict[active_co+co_feature_active];
+        var feat_hide=crit_hd_dict[active_co+"_"+co_feature_active];
         feat_to_hide=feat_hide
         var flg="true";
 
@@ -6512,12 +6500,12 @@ function SetFunc(active_id){
         
                                     $('span').text(data);
                                    
-                                        if (crit_order_dict[active_co+co_feature_active]===undefined){
-                                        crit_order_dict[active_co+co_feature_active]=[]
+                                        if (crit_order_dict[active_co+"_"+co_feature_active]===undefined){
+                                        crit_order_dict[active_co+"_"+co_feature_active]=[]
                                         }
                                         else{
-                                            crit_order_dict[active_co+co_feature_active]=arr;
-                                            crit_hide_dict[active_co+co_feature_active]=hide_disp;
+                                            crit_order_dict[active_co+"_"+co_feature_active]=arr;
+                                            crit_hide_dict[active_co+"_"+co_feature_active]=hide_disp;
                                             
                                             console.log("crit_order_dict-",crit_order_dict)
                                             console.log("crit_hide_dict-",crit_hide_dict);
@@ -6529,6 +6517,44 @@ function SetFunc(active_id){
                                           });
 
    }
+    function Save_Cdm_CO_On(){
+        console.log("crit_order_dict",crit_order_dict);
+        console.log("crit_hide_dict",crit_hide_dict);
+        // make an ajax call that will send the two dicts to server. 
+        $.ajax({
+                                
+                                        type: 'POST',
+                                        dataType: "json",
+                                        'data': {
+                                        'featlevels_dic': JSON.stringify(dict,undefined,''),
+                                        'crit_order_dict':JSON.stringify(crit_order_dict),
+                                        'crit_hide_dict':JSON.stringify(crit_hide_dict),
+
+                                        'csrfmiddlewaretoken': '{{ csrf_token }}',
+                                        },
+                                        
+                                        url: "{% url 'cdm_on_co_on_criteriasetup' %}",
+                                        success: function(data){
+                                            if(exp_id===""){
+                                                    exp_id = data['exp_id'];
+                                                    custom_exp_id = data['custom_exp_id'];
+                                                    showExpWIP()
+                                                    }
+                                                    if (data['block_list']!=null){
+                                                        blockList = data['block_list']
+                                                        table_blocks=draw_block_table(blockList)
+                                                        display_blocktable(table_blocks);
+                                                        window.localStorage.setItem("blockList", JSON.stringify(blockList));
+                                                    }
+                                                    alert("HERE")
+
+                                                    showFeatureLvls_Active_CO();    
+                                                                                  
+                                        }
+                                    });
+
+
+    }
    </script>
 <script>
 
@@ -6569,15 +6595,15 @@ function SetFunc(active_id){
         // hide_feature_div.append(ul_hiddenfeat);
         // have to change the checks as well... 
         if(default_active==="true"){
-            if(crit_order_dict[active_co+"_Cdm.Default"]===undefined || crit_hide_dict[active_co+"_Cdm.Default"]===undefined){
+            if(crit_order_dict[active_co+"_Cdm.Def"]===undefined || crit_hide_dict[active_co+"_Cdm.Def"]===undefined){
                 // set the default feature disp and hide here. along with mand and flag
                 var feat_dsp=default_crit_show_disp;
                 var feat_hide=default_crit_hide_disp;
                 
             }
             else{
-                var feat_dsp =crit_order_dict[active_co+"_Cdm.Default"];
-                var feat_hide=crit_hide_dict[active_co+"_Cdm.Default"];
+                var feat_dsp =crit_order_dict[active_co+"_Cdm.Def"];
+                var feat_hide=crit_hide_dict[active_co+"_Cdm.Def"];
                 crit_flag="true";
             }  
         }
@@ -6604,8 +6630,8 @@ function SetFunc(active_id){
 
         
         if(default_active==="true"){
-            crit_order_dict[active_co+"_Cdm.Default"]=data['shw_disp'];
-            crit_hide_dict[active_co+"_Cdm.Default"]=data['hide_disp'];
+            crit_order_dict[active_co+"_Cdm.Def"]=data['shw_disp'];
+            crit_hide_dict[active_co+"_Cdm.Def"]=data['hide_disp'];
         }else{
             crit_order_dict[active_co+co_feature_active]=data['shw_disp'];
             crit_hide_dict[active_co+co_feature_active]=data['hide_disp'];
@@ -6627,12 +6653,12 @@ function SetFunc(active_id){
         
                                     $('span').text(data);
                                     if (default_active==="true"){
-                                        if (crit_order_dict[active_co+"_Cdm.Default"]===undefined){
-                                        crit_order_dict[active_co+"_Cdm.Default"]=[]
+                                        if (crit_order_dict[active_co+"_Cdm.Def"]===undefined){
+                                        crit_order_dict[active_co+"_Cdm.Def"]=[]
                                         }
                                         else{
-                                            crit_order_dict[active_co+"_Cdm.Default"]=arr;
-                                            crit_hide_dict[active_co+"_Cdm.Default"]=hide_disp;
+                                            crit_order_dict[active_co+"_Cdm.Def"]=arr;
+                                            crit_hide_dict[active_co+"_Cdm.Def"]=hide_disp;
                                             
                                             console.log("crit_order_dict-",crit_order_dict)
                                             console.log("crit_hide_dict-",crit_hide_dict);
@@ -6689,7 +6715,7 @@ function SetFunc(active_id){
         var recenthiddenfeat_div=document.getElementById('recent_hidden_div');
         console.log("recenthiddenfeat_div",recenthiddenfeat_div)
         var h2=document.createElement('h2');
-        h2.innerHTML="Recent  Hidden Features";
+        // h2.innerHTML="Recent  Hidden Features";
         var ul_mylist=document.createElement('ul');
         ul_mylist.setAttribute('id','myList');
         recenthiddenfeat_div.append(h2);
@@ -6702,9 +6728,9 @@ function SetFunc(active_id){
         hide_feature_div.append(ul_hiddenfeat);
        
        
+        var feat_dsp =JSON.parse(JSON.stringify(crit_order_dict[active_co+"_"+co_feature_active]));
 
-        var feat_dsp =crit_order_dict[active_co+co_feature_active];
-        var feat_hide=crit_hide_dict[active_co+co_feature_active];
+        var feat_hide=JSON.parse(JSON.stringify(crit_hide_dict[active_co+"_"+co_feature_active]));
         crit_flag="true";
 
 
@@ -6714,10 +6740,7 @@ function SetFunc(active_id){
         data=htmlF(shw_disp,hide_disp,mandatory_list,feat_dsp,feat_hide,crit_flag)
 
         
-       
-        // crit_order_dict[active_co+co_feature_active]=data['shw_disp'];
-        // crit_hide_dict[active_co+co_feature_active]=data['hide_disp'];
-    
+
            
             console.log("crit_order_dict->>",crit_order_dict);
             console.log("crit_hide_dict->>",crit_hide_dict);
@@ -6735,12 +6758,12 @@ function SetFunc(active_id){
         
                                     $('span').text(data);
                                    
-                                        if (crit_order_dict[active_co+co_feature_active]===undefined){
-                                        crit_order_dict[active_co+co_feature_active]=[]
+                                        if (crit_order_dict[active_co+"_"+co_feature_active]===undefined){
+                                        crit_order_dict[active_co+"_"+co_feature_active]=[]
                                         }
                                         else{
-                                            crit_order_dict[active_co+co_feature_active]=arr;
-                                            crit_hide_dict[active_co+co_feature_active]=hide_disp;
+                                            crit_order_dict[active_co+"_"+co_feature_active]=arr;
+                                            crit_hide_dict[active_co+"_"+co_feature_active]=hide_disp;
                                             
                                             console.log("crit_order_dict-",crit_order_dict)
                                             console.log("crit_hide_dict-",crit_hide_dict);
@@ -6781,23 +6804,23 @@ function SetFunc(active_id){
             // check if active_co exists, if it doesn't then simply 
             // run default_crit_show_dict['default'].indexOf(elem);;;;
             if(default_active==="true"){
-                if(crit_order_dict[active_co+"_Cdm.Default"]===undefined || crit_hide_dict[active_co+"_Cdm.Default"]===undefined){
+                if(crit_order_dict[active_co+"_Cdm.Def"]===undefined || crit_hide_dict[active_co+"_Cdm.Def"]===undefined){
                     var index =  default_crit_show_dict['default'].indexOf(elem);
                     if (index > -1) {
-                    default_crit_show_dict['Cdm.Default'].splice(index, 1);
+                    default_crit_show_dict['Cdm.Def'].splice(index, 1);
                     }
-                    default_crit_hide_dict['Cdm.Default'].push(elem);
+                    default_crit_hide_dict['Cdm.Def'].push(elem);
                 }
                 else{
                     console.log("active_co",active_co)
                     console.log("crit_order_dict",crit_order_dict)
 
-                    var index = crit_order_dict[active_co+"_Cdm.Default"].indexOf(elem);
+                    var index = crit_order_dict[active_co+"_Cdm.Def"].indexOf(elem);
                     if (index > -1) {
-                    crit_order_dict[active_co+"_Cdm.Default"].splice(index, 1);
+                    crit_order_dict[active_co+"_Cdm.Def"].splice(index, 1);
                         }
                 
-                    crit_hide_dict[active_co+"_Cdm.Default"].push(elem);
+                    crit_hide_dict[active_co+"_Cdm.Def"].push(elem);
                     console.log("crit_order_dict###",crit_order_dict);
                     console.log("crit_hide_dict###",crit_hide_dict);
                     console.log("default_crit_show_dict>>>>",default_crit_show_dict);
@@ -6812,9 +6835,9 @@ function SetFunc(active_id){
                 if(crit_order_dict[koool]===undefined || crit_hide_dict[koool]===undefined){
                     var index =  default_crit_show_dict['default'].indexOf(elem);
                     if (index > -1) {
-                    default_crit_show_dict['Cdm.Default'].splice(index, 1);
+                    default_crit_show_dict['Cdm.Def'].splice(index, 1);
                     }
-                    default_crit_hide_dict['Cdm.Default'].push(elem);
+                    default_crit_hide_dict['Cdm.Def'].push(elem);
                 }
                 else{
                     console.log("active_co",active_co)
@@ -6917,24 +6940,24 @@ function SetFunc(active_id){
                     // run default_crit_hide_dict['default'].indexOf(elem);;;;
             */
             if(default_active==="true"){
-                if(crit_order_dict[active_co+"_Cdm.Default"]===undefined || crit_hide_dict[active_co+"_Cdm.Default"]===undefined){
-                    var index = default_crit_hide_dict['Cdm.Default'].indexOf(elem);
+                if(crit_order_dict[active_co+"_Cdm.Def"]===undefined || crit_hide_dict[active_co+"_Cdm.Def"]===undefined){
+                    var index = default_crit_hide_dict['Cdm.Def'].indexOf(elem);
                         if (index > -1) {
-                            default_crit_hide_dict['Cdm.Default'].splice(index, 1);
+                            default_crit_hide_dict['Cdm.Def'].splice(index, 1);
                             }
-                    default_crit_show_dict['Cdm.Default'].push(elem);
+                    default_crit_show_dict['Cdm.Def'].push(elem);
                     console.log("default_crit_show_dict>>>>",default_crit_show_dict);
                     console.log("default_crit_hide_dict>>>>",default_crit_hide_dict);
 
                 }
                 else{
-                    var index = crit_hide_dict[active_co+"_Cdm.Default"].indexOf(elem);
+                    var index = crit_hide_dict[active_co+"_Cdm.Def"].indexOf(elem);
                     console.log("INDEX",index)
                             if (index > -1) {
-                            crit_hide_dict[active_co+"_Cdm.Default"].splice(index, 1);
+                            crit_hide_dict[active_co+"_Cdm.Def"].splice(index, 1);
                                     }
                     
-                    crit_order_dict[active_co+"_Cdm.Default"].push(elem);
+                    crit_order_dict[active_co+"_Cdm.Def"].push(elem);
                     console.log("crit_order_dict>>>>",crit_order_dict);
                     console.log("crit_hide_dict>>>>",crit_hide_dict);
                     console.log("default_crit_show_dict>>>>",default_crit_show_dict);
@@ -7400,8 +7423,6 @@ function SetFunc(active_id){
 
     }
 
-
-
     function brandCheck_box(element){
         if (brand_set_dict[active_button]===undefined){
             brand_set_dict[active_button]=[];
@@ -7759,7 +7780,7 @@ function SetFunc(active_id){
             var colist=dict["CO"];
             // def_dict_show_obj=JSON.parse(JSON.stringify(default_crit_show_dict));
             for ( var co in colist){
-                var koool=colist[co]+co_feature_active;
+                var koool=colist[co]+"_"+co_feature_active;
                 console.log("KOOOL",koool)
                         // if (crit_order_dict[koool]===undefined){
                         //     crit_order_dict[koool]=[]
@@ -7814,9 +7835,6 @@ function SetFunc(active_id){
                     div_row.append(div_col_md_6_2);
                     div_col_md_6_2.append(btn);
          } 
-
-    
-    
     function showToDisplay_Cdm_CO_On(id) {
             console.log("showToDisplayid",id)
             var item = $("#"+id);
@@ -7854,7 +7872,7 @@ function SetFunc(active_id){
                     console.log("active_co",active_co)
                     var colist=dict["CO"];
                     for (var co in colist){
-                        var koool=colist[co]+co_feature_active;
+                        var koool=colist[co]+"_"+co_feature_active;
                         var index = crit_hide_dict[koool].indexOf(elem);
                         console.log("INDEX",index)
                         if (index > -1) {
@@ -7901,82 +7919,81 @@ function SetFunc(active_id){
         ul_sortable.setAttribute('id','sortable');
         disp_feat_div.append(ul_sortable);
         console.log("feat_dsp>>>>>>",feat_dsp);
-                                for (var i in feat_dsp){
-                                var li_sortable=document.createElement('li');
-                                // li_sortable.id=feat_dsp[i].feature+"_"+feat_dsp[i].position;
-                                 if (flg==="true"){
-                                        li_sortable.id=feat_dsp[i]+"_"+parseInt(i);
+                for (var i in feat_dsp){
+                var li_sortable=document.createElement('li');
+                // li_sortable.id=feat_dsp[i].feature+"_"+feat_dsp[i].position;
+                    if (flg==="true"){
+                        li_sortable.id=feat_dsp[i]+"_"+parseInt(i);
 
-                                }else{
-                                        console.log("feat_dsp[i][0]",feat_dsp[i][0])
-                                        li_sortable.id=feat_dsp[i][0]+"_"+feat_dsp[i][1];
-                                }
-                                ul_sortable.append(li_sortable);
-                                var div_row=document.createElement('div');
-                                div_row.setAttribute("class",'row');
-                                li_sortable.append(div_row);    
-                                var div_col_md_6_1=document.createElement('div');
-                                div_col_md_6_1.setAttribute("class","col-md-6");
-                                div_row.append(div_col_md_6_1);
-                                var btn_btn_primary=document.createElement('button');
-                                btn_btn_primary.setAttribute("class","btn btn-primary");
-                                // btn_btn_primary.innerHTML=feat_dsp[i].feature;
-                                if (flg==="true"){
-                                    btn_btn_primary.innerHTML=feat_dsp[i];
-                                }else{
-                                    btn_btn_primary.innerHTML=feat_dsp[i][0];
-                                }
-                                div_col_md_6_1.appendChild(btn_btn_primary);
-                                var div_col_md_6_2=document.createElement('div');
-                                div_col_md_6_2.setAttribute('class',"col-md-6");
-                                div_row.append(div_col_md_6_2);
-                                 // check if i present in mandatory list. If it does dont show the hide button
-                                if (flg==="true"){
-                                    var fet_dsp=feat_dsp[i];
-                                }else{
-                                    var fet_dsp=feat_dsp[i][0];
-                                }
-                                if(mand.includes(fet_dsp)){
-                                    console.log("HIDE THE HIDE buttOn")
-                                }
-                                else {
-                                    if(cdm_crit_order_on_flag==="true"){
+                }else{
+                        console.log("feat_dsp[i][0]",feat_dsp[i][0])
+                        li_sortable.id=feat_dsp[i][0]+"_"+feat_dsp[i][1];
+                }
+                ul_sortable.append(li_sortable);
+                var div_row=document.createElement('div');
+                div_row.setAttribute("class",'row');
+                li_sortable.append(div_row);    
+                var div_col_md_6_1=document.createElement('div');
+                div_col_md_6_1.setAttribute("class","col-md-6");
+                div_row.append(div_col_md_6_1);
+                var btn_btn_primary=document.createElement('button');
+                btn_btn_primary.setAttribute("class","btn btn-primary");
+                // btn_btn_primary.innerHTML=feat_dsp[i].feature;
+                if (flg==="true"){
+                    btn_btn_primary.innerHTML=feat_dsp[i];
+                }else{
+                    btn_btn_primary.innerHTML=feat_dsp[i][0];
+                }
+                div_col_md_6_1.appendChild(btn_btn_primary);
+                var div_col_md_6_2=document.createElement('div');
+                div_col_md_6_2.setAttribute('class',"col-md-6");
+                div_row.append(div_col_md_6_2);
+                    // check if i present in mandatory list. If it does dont show the hide button
+                if (flg==="true"){
+                    var fet_dsp=feat_dsp[i];
+                }else{
+                    var fet_dsp=feat_dsp[i][0];
+                }
+                if(mand.includes(fet_dsp)){
+                    console.log("HIDE THE HIDE buttOn")
+                }
+                else {
+                    if(cdm_crit_order_on_flag==="true"){
 
-                                    }
-                                    else{
-                                        var btn_show_hide=document.createElement('button');
-                                        btn_show_hide.setAttribute("class","show_hide");
-                                        if (CO_CDM_COMB==="CDM_off_CO_off"){
-                                            btn_show_hide.setAttribute("onclick","hideFromDisplay_Default($(this).parent().parent().parent().attr('id'))");
+                    }
+                    else{
+                        var btn_show_hide=document.createElement('button');
+                        btn_show_hide.setAttribute("class","show_hide");
+                        if (CO_CDM_COMB==="CDM_off_CO_off"){
+                            btn_show_hide.setAttribute("onclick","hideFromDisplay_Default($(this).parent().parent().parent().attr('id'))");
 
-                                        }
-                                        else if (CO_CDM_COMB==="CDM_on_CO_off"){
-                                            btn_show_hide.setAttribute("onclick","hideFromDisplay_CDM($(this).parent().parent().parent().attr('id'))");
+                        }
+                        else if (CO_CDM_COMB==="CDM_on_CO_off"){
+                            btn_show_hide.setAttribute("onclick","hideFromDisplay_CDM($(this).parent().parent().parent().attr('id'))");
 
-                                        }
-                                        else if (CO_CDM_COMB==="CDM_on_CO_on"){
-                                            btn_show_hide.setAttribute("onclick","hideFromDisplay_Cdm_CO_On($(this).parent().parent().parent().attr('id'))");
+                        }
+                        else if (CO_CDM_COMB==="CDM_on_CO_on"){
+                            btn_show_hide.setAttribute("onclick","hideFromDisplay_Cdm_CO_On($(this).parent().parent().parent().attr('id'))");
 
-                                        }
-                                        btn_show_hide.innerHTML="Hide";
-                                        div_col_md_6_2.appendChild(btn_show_hide);
-                                    
-                                    }
-                                
-                                }
-                                if (flg==="true"){
-                                    shw_disp.push(feat_dsp[i]);
-                                }else{
-                                    // shw_disp.push(feat_dsp[i].criteria_name);
-                                    // console.log("feat_dsp[i].criteria_name",feat_dsp[i].criteria_name)
-                                    shw_disp.push(feat_dsp[i][0]);
-                                }
+                        }
+                        btn_show_hide.innerHTML="Hide";
+                        div_col_md_6_2.appendChild(btn_show_hide);
+                    
+                    }
+                
+                }
+                if (flg==="true"){
+                    shw_disp.push(feat_dsp[i]);
+                }else{
+                    // shw_disp.push(feat_dsp[i].criteria_name);
+                    // console.log("feat_dsp[i].criteria_name",feat_dsp[i].criteria_name)
+                    shw_disp.push(feat_dsp[i][0]);
+                }
 
-                                console.log("FEATURE LEVEL ELEMENT DISPLAY");
-                                console.log(disp_feat_div);
+            
 
 
-                                }
+            }
                                 if(feat_hide.length!==0){
                                 var hide_feat_div=document.getElementById('hide_feature_div');
                                 var ul_hiddenfeat=document.createElement('ul');

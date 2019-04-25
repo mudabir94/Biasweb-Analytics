@@ -72,6 +72,13 @@
   color:palegoldenrod;
 
 }
+.crit_option_sidebar_div{
+  color:palegoldenrod;
+
+}
+#criteria_option_name{
+  padding: 5%;
+}
 /* #create_exp_mobile_catalog{
   background: black;
 } */

@@ -71,6 +71,8 @@ urlpatterns = [
     url(r'^ordercriteriasetup/' , views.orderCriteria_Setup.as_view() , name='ordercriteriasetup') ,
     url(r'^defaultcriteriasetup/' , views.defaultCriteria_Setup.as_view() , name='defaultcriteriasetup') ,
     url(r'^cdmcriteriasetup/' , views.cdmCriteria_Setup.as_view() , name='cdmcriteriasetup') ,
+    url(r'^cdm_on_co_on_criteriasetup/' , views.Cdm_On_Co_On_CriteriaSetup.as_view() , name='cdm_on_co_on_criteriasetup') ,
+
 
 
 
