@@ -1,6 +1,6 @@
 .btn-group button {
-    background-color: lightskyblue; /* Green background */
-    border: 1px solid lightskyblue; /* Green border */
+    background-color: lightskyblue; 
+    border: 1px solid lightskyblue; 
     color: white; /* White text */
     padding: 10px 24px; /* Some padding */
     cursor: pointer; /* Pointer/hand icon */
@@ -10,8 +10,8 @@
     background-color: #94000f5e;
   }
 #process_buttons  button {
-    background-color: rgba(0, 0, 0, 0.664); /* Green background */
-    border: 1px solid rgba(0, 0, 0, 0.664);/* Green border */
+    background-color: rgba(0, 0, 0, 0.664); 
+    border: 1px solid rgba(0, 0, 0, 0.664);
     color: white; /* White text */
     padding: 10px 24px; /* Some padding */
     cursor: pointer; /* Pointer/hand icon */
@@ -25,6 +25,96 @@
     cursor: pointer; /* Pointer/hand icon */
     float: left; /* Float the buttons side by side */
 }
+#SAVE_CO_BTN{
+  background-color: rgba(60, 138, 24, 0.863); /* Green background */
+  border: 1px solid rgba(60, 138, 24, 0.863);/* Green border */
+  color: white; /* White text */
+  padding: 10px 24px; /* Some padding */
+  cursor: pointer; /* Pointer/hand icon */
+  float: left; /* Float the buttons side by side */
+}
+#back_co_btn{
+  background-color: rgba(0, 0, 0, 0.664); 
+  border: 1px solid rgba(0, 0, 0, 0.664);
+  color: white; /* White text */
+  padding: 10px 24px; /* Some padding */
+  cursor: pointer; /* Pointer/hand icon */
+  float: left; /* Float the buttons side by side */
+}
+#back_cdm_btn{
+  background-color: rgba(0, 0, 0, 0.664); 
+  border: 1px solid rgba(0, 0, 0, 0.664);
+  color: white; /* White text */
+  padding: 10px 24px; /* Some padding */
+  cursor: pointer; /* Pointer/hand icon */
+  float: left; /* Float the buttons side by side */
+}
+#SAVE_CDM_BTN{
+  background-color: rgba(60, 138, 24, 0.863); /* Green background */
+  border: 1px solid rgba(60, 138, 24, 0.863);/* Green border */
+  color: white; /* White text */
+  padding: 10px 24px; /* Some padding */
+  cursor: pointer; /* Pointer/hand icon */
+  float: left; /* Float the buttons side by side */
+}
+#NEXT_CDM_BTN{
+  background-color: rgba(19, 15, 238, 0.87); 
+  border: 1px solid rgba(19, 15, 238, 0.87);
+  color: white; /* White text */
+  padding: 10px 24px; /* Some padding */
+  cursor: pointer; /* Pointer/hand icon */
+  float: left; /* Float the buttons side by side */
+}
+#count_def_btn{
+  background-color: rgba(19, 15, 238, 0.87); 
+  border: 1px solid rgba(19, 15, 238, 0.87);
+  color: white; /* White text */
+  padding: 10px 10px; /* Some padding */
+  cursor: pointer; /* Pointer/hand icon */
+  float: left; /* Float the buttons side by side */
+}
+#next_def_btn{
+  background-color: rgba(19, 15, 238, 0.87); 
+  border: 1px solid rgba(19, 15, 238, 0.87);
+  color: white; /* White text */
+  padding: 10px 24px; /* Some padding */
+  cursor: pointer; /* Pointer/hand icon */
+  float: left; /* Float the buttons side by side */
+}
+#back_def_btn{
+  background-color: rgba(0, 0, 0, 0.664); 
+  border: 1px solid rgba(0, 0, 0, 0.664);
+  color: white; /* White text */
+  padding: 10px 24px; /* Some padding */
+  cursor: pointer; /* Pointer/hand icon */
+  float: left; /* Float the buttons side by side */
+}
+#SAVE_def_BTN{
+  background-color: rgba(60, 138, 24, 0.863); /* Green background */
+  border: 1px solid rgba(60, 138, 24, 0.863);/* Green border */
+  color: white; /* White text */
+  padding: 10px 24px; /* Some padding */
+  cursor: pointer; /* Pointer/hand icon */
+  float: left; /* Float the buttons side by side */
+}
+.sortable_custom_show_btns{
+  background-color: rgba(0, 102, 255, 0.664); 
+  border: 1px solid  rgba(0, 102, 255, 0.664); 
+  color: white; /* White text */
+  padding: 10px 15px; /* Some padding */
+  cursor: pointer; /* Pointer/hand icon */
+  float: left; /* Float the buttons side by side */
+  width:100%;
+}
+.sortable_custom_hide_btns{
+  background-color: rgba(0, 0, 0, 0.664); 
+  border: 1px solid rgba(0, 0, 0, 0.664);
+  color: white; /* White text */
+  padding: 10px 15px; /* Some padding */
+  cursor: pointer; /* Pointer/hand icon */
+  float: left; /* Float the buttons side by side */
+  width:100%;
+}
 .custom_nav_btn{
     width:100%;
     background:lightskyblue;
@@ -36,13 +126,28 @@
     float: left; /* Float the buttons side by side */
 
 }
+.show_hide{
+ 
+  color: white; /* White text */
+  padding: 10px 24px; /* Some padding */
+  cursor: pointer; /* Pointer/hand icon */
+  float: left; /* Float the buttons side by side */
+  width:100%;
+}
+
   .active{
     background:white;
     color: green; /* White text */
 
     box-shadow: 0 0 0.5px 0.5px #ea0000;
   }
+  .bdcrumb_active a{
+   
+    background:rgba(197, 69, 69, 0.863);;
+    box-shadow: 0 0 0.5px 0.5px rgba(253, 200, 200, 0.863);
 
+
+  }
 
 #sendfeatlvl_btn{
     background: rgba(60, 138, 24, 0.863);
@@ -133,4 +238,33 @@
   background:lightskyblue;
   border: 1px solid  lightskyblue;
   color: white; /* White text */
+}
+#main_row_co{
+  padding-top: 30px;
+    padding-right: 20px;
+}
+#cdm_main_row_co_def{
+  padding-top: 30px;
+  padding-right: 20px;
+}
+#default_criteria_div{
+  padding-top: 30px;
+  padding-right: 20px;
+}
+#def_main_row_co_def{
+  padding-top: 30px;
+  padding-right: 20px;
+}
+#cdm_co_on_div{
+  padding-top: 30px;
+}
+#select_div{
+  width: 200px;
+}
+#sel_options{
+  width: 200px;
+}
+.breadcrumb-item + .breadcrumb-item::before {
+  content: ">" !important;
+
 }

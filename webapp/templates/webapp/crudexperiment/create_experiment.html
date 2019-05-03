@@ -27,8 +27,24 @@
                     <br>
            
             <!-- Default Criteria  -->
-            <div class="row-fluid" id="default_criteria_div">
+            <div class="row-fluid" id="default_criteria_main_div"> 
+                <div class="row-fluid" id="breadcrumb_div">
+                    <nav>
+                        <ol class="breadcrumb bg-dark" id="ol1">
+                            <!-- <li class="breadcrumb-item active"><a href="#" onclick="defaultBreadCrumbActivateFunc($(this).parent())">Set Def Crit Order</a></li> -->
+                               <!--<li class="breadcrumb-item"><a href="#" onclick="defaultBreadCrumbActivateFunc($(this).parent())">Def Crit</a></li> -->
 
+                        </ol>
+                        <ol class="breadcrumb bg-dark" id="ol2">
+                            <!-- <li class="breadcrumb-item active"><a href="#" onclick="defaultBreadCrumbActivateFunc($(this).parent())">Set Def Crit Order</a></li> -->
+                               <!--<li class="breadcrumb-item"><a href="#" onclick="defaultBreadCrumbActivateFunc($(this).parent())">Def Crit</a></li> -->
+
+                        </ol>
+                    </nav>
+                </div>
+                <div class="row-fluid" id="default_criteria_div">
+
+                </div>
             </div>
              <!-- Order Criteria  -->
              <div class="row-fluid" id="order_criteria_div">
@@ -39,6 +55,9 @@
 
             </div>
              <!-- CDM ON CO ON DIV  -->
+            <div class="row-fluid" id="cdm_co_on_show_Option">
+
+            </div>
              <div class="row-fluid" id="cdm_co_on_div">
 
             </div>
@@ -554,6 +573,9 @@ $(document).ready(function () {
 */
 function initializePage(){
 // This Will hide all the divs with class=innercheckboxdivs
+$("#ol1").hide();
+$("#ol2").hide();
+
 $("#order_criteria_div").hide();
 $('.innerchecksboxdivs').hide();
 $('.map_select_label').hide();
@@ -580,6 +602,275 @@ $("#exp_sel_phones_div").hide();
 $("#searchfilter_head_div").hide();
 
 $('#feat_lvl_div').show();
+
+// var tree=[
+//   {
+//     name: 'Default Criteria Tree View',
+//     children: 
+//     [
+//       // def criteria order
+//           {
+//             name:"defaut criteria order",
+//             children:[
+//                   {
+//                     name:"Chip",
+//                     children:[]
+//                   },
+//                   {
+//                     name:"Res",
+//                     children:[]
+//                   },
+//                   {
+//                     name:"Dim",
+//                     children:[]
+//                   }
+//             ]
+//           },
+//       // def cdm 
+//           {
+//             name:"def cdm",
+//             children:[
+//                 //def Selected 
+//                 {
+//                     name:"Def Selected",
+//                     children:[
+//                         {
+//                             name:"Chip",
+//                             children:[]
+//                         },
+//                         {
+//                             name:"Res",
+//                             children:[]
+//                         },
+                       
+//                     ]
+//                 },
+//                 // Def Hidden
+//                 {
+//                     name:"Def Hidden",
+//                     children:[
+                        
+//                             {
+//                             name:"Dim",
+//                             children:[]
+//                             }
+//                     ]
+//                 }
+//             ]
+//           },
+//     ]
+//   }
+// ]
+
+// var t = new TreeView(tree, 'default_tree_view_div');
+// var tree=[
+//   {
+//     name: 'Default Criteria Tree View',
+//     children: 
+//     [
+//       // def criteria order
+//           {
+//             name:"defaut criteria order",
+//             children:[
+//                   {
+//                     name:"Chip",
+//                     children:[]
+//                   },
+//                   {
+//                     name:"Res",
+//                     children:[]
+//                   },
+//                   {
+//                     name:"Dim",
+//                     children:[]
+//                   }
+//             ]
+//           },
+//       // def cdm 
+//           {
+//             name:"def cdm",
+//             children:[
+//                 //def Selected 
+//                 {
+//                     name:"Def Selected",
+//                     children:[
+//                         {
+//                             name:"Chip",
+//                             children:[]
+//                         },
+//                         {
+//                             name:"Res",
+//                             children:[]
+//                         },
+                       
+//                     ]
+//                 },
+//                 // Def Hidden
+//                 {
+//                     name:"Def Hidden",
+//                     children:[
+                        
+//                             {
+//                             name:"Dim",
+//                             children:[]
+//                             }
+//                     ]
+//                 }
+//             ]
+//           },
+//     ]
+//   }
+// ]
+
+// var t = new TreeView(tree, 'default_tree_view_div');
+
+$("#cdm_on_co_off_tree_view_div").show();
+var tree=[
+  {
+    name: 'Cdm_On_CO_OFF Criteria Tree View',
+    children: 
+    [
+      // def criteria order
+          {
+            name:"defaut criteria order",
+            children:[
+                  {
+                    name:"Chip",
+                    children:[]
+                  },
+                  {
+                    name:"Res",
+                    children:[]
+                  },
+                  {
+                    name:"Dim",
+                    children:[]
+                  },
+                  {
+                    name:"siz",
+                    children:[]
+                  },
+                  {
+                    name:"prc",
+                    children:[]
+                  },
+                  {
+                    name:"bat",
+                    children:[]
+                  },
+            ]
+          },
+      // active cdm 
+          {
+            name:"active cdm ",
+            children:[
+                //def Selected 
+                {
+                    name:"C.Full",
+                    children:[
+                        {
+                            name:"Full Selected",
+                            children:[
+                                {
+                                    name:"Chip",
+                                    children:[]
+                                },
+                                {
+                                    name:"Res",
+                                    children:[]
+                                },
+                                {
+                                    name:"Dim",
+                                    children:[]
+                                },
+                                {
+                                    name:"siz",
+                                    children:[]
+                                },
+                                {
+                                    name:"prc",
+                                    children:[]
+                                }
+                            ]
+                        },
+                        {
+                            name:"Full Hidden",
+                            children:[
+                                {
+                                    name:"bat",
+                                    children:[]
+                                }
+                            ]
+                        },
+                       
+                    ]
+                },
+                // Def Hidden
+                {
+                    name:"C.Prune",
+                    children:[
+                        
+                            {
+                            name:"Prune Selected",
+                            children:[
+                                {
+                                    name:"Chip",
+                                    children:[]
+                                },
+                                {
+                                    name:"Res",
+                                    children:[]
+                                },
+                                {
+                                    name:"Dim",
+                                    children:[]
+                                }
+                            
+                            ]
+
+                            },
+                            {
+                            name:"Prune hidden",
+                            children:[
+                                {
+                                    name:"siz",
+                                    children:[]
+                                },
+                                {
+                                    name:"prc",
+                                    children:[]
+                                }
+
+
+                            ]
+                            }
+                    ]
+                }
+            ]
+          },
+    ]
+  }
+]
+
+var t = new TreeView(tree, 'cdm_on_co_off_tree_view_div');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Exp id is null//
 if(exp_id===""){
@@ -1255,6 +1546,9 @@ function updateFeatureLvls(){
     displayfeaturelevelTable();
 }
 function showFeatureLvls(){
+    $("#ol1").hide();
+    $("#ol2").hide();
+
     $('#importSubdiv').hide();
     $('#block_assign_row_div').hide();
     $('#dataDiv').hide();
@@ -1278,6 +1572,8 @@ function showFeatureLvls(){
 
 
     $('#feat_lvl_div').slideDown(500);
+    $("#cr_exp_header").show();
+
     
 
 
@@ -1304,6 +1600,8 @@ function showBatchManagement(){
     $('#blkoutputsDiv').hide();
 }
 function HideALL(){
+    $("#cr_exp_header").hide();
+    $('#default_tree_view_div').hide();
     $('#block_assign_row_div').hide();
     $('#feat_lvl_div').hide();
     $('#dispFileFeatLvldiv').hide();
@@ -1318,7 +1616,7 @@ function HideALL(){
 
     $("#phones_main_button_div").hide(); 
     $('#blkoutputsDiv').hide();
-    $('.innerchecksboxdivs').hide();
+    // $('.innerchecksboxdivs').hide();
     $('.map_select_label').hide();
     $('.show_select_tag').hide();
     $('#self-defined').hide();
@@ -1371,10 +1669,20 @@ function showCritrtia(){
     $('#block_assign_row_div').hide();
     HideALL();
     if (CO_CDM_COMB==="CDM_off_CO_off"){
-        defualtCriteriaHtmlSetup();
+        $("#ol2").show();
+
+        if ($('.breadcrumb li').length>0 && $('.breadcrumb li').length===1 ){
+            defualtCriteriaOrderHtmlSetup();
+        }else{
+            defualtCriteriaHtmlSetup();
+        }
     }
     else if (CO_CDM_COMB==="CDM_on_CO_off"){
-        CdmCriteriaHTMLSetup();
+        if ($('.breadcrumb li').length>0 && $('.breadcrumb li').length===1 ){
+            cdm_defaultCriteriaOrderHTMLSetup();
+        }else{
+            CdmCriteriaHTMLSetup();
+        }
 
     }
     else if (CO_CDM_COMB==="CDM_off_CO_on"){
@@ -3186,12 +3494,12 @@ if (dict['C']===undefined && dict['CO']===undefined){
                                 $( this ).dialog( "close" );
                                 HideALL();
                                 enableCriteriaButton();
-
-                                defualtCriteriaHtmlSetup();
                                 var current=$(".active");
                                 current.prop('class',current.attr('class').replace('active',""));
                                 $('#def_crit_list_btn').prop('class', 'custom_nav_btn active');
-                                }
+                                defualtCriteriaOrderHtmlSetup();
+                                // defualtCriteriaHtmlSetup();
+                                                               }
                             
                                
                     }
@@ -3253,21 +3561,45 @@ if (dict['C']===undefined && dict['CO']===undefined){
 }
 else if (dict['C']!==undefined && dict['CO']===undefined){
     CO_CDM_COMB="CDM_on_CO_off";
-    delete default_crit_show_dict["C.Full"];
-    delete default_crit_show_dict['C.Prune'];
-    delete default_crit_show_dict['default'];
-    delete default_crit_show_dict['Cdm.Def'];
-    
-    delete default_crit_hide_dict["C.Full"];
-    delete default_crit_hide_dict['C.Prune'];
-    delete default_crit_hide_dict['default'];
-    delete default_crit_hide_dict['Cdm.Def'];
+    console.log("default_crit_show_dict['C.Full']",default_crit_show_dict)
+    if (default_crit_show_dict["C.Full"]!==undefined){
+        delete default_crit_show_dict["C.Full"];
+
+    }
+    if (default_crit_show_dict['C.Prune']!==undefined){
+        delete default_crit_show_dict['C.Prune'];
+
+    }
+    if (default_crit_show_dict['default']!==undefined){
+        delete default_crit_show_dict['default'];
+
+    }
+    if (default_crit_show_dict['Cdm.Def']!==undefined){
+        delete default_crit_show_dict['Cdm.Def'];
+
+    }
+    if (default_crit_hide_dict["C.Full"]!==undefined){
+        delete default_crit_hide_dict["C.Full"];
+
+    }
+    if (default_crit_hide_dict['C.Prune']!==undefined){
+        delete default_crit_hide_dict['C.Prune'];
+
+    }
+    if (default_crit_hide_dict['default']!==undefined){
+        delete default_crit_hide_dict['default'];
+
+    }
+    if (default_crit_hide_dict['Cdm.Def']!==undefined){
+        delete default_crit_hide_dict['Cdm.Def'];
+
+    }
     alert(CO_CDM_COMB);
 
     HideALL();
     enableCriteriaButton();
-
-    CdmCriteriaHTMLSetup();
+    cdm_defaultCriteriaOrderHTMLSetup();
+    // CdmCriteriaHTMLSetup();
     var current=$(".active");
     current.prop('class',current.attr('class').replace('active',""));
     $('#def_crit_list_btn').prop('class', 'custom_nav_btn active');
@@ -3337,6 +3669,7 @@ else if (dict['C']!==undefined && dict['CO']!==undefined){
     HideALL();
 
     cdm_On_Full_Co_HtmlSetup();
+    enableCriteriaButton();
     var current=$(".active");
     current.prop('class',current.attr('class').replace('active',""));
     $('#def_crit_list_btn').prop('class', 'custom_nav_btn active');
@@ -4000,14 +4333,14 @@ function NextStep(element){
 
                                 $("#grid").sortable({
                                     stop: function( event, ui ) {
-                                      var arr=[]
+                                        var arr=[]
                                         console.log("event-->",$(this));
                                         var id = ui.item.attr("id");
                                         
                                         // var data = $(this).sortable('toArray', { attribute: 'id' });
                                         $(this).find('input').each(function(){
-                                    arr.push($(this).val());  
-                                            });         
+                                                arr.push($(this).val());  
+                                        });         
                                             console.log("array->",arr)
                                         var result = arr.map(function (x) { 
                                         return parseInt(x, 10); 
@@ -4113,25 +4446,25 @@ function SetFunc(active_id){
         brandCheck_Html_Crt();
 
         // For  displaying phone list on sidebar
-       
-                       $('#expphonelist_div').empty();
-                       if (phonename_dic[active_button]===undefined){
-                            phonename_dic[active_button]=[]
-                                }
-                        var expphonelist_div=document.getElementById('expphonelist_div');
-                        var main_row_div=document.createElement("div");
-                        main_row_div.setAttribute("class","row");
-                        expphonelist_div.append(main_row_div);
 
-                        var main_col_div=document.createElement('div');
-                        main_col_div.setAttribute('class','col-md-12');
-                        main_col_div.id=active_button+"unq";
+            $('#expphonelist_div').empty();
+            if (phonename_dic[active_button]===undefined){
+                phonename_dic[active_button]=[]
+                    }
+            var expphonelist_div=document.getElementById('expphonelist_div');
+            var main_row_div=document.createElement("div");
+            main_row_div.setAttribute("class","row");
+            expphonelist_div.append(main_row_div);
 
-                        main_row_div.append(main_col_div);
-                        var h_div=document.createElement("div");
-                        h_div.innerHTML=active_button;
+            var main_col_div=document.createElement('div');
+            main_col_div.setAttribute('class','col-md-12');
+            main_col_div.id=active_button+"unq";
 
-                        main_col_div.append(h_div);
+            main_row_div.append(main_col_div);
+            var h_div=document.createElement("div");
+            h_div.innerHTML=active_button;
+
+            main_col_div.append(h_div);
 
                         for (var i in phonename_dic[active_button]){
                             var row_div=document.createElement("div");
@@ -4909,6 +5242,9 @@ function SetFunc(active_id){
     var cdm_crit_hide_dict={};
     prune_empty_flag="true";
     cdm_full_btn_on="true";
+    var static_default_crit_show_dict={};
+    var static_default_crit_hide_dict={};
+
     ///////////////////////////////////////////////////////////
 
     function orderCriteriaHtmlSetup(CO,CO_list,default_active){
@@ -4935,10 +5271,26 @@ function SetFunc(active_id){
         heading_row_div.append(heading_content);
         var co_sel_list_row_div=document.createElement("div");
         co_sel_list_row_div.setAttribute("class","row");
+        co_sel_list_row_div.setAttribute("id","co_sel_list_row_div");
         container.append(co_sel_list_row_div);
+
+        var col_1=document.createElement("div");
+        col_1.setAttribute("class","col");
+        co_sel_list_row_div.append(col_1);
+        
+        var col_2=document.createElement("div");
+        col_2.setAttribute("class","col");
+        co_sel_list_row_div.append(col_2);
+
+        var col_3=document.createElement("div");
+        col_3.setAttribute("class","col");
+        co_sel_list_row_div.append(col_3);
+
         var select_div=document.createElement('div');
         select_div.setAttribute('id','select_div');
-        co_sel_list_row_div.append(select_div);
+        select_div.setAttribute('style', 'display: inline-block;');
+
+        col_2.append(select_div);
         var div_cdm=document.createElement("div")
         if (default_active==="true"){
             console.log("DEFAULT")
@@ -4967,6 +5319,8 @@ function SetFunc(active_id){
 
         var back_to_main_setup_btn=document.createElement('button');
         back_to_main_setup_btn.innerHTML="Back";
+        back_to_main_setup_btn.setAttribute('id','back_co_btn')
+
         back_to_main_setup_btn.setAttribute('onclick','showFeatureLvls_Active_CO()')
         col_md_1.append(back_to_main_setup_btn);
         var col_md_5=document.createElement('div');
@@ -5024,6 +5378,8 @@ function SetFunc(active_id){
         // ajax call to get feature_to_display, feature_to_hide
         colist=dict["CO"]
         if (default_crit_show_dict["Cdm.Def"]!==undefined && default_crit_hide_dict["Cdm.Def"]!==undefined){
+            
+            
             var select=document.createElement('select');
             select.setAttribute('id', 'sel_options');
             select.setAttribute('onchange',"selChangeFunc($(this))")
@@ -5059,6 +5415,7 @@ function SetFunc(active_id){
                     var inputdata =colist
                     var select=document.createElement('select');
                     select.setAttribute('id', 'sel_options');
+
                     select.setAttribute('onchange',"selChangeFunc($(this))")
                     for (var i=0;i<inputdata.length;i++){
                             var option=document.createElement('option');
@@ -5228,16 +5585,293 @@ function SetFunc(active_id){
 
 
     }
-        
-    
+
+    function defaultBreadCrumbActivateFunc(li_element){
+        console.log("li_ele",li_element);
+        var current= $('.breadcrumb').find('li.bdcrumb_active')
+
+
+       
+        // var current=$("breadcrumb-item .active");
+
+        // if the position of the selected element is less than the current element
+        // then 1st change the active state to the selected one and remove the 
+        // current element and elements after the current element. 
+        alert($('.breadcrumb li').length);
+        alert( $( ".breadcrumb li" ).index( li_element ));
+        alert( $( ".breadcrumb li" ).index( current )); 
+        if ($( ".breadcrumb li" ).index( li_element )<$( ".breadcrumb li" ).index( current )){
+            alert("delete");
+            current.remove();
+            defualtCriteriaOrderHtmlSetup();
+        }
+       
+      
+        console.log("current", current);
+        console.log("current", current.attr('class'))
+        current.prop('class',current.attr('class').replace('breadcrumb-item bdcrumb_active',"breadcrumb-item"));
+        $(li_element).prop('class', 'breadcrumb-item bdcrumb_active');
+    }  
+    function defualtCriteriaOrderHtmlSetup(){
+
+        $("#ol1").show();
+        $('#ol1').empty();
+        $("#default_tree_view_div").show();
+        var breadcrumb_ol=document.getElementById("ol1");
+        // $('.breadcrumb').append('<li class="breadcrumb-item active"><a href="#" onclick="defaultBreadCrumbActivateFunc($(this).parent())">Set Def Crit Order</a></li>"')
+        var  lit=document.createElement("li");
+        lit.setAttribute("class","breadcrumb-item bdcrumb_active");
+        breadcrumb_ol.append(lit);
+
+        console.log("li",lit)
+        var a=document.createElement("a");
+        a.setAttribute("href","#");
+        a.setAttribute("onclick","defaultBreadCrumbActivateFunc($(this).parent())");
+        a.setAttribute("style","color:white")
+        a.innerHTML="Set Default Criteria Order";
+        lit.append(a);
+        console.log("li",lit)
+
+        $("#default_criteria_div").empty();
+        $("#order_criteria_div").empty();
+        $("#cdm_criteria_div").empty();
+        $("#cdm_co_on_div").empty();
+        $("#default_criteria_div").show();
+        var default_criteria_div=document.getElementById("default_criteria_div");
+        var container=document.createElement("div");
+        container.setAttribute('class','container-fluid text-center');
+        default_criteria_div.append(container);
+        var heading_row_div=document.createElement("div");
+        heading_row_div.setAttribute("class","row");
+        container.append(heading_row_div);
+        var heading_content=document.createElement("H2");
+        heading_content.innerHTML="Set Default Criteria Order";
+          
+        heading_row_div.append(heading_content);
+        var main_row=document.createElement('div');
+        main_row.setAttribute('class','row content');
+        main_row.id="def_main_row_co_def";
+
+        container.append(main_row);
+        var col_md_1=document.createElement('div');
+        col_md_1.setAttribute('class','col-md-1 sidenav');
+        main_row.append(col_md_1);
+        var back_to_main_setup_btn=document.createElement('button');
+        back_to_main_setup_btn.innerHTML="Back";
+        back_to_main_setup_btn.id="back_def_btn";
+
+        back_to_main_setup_btn.setAttribute('onclick','showFeatureLvls_defautCriteria()')
+        col_md_1.append(back_to_main_setup_btn);
+        var col_md_5=document.createElement('div');
+        col_md_5.setAttribute('class','col-md-5 text-left');
+        main_row.append(col_md_5);
+
+        // var select_div=document.createElement('div');
+        // select_div.setAttribute('id','select_div');
+        var container_two=document.createElement('div');
+        container_two.setAttribute('class','container ');
+        container_two.id="product-section";
+        // col_md_5.append(select_div);
+        col_md_5.append(container_two);
+        var disp_feat_div=document.createElement("div");
+        disp_feat_div.setAttribute('id','display_feature_div');
+        container_two.append(disp_feat_div);
+        var col_md_5_2=document.createElement('div');
+        col_md_5_2.setAttribute('class','col-md-5');
+        main_row.append(col_md_5_2);
+        // var hiddenfeat_div=document.createElement('div');
+        // col_md_5_2.append(hiddenfeat_div);
+        // var h2=document.createElement('h2');
+        // h2.innerHTML="Hidden Features";
+        // hiddenfeat_div.append(h2);
+        // var hide_feature_div=document.createElement('div');
+        // hide_feature_div.setAttribute('id','hide_feature_div');
+        // hiddenfeat_div.append(hide_feature_div);
+        // var recenthiddenfeat_div=document.createElement('div');
+        // recenthiddenfeat_div.setAttribute('id','recent_hidden_div');
+        // col_md_5_2.append(recenthiddenfeat_div);
+        // var h2=document.createElement('h2');
+        // h2.innerHTML="Recent  Hidden Features";
+        // var ul_mylist=document.createElement('ul');
+        // ul_mylist.setAttribute('id','myList');
+        // recenthiddenfeat_div.append(h2);
+        // recenthiddenfeat_div.append(ul_mylist);
+        var col_md_1=document.createElement('div');
+        col_md_1.setAttribute('class','col-md-1 sidenav');
+        main_row.append(col_md_1);
+        var continue_btn=document.createElement('button');
+        continue_btn.innerHTML="Continue";
+        continue_btn.id="count_def_btn";
+        continue_btn.setAttribute('onclick',"defualtCriteriaHtmlSetup()");
+        col_md_1.append(continue_btn);
+        // if (default_crit_show_dict["default"]!==undefined && default_crit_hide_dict["default"]!==undefined){
+        //        // alert(cdm_crit_order_on_flag)
+        //     var shw_disp=[];
+        //     var hide_disp=[];
+        //     var feat_dsp=default_crit_show_dict["default"];
+        //     feat_to_disp=feat_dsp;
+        //     var feat_hide=default_crit_hide_dict["default"];
+        //     var flg="true";
+        //     cdm_crit_order_on_flag="true";
+
+        //     data=htmlF(shw_disp,hide_disp,mandatory_list,feat_dsp,feat_hide,flg)
+
+        // }
+        // else{
+        $.ajax({
+                                url: "{% url 'defaultcriteriasetup' %}",
+                                type:'GET',
+                                'data': {
+                                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                                },
+                                dataType: "json",
+                                
+                                success: function(data){
+                              
+                                var shw_disp=[];
+                                var hide_disp=[];
+                                var mand=data['mandatory'];
+                                var feat_dsp=data['feature_to_display'];
+                                feat_to_disp=data['feature_to_display'];
+                                var flg=data['flag'];
+                                mandatory_list=mand;
+                                var feat_hide=data['feature_to_hide'];
+                                feat_to_hide=feat_hide;
+                                cdm_crit_order_on_flag="true";
+                                data=htmlF(shw_disp,hide_disp,mandatory_list,feat_dsp,feat_hide,flg);
+                                data_obj_show=JSON.parse(JSON.stringify(data['shw_disp']));
+                                data_obj_hide=JSON.parse(JSON.stringify(data['hide_disp']));
+                                default_crit_show_dict['default']=data_obj_show;
+                                default_crit_hide_dict['default']=data_obj_hide;
+                                data_obj_show_1=JSON.parse(JSON.stringify(data_obj_show));
+                                data_obj_hide_2=JSON.parse(JSON.stringify(data_obj_hide));
+                                static_default_crit_show_dict['default']=data_obj_show_1;
+                                static_default_crit_hide_dict['default']=data_obj_hide_2;
+
+                                console.log("default_crit_show_dict-->",default_crit_show_dict);
+                                console.log("default_crit_hide_dict-->",default_crit_hide_dict);
+                                $('ul').sortable({
+                                axis: 'y',
+                                stop: function (event, ui) {
+                                var data = $(this).sortable('serialize').split("&");
+                                var arr=[];
+                                for (var key in data)
+                                {   
+                                    arr.push(data[key].split("=")[0].replace('[]',''));
+                                }
+                                console.log("arr",arr);
+
+                                console.log("jason string",JSON.stringify(arr));
+
+                                $('span').text(data);
+                                default_crit_show_dict["default"]=arr;
+                                arr_2=JSON.parse(JSON.stringify(arr));
+
+                                static_default_crit_show_dict['default']=arr_2;
+                                $("#default_tree_view_div").empty();
+
+
+                                var main_treeview_list=[];
+                                var main_treeview_dict={};
+
+                                main_treeview_dict['name']="Default Criteria Tree View";
+                                mainchildlist=[];
+                                var defaut_criteria_order_dict={};
+                                defaut_criteria_order_dict_childlist=[];
+                                defaut_criteria_order_dict['name']='Defaut criteria order';
+
+                                        for (var i in static_default_crit_show_dict['default'])
+                                        {
+                                            
+                                            var defaut_criteria_order_child_dict={};
+                                            defaut_criteria_order_child_dict['name']=static_default_crit_show_dict['default'][i];
+                                            defaut_criteria_order_child_dict['childern']=[];
+                                            defaut_criteria_order_dict_childlist.push(defaut_criteria_order_child_dict);
+
+                                        }
+                                defaut_criteria_order_dict['children']=defaut_criteria_order_dict_childlist;
+                                mainchildlist.push(defaut_criteria_order_dict);
+                                main_treeview_dict['children']=mainchildlist
+
+
+                                main_treeview_list.push(main_treeview_dict);
+                                var tree=main_treeview_list;
+                                //
+                                // Create tree
+                                //
+                                var t = new TreeView(tree, 'default_tree_view_div');
+
+                               
+                                
+                                }
+                        });    
+
+                                $( "#sortable" ).enableSelection();
+                                $("#default_tree_view_div").empty();
+                                var main_treeview_list=[];
+                                var main_treeview_dict={};
+
+                                main_treeview_dict['name']="Default Criteria Tree View";
+                                mainchildlist=[];
+                                var defaut_criteria_order_dict={};
+                                defaut_criteria_order_dict_childlist=[];
+                                defaut_criteria_order_dict['name']='Defaut criteria order';
+
+                                        for (var i in static_default_crit_show_dict['default'])
+                                        {
+                                            
+                                            var defaut_criteria_order_child_dict={};
+                                            defaut_criteria_order_child_dict['name']=static_default_crit_show_dict['default'][i];
+                                            defaut_criteria_order_child_dict['childern']=[];
+                                            defaut_criteria_order_dict_childlist.push(defaut_criteria_order_child_dict);
+
+                                        }
+                                defaut_criteria_order_dict['children']=defaut_criteria_order_dict_childlist;
+                                mainchildlist.push(defaut_criteria_order_dict);
+                                main_treeview_dict['children']=mainchildlist
+
+
+                                main_treeview_list.push(main_treeview_dict);
+                                var tree=main_treeview_list;
+                                //
+                                // Create tree
+                                //
+                                var t = new TreeView(tree, 'default_tree_view_div');
+
+                                
+
+                        
+                        }
+                });
+        // }       
+    }
     function defualtCriteriaHtmlSetup(){
+        $("#ol1").show();
+
+        if ($('.breadcrumb li').length>0 && $('.breadcrumb li').length===1 ){
+            var current= $('.breadcrumb').find('li.bdcrumb_active')
+            var breadcrumb_ol=document.getElementById("ol1");
+            var  li=document.createElement("li");
+            li.setAttribute("class","breadcrumb-item");
+            breadcrumb_ol.append(li);
+            var a=document.createElement("a");
+            a.setAttribute("href","#");
+            a.setAttribute("onclick","defaultBreadCrumbActivateFunc($(this).parent())");
+            a.setAttribute("style","color:white")
+
+            a.innerHTML="Filter Default Criteria ";
+            li.append(a);
+            current.prop('class',current.attr('class').replace('breadcrumb-item bdcrumb_active',"breadcrumb-item"));
+            $(li).prop('class', 'breadcrumb-item bdcrumb_active');
+        }else{
+
          
+        }
         /* emptying and showing order criteria div */
         $("#default_criteria_div").empty();
         $("#order_criteria_div").empty();
         $("#cdm_criteria_div").empty();
         $("#cdm_co_on_div").empty();
-
         $("#default_criteria_div").show();
         // CREATING HTML <-->
         var default_criteria_div=document.getElementById("default_criteria_div");
@@ -5254,12 +5888,16 @@ function SetFunc(active_id){
         heading_row_div.append(heading_content);
         var main_row=document.createElement('div');
         main_row.setAttribute('class','row content');
+        main_row.id="def_main_row_co_def";
+
         container.append(main_row);
         var col_md_1=document.createElement('div');
         col_md_1.setAttribute('class','col-md-1 sidenav');
         main_row.append(col_md_1);
         var back_to_main_setup_btn=document.createElement('button');
         back_to_main_setup_btn.innerHTML="Back";
+        back_to_main_setup_btn.id="back_def_btn";
+
         back_to_main_setup_btn.setAttribute('onclick','showFeatureLvls_defautCriteria()')
         col_md_1.append(back_to_main_setup_btn);
         var col_md_5=document.createElement('div');
@@ -5302,6 +5940,8 @@ function SetFunc(active_id){
         main_row.append(col_md_1);
         var save_to_main_setup_btn=document.createElement('button');
         save_to_main_setup_btn.innerHTML="Save";
+        save_to_main_setup_btn.id="SAVE_def_BTN";
+
         save_to_main_setup_btn.setAttribute('onclick',"saveDefaultCriteriaSet()");
         col_md_1.append(save_to_main_setup_btn);
 
@@ -5315,6 +5955,8 @@ function SetFunc(active_id){
             feat_to_disp=feat_dsp;
             var feat_hide=default_crit_hide_dict["default"];
             var flg="true";
+            cdm_crit_order_on_flag="false";
+
             data=htmlF(shw_disp,hide_disp,mandatory_list,feat_dsp,feat_hide,flg)
 
 
@@ -5378,7 +6020,7 @@ function SetFunc(active_id){
                                     console.log(data);
                                     // checkbox_id_dict[5]=['0-innercheckbox-5'];
                                     // showcheckboxes_stored();
-                                    showFeatureLvls();     
+                                    showFeatureLvls_defautCriteria();     
                                     if(exp_id===""){
                                             exp_id = data['exp_id'];
                                             custom_exp_id = data['custom_exp_id'];
@@ -5392,27 +6034,233 @@ function SetFunc(active_id){
                                               
 
                                             }
-                                            var current=$(".active");
-                                            current.prop('class',current.attr('class').replace('active',""));
-                                            $('#ftlvl').prop('class', 'custom_nav_btn active');
+                                            // var current=$(".active");
+                                            // current.prop('class',current.attr('class').replace('active',""));
+                                            // $('#ftlvl').prop('class', 'custom_nav_btn active');
                                             
                                     //         alert("HERE")
 
                                             
                                 }
           });
+          hide_show_order_display_Default_TreeView(); 
     }
     function showFeatureLvls_defautCriteria(){
         showFeatureLvls();
-        var current=$(".active");
+        var current=$("#def_crit_list_btn");
         current.prop('class',current.attr('class').replace('active',""));
         $('#ftlvl').prop('class', 'custom_nav_btn active');
 
 
     }
-    
-   
+    function Cdm_on_CO_off_BreadCrumbActivateFunc(li_element){
+        console.log("li_ele",li_element);
+        var current= $('.breadcrumb').find('li.bdcrumb_active')
+        alert($('.breadcrumb li').length);
+        alert( $( ".breadcrumb li" ).index( li_element ));
+        alert( $( ".breadcrumb li" ).index( current )); 
+      
+        if ($( ".breadcrumb li" ).index( li_element )<$( ".breadcrumb li" ).index( current )){
+           
+                    
+                        current.remove();
+                        cdm_defaultCriteriaOrderHTMLSetup();
+
+                    }
+            
+            
+        
+        console.log("current", current);
+        console.log("current", current.attr('class'))
+        current.prop('class',current.attr('class').replace('breadcrumb-item bdcrumb_active',"breadcrumb-item"));
+        $(li_element).prop('class', 'breadcrumb-item bdcrumb_active');
+    }
+    function cdm_defaultCriteriaOrderHTMLSetup(){
+        $("#ol2").show();
+        $('#ol2').empty();
+        prune_empty_flag="true";
+        if (default_crit_show_dict['cdm']!==undefined){
+            delete default_crit_show_dict['cdm'];
+            delete default_crit_hide_dict['cdm'];
+        }
+        var breadcrumb_ol=document.getElementById("ol2");
+        var  lit=document.createElement("li");
+        lit.setAttribute("class","breadcrumb-item bdcrumb_active");
+        breadcrumb_ol.append(lit);
+        var a=document.createElement("a");
+        a.setAttribute("href","#");
+        a.setAttribute("onclick","Cdm_on_CO_off_BreadCrumbActivateFunc($(this).parent())");
+        a.setAttribute("style","color:white")
+        a.innerHTML="Set Default Criteria Order";
+        lit.append(a);
+
+
+
+
+        $("#cdm_criteria_div").empty();
+        $("#order_criteria_div").empty();
+        $("#cdm_criteria_div").empty();
+        $("#cdm_co_on_div").empty();
+        $("#cdm_criteria_div").show();
+        var cdm_criteria_div=document.getElementById("cdm_criteria_div");
+        var container=document.createElement("div");
+        container.setAttribute('class','container-fluid text-center');
+        cdm_criteria_div.append(container);
+        var heading_row_div=document.createElement("div");
+        heading_row_div.setAttribute("class","row");
+        container.append(heading_row_div);
+        var heading_content=document.createElement("H2");
+        heading_content.innerHTML="Set Default Criteria Order";
+          
+        heading_row_div.append(heading_content);
+        var main_row=document.createElement('div');
+        main_row.setAttribute('class','row content');
+        main_row.id="def_main_row_co_def";
+
+        container.append(main_row);
+        var col_md_1=document.createElement('div');
+        col_md_1.setAttribute('class','col-md-1 sidenav');
+        main_row.append(col_md_1);
+        var back_to_main_setup_btn=document.createElement('button');
+        back_to_main_setup_btn.innerHTML="Back";
+        back_to_main_setup_btn.id="back_def_btn";
+
+        back_to_main_setup_btn.setAttribute('onclick','showFeatureLvls_cdm_co()')
+        col_md_1.append(back_to_main_setup_btn);
+        var col_md_5=document.createElement('div');
+        col_md_5.setAttribute('class','col-md-5 text-left');
+        main_row.append(col_md_5);
+
+        // var select_div=document.createElement('div');
+        // select_div.setAttribute('id','select_div');
+        var container_two=document.createElement('div');
+        container_two.setAttribute('class','container ');
+        container_two.id="product-section";
+        // col_md_5.append(select_div);
+        col_md_5.append(container_two);
+        var disp_feat_div=document.createElement("div");
+        disp_feat_div.setAttribute('id','display_feature_div');
+        container_two.append(disp_feat_div);
+        var col_md_5_2=document.createElement('div');
+        col_md_5_2.setAttribute('class','col-md-5');
+        main_row.append(col_md_5_2);
+        // var hiddenfeat_div=document.createElement('div');
+        // col_md_5_2.append(hiddenfeat_div);
+        // var h2=document.createElement('h2');
+        // h2.innerHTML="Hidden Features";
+        // hiddenfeat_div.append(h2);
+        // var hide_feature_div=document.createElement('div');
+        // hide_feature_div.setAttribute('id','hide_feature_div');
+        // hiddenfeat_div.append(hide_feature_div);
+        // var recenthiddenfeat_div=document.createElement('div');
+        // recenthiddenfeat_div.setAttribute('id','recent_hidden_div');
+        // col_md_5_2.append(recenthiddenfeat_div);
+        // var h2=document.createElement('h2');
+        // h2.innerHTML="Recent  Hidden Features";
+        // var ul_mylist=document.createElement('ul');
+        // ul_mylist.setAttribute('id','myList');
+        // recenthiddenfeat_div.append(h2);
+        // recenthiddenfeat_div.append(ul_mylist);
+        var col_md_1=document.createElement('div');
+        col_md_1.setAttribute('class','col-md-1 sidenav');
+        main_row.append(col_md_1);
+        var continue_btn=document.createElement('button');
+        continue_btn.innerHTML="Continue";
+        continue_btn.id="count_def_btn";
+        continue_btn.setAttribute('onclick',"Continue_CdmCriteriaHTMLSetup()");
+        col_md_1.append(continue_btn);
+        // if (default_crit_show_dict["default"]!==undefined && default_crit_hide_dict["default"]!==undefined){
+        //      alert("]")
+        //     var shw_disp=[];
+        //     var hide_disp=[];
+        //     var feat_dsp=default_crit_show_dict["default"];
+        //     feat_to_disp=feat_dsp;
+        //     var feat_hide=default_crit_hide_dict["default"];
+        //     var flg="true";
+        //     cdm_crit_order_on_flag="true";
+
+        //     data=htmlF(shw_disp,hide_disp,mandatory_list,feat_dsp,feat_hide,flg)
+
+        // }
+        // else{
+        //     alert("ool")
+
+        $.ajax({
+                                url: "{% url 'defaultcriteriasetup' %}",
+                                type:'GET',
+                                'data': {
+                                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                                },
+                                dataType: "json",
+                                
+                                success: function(data){
+                              
+                                var shw_disp=[];
+                                var hide_disp=[];
+                                var mand=data['mandatory'];
+                                var feat_dsp=data['feature_to_display'];
+                                feat_to_disp=data['feature_to_display'];
+                                var flg=data['flag'];
+                                mandatory_list=mand;
+                                var feat_hide=data['feature_to_hide'];
+                                feat_to_hide=feat_hide;
+                                cdm_crit_order_on_flag="true";
+                                console.log("feat_to_disp",feat_to_disp);
+
+                                data=htmlF(shw_disp,hide_disp,mandatory_list,feat_dsp,feat_hide,flg);
+                                data_obj_show=JSON.parse(JSON.stringify(data['shw_disp']));
+                                data_obj_hide=JSON.parse(JSON.stringify(data['hide_disp']));
+                                default_crit_show_dict['default']=data_obj_show;
+                                default_crit_hide_dict['default']=data_obj_hide;
+                                $('ul').sortable({
+                                axis: 'y',
+                                stop: function (event, ui) {
+                                var data = $(this).sortable('serialize').split("&");
+                                var arr=[];
+                                for (var key in data)
+                                {   
+                                    arr.push(data[key].split("=")[0].replace('[]',''));
+                                }
+                                console.log("arr",arr);
+
+                                console.log("jason string",JSON.stringify(arr));
+
+                                $('span').text(data);
+                                default_crit_show_dict["default"]=arr;
+                                console.log("default_crit_show_dict",default_crit_show_dict);
+                                
+                                    }
+                                });    
+                                $( "#sortable" ).enableSelection()
+
+                            }
+
+                        });
+        // }
+
+    }
     function CdmCriteriaHTMLSetup(){
+        $("#ol2").show();
+        if ($('.breadcrumb li').length>0 && $('.breadcrumb li').length===1 ){
+            var current= $('.breadcrumb').find('li.bdcrumb_active')
+            var breadcrumb_ol=document.getElementById("ol2");
+            var  li=document.createElement("li");
+            li.setAttribute("class","breadcrumb-item");
+            breadcrumb_ol.append(li);
+            var a=document.createElement("a");
+            a.setAttribute("href","#");
+            a.setAttribute("onclick","Cdm_on_CO_off_BreadCrumbActivateFunc($(this).parent())");
+            a.setAttribute("style","color:white")
+
+            a.innerHTML="Set C.Full and Prune Criteria ";
+            li.append(a);
+            current.prop('class',current.attr('class').replace('breadcrumb-item bdcrumb_active',"breadcrumb-item"));
+            $(li).prop('class', 'breadcrumb-item bdcrumb_active');
+        }else{
+
+
+        }
+
         /* emptying and showing order criteria div */
         $("#default_criteria_div").empty();
         $("#order_criteria_div").empty();
@@ -5420,6 +6268,8 @@ function SetFunc(active_id){
         $("#cdm_co_on_div").empty();
         $("#cdm_criteria_div").show();
         // CREATING HTML <-->
+        cdm_full_btn_on="true";
+
         var cdm_criteria_div=document.getElementById("cdm_criteria_div");
         var container=document.createElement("div");
         container.setAttribute('class','container-fluid text-center');
@@ -5429,7 +6279,7 @@ function SetFunc(active_id){
         container.append(toggle_btn_row_div);
 
         var col_md_12=document.createElement('div');
-        col_md_12.setAttribute('class','col-md-9');
+        col_md_12.setAttribute('class','col-md-9 btn-group');
         col_md_12.id="set_buttons_cdm"
         toggle_btn_row_div.append(col_md_12);
         cmd_set_list=["C.FULL","C.PRUNE"];
@@ -5443,6 +6293,8 @@ function SetFunc(active_id){
             }
             $('#set_buttons_cdm').append(button)
         }
+        document.getElementById("C.FULLbtn").style.backgroundColor = "#94000e"
+
 
 
 
@@ -5457,6 +6309,7 @@ function SetFunc(active_id){
         var back_to_main_setup_btn=document.createElement('button');
         back_to_main_setup_btn.innerHTML="Back";
         back_to_main_setup_btn.setAttribute('onclick','showFeatureLvls_Cdm()')
+        back_to_main_setup_btn.id="back_cdm_btn";
         col_md_1.append(back_to_main_setup_btn);
         var col_md_5=document.createElement('div');
         col_md_5.setAttribute('class','col-md-5 text-left');
@@ -5493,20 +6346,50 @@ function SetFunc(active_id){
         ul_mylist.setAttribute('id','myList');
         recenthiddenfeat_div.append(h2);
         recenthiddenfeat_div.append(ul_mylist);
+       
+
+
         var col_md_1=document.createElement('div');
         col_md_1.setAttribute('class','col-md-1 sidenav');
         main_row.append(col_md_1);
         var next_to_main_setup_btn=document.createElement('button');
-        next_to_main_setup_btn.innerHTML="Next Step";
+        next_to_main_setup_btn.innerHTML="Next";
+        next_to_main_setup_btn.id="NEXT_CDM_BTN";
         next_to_main_setup_btn.setAttribute('onclick',"nextStepCdmCriteriaHTMLSetup()");
         col_md_1.append(next_to_main_setup_btn);
         // if flag for c.full is active that retrieve info 
         // from cdm_crit_dict[c.full]
 
         if (prune_empty_flag==="true" ){
-            alert("prune flag")
+            alert("prune flag");
             alert(prune_empty_flag)
-                                $.ajax({
+          
+
+
+
+
+            if (default_crit_show_dict["default"]!==undefined && default_crit_hide_dict["default"]!==undefined) {
+                    var shw_disp=[];
+                    var hide_disp=[];
+                    var feat_dsp=default_crit_show_dict["default"];
+                    feat_to_disp=feat_dsp;
+                    var feat_hide=default_crit_hide_dict["default"];
+                    var flg="true";
+                    cdm_crit_order_on_flag="false";
+
+                    data=htmlF(shw_disp,hide_disp,mandatory_list,feat_dsp,feat_hide,flg)
+                    data_obj_show=JSON.parse(JSON.stringify(data['shw_disp']));
+                    data_obj_hide=JSON.parse(JSON.stringify(data['hide_disp']));
+                    
+                    cdm_crit_show_dict["c.full"]=data_obj_show;
+                    cdm_crit_hide_dict["c.full"]=data_obj_hide;
+
+                    default_crit_show_dict['cdm']=feat_to_disp;
+                    default_crit_hide_dict["cdm"]=feat_to_hide;
+                                
+
+            }else{
+                $.ajax({
                                 url: "{% url 'cdmcriteriasetup' %}",
                                 type:'GET',
                                 'data': {
@@ -5547,7 +6430,9 @@ function SetFunc(active_id){
                             }
 
                         });
+            }
         }
+
         else if (prune_empty_flag==="false" || default_crit_show_dict["cdm"]!==undefined && default_crit_hide_dict["cdm"]!==undefined ) {
             alert("prune flag");
             alert(prune_empty_flag);
@@ -5561,14 +6446,9 @@ function SetFunc(active_id){
             data_obj_hide=JSON.parse(JSON.stringify(data['hide_disp']));
             if ((cdm_crit_show_dict["c.full"]!==undefined || cdm_crit_hide_dict["c.full"]!==undefined)||(cdm_crit_show_dict["c.full"]!==undefined || cdm_crit_hide_dict["c.full"]!==undefined)){
                 alert("NO NEW INSERTION iN PRune")
+                $("#full_crit_selected").show();
             }  
-            else{
-                alert(" NEW INSERTION")
-                cdm_crit_show_dict['c.full']=data_obj_show;
-                cdm_crit_hide_dict['c.full']=data_obj_hide;
-                cdm_crit_show_dict['c.prune']=shw_disp;
-                cdm_crit_hide_dict['c.prune']=[];
-            }       
+           
     }
 }
     function saveCdmCriteriaHTMLSetup(){  
@@ -5617,8 +6497,14 @@ function SetFunc(active_id){
 
     }
     function nextStepCdmCriteriaHTMLSetup(){
-        cdm_full_btn_on="false"
-        prune_empty_flag="false"
+        cdm_full_btn_on="false";
+        prune_empty_flag="false";
+      
+
+
+        document.getElementById("C.PRUNEbtn").style.backgroundColor = "#94000e"
+        document.getElementById("C.FULLbtn").style.backgroundColor = ""
+
         $("#cdm_main_row_co_def").empty();
 
         var main_row=document.getElementById("cdm_main_row_co_def")
@@ -5627,6 +6513,7 @@ function SetFunc(active_id){
         main_row.append(col_md_1);
         var back_to_main_setup_btn=document.createElement('button');
         back_to_main_setup_btn.innerHTML="Back";
+        back_to_main_setup_btn.id="back_cdm_btn";
         back_to_main_setup_btn.setAttribute('onclick','CdmCriteriaHTMLSetup()')
         col_md_1.append(back_to_main_setup_btn);
         var col_md_5=document.createElement('div');
@@ -5664,13 +6551,28 @@ function SetFunc(active_id){
         ul_mylist.setAttribute('id','myList');
         recenthiddenfeat_div.append(h2);
         recenthiddenfeat_div.append(ul_mylist);
+
+        var full_crit_selected=document.createElement("div");
+        full_crit_selected.setAttribute("id","full_crit_selected");
+        col_md_5_2.append(full_crit_selected);
+        var h4=document.createElement('h4');
+        h4.innerHTML="Full Selected Features";
+        full_crit_selected.append(h4);
+        var full_crit_sel_inner_div=document.createElement('div');
+        full_crit_sel_inner_div.setAttribute('id','full_crit_sel_inner_div');
+        full_crit_selected.append(full_crit_sel_inner_div)
+
+
+
+
         var col_md_1=document.createElement('div');
         col_md_1.setAttribute('class','col-md-1 sidenav');
         main_row.append(col_md_1);
-        var next_to_main_setup_btn=document.createElement('button');
-        next_to_main_setup_btn.innerHTML="Save";
-        next_to_main_setup_btn.setAttribute('onclick',"saveCdmCriteriaHTMLSetup()");
-        col_md_1.append(next_to_main_setup_btn);
+        var save_setup_btn=document.createElement('button');
+        save_setup_btn.innerHTML="Save";
+        save_setup_btn.id="SAVE_CDM_BTN";
+        save_setup_btn.setAttribute('onclick',"saveCdmCriteriaHTMLSetup()");
+        col_md_1.append(save_setup_btn);
         // if flag for c.full is active that retrieve info 
         // from cdm_crit_dict[c.full]
         if (cdm_full_btn_on==="true"){
@@ -5865,14 +6767,51 @@ function SetFunc(active_id){
             cdm_crit_show_dict['c.prune']=shw_disp;
             cdm_crit_hide_dict['c.prune']=[];
             console.log("cdm_crit_show_dict",cdm_crit_show_dict);
-            console.log("cdm_crit_hide_dict",cdm_crit_hide_dict);                       
+            console.log("cdm_crit_hide_dict",cdm_crit_hide_dict);            
+            var full_crit_sel_inner_div=document.getElementById('full_crit_sel_inner_div');
+            var ul_cfull_crit=document.createElement('ul');
+            ul_cfull_crit.setAttribute("id","cfull_crit");
+            full_crit_sel_inner_div.append(ul_cfull_crit);
+                        for (var i in feat_dsp ){
+                            var li_cfull_crit=document.createElement('li');
+                            li_cfull_crit.innerHTML=feat_dsp[i];
+                            ul_cfull_crit.append(li_cfull_crit);
+                            
+                            // var div_row=document.createElement('div')
+                            // div_row.setAttribute('class','row');
+                            // li_cfull_crit.append(div_row);
+                            // var div_col_md_6_1=document.createElement('div');
+                            // div_col_md_6_1.setAttribute('class','col-md-6');
+                            // div_row.append(div_col_md_6_1);
+                            // var div_col_md_6_2=document.createElement('div');
+                            // div_col_md_6_2.setAttribute('class','col-md-6');
+                            // div_row.append(div_col_md_6_2);
+                            // var btn_btn_primary=document.createElement('btn');
+                            // btn_btn_primary.setAttribute('class','sortable_custom_hide_btns');
+                            // btn_btn_primary.innerHTML=feat_dsp[i];   
+                            // div_col_md_6_1.append(btn_btn_primary);
+                        
+                        }           
         }
     }
+    function Continue_CdmCriteriaHTMLSetup (){
+        CdmCriteriaHTMLSetup();
+
+    }
+
     function cdm_btn_func(elementid){
+        console.log(typeof(elementid))
+      
+        var element_os=$(elementid).attr('id');
+      
+        
         console.log("elementid",$(elementid).attr('id'))
-        if($(elementid).attr('id')==="C.FULLbtn"){
+        if(element_os==="C.FULLbtn"){
+            document.getElementById("C.FULLbtn").style.backgroundColor = "#94000e"
+            document.getElementById("C.PRUNEbtn").style.backgroundColor = ""
             cdm_full_btn_on="true"
-            $("#cdm_main_row_co_def").empty();
+            
+        $("#cdm_main_row_co_def").empty();
 
         var main_row=document.getElementById("cdm_main_row_co_def")
         var col_md_1=document.createElement('div');
@@ -5880,6 +6819,8 @@ function SetFunc(active_id){
         main_row.append(col_md_1);
         var back_to_main_setup_btn=document.createElement('button');
         back_to_main_setup_btn.innerHTML="Back";
+        back_to_main_setup_btn.id="back_cdm_btn";
+
         back_to_main_setup_btn.setAttribute('onclick','showFeatureLvls_Cdm()')
         col_md_1.append(back_to_main_setup_btn);
         var col_md_5=document.createElement('div');
@@ -5921,7 +6862,8 @@ function SetFunc(active_id){
         col_md_1.setAttribute('class','col-md-1 sidenav');
         main_row.append(col_md_1);
         var next_to_main_setup_btn=document.createElement('button');
-        next_to_main_setup_btn.innerHTML="Next Step";
+        next_to_main_setup_btn.innerHTML="Next";
+        next_to_main_setup_btn.id="NEXT_CDM_BTN";
         next_to_main_setup_btn.setAttribute('onclick',"nextStepCdmCriteriaHTMLSetup()");
         col_md_1.append(next_to_main_setup_btn);
 
@@ -5936,8 +6878,10 @@ function SetFunc(active_id){
                                 
 
         }
-        else if($(elementid).attr('id')==="C.PRUNEbtn"){
-            alert("OO")
+        else if(element_os==="C.PRUNEbtn"){
+            document.getElementById("C.PRUNEbtn").style.backgroundColor = "#94000e"
+            document.getElementById("C.FULLbtn").style.backgroundColor = ""
+
             cdm_full_btn_on="false"
             $("#cdm_main_row_co_def").empty();
 
@@ -5947,6 +6891,7 @@ function SetFunc(active_id){
             main_row.append(col_md_1);
             var back_to_main_setup_btn=document.createElement('button');
             back_to_main_setup_btn.innerHTML="Back";
+            back_to_main_setup_btn.id="back_cdm_btn";
             back_to_main_setup_btn.setAttribute('onclick','CdmCriteriaHTMLSetup()')
             col_md_1.append(back_to_main_setup_btn);
             var col_md_5=document.createElement('div');
@@ -5984,13 +6929,27 @@ function SetFunc(active_id){
             ul_mylist.setAttribute('id','myList');
             recenthiddenfeat_div.append(h2);
             recenthiddenfeat_div.append(ul_mylist);
+            var full_crit_selected=document.createElement("div");
+            full_crit_selected.setAttribute("id","full_crit_selected");
+            col_md_5_2.append(full_crit_selected);
+            var h4=document.createElement('h4');
+            h4.innerHTML="Full Selected Features";
+            full_crit_selected.append(h4);
+            var full_crit_sel_inner_div=document.createElement('div');
+            full_crit_sel_inner_div.setAttribute('id','full_crit_sel_inner_div');
+            full_crit_selected.append(full_crit_sel_inner_div)
+
+
+
+
             var col_md_1=document.createElement('div');
             col_md_1.setAttribute('class','col-md-1 sidenav');
             main_row.append(col_md_1);
-            var next_to_main_setup_btn=document.createElement('button');
-            next_to_main_setup_btn.innerHTML="Save";
-            next_to_main_setup_btn.setAttribute('onclick',"saveCdmCriteriaHTMLSetup()");
-            col_md_1.append(next_to_main_setup_btn);
+            var save_setup_btn=document.createElement('button');
+            save_setup_btn.innerHTML="Save";
+            save_setup_btn.setAttribute('onclick',"saveCdmCriteriaHTMLSetup()");
+            save_setup_btn.id="SAVE_CDM_BTN";
+            col_md_1.append(save_setup_btn);
         console.log("cdm_crit_show_diCT%%%%%%",cdm_crit_show_dict)
         console.log("cdm_crit_hide_diCT%%%%%%",cdm_crit_hide_dict)
 
@@ -6000,11 +6959,23 @@ function SetFunc(active_id){
         var feat_hide=cdm_crit_hide_dict['c.prune'];
         var flg="true";
         data=htmlF(shw_disp,hide_disp,mandatory_list,feat_dsp,feat_hide,flg);
+        var full_crit_sel_inner_div=document.getElementById('full_crit_sel_inner_div');
+            var ul_cfull_crit=document.createElement('ul');
+            ul_cfull_crit.setAttribute("id","cfull_crit");
+            full_crit_sel_inner_div.append(ul_cfull_crit);
+            var crit_full_list=cdm_crit_show_dict['c.full'];
+                        for (var i in crit_full_list ){
+                            var li_cfull_crit=document.createElement('li');
+                            li_cfull_crit.innerHTML=crit_full_list[i];
+                            ul_cfull_crit.append(li_cfull_crit);
+                        
+                        }  
         }
 
     }
     function showFeatureLvls_Cdm(){
         showFeatureLvls();
+        $("#ol2").hide();
         var current=$(".active");
         current.prop('class',current.attr('class').replace('active',""));
         $('#ftlvl').prop('class', 'custom_nav_btn active');
@@ -6029,6 +7000,16 @@ function SetFunc(active_id){
         // 
     */
 
+    
+    function showFeatureLvls_cdm_co(){
+        showFeatureLvls();
+        var current=$(".active");
+        current.prop('class',current.attr('class').replace('active',""));
+        $('#ftlvl').prop('class', 'custom_nav_btn active');
+
+        $("#cdm_co_on_show_Option").empty()
+    }
+    var  cdm_crit_order_on_flag="false";
     function cdm_On_Full_Co_HtmlSetup(){
         $("#default_criteria_div").empty();
         $("#order_criteria_div").empty();
@@ -6036,6 +7017,12 @@ function SetFunc(active_id){
         $("#cdm_co_on_div").empty();
         $("#cdm_co_on_div").show();
         co_feature_active="C.Full";
+        $("#cdm_co_on_show_Option").empty();
+        $("#cdm_co_on_show_Option").append("<h2>Full Criteria </h2>");
+
+
+
+        cdm_crit_order_on_flag="false";
 
         alert(co_feature_active)
         cdm_co_on_div=document.getElementById("cdm_co_on_div");
@@ -6054,7 +7041,9 @@ function SetFunc(active_id){
 
         var back_to_main_setup_btn=document.createElement('button');
         back_to_main_setup_btn.innerHTML="Back";
-        back_to_main_setup_btn.setAttribute('onclick','showFeatureLvls()')
+        back_to_main_setup_btn.id="back_cdm_btn";
+    
+        back_to_main_setup_btn.setAttribute('onclick','showFeatureLvls_cdm_co()')
         col_md_1.append(back_to_main_setup_btn);
         var col_md_5=document.createElement('div');
         col_md_5.setAttribute('class','col-md-5 text-left');
@@ -6095,6 +7084,7 @@ function SetFunc(active_id){
     
         var next_to_main_setup_btn=document.createElement('button');
         next_to_main_setup_btn.innerHTML="Next";
+        next_to_main_setup_btn.id="NEXT_CDM_BTN";
         next_to_main_setup_btn.setAttribute('onclick',"cdm_On_Prune_Co_HtmlSetup()");
         col_md_1.append(next_to_main_setup_btn);
 
@@ -6180,6 +7170,9 @@ function SetFunc(active_id){
     }
     function cdm_On_Prune_Co_HtmlSetup(){
         $("#cdm_co_on_div").empty();
+        $("#cdm_co_on_show_Option").empty();
+        $("#cdm_co_on_show_Option").append("<h2>Pruned Criteria</h2>");
+
         alert(co_feature_active)
 
         cdm_co_on_div=document.getElementById("cdm_co_on_div");
@@ -6196,6 +7189,8 @@ function SetFunc(active_id){
 
         var back_to_main_setup_btn=document.createElement('button');
         back_to_main_setup_btn.innerHTML="Back";
+        back_to_main_setup_btn.id="back_cdm_btn";
+
         back_to_main_setup_btn.setAttribute('onclick','cdm_On_Full_Co_HtmlSetup()')
         col_md_1.append(back_to_main_setup_btn);
         var col_md_5=document.createElement('div');
@@ -6237,6 +7232,7 @@ function SetFunc(active_id){
     
         var next_to_main_setup_btn=document.createElement('button');
         next_to_main_setup_btn.innerHTML="Next";
+        next_to_main_setup_btn.id="NEXT_CDM_BTN";
         next_to_main_setup_btn.setAttribute('onclick',"cdm_Order_On_Co_HtmlSetup()");
         col_md_1.append(next_to_main_setup_btn);
 
@@ -6281,10 +7277,13 @@ function SetFunc(active_id){
                                 
 
     }
-    var  cdm_crit_order_on_flag="false";
+   
     function cdm_Order_On_Co_HtmlSetup(){
         $("#cdm_co_on_div").empty();
-        cdm_crit_order_on_flag="true"
+        $("#cdm_co_on_show_Option").empty();
+        $("#cdm_co_on_show_Option").append("<h2>Criteria Ordering</h2>");
+
+        cdm_crit_order_on_flag="true";
         var cdm_co_on_div=document.getElementById("cdm_co_on_div");
         var container=document.createElement("div");
         var container=document.createElement("container");
@@ -6293,22 +7292,43 @@ function SetFunc(active_id){
 
         var co_sel_list_row_div=document.createElement("div");
         co_sel_list_row_div.setAttribute("class","row");
+        co_sel_list_row_div.setAttribute("id","co_sel_list_row_div");
         container.append(co_sel_list_row_div);
+
+        var col_1=document.createElement("div");
+        col_1.setAttribute("class","col");
+        co_sel_list_row_div.append(col_1);
+        
+        var col_2=document.createElement("div");
+        col_2.setAttribute("class","col");
+        col_2.setAttribute("style"," text-align: center;");
+
+        co_sel_list_row_div.append(col_2);
+
+        var col_3=document.createElement("div");
+        col_3.setAttribute("class","col");
+        co_sel_list_row_div.append(col_3);
+
         var select_div=document.createElement('div');
         select_div.setAttribute('id','select_div');
-        co_sel_list_row_div.append(select_div);
+        select_div.setAttribute("style","display: inline-block;");
+
+
+        col_2.append(select_div);
+
+
         var div_cdm=document.createElement("div")
-     
+        
         var toggle_btn_row_div=document.createElement('div');
         toggle_btn_row_div.setAttribute("class","row");
         container.append(toggle_btn_row_div);
         var col_md_12=document.createElement('div');
-        col_md_12.setAttribute('class','col-md-9');
+        col_md_12.setAttribute('class','col-md-9 btn-group');
         col_md_12.id="set_buttons_cdm_co"
         toggle_btn_row_div.append(col_md_12);
         cmd_set_list_co=["C.Full","C.Prune"];
         for (var i=0;i<cmd_set_list_co.length;i++){
-            var button=document.createElement('button')
+            var button=document.createElement('button');
             button.id=cmd_set_list_co[i];
             button.innerHTML=cmd_set_list_co[i];
             button.setAttribute("onclick","btn_Cdm_Co_On_Func($(this))")
@@ -6317,6 +7337,11 @@ function SetFunc(active_id){
             }
             $('#set_buttons_cdm_co').append(button)
         }
+        document.getElementById("C.Full").style.backgroundColor = "#94000e";
+        document.getElementById("C.Prune").style.backgroundColor = "";
+
+
+
         var main_row=document.createElement('div');
         main_row.setAttribute('class','row content');
         main_row.id="main_row_co";
@@ -6327,6 +7352,7 @@ function SetFunc(active_id){
 
         var back_to_main_setup_btn=document.createElement('button');
         back_to_main_setup_btn.innerHTML="Back";
+        back_to_main_setup_btn.id="back_cdm_btn";
         back_to_main_setup_btn.setAttribute('onclick','cdm_On_Full_Co_HtmlSetup()')
         col_md_1.append(back_to_main_setup_btn);
         var col_md_5=document.createElement('div');
@@ -6368,6 +7394,7 @@ function SetFunc(active_id){
     
         var save_to_main_setup_btn=document.createElement('button');
         save_to_main_setup_btn.innerHTML="Save";
+        save_to_main_setup_btn.id="SAVE_CDM_BTN";
         save_to_main_setup_btn.setAttribute('onclick',"Save_Cdm_CO_On()");
         col_md_1.append(save_to_main_setup_btn);
         var inputdata =dict["CO"];
@@ -6448,6 +7475,13 @@ function SetFunc(active_id){
     function btn_Cdm_Co_On_Func(element){
         alert($(element).attr("id"));
         co_feature_active=$(element).attr("id");
+        if(co_feature_active==="C.Full"){
+            document.getElementById("C.Full").style.backgroundColor = "#94000e"
+            document.getElementById("C.Prune").style.backgroundColor = ""
+        }else{
+            document.getElementById("C.Prune").style.backgroundColor = "#94000e"
+            document.getElementById("C.Full").style.backgroundColor = ""
+        }
         $('#recent_hidden_div').empty();
         $('#hide_feature_div').empty();
         $("#display_feature_div").empty();
@@ -6786,6 +7820,7 @@ function SetFunc(active_id){
           // var btn = $('<button>Show</button>').attr('width','200px').addClass('show_hide').attr('onclick', '(showToDisplay($(this).parent().attr("id")))');
           var btn=document.createElement('button');
           btn.setAttribute('class','show_hide');
+          btn_show_hide.setAttribute('style','  background-color: rgba(1, 255, 1, 0.664);   border: 1px solid  rgba(1, 255, 1, 0.664);');
           btn.setAttribute('onclick','showToDisplay($(this).parent().parent().parent().attr("id"))');
           btn.innerHTML="show"
           var data = id.split("_");  
@@ -6899,7 +7934,8 @@ function SetFunc(active_id){
                     div_col_md_6_1.setAttribute('class','col-md-6');
                     div_row.append(div_col_md_6_1);
                     var btn_btn_primary=document.createElement('btn');
-                    btn_btn_primary.setAttribute('class','btn btn-primary');
+                    btn_btn_primary.setAttribute('class','sortable_custom_hide_btns');
+
                     btn_btn_primary.innerHTML=data[0];
                     div_col_md_6_1.append(btn_btn_primary);
                     var div_col_md_6_2=document.createElement('div');
@@ -6912,17 +7948,20 @@ function SetFunc(active_id){
             var item = $("#"+id);
             //var item=document.getElementById(id)
             // var item = $(id);
-             var temp = document.getElementById(id);
-                item.find(".show_hide").remove();
-                //  var btn = $('<button>Hide</button>').attr('width', '200px').addClass('show_hide').attr('onclick', '(hideFromDisplay($(this).parent().attr("id")))');
-                var btn=document.createElement('button');btn.setAttribute('class','show_hide');btn.setAttribute('onclick',"hideFromDisplay($(this).parent().parent().parent().attr('id'))");
-                btn.innerHTML="Hide";
-                var data =item.attr('id');
-                console.log("showToDisplay_data",data)
-                var d=data.split("_");
-                var arr=[]; 
-                var elem='';
-                console.log("Dddd",d)
+            var temp = document.getElementById(id);
+            item.find(".show_hide").remove();
+            //  var btn = $('<button>Hide</button>').attr('width', '200px').addClass('show_hide').attr('onclick', '(hideFromDisplay($(this).parent().attr("id")))');
+            var btn=document.createElement('button');
+            btn.setAttribute('class','show_hide');btn.setAttribute('onclick',"hideFromDisplay($(this).parent().parent().parent().attr('id'))");
+            btn_show_hide.setAttribute("style","background-color: rgba(212, 17, 17, 0.664); border: 1px solid  rgba(212, 17, 17, 0.664); ")
+
+            btn.innerHTML="Hide";
+            var data =item.attr('id');
+            console.log("showToDisplay_data",data)
+            var d=data.split("_");
+            var arr=[]; 
+            var elem='';
+            console.log("Dddd",d)
                 for (var key in d)
                   {   
                           console.log("key",key);
@@ -7034,7 +8073,7 @@ function SetFunc(active_id){
                 div_col_md_6_1.setAttribute("class","col-md-6");
                 div_row.append(div_col_md_6_1);
                 var btn_btn_primary=document.createElement('button');
-                btn_btn_primary.setAttribute("class","btn btn-primary");
+                btn_btn_primary.setAttribute('class','sortable_custom_show_btns');
                 btn_btn_primary.innerHTML=d[0];
                 div_col_md_6_1.append(btn_btn_primary);
                 var div_col_md_6_2=document.createElement('div');
@@ -7063,7 +8102,89 @@ function SetFunc(active_id){
                 // });
          }
         
-        
+    function hide_show_order_display_Default_TreeView(){
+        $("#default_tree_view_div").empty();
+
+                                
+                    var main_treeview_list=[];
+                    var main_treeview_dict={};
+
+                    main_treeview_dict['name']="Default Criteria Tree View";
+                    mainchildlist=[];
+                    var defaut_criteria_order_dict={};
+                    var defaut_criteria_order_dict_childlist=[];
+                    defaut_criteria_order_dict['name']='Defaut criteria order';
+
+                            for (var i in static_default_crit_show_dict['default'])
+                            {
+                                
+                                var defaut_criteria_order_child_dict={};
+                                defaut_criteria_order_child_dict['name']=static_default_crit_show_dict['default'][i];
+                                defaut_criteria_order_child_dict['childern']=[];
+                                defaut_criteria_order_dict_childlist.push(defaut_criteria_order_child_dict);
+
+                            }
+                    defaut_criteria_order_dict['children']=defaut_criteria_order_dict_childlist;
+                mainchildlist.push(defaut_criteria_order_dict);
+                    
+
+                    var default_cdm_dict={};
+                    var default_cdm_childlist=[];
+                    default_cdm_dict['name']="Default CDM";
+                        var default_selected_criteria_dict={};
+                        var default_selected_criteria_childlist=[];
+                        default_selected_criteria_dict['name']="Default Selected";
+                                    for (var i in default_crit_show_dict['default']){
+                                        var default_selected_child_dict={};
+                                        default_selected_child_dict['name']= default_crit_show_dict['default'][i];
+                                        default_selected_child_dict['children']=[];
+                                        default_selected_criteria_childlist.push(default_selected_child_dict);
+
+                                    }
+                        default_selected_criteria_dict['children']=default_selected_criteria_childlist;
+                    default_cdm_childlist.push(default_selected_criteria_dict);
+                    default_cdm_dict['children']=default_cdm_childlist;
+                
+                        var default_hidden_criteria_dict={};
+                        var default_hidden_criteria_childlist=[];  
+                        default_hidden_criteria_dict['name']="Default Hidden";
+                                    for (var i in default_crit_hide_dict['default']){
+                                        var default_hidden_child_dict={};
+                                        default_hidden_child_dict['name']= default_crit_hide_dict['default'][i];
+                                        default_hidden_child_dict['children']=[];
+                                        default_hidden_criteria_childlist.push(default_hidden_child_dict);
+
+                                    }            
+                        default_hidden_criteria_dict['children']=default_hidden_criteria_childlist;
+                    default_cdm_childlist.push(default_hidden_criteria_dict);
+                    default_cdm_dict['children']=default_cdm_childlist;
+                mainchildlist.push(default_cdm_dict);
+
+                                    
+                        
+                    
+
+
+
+                main_treeview_dict['children']=mainchildlist
+                main_treeview_list.push(main_treeview_dict);
+
+
+
+
+
+
+
+
+
+
+            var tree=main_treeview_list;
+            //
+            // Create tree
+            //
+            var t = new TreeView(tree, 'default_tree_view_div');        
+
+    }
     function hideFromDisplay_Default(id) {
            var item = $('#'+id);
            console.log(id);
@@ -7076,6 +8197,8 @@ function SetFunc(active_id){
           var btn=document.createElement('button');
           btn.setAttribute('class','show_hide');
           btn.setAttribute('onclick','showToDisplay_Default($(this).parent().parent().parent().attr("id"))');
+          btn.setAttribute('style','  background-color: rgba(1, 255, 1, 0.664);   border: 1px solid  rgba(1, 255, 1, 0.664);');
+
           btn.innerHTML="show"
           var data = id.split("_");  
           console.log("data",data[0]);
@@ -7119,29 +8242,39 @@ function SetFunc(active_id){
                     div_col_md_6_1.setAttribute('class','col-md-6');
                     div_row.append(div_col_md_6_1);
                     var btn_btn_primary=document.createElement('btn');
-                    btn_btn_primary.setAttribute('class','btn btn-primary');
+                    btn_btn_primary.setAttribute('class','sortable_custom_hide_btns');
                     btn_btn_primary.innerHTML=data[0];
                     div_col_md_6_1.append(btn_btn_primary);
                     var div_col_md_6_2=document.createElement('div');
                     div_col_md_6_2.setAttribute('class','col-md-6');
                     div_row.append(div_col_md_6_2);
                     div_col_md_6_2.append(btn);
+
+                  
+        hide_show_order_display_Default_TreeView();   
+
+
+
          } 
     function showToDisplay_Default(id) {
             var item = $("#"+id);
             //var item=document.getElementById(id)
             // var item = $(id);
-             var temp = document.getElementById(id);
-                item.find(".show_hide").remove();
-                //  var btn = $('<button>Hide</button>').attr('width', '200px').addClass('show_hide').attr('onclick', '(hideFromDisplay($(this).parent().attr("id")))');
-                var btn=document.createElement('button');btn.setAttribute('class','show_hide');btn.setAttribute('onclick',"hideFromDisplay_Default($(this).parent().parent().parent().attr('id'))");
-                btn.innerHTML="Hide";
-                var data =item.attr('id');
-                console.log("showToDisplay_data",data)
-                var d=data.split("_");
-                var arr=[]; 
-                var elem='';
-                console.log("Dddd",d)
+            var temp = document.getElementById(id);
+            item.find(".show_hide").remove();
+            //  var btn = $('<button>Hide</button>').attr('width', '200px').addClass('show_hide').attr('onclick', '(hideFromDisplay($(this).parent().attr("id")))');
+            var btn=document.createElement('button');
+            btn.setAttribute('class','show_hide');
+            btn.setAttribute('onclick',"hideFromDisplay_Default($(this).parent().parent().parent().attr('id'))");
+            btn.setAttribute("style","background-color: rgba(212, 17, 17, 0.664); border: 1px solid  rgba(212, 17, 17, 0.664); ")
+
+            btn.innerHTML="Hide";
+            var data =item.attr('id');
+            console.log("showToDisplay_data",data)
+            var d=data.split("_");
+            var arr=[]; 
+            var elem='';
+            console.log("Dddd",d)
                 for (var key in d)
                   {   
                           console.log("key",key);
@@ -7185,13 +8318,26 @@ function SetFunc(active_id){
                 div_col_md_6_1.setAttribute("class","col-md-6");
                 div_row.append(div_col_md_6_1);
                 var btn_btn_primary=document.createElement('button');
-                btn_btn_primary.setAttribute("class","btn btn-primary");
+                btn_btn_primary.setAttribute('class','sortable_custom_show_btns');
                 btn_btn_primary.innerHTML=d[0];
                 div_col_md_6_1.append(btn_btn_primary);
                 var div_col_md_6_2=document.createElement('div');
                 div_col_md_6_2.setAttribute("class","col-md-6");
                 div_row.append(div_col_md_6_2);
                 div_col_md_6_2.appendChild(btn);
+
+
+
+        hide_show_order_display_Default_TreeView();
+
+
+
+
+
+
+
+
+
                
          }
 
@@ -7199,39 +8345,41 @@ function SetFunc(active_id){
         var item = $('#'+id);
         console.log(id);
         var temp=document.getElementById(id);
-          //  var temp = item;
+        //  var temp = item;
           
         item.find(".show_hide").remove();
-          //  var btn = $('<button>Show</button>').attr('width','200px').addClass('show_hide').attr('onclick', '(showToDisplay('+id+'))');
-          // var btn = $('<button>Show</button>').attr('width','200px').addClass('show_hide').attr('onclick', '(showToDisplay($(this).parent().attr("id")))');
-          var btn=document.createElement('button');
-          btn.setAttribute('class','show_hide');
-          btn.setAttribute('onclick','showToDisplay_CDM($(this).parent().parent().parent().attr("id"))');
-          btn.innerHTML="show"
-          var data = id.split("_");  
-          console.log("data",data[0]);
-          var arr=[];
-          var elem="";
-          for (var key in data)
-                    {   
-                        console.log("key",key);
-                        arr.push(data[key]);
-                        elem=data[key];
-                        break;
-                    } 
-            item.remove();
-            if (cdm_full_btn_on==="true"){
-                console.log("cdm_full_btn_on1.1 hide",cdm_full_btn_on)
-                cdm_hide_list=cdm_crit_hide_dict['c.full']
-                cdm_show_list=cdm_crit_show_dict['c.full']
-            }else{
-                console.log("cdm_full_btn_on1.2 hide",cdm_full_btn_on)
-                console.log("cdm_crit_show_dict--prunecheck",cdm_crit_show_dict)
+        //  var btn = $('<button>Show</button>').attr('width','200px').addClass('show_hide').attr('onclick', '(showToDisplay('+id+'))');
+        // var btn = $('<button>Show</button>').attr('width','200px').addClass('show_hide').attr('onclick', '(showToDisplay($(this).parent().attr("id")))');
+        var btn=document.createElement('button');
+        btn.setAttribute('class','show_hide');
+        btn.setAttribute('onclick','showToDisplay_CDM($(this).parent().parent().parent().attr("id"))');
+        btn.setAttribute('style','  background-color: rgba(1, 255, 1, 0.664);   border: 1px solid  rgba(1, 255, 1, 0.664);');
 
-                console.log("cdm_crit_hide_dict--prunecheck",cdm_crit_hide_dict)
-                cdm_hide_list=cdm_crit_hide_dict['c.prune']
-                cdm_show_list=cdm_crit_show_dict['c.prune']
-            }
+        btn.innerHTML="show"
+        var data = id.split("_");  
+        console.log("data",data[0]);
+        var arr=[];
+        var elem="";
+        for (var key in data)
+                {   
+                    console.log("key",key);
+                    arr.push(data[key]);
+                    elem=data[key];
+                    break;
+                } 
+        item.remove();
+        if (cdm_full_btn_on==="true"){
+            console.log("cdm_full_btn_on1.1 hide",cdm_full_btn_on)
+            cdm_hide_list=cdm_crit_hide_dict['c.full']
+            cdm_show_list=cdm_crit_show_dict['c.full']
+        }else{
+            console.log("cdm_full_btn_on1.2 hide",cdm_full_btn_on)
+            console.log("cdm_crit_show_dict--prunecheck",cdm_crit_show_dict)
+
+            console.log("cdm_crit_hide_dict--prunecheck",cdm_crit_hide_dict)
+            cdm_hide_list=cdm_crit_hide_dict['c.prune']
+            cdm_show_list=cdm_crit_show_dict['c.prune']
+        }
             // if active_co doesnt exsist then user is using default func so 
             // check if active_co exists, if it doesn't then simply 
             // run default_crit_show_dict['default'].indexOf(elem);;;;
@@ -7299,7 +8447,7 @@ function SetFunc(active_id){
                     div_col_md_6_1.setAttribute('class','col-md-6');
                     div_row.append(div_col_md_6_1);
                     var btn_btn_primary=document.createElement('btn');
-                    btn_btn_primary.setAttribute('class','btn btn-primary');
+                    btn_btn_primary.setAttribute('class','sortable_custom_hide_btns');
                     btn_btn_primary.innerHTML=data[0];
                     div_col_md_6_1.append(btn_btn_primary);
                     var div_col_md_6_2=document.createElement('div');
@@ -7315,6 +8463,8 @@ function SetFunc(active_id){
                 item.find(".show_hide").remove();
                 //  var btn = $('<button>Hide</button>').attr('width', '200px').addClass('show_hide').attr('onclick', '(hideFromDisplay($(this).parent().attr("id")))');
                 var btn=document.createElement('button');btn.setAttribute('class','show_hide');btn.setAttribute('onclick',"hideFromDisplay_CDM($(this).parent().parent().parent().attr('id'))");
+                btn.setAttribute("style","background-color: rgba(212, 17, 17, 0.664); border: 1px solid  rgba(212, 17, 17, 0.664); ")
+
                 btn.innerHTML="Hide";
                 var data =item.attr('id');
                 console.log("showToDisplay_data",data)
@@ -7413,7 +8563,7 @@ function SetFunc(active_id){
                 div_col_md_6_1.setAttribute("class","col-md-6");
                 div_row.append(div_col_md_6_1);
                 var btn_btn_primary=document.createElement('button');
-                btn_btn_primary.setAttribute("class","btn btn-primary");
+                btn_btn_primary.setAttribute('class','sortable_custom_show_btns');
                 btn_btn_primary.innerHTML=d[0];
                 div_col_md_6_1.append(btn_btn_primary);
                 var div_col_md_6_2=document.createElement('div');
@@ -7762,6 +8912,8 @@ function SetFunc(active_id){
           var btn=document.createElement('button');
           btn.setAttribute('class','show_hide');
           btn.setAttribute('onclick','showToDisplay_Cdm_CO_On($(this).parent().parent().parent().attr("id"))');
+          btn.setAttribute('style','  background-color: rgba(1, 255, 1, 0.664);   border: 1px solid  rgba(1, 255, 1, 0.664);');
+
           btn.innerHTML="show"
           var data = id.split("_");  
           console.log("data",data[0]);
@@ -7827,7 +8979,7 @@ function SetFunc(active_id){
                     div_col_md_6_1.setAttribute('class','col-md-6');
                     div_row.append(div_col_md_6_1);
                     var btn_btn_primary=document.createElement('btn');
-                    btn_btn_primary.setAttribute('class','btn btn-primary');
+                    btn_btn_primary.setAttribute('class','sortable_custom_hide_btns');
                     btn_btn_primary.innerHTML=data[0];
                     div_col_md_6_1.append(btn_btn_primary);
                     var div_col_md_6_2=document.createElement('div');
@@ -7841,16 +8993,20 @@ function SetFunc(active_id){
             //var item=document.getElementById(id)
             // var item = $(id);
              var temp = document.getElementById(id);
-                item.find(".show_hide").remove();
-                //  var btn = $('<button>Hide</button>').attr('width', '200px').addClass('show_hide').attr('onclick', '(hideFromDisplay($(this).parent().attr("id")))');
-                var btn=document.createElement('button');btn.setAttribute('class','show_hide');btn.setAttribute('onclick',"hideFromDisplay_Cdm_CO_On($(this).parent().parent().parent().attr('id'))");
-                btn.innerHTML="Hide";
-                var data =item.attr('id');
-                console.log("showToDisplay_data",data)
-                var d=data.split("_");
-                var arr=[]; 
-                var elem='';
-                console.log("Dddd",d)
+            item.find(".show_hide").remove();
+            //  var btn = $('<button>Hide</button>').attr('width', '200px').addClass('show_hide').attr('onclick', '(hideFromDisplay($(this).parent().attr("id")))');
+            var btn=document.createElement('button');
+            btn.setAttribute('class','show_hide');
+            btn.setAttribute('onclick',"hideFromDisplay_Cdm_CO_On($(this).parent().parent().parent().attr('id'))");
+            btn.setAttribute("style","background-color: rgba(212, 17, 17, 0.664); border: 1px solid  rgba(212, 17, 17, 0.664); ")
+
+            btn.innerHTML="Hide";
+            var data =item.attr('id');
+            console.log("showToDisplay_data",data)
+            var d=data.split("_");
+            var arr=[]; 
+            var elem='';
+            console.log("Dddd",d)
                 for (var key in d)
                   {   
                           console.log("key",key);
@@ -7901,7 +9057,7 @@ function SetFunc(active_id){
                 div_col_md_6_1.setAttribute("class","col-md-6");
                 div_row.append(div_col_md_6_1);
                 var btn_btn_primary=document.createElement('button');
-                btn_btn_primary.setAttribute("class","btn btn-primary");
+                btn_btn_primary.setAttribute("class","sortable_custom_show_btns");
                 btn_btn_primary.innerHTML=d[0];
                 div_col_md_6_1.append(btn_btn_primary);
                 var div_col_md_6_2=document.createElement('div');
@@ -7937,7 +9093,7 @@ function SetFunc(active_id){
                 div_col_md_6_1.setAttribute("class","col-md-6");
                 div_row.append(div_col_md_6_1);
                 var btn_btn_primary=document.createElement('button');
-                btn_btn_primary.setAttribute("class","btn btn-primary");
+                btn_btn_primary.setAttribute("class","sortable_custom_show_btns");
                 // btn_btn_primary.innerHTML=feat_dsp[i].feature;
                 if (flg==="true"){
                     btn_btn_primary.innerHTML=feat_dsp[i];
@@ -7964,6 +9120,7 @@ function SetFunc(active_id){
                     else{
                         var btn_show_hide=document.createElement('button');
                         btn_show_hide.setAttribute("class","show_hide");
+                        btn_show_hide.setAttribute("style","background-color: rgba(212, 17, 17, 0.664); border: 1px solid  rgba(212, 17, 17, 0.664); ")
                         if (CO_CDM_COMB==="CDM_off_CO_off"){
                             btn_show_hide.setAttribute("onclick","hideFromDisplay_Default($(this).parent().parent().parent().attr('id'))");
 
@@ -8009,9 +9166,7 @@ function SetFunc(active_id){
                                         li_hiddenfeat.id=feat_hide[i]+"_"+0
 
                                 }else{
-                                    li_hiddenfeat.id=feat_hide[i][0]+"_"+0
-
-                                    // li_hiddenfeat.id=feat_hide[i].criteria_name+"_"+feat_hide[i].position
+                                        li_hiddenfeat.id=feat_hide[i][0]+"_"+0
 
                                 }
 
@@ -8027,7 +9182,7 @@ function SetFunc(active_id){
                                     div_col_md_6_2.setAttribute('class','col-md-6');
                                     div_row.append(div_col_md_6_2);
                                     var btn_btn_primary=document.createElement('btn');
-                                    btn_btn_primary.setAttribute('class','btn btn-primary');
+                                    btn_btn_primary.setAttribute('class','sortable_custom_hide_btns');
                                     // btn_btn_primary.innerHTML=feat_hide[i].feature;
                                     //btn_btn_primary.innerHTML=feat_hide[i].criteria_name;
                                     if (flg==="true"){
@@ -8044,6 +9199,7 @@ function SetFunc(active_id){
                                     else{
                                         var btn_show_hide=document.createElement('button');
                                         btn_show_hide.setAttribute('class','show_hide');
+                                        btn_show_hide.setAttribute('style','  background-color: rgba(1, 255, 1, 0.664);   border: 1px solid  rgba(1, 255, 1, 0.664);');
                                         if (CO_CDM_COMB==="CDM_off_CO_off"){
                                             btn_show_hide.setAttribute("onclick","showToDisplay_Default($(this).parent().parent().parent().attr('id'))");
 

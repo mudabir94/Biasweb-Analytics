@@ -1137,11 +1137,11 @@ class cdmCriteria_Setup(TemplateView):
                 existExpId = expCont.exp.id
                 existCusId=expCont.exp.custom_exp_id
                 
-                # expCont.setFSet(newFLevels=postedFLevels,prompt=False)
-                # block_set = expCont.generateBlocks()
-                # block_list = list(block_set.all().values('serial_no','levels_set'))
-                # print('<<<<<<TO DISPLAY ON PAGE>>>>>>')
-                # print(block_list)
+                expCont.setFSet(newFLevels=postedFLevels,prompt=False)
+                block_set = expCont.generateBlocks()
+                block_list = list(block_set.all().values('serial_no','levels_set'))
+                print('<<<<<<TO DISPLAY ON PAGE>>>>>>')
+                print(block_list)
                 # save orderset Details in expCriteriaOrder
                 # Check to see if the exp obj already exists in the table. if it does then we need to update position and show_hide prop of  the rows containing the exp id. 
                 # 1. based on the exp obj check if exp exists. if it does then 
@@ -1195,7 +1195,7 @@ class cdmCriteria_Setup(TemplateView):
                 'success':'success',
                 'exp_id':existExpId,
                 'custom_exp_id':expCont.exp.custom_exp_id,
-                # 'block_list':block_list
+                'block_list':block_list
                 }
                 return JsonResponse(data)      
          
