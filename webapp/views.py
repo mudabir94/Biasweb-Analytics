@@ -49,6 +49,8 @@ from.models import template_roles as tr
 from. models import templates as tpl
 
 from .models import selectedAdminPhones
+from django.views.decorators.cache import never_cache
+
 
 #--------------------------------------------------------------------------------------------------
 role=1   #global variable used in adminsetup and globalFunc function. 
@@ -62,6 +64,7 @@ filt_mobiles=None
 
             
 @method_decorator(login_required, name='dispatch')
+
 class Home(TemplateView):
     template_name='webapp/home.html'
     def get(self,request):
@@ -97,8 +100,9 @@ class Home(TemplateView):
             template_sidebar='webapp/sidebartemplates/sidebartemp_pltfadm.html'
         elif role=='Subject':
             # all other conditions of subjects will be done here. 
-            
-            return render(request,'webapp/2by2comparemobilespecs.html')
+            template_sidebar='webapp/sidebartemplates/sidebartemp_subject.html'
+
+            # return render(request,'webapp/2by2comparemobilespecs.html')
             # return redirect('/filtered_mobile_view')
 
         #*****************************************************
@@ -1342,9 +1346,7 @@ class showFilter(TemplateView):
         print("in filter")    
         print("global",role)
         # mobiles=samsung_phone.objects.all()
-        mobiles=mobilephones.objects.all()
-        # m=samsung_phone.objects.all()
-        m=mobilephones.objects.all()
+      
         feat=sort_feature.objects.filter(~Q(sh_hd = 0),roles=role).order_by('position')
 
         Colors=['black','white','gold']
@@ -1643,7 +1645,7 @@ def filteredMobileView(request):
                 uid = request.user.username
                 print(uid)
                 tuser = User.objects.get(username=uid)
-                exp_list = tuser.subject_set.values_list('exp', flat=True) #PLEASE CHECK IF WE CAN GET PREFETCH RELATED HERE
+                exp_list = tuser.subject_set.values_list('exp', flat=True) 
                 exp_active = max(exp_list)                
                 phoneobjs=selectedAdminPhones.objects.filter(exp=exp_active)
                 # print(phoneobjs)
@@ -1695,12 +1697,26 @@ class mobile_phone_view(TemplateView):
             template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
             return render(request,self.template_name,{'mobiles':ex_mobiles,'template_sidebar':template_sidebar,'role':"Super_Admin"})
         elif role=='Subject':
-            
-            mobiles= mobilephones.objects.all() 
-            paginator = Paginator(mobiles,9)
+            exp_list = userobj.subject_set.values_list('exp', flat=True) 
+            exp_active = max(exp_list)  
+            print("ExpActive",exp_active)              
+            phoneobjs=selectedAdminPhones.objects.filter(exp=937)
+            print(phoneobjs)
+            plist=[]
+            for pob in phoneobjs:
+                print(pob)
+                plist.append(pob.mob.id)
+            # print(plist)
+            filt_mobiles=mobilephones.objects.filter(pk__in=plist)
+            print("filt_mobiles",filt_mobiles)
+            paginator = Paginator(filt_mobiles,9)
             page = request.GET.get('page')
             ex_mobiles = paginator.get_page(page)
-            template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
+            # mobiles= mobilephones.objects.all() 
+            # paginator = Paginator(mobiles,9)
+            # page = request.GET.get('page')
+            # ex_mobiles = paginator.get_page(page)
+            template_sidebar='webapp/sidebartemplates/sidebartemp_subject.html'
             return render(request,self.template_name,{'mobiles':ex_mobiles,'template_sidebar':template_sidebar})
            
         else:

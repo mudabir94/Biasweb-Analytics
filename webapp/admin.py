@@ -44,6 +44,10 @@ class PhoneCriteriaAdmin(admin.ModelAdmin):
 
 class ExperimentAdmin(admin.ModelAdmin):
     list_display= ('id','custom_exp_id')
+
+class experiment_featureAdmin(admin.ModelAdmin):
+    list_display= ('id','used_in','p_feature','chosen_levels')
+
 #----------------------------------------------------------------------------
 
 # platform_feature resource
@@ -109,7 +113,7 @@ admin.site.register(PhoneCriteria, PhoneCriteriaAdmin)
 admin.site.register(samsung_phone,SamsungAdmin)
 admin.site.register(Role,RoleAdmin)
 admin.site.register(platform_feature,PlatformFeatureAdmin)
-admin.site.register(experiment,ExperimentAdmin)
+
 admin.site.register(templates,templateAdmin)
 admin.site.register(template_roles,templateRoleAdmin)
 admin.site.register(sort_feature,sort_featureAdmin)
@@ -120,8 +124,10 @@ admin.site.register(blog)
 admin.site.register(mobile_phone)
 
 admin.site.register(Subject)
-admin.site.register(experiment_feature)
 admin.site.register(Batch)
 admin.site.register(Block)
 admin.site.register(prunedmobilephones)
 admin.site.register(feature)
+admin.site.register(experiment,ExperimentAdmin)
+admin.site.register(experiment_feature,experiment_featureAdmin)
+

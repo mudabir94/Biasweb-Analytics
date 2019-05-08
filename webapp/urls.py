@@ -82,7 +82,7 @@ urlpatterns = [
 #---------------------------------------------------------------------------------------------   
     ## Pages that are not currently used. 
     #url(r'^blog/', views.blogview.as_view(), name='blog'), 
-    #url(r'^showfilter/',views.showFilter.as_view(), name='showfilter'),
+    url(r'^showfilter/',views.showFilter.as_view(), name='showfilter'),
     #url(r'^$', views.signUp, name='signup'), 
 
 #---------------------------------------------------------------------------------------------
