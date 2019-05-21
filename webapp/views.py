@@ -317,10 +317,14 @@ def compareMobileSpecsFilterVer(request):
             allmobile={}
             global comp_mobiles
             alternative_list=[]
-            criteria_list=['imagepath1','price',"Resolution"]
-            
+            global catalogcrit_show_list
+
+            criteria_list=['imagepath1']
+            if catalogcrit_show_list:
+                for crit in catalogcrit_show_list:
+                    criteria_list.append(crit)
             test_mobiles = comp_mobiles
-            
+            print("crit_list",criteria_list)
             for m in test_mobiles:
                 print('m objest',m)
                 for crit in criteria_list:
@@ -342,8 +346,8 @@ def compareMobileSpecsFilterVer(request):
                     'alternative_list':alternative_list
                 }
             # code returns on this one. 
-            if allmobile:
-                return JsonResponse(data)
+            # if allmobile:
+            return JsonResponse(data)
     
      
 def compareMobileSpecs(request):
@@ -628,9 +632,9 @@ class defaultCriteria_Setup(TemplateView):
             #         flag="true"
             # except:
             print("Default Exception")
-            feature_mand=PhoneCriteria.objects.filter(status="default",priority="mendatory").order_by('id')
+            feature_mand=PhoneCriteria.objects.filter(status="default",priority="mendatory").order_by('position')
             mandatory=list(feature_mand.values_list("criteria_name",flat=True))
-            feature_to_display=PhoneCriteria.objects.filter(status="default").order_by('id')
+            feature_to_display=PhoneCriteria.objects.filter(status="default").order_by('position')
             # feature_to_display = list(feature_to_display.values())
             feature_to_display =  list(feature_to_display.values_list("criteria_name","position"))
             feature_to_display = [item[0] for item in feature_to_display]
@@ -658,6 +662,10 @@ class defaultCriteria_Setup(TemplateView):
                 default_crit_hide_dict= json.loads(default_crit_hide_dict)
                 featlevels_dic=request.POST.get('featlevels_dic')
                 postedFLevels = json.loads(featlevels_dic)
+                cataloglist=request.POST.get('cataloglist')
+                cataloglist = json.loads(cataloglist)
+                global catalogcrit_show_list
+                catalogcrit_show_list=cataloglist
                 print("postedFLevels",postedFLevels)
                 print("default_crit_show_dict",default_crit_show_dict)
                 print("default_crit_hide_dict",default_crit_hide_dict)
@@ -1694,13 +1702,17 @@ class mobile_phone_view(TemplateView):
             print("page",page)
             ex_mobiles = paginator.get_page(page)
             print("EX_MONILES",ex_mobiles)
+
             template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
-            return render(request,self.template_name,{'mobiles':ex_mobiles,'template_sidebar':template_sidebar,'role':"Super_Admin"})
+            return render(request,self.template_name,{'mobiles':ex_mobiles,
+            'template_sidebar':template_sidebar,
+            'role':"Super_Admin",
+            })
         elif role=='Subject':
             exp_list = userobj.subject_set.values_list('exp', flat=True) 
             exp_active = max(exp_list)  
             print("ExpActive",exp_active)              
-            phoneobjs=selectedAdminPhones.objects.filter(exp=937)
+            phoneobjs=selectedAdminPhones.objects.filter(exp=exp_active)
             print(phoneobjs)
             plist=[]
             for pob in phoneobjs:
@@ -2311,7 +2323,6 @@ class createExperiment(TemplateView):
             exclfields=['selectedadminphones','id','imagepath1','imagepath2','Whats_new',"Mobile_Name","Mobile_Companny","price_in_usd"]
             # Get the mobile phone fields and then save the fields in phone criteria
             [phonecritlist.append(f.name) for f in mobilephones._meta.get_fields() if f.name not in exclfields]
-            print("PGONECrit")
             print(phonecritlist)
             for count,crit in enumerate(phonecritlist):
                 if (PhoneCriteria.objects.filter(criteria_name=crit).exists()):
@@ -2648,15 +2659,24 @@ def getSpecificMobileData(request):
             return JsonResponse(
             {  'mobilephones':specmob_dic}
             )
-
+catalogcrit_show_list=[]
 def getMobiledata(request):
     if request.is_ajax():
         if request.method=="GET":
+            print("GET MOBILE DATA")
             mobiles_retrieved=mobilephones.objects.all()
             mobiles_retrieved = list(mobiles_retrieved.values())   
-            mobilephones_str=mobiles_retrieved
-            return JsonResponse({'mobilephones':mobilephones_str})
-            
+            mobiles_retrieved_list=mobiles_retrieved
+            # global catalogcrit_show_list
+            # catalogcrit_show_list=["price","OS"]
+
+            return JsonResponse(
+                {
+                    'mobilephones':mobiles_retrieved_list,
+                    'catalogcrit_show_list':catalogcrit_show_list,
+
+                }
+            )
 def getReqPhones(request):
     if request.method=="POST":
         if request.is_ajax:

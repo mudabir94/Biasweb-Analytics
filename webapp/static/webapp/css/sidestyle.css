@@ -156,5 +156,8 @@
     margin-right: -15px;
     margin-left: -15px;
     margin-bottom: 20px;
-    background: #a7b6ef;
+    background: #5276ff;
+}
+.custom_side_rows:hover {
+  background-color: #94000f5e;
 }
