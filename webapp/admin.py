@@ -6,10 +6,10 @@ from import_export.admin import ImportExportModelAdmin
 from import_export.admin import ImportExportActionModelAdmin
 
 from .models import User
-from .models import signup_table,blog,mobile_phone,mobilephones,experiment
+from .models import signup_table,blog,mobilephones,experiment
 from .models import samsung_phone,sort_feature,userscoreRecord,Role,platform_feature
-from .models import template_roles,templates,feature,selectedAdminPhones,PhoneCriteria
-from .models import Subject,experiment_feature,Batch,Block,prunedmobilephones,ExpCriteriaOrder
+from .models import selectedAdminPhones,PhoneCriteria
+from .models import Subject,experiment_feature,Batch,Block,ExpCriteriaOrder,criteria_catalog_disp
 
 
 class MyUserChangeForm(UserChangeForm):
@@ -30,12 +30,6 @@ class MyUserAdmin(UserAdmin):
              )}),
 
     )
-class templateAdmin(admin.ModelAdmin):
-    list_display=('id','template_name')    
-class templateRoleAdmin(admin.ModelAdmin):
-    list_display=('id','role_id','template_id',\
-    'can_add','can_view','can_del',\
-    'created_at','update_at',)    
 
 class ExpCriteriaOrderAdmin(admin.ModelAdmin):
     list_display=('id','exp','cOrder_id','pCriteria','fvp','position','sh_hd')
@@ -104,6 +98,9 @@ class mobilephonesAdmin(ImportExportActionModelAdmin):
 
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>    
 #----------------------------------------------------------------------------
+class criteria_catalog_disp_Admin(admin.ModelAdmin):
+    list_display=('id','catalog_crit_display_order')  
+      
 
 
 admin.site.register(User, MyUserAdmin)
@@ -114,20 +111,17 @@ admin.site.register(samsung_phone,SamsungAdmin)
 admin.site.register(Role,RoleAdmin)
 admin.site.register(platform_feature,PlatformFeatureAdmin)
 
-admin.site.register(templates,templateAdmin)
-admin.site.register(template_roles,templateRoleAdmin)
 admin.site.register(sort_feature,sort_featureAdmin)
 admin.site.register(mobilephones,mobilephonesAdmin)
 admin.site.register(userscoreRecord)
 admin.site.register(signup_table)
 admin.site.register(blog)
-admin.site.register(mobile_phone)
+
 
 admin.site.register(Subject)
 admin.site.register(Batch)
 admin.site.register(Block)
-admin.site.register(prunedmobilephones)
-admin.site.register(feature)
 admin.site.register(experiment,ExperimentAdmin)
 admin.site.register(experiment_feature,experiment_featureAdmin)
 
+admin.site.register(criteria_catalog_disp, criteria_catalog_disp_Admin)

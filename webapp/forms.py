@@ -1,5 +1,5 @@
 from django.forms import ModelForm
-from .models import blog,signup_table,mobile_phone,mobilephones,samsung_phone,sort_feature
+from .models import blog,signup_table,mobilephones,samsung_phone,sort_feature
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
@@ -31,10 +31,7 @@ class SubjectCreationForm(forms.ModelForm):
             user.save()
         return user
 
-class mobile_phone_form(ModelForm):
-    class Meta:
-        model=samsung_phone
-        fields='__all__'
+
 class filterform(ModelForm):
     class Meta:
         model=samsung_phone

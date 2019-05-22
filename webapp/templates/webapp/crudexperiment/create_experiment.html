@@ -5151,6 +5151,7 @@ function saveCatalogCrit(){
     var num=$('#input_num_field_catalog_crit').val();
    
     var ul=document.createElement("ul")
+    cataloglist=[];
     for (i=0;i<num;i++){
         cataloglist.push(default_crit_show_dict['default'][i]);
         var li=document.createElement("li");

@@ -196,9 +196,9 @@ button.social-signin.google {
     background: red
 }
 .custom_side_rows {
-  background-color: lightskyblue; /* Green background */
-  border: 1px solid lightskyblue; /* Green border */
-  color: white; /* White text */
+  background-color: #5276ff; /* Green background */
+  border: 1px solid #5276ff; /* Green border */
+  color: white !important; /* White text */
   padding: 10px 24px; /* Some padding */
   cursor: pointer; /* Pointer/hand icon */
 }

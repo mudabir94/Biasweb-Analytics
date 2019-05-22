@@ -39,16 +39,15 @@ from biasweb.utils.assign import Assigner
 
 #loading forms from forms.py file. 
 from .forms import (NameForm, SignUpForm, blogForm, filterform,
-                    mobile_phone_form, sort_filter_form)
+                    sort_filter_form)
 #-----------------------------------------------------------------
 from .models import Role, User, blog
 from .models import experiment as exp
-from .models import (mobile_phone, mobilephones, platform_feature, prunedmobilephones,
+from .models import ( mobilephones, platform_feature,
                      samsung_phone, sort_feature, userscoreRecord,ExpCriteriaOrder,PhoneCriteria)
-from.models import template_roles as tr 
-from. models import templates as tpl
 
-from .models import selectedAdminPhones
+
+from .models import selectedAdminPhones,criteria_catalog_disp
 from django.views.decorators.cache import never_cache
 
 
@@ -664,8 +663,10 @@ class defaultCriteria_Setup(TemplateView):
                 postedFLevels = json.loads(featlevels_dic)
                 cataloglist=request.POST.get('cataloglist')
                 cataloglist = json.loads(cataloglist)
-                global catalogcrit_show_list
-                catalogcrit_show_list=cataloglist
+                criteria_catalog_disp.objects.filter(id=1).update(catalog_crit_display_order=cataloglist)
+                # global catalogcrit_show_list
+
+                # catalogcrit_show_list=cataloglist
                 print("postedFLevels",postedFLevels)
                 print("default_crit_show_dict",default_crit_show_dict)
                 print("default_crit_hide_dict",default_crit_hide_dict)
@@ -2669,7 +2670,8 @@ def getMobiledata(request):
             mobiles_retrieved_list=mobiles_retrieved
             # global catalogcrit_show_list
             # catalogcrit_show_list=["price","OS"]
-
+            cat_obj=criteria_catalog_disp.objects.get(id=1)
+            catalogcrit_show_list=cat_obj.catalog_crit_display_order
             return JsonResponse(
                 {
                     'mobilephones':mobiles_retrieved_list,
