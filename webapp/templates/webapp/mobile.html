@@ -246,6 +246,12 @@
                                 // row_fluid.setAttribute('id','mobile_catalog_div');
                                 row_fluid=$('#mobile_catalog_div');
                                 var row=document.createElement('div');
+                                row_fluid.append(row);
+                                var heading=document.createElement("h4");
+                                heading.innerHTML="Mobile Catalog"
+                                row.append(heading)
+                                row.setAttribute('class','row');
+                                var row=document.createElement('div');
                                 row.setAttribute('class','row');
                                 row_fluid.append(row);
                                 var col_md_12=document.createElement("div");
@@ -310,6 +316,7 @@
                                     // col_md_4_post.append(mobile_price_p)
                                     var link=document.createElement('a');
                                     link.setAttribute('class','link btn btn-success');
+                                    link.target="_blank"
                                     // took alot of time finding this solution...
                                     var url = "{% url 'mobileinfo' id=4  %}".replace("4", json_data_mobiles[i]['id']);
                                     link.href= url;

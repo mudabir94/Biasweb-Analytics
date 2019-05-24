@@ -4013,7 +4013,7 @@ function mobileCatalog(){
                                     // took alot of time finding this solution...
                                     var url = "{% url 'mobileinfo' id=4  %}".replace("4", json_data_mobiles[i]['id']);
                                     link.href= url;
-
+                                    link.target='_blank';
                                     link.text="READ MORE";
                                     col_md_4_post.append(link); 
                                     // if (i%3===0 && i!==0){
@@ -4215,7 +4215,7 @@ function NextStep(element){
                                     // took alot of time finding this solution...
                                     var url = "{% url 'mobileinfo' id=4  %}".replace("4", json_data_mobiles[i]['id']);
                                     link.href= url;
-
+                                    link.target='_blank';
                                     link.text="READ MORE";
                                     col_md_4_post.append(link); 
                                     // if (i%3===0 && i!==0){
@@ -4514,7 +4514,7 @@ function SetFunc(active_id){
                                     // took alot of time finding this solution...
                                     var url = "{% url 'mobileinfo' id=4  %}".replace("4", json_data_mobiles[i]['id']);
                                     link.href= url;
-
+                                    link.target='_blank';
                                     link.text="READ MORE";
                                     col_md_4_post.append(link); 
                                     }
@@ -4684,7 +4684,7 @@ function SetFunc(active_id){
                                     // took alot of time finding this solution...
                                     var url = "{% url 'mobileinfo' id=4  %}".replace("4", json_data_mobiles[i]['id']);
                                     link.href= url;
-
+                                    link.target='_blank';
                                     link.text="READ MORE";
                                     col_md_4_post.append(link); 
                                     // if (i%3===0 && i!==0){
@@ -10678,10 +10678,13 @@ function get_data_Ajax_Co(colist){
                                     col_md_4_post.append(mobile_price_p)
                                     var link=document.createElement('a');
                                     link.setAttribute('class','link btn btn-success');
+                                    link.target='_blank';
+
+
                                     // took alot of time finding this solution...
                                     var url = "{% url 'mobileinfo' id=4  %}".replace("4", json_data_mobiles[i]['id']);
                                     link.href= url;
-
+                                    link.target='_blank';
                                     link.text="READ MORE";
                                     col_md_4_post.append(link); 
                                     // if (i%3===0 && i!==0){
@@ -10815,7 +10818,7 @@ function get_data_Ajax_Co(colist){
                                     // took alot of time finding this solution...
                                     var url = "{% url 'mobileinfo' id=4  %}".replace("4", json_data_mobiles[i]['id']);
                                     link.href= url;
-
+                                    link.target='_blank';
                                     link.text="READ MORE";
                                     col_md_4_post.append(link); 
                                     // if (i%3===0 && i!==0){

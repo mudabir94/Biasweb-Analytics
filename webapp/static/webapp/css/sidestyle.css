@@ -153,11 +153,19 @@
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
     width: auto;
-    margin-right: -15px;
-    margin-left: -15px;
-    margin-bottom: 20px;
+    margin: 10px;
+    padding: 10px 10px; /* Some padding */
+
+    /* margin-right: -15px;
+    margin-left: -15px; */
+    /* margin-bottom: 20px; */
     background: #5276ff;
 }
-.custom_side_rows:hover {
-  background-color: #94000f5e;
+.custom_side_rows:hover  span{
+  /* background-color: #d4c6fa5e; */
+  color: #000
 }
+.custom_side_rows:hover {
+    background-color: #d4c6fa5e;
+    
+  }

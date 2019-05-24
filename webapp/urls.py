@@ -19,9 +19,6 @@ urlpatterns = [
     url(r'^$',views.Home.as_view(),name='homepage'),
     # About Page. base template is base.html
 
-
-
-
 #----------------------------------------------------------------------------------------------------------
     url(r'^admin_setup/' , views.adminSetup.as_view() , name='admin_setup') ,
     url(r'^mobile/',views.mobile_phone_view.as_view(),name='mobileview'),

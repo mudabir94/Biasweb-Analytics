@@ -198,10 +198,18 @@ button.social-signin.google {
 .custom_side_rows {
   background-color: #5276ff; /* Green background */
   border: 1px solid #5276ff; /* Green border */
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  width: auto;
   color: white !important; /* White text */
-  padding: 10px 24px; /* Some padding */
+  margin: 10px;
+  padding: 10px 10px; /* Some padding */
   cursor: pointer; /* Pointer/hand icon */
 }
 .custom_side_rows:hover {
-  background-color: #94000f5e;
+  background-color:  #d4c6fa5e;
+}
+.custom_side_rows span:hover {
+  /* background-color: #d4c6fa5e; */
+  color: #000
 }
