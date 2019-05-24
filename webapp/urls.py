@@ -19,9 +19,6 @@ urlpatterns = [
     url(r'^$',views.Home.as_view(),name='homepage'),
     # About Page. base template is base.html
 
-
-
-
 #----------------------------------------------------------------------------------------------------------
     url(r'^admin_setup/' , views.adminSetup.as_view() , name='admin_setup') ,
     url(r'^mobile/',views.mobile_phone_view.as_view(),name='mobileview'),
@@ -46,7 +43,6 @@ urlpatterns = [
     url(r'^manageshortlist/',views.ManageShortList.as_view(), name='manage_shortlisting'),
     url(r'^createexp/',views.createExperiment.as_view(), name='createexp'),
     url(r'^editexp/',views.editExperiment.as_view(), name='editexp'),
-
     url(r'^subdetails/',views.subDetails, name='subdetails'),
     url(r'^uploadsamplefile/',views.uploadSampleFile, name='uploadsamplefile'),
     url(r'^postexp/',views.postExp, name='postexp'),
@@ -63,9 +59,19 @@ urlpatterns = [
     url(r'^price_range_retrieve/',views.priceRangeRetrieve, name='price_range_retrieve'),
     url(r'^get_selectedadmin_phones/',views.getSelectedAdminPhones, name='get_selectedadmin_phones'),
     url(r'^get_mobile_data/',views.getMobiledata,name='get_mobile_data'),
+    url(r'^getReqPhones/',views.getReqPhones,name='getReqPhones'),
+
+    
+    url(r'^retspecmobilephone/',views.retSpecMobilePhone, name='retspecmobilephone'),
     url(r'^get_specificmobile_data/',views.getSpecificMobileData,name='get_specificmobile_data'),
     url(r'^savephonesets/',views.SavePhoneSets,name='savephonesets'),
     url(r'^ordercriteriasetup/' , views.orderCriteria_Setup.as_view() , name='ordercriteriasetup') ,
+    url(r'^defaultcriteriasetup/' , views.defaultCriteria_Setup.as_view() , name='defaultcriteriasetup') ,
+    url(r'^cdmcriteriasetup/' , views.cdmCriteria_Setup.as_view() , name='cdmcriteriasetup') ,
+    url(r'^cdm_on_co_on_criteriasetup/' , views.Cdm_On_Co_On_CriteriaSetup.as_view() , name='cdm_on_co_on_criteriasetup') ,
+
+
+
 
 
 
@@ -73,7 +79,7 @@ urlpatterns = [
 #---------------------------------------------------------------------------------------------   
     ## Pages that are not currently used. 
     #url(r'^blog/', views.blogview.as_view(), name='blog'), 
-    #url(r'^showfilter/',views.showFilter.as_view(), name='showfilter'),
+    url(r'^showfilter/',views.showFilter.as_view(), name='showfilter'),
     #url(r'^$', views.signUp, name='signup'), 
 
 #---------------------------------------------------------------------------------------------

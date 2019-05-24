@@ -9,14 +9,15 @@
 	{% load staticfiles %}
 	<!-- <link rel="stylesheet" href="{% static 'webapp/css/bootstrap.min.css' %}" type = "text/css"/> -->
 	<!-- <link rel="stylesheet" href="{% static 'webapp/css/style.css' %}" type = "text/css"/> -->
+	<link rel="stylesheet" href="{% static 'webapp/css/style.css' %}" type="text/css" />
+
 	<link rel="stylesheet" href="{% static 'webapp/css/formoid-solid-green.css' %}" type="text/css" />
 	<link rel="stylesheet" href="{% static 'webapp/css/webix.css' %}" type="text/css" />
 	<link rel="stylesheet" href="{% static 'webapp/css/newstyle.css' %}" type="text/css" />
 	<link rel="stylesheet" href="{% static 'webapp/css/sidestyle.css' %}" type="text/css" />
-	<link rel="stylesheet" href="{% static 'webapp/css/style.css' %}" type="text/css" />
 
 	<link rel="stylesheet" href="{% static 'webapp/css/one_mobile.css' %}" type = "text/css"/>
-	<script type="text/javascript" src="{% static 'webapp/js/one_mobile.js' %}" charset="utf-8"></script>
+	<!-- <script type="text/javascript" src="{% static 'webapp/js/one_mobile.js' %}" charset="utf-8"></script> -->
 	<link rel="stylesheet" href="{% static 'webapp/css/jquery-ui.css' %}" type="text/css" />
 	<link rel="stylesheet" href="{% static 'webapp/css/jquery-ui.structure.css' %}" type="text/css" />
 	<script type="text/javascript" src="{% static 'webapp/js/jquery1.12.4.js' %}" charset="utf-8"></script>
@@ -45,7 +46,9 @@
 
 	
 	<style>
-      
+          ul li a:hover, ul li a:focus {
+ color:red;
+}
 
 		/* Set height of the grid so .sidenav can be 100% (adjust if needed) */
 		.row.content {height: 1500px}
@@ -105,8 +108,17 @@
                   <!-- </div> -->
                   <div class="collapse navbar-collapse" id="myNavbar">
                     <ul class=" navbar-nav mr-auto">
-                     
-                      <li><a href="{%url 'homepage'%}">Home </a></li>
+											<li><span><a href="{%url 'homepage'%}" target="_blank">Home </a></span></li>
+                      <li><span><a href="#" target="_blank">About</a></span></li>
+                      {% if  user.is_authenticated %}
+                      <li><span id="username"><span>{{ user.get_username }}</span></li>
+                      <li><span id="role">{{ user.role_id.role_name }}</span></li>
+                      <li><span><a href="{% url 'logout'%}" target="_blank">Logout</a></span></li> 
+                      {% else %}
+                      <li><span><a href="{% url 'login'%}?next={{request.path}}" target="_blank">Login</a></span></li>  
+											{% endif %}  
+
+											<!-- <li><a href="{%url 'homepage'%}">Home </a></li>
                       <li><a href="#" >About</a></li>
                       {% if  user.is_authenticated %}
                       <li><p id="username">{{ user.get_username }}</p></li>
@@ -114,7 +126,7 @@
                       <li><a href="{% url 'logout'%}">Logout</a></li> 
                       {% else %}
                       <li><a href="{% url 'login'%}?next={{request.path}}">Login</a></li>   
-                      {% endif %}  
+                      {% endif %}   -->
                     </ul>
                     <!--<ul class="nav navbar-nav navbar-right">
                       <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
