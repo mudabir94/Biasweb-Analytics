@@ -1,0 +1,13 @@
+50,backcam,default,low,12
+49,battery,default,mendatory,1
+48,OS,default,low,11
+47,rating,default,low,10
+46,price,default,mendatory,0
+45,Weight,default,low,7
+44,Size,default,low,6
+43,Resolution,default,low,5
+42,Gpu,default,low,4
+41,Dimensions,default,low,3
+40,Cpu,default,low,2
+39,Colors,default,low,9
+38,Chip,default,low,8

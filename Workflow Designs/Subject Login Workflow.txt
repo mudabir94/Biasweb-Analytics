@@ -1,0 +1,43 @@
+PRE-REQUISITES
+
+1. Experiments should be saved with status levels as defined in controller.py
+
+STATUS DESCRIPTIONS
+
+--> SUBJECTS CAN LOGIN
+ 10. OPEN = 'OPEN' #READY + login shared w/ Subjects
+ 11. ACTIVE = 'ACTIVE' #Subject(s) are undergoing experiment
+
+--> SUBJECTS CANNOT LOGIN ( < 10 )
+0. DESIGN_MODE = 'DESIGN_MODE' #Under Construction
+1. UNASSIGNED = 'UNASSIGNED' #Design/BLock structure complete - No Subjects Assigned yet
+2. READY = 'READY' #Design complete + Subjects List Assigned
+3. CLOSED = 'CLOSED' #No longer accepting Subjects - awaiting analysis
+4. SUSPENDED = 'SUSPENDED' #Not accepting Subjects - could be reopened - some design changes allowed
+5. CANCELLED = 'CANCELLED' #Abandoned - not accepting subjects ever
+6. ANALYZED = 'ANALYZED' #Analysis Reports generated after CLOSED 
+
+NOT IN controller [TODO] 
+
+7. HOLD = 'HOLD' #Admin temporarily closes experiment (non design issue - coordinating multiple experiments)
+
+WORKFLOW
+
+User logs in and is first evaluated to see if they are "Subject" role.
+If TRUE:
+    1. Need to determine which Experiment to log the subject into
+    --> Possibilities:
+        1.a. Subject has only one Active experiment at a time
+            --> Proceed to only Active Experiment
+        1.b. Subject has multiple Active experiments
+            --> Give subject a menu/list to select the experiment they 
+            want to go to
+
+EVENTUALLY - LOGIN TO THE ACTIVE EXPERIMENT
+    2. Retrieve feature list of the active experiment
+     
+        2.1 P --> Phone set offered (pre-selected [p.default, p.1, p.2] vs. user-selected [p.0])
+        2.2 C --> Initially, top 2/3 to show if p.0 is on.
+              --> Criteria Display
+              --> Criteria Ordering
+[TO BE CONTINUED - NEXT MEETING - ]
