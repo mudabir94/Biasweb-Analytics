@@ -64,7 +64,8 @@ class  experiment(models.Model):
      SUSPENDED = Not accepting Subjects - 
                  but could be reopened - some design changes (such as cap change) allowed
      CANCELLED = Abandoned - not accepting subjects ever
-     ANALYZED = Analysis Reports 
+     ANALYZED = Analysis Reports
+     HOLD = Not accepting Subjects - non-design - experiment admin issue 
     """
     custom_exp_id=models.CharField(max_length=100,null=True,blank=True,unique=True)
     batches_title=models.CharField(max_length=100, null=True, blank=True)
@@ -84,12 +85,13 @@ class  experiment(models.Model):
     owner=models.ForeignKey(User, on_delete=models.PROTECT, related_name='creator')
     inFile=models.CharField(max_length=256,null=True,blank=True)
     outFile=models.CharField(max_length=256,null=True,blank=True)
+    desc=models.CharField(max_length=256,null=True,blank=True)
     def __str__(self):
         return self.custom_exp_id
     class Meta:
         verbose_name_plural="experiment"
         ordering = ['pk']
-
+    
 class Batch(models.Model):
      exp = models.ForeignKey(experiment, on_delete=models.CASCADE)
      batch_label= models.CharField(max_length=100, null=True, blank=True)
