@@ -30,17 +30,25 @@ class MyUserAdmin(UserAdmin):
              )}),
 
     )
-
-class ExpCriteriaOrderAdmin(admin.ModelAdmin):
+class ExpCriteriaOrderResource(resources.ModelResource):
+    class meta:
+        model=ExpCriteriaOrder
+class ExpCriteriaOrderAdmin(ImportExportActionModelAdmin):
     list_display=('id','exp','cOrder_id','pCriteria','fvp','position','sh_hd')
-class PhoneCriteriaAdmin(admin.ModelAdmin):
+
+class PhoneCriteriaResource(resources.ModelResource):
+    class meta:
+        model=PhoneCriteria
+
+class PhoneCriteriaAdmin(ImportExportActionModelAdmin):
     list_display=('id','criteria_name','status','priority','position')
 
 class ExperimentAdmin(admin.ModelAdmin):
-    list_display= ('id','custom_exp_id')
+    list_display= ('id','custom_exp_id','status','batches_title')
 
 class experiment_featureAdmin(admin.ModelAdmin):
     list_display= ('id','used_in','p_feature','chosen_levels')
+
 
 #----------------------------------------------------------------------------
 

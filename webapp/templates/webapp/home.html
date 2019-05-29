@@ -45,6 +45,9 @@
               </div>
             <div class="col-md-8 text-left " > 
                   <h1>Home Page</h1>
+                  {% with template_main=template_main_homepage %}
+                  {% include template_main %}
+                  {% endwith %}
               </div>
               <div class="col-md-1 sidenav">
                 <div class=""   id="lc" style="position: fixed">

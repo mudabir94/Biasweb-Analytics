@@ -65,6 +65,8 @@ urlpatterns = [
     url(r'^retspecmobilephone/',views.retSpecMobilePhone, name='retspecmobilephone'),
     url(r'^get_specificmobile_data/',views.getSpecificMobileData,name='get_specificmobile_data'),
     url(r'^savephonesets/',views.SavePhoneSets,name='savephonesets'),
+    url(r'^savephonesets_p0/',views.SavePhoneSets_P0,name='savephonesets_p0'),
+
     url(r'^ordercriteriasetup/' , views.orderCriteria_Setup.as_view() , name='ordercriteriasetup') ,
     url(r'^defaultcriteriasetup/' , views.defaultCriteria_Setup.as_view() , name='defaultcriteriasetup') ,
     url(r'^cdmcriteriasetup/' , views.cdmCriteria_Setup.as_view() , name='cdmcriteriasetup') ,

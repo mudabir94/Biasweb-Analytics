@@ -21,7 +21,7 @@
                         <div class='col'><button id='ftlvl' class='custom_nav_btn active 'onclick='showFeatureLvls($(this))'><span class="custom_span">Feature Levels</span></button> </div>
                         <div class='col'><button id='btchmng' class='custom_nav_btn'onclick='showBatchManagement()'><span class="custom_span">Manage Batch</span> </button></div>
                         <div class='col'><button id='blkmng' class='custom_nav_btn' onclick='showBlockManagement()'><span class="custom_span">Manage Block</span></button></div>
-                        <div class='col'><button id='create_exp_mobile_catalog' class='custom_nav_btn' onclick='mobileCatalog()'><span class="custom_span">Mobile catalog</span></button></div>
+                        <div class='col'><button id='create_exp_mobile_catalog' class='custom_nav_btn' onclick='mobileCatalog()'><span class="custom_span">Phone Set Management</span></button></div>
                         <div class='col'><button id='def_crit_list_btn' class='custom_nav_btn' onclick='showCritrtia()'><span class="custom_span">Criteria List</span></button></div>
 
                     </div>    
@@ -637,7 +637,7 @@ if(exp_id===""){
     // $("#create_exp_mobile_catalog").css('color','black');
     // $("#create_exp_mobile_catalog").css('cursor','not-allowed');
     // $("#create_exp_mobile_catalog").attr("disabled", true); 
-    disableMobileCatalogButton();
+    // disableMobileCatalogButton();
     disableCriteriaButton();
 
 
@@ -672,7 +672,7 @@ if(exp_id===""){
         * By default hide mobile catalog div...
     */
          
-            disableMobileCatalogButton();
+            // disableMobileCatalogButton();
             disableCriteriaButton();
 
 
@@ -799,7 +799,7 @@ function showcheckboxes_stored(){
         // $("#create_exp_mobile_catalog").css('cursor','not-allowed');
 
         // $("#create_exp_mobile_catalog").attr("disabled", true); 
-        disableMobileCatalogButton();
+        // disableMobileCatalogButton();
         }
 
 }
@@ -1247,7 +1247,8 @@ function showFeatLvlDiv(){
     $("#phones_main_button_div").hide(); 
 
     $('#mobile_catalog_div').hide();
-   
+    $("#exp_description_div").show();
+
     $('#feat_lvl_div').show( 1000);
 
     // var current=$('#btchmng')
@@ -1338,6 +1339,7 @@ function showFeatureLvls(){
 
     $('#feat_lvl_div').slideDown(500);
     $("#cr_exp_header").show();
+    $("#exp_description_div").show();
 
 
     $('#dispFileFeatLvldiv').show();
@@ -1355,6 +1357,8 @@ function showBatchManagement(){
 
     $("#phones_main_button_div").hide(); 
     $('#importSubdiv').slideDown();
+    $("#exp_description_div").show();
+
     $('#pager').hide();
 
   
@@ -1426,6 +1430,8 @@ function showBlockManagement(){
     $('#brand_check_div').hide();
 
     $("#phones_main_button_div").hide(); 
+    $("#exp_description_div").show();
+
     $('#block_assign_row_div').show();
     // $('#blkoutputsDiv').show();
     $("#default_criteria_main_div").hide();
@@ -1457,6 +1463,8 @@ function showCritrtia(){
     $("#phones_main_button_div").hide();    
     $('#block_assign_row_div').hide();
     $("#catalog_crit_sel").show();
+    $("#exp_description_div").show();
+
 
     HideALL();
     if (CO_CDM_COMB==="CDM_off_CO_off"){
@@ -2758,7 +2766,13 @@ if (outerckbox.is(':checked')) {
                             {
                             text: "Save",
                             click: function() {
-                               
+                                $("#set_buttons").empty();
+                                $('#expphonelist_div').empty();
+                                active_button=""
+                                // $("#phones_main_button_div").empty();
+                                $('#mobile_catalog_div').empty();
+                                phoneset_dic={}
+                                phonename={}
                                 $( this ).dialog( "close" );
                             // Enabling mobile Catalog button if p is not ticked!.
                                 enableMobileCatalogButton();
@@ -3014,21 +3028,34 @@ if (outerckbox.is(':checked')) {
         // if unticked then to hall data stored in dict, phoneset_dic, phonename_dic, featureLevel blocks will be deleted as well by calling sendFeatureLevl()
         // For now its purpose is simply ide the innercheckdivs.  
         if (outercheckval==="P"){
-            if(exp_id!==""){
-                    // removing every thing related to phoneset
-                    phoneset_dic={};
-                    phonename_dic={};
-                    brand_set_dict={};
-                    slider_set_dict={};
-                    // disabling mobile Catalog button if p is not ticked!.
-                    disableMobileCatalogButton();
-                    // $("#create_exp_mobile_catalog").css('background-color','black');
-                    // $("#create_exp_mobile_catalog").css('color','black');
-                    // $("#create_exp_mobile_catalog").css('cursor','not-allowed');
+            // if(exp_id!==""){
+            //         // removing every thing related to phoneset
+            //         phoneset_dic={};
+            //         phonename_dic={};
+            //         brand_set_dict={};
+            //         slider_set_dict={};
+            //         $("#set_buttons").empty();
+            //         $('#expphonelist_div').empty();
+            //         active_button=""
+            //         // $("#phones_main_button_div").empty();
+            //         $('#mobile_catalog_div').empty();
+            //         // disabling mobile Catalog button if p is not ticked!.
+            //         // disableMobileCatalogButton();
+            //         // $("#create_exp_mobile_catalog").css('background-color','black');
+            //         // $("#create_exp_mobile_catalog").css('color','black');
+            //         // $("#create_exp_mobile_catalog").css('cursor','not-allowed');
 
-                    // $("#create_exp_mobile_catalog").attr("disabled", true); 
-                }
-
+            //         // $("#create_exp_mobile_catalog").attr("disabled", true); 
+            //     }
+                phoneset_dic={};
+                phonename_dic={};
+                brand_set_dict={};
+                slider_set_dict={};
+                $("#set_buttons").empty();
+                $('#expphonelist_div').empty();
+                active_button=""
+                // $("#phones_main_button_div").empty();
+                $('#mobile_catalog_div').empty();
         }
         hideInnerCheckBoxDivs(outercheckid);
         console.log("outercheckval",outercheckval);
@@ -3854,11 +3881,12 @@ $(document).ready(function () {
 
         });
 function mobileCatalog(){
-        
+        $("#exp_description_div").hide();
         $('#importSubdiv').hide();
         $('#dispFileFeatLvldiv').hide();
         $('#subj_split_batch_rowdiv').hide();
         $('#pager').hide();
+
         $('#block_assign_row_div').hide();
         $('#feat_lvl_div').hide();
         $('#batchmngprvbtn_div').hide();
@@ -3875,11 +3903,12 @@ function mobileCatalog(){
         $("#ol4").hide();
 
         $('#expphonelist_div').show();
-        $('#mobile_catalog_div').show();
         $("#price_slider_div").show(); 
         $('#brand_check_div').show();
         $("#exp_sel_phones_div").show();
         $("#searchfilter_head_div").show();
+        if($("#set_buttons").children().length <=0){
+            $('#mobile_catalog_div').show();
 
             // creation of html slide div!
             $('#price_slider_div').empty();
@@ -4072,6 +4101,7 @@ function mobileCatalog(){
         col_md_2.id="process_buttons"
         row.append(col_md_2);
         var nextstep=document.createElement('button');
+        nextstep.id="nextStep_Prc_bttns"
         nextstep.innerHTML="Next Step";
         nextstep.setAttribute("onclick","NextStep($(this))");
         col_md_2.append(nextstep);
@@ -4079,21 +4109,38 @@ function mobileCatalog(){
         col_md_2.setAttribute('class','col-md-1');
         col_md_2.id="save_button"
         row.append(col_md_2);
-       
-        for (var i=0;i<setlist.length;i++){
-            var button=document.createElement('button')
-            button.id=setlist[i]
-            button.innerHTML=setlist[i];
-            button.setAttribute("onclick","SetFunc($(this).attr('id'))")
-            if (i===0){
-                var this_b=button
-            }
-            $('#set_buttons').append(button)
+        console.log("DICTIONARY!!!!!",dict['P'])
+        default_list=["P.Default","P.0"]
+        if (dict['P']===undefined){
+                for (var i=0;i<default_list.length;i++){
+                var button=document.createElement('button')
+                button.id=default_list[i]
+                button.innerHTML=default_list[i];
+                button.setAttribute("onclick","defSetFunc($(this).attr('id'))")
+                if (i===0){
+                    var this_b=button
+                }
+                $('#set_buttons').append(button)
+                defSetFunc($(this_b).attr('id'))
         }
-        
+        }else{
+                for (var i=0;i<setlist.length;i++){
+                    var button=document.createElement('button')
+                    button.id=setlist[i]
+                    button.innerHTML=setlist[i];
+                    button.setAttribute("onclick","SetFunc($(this).attr('id'))")
+                    if (i===0){
+                        var this_b=button
+                    }
+                    $('#set_buttons').append(button)
+                    $("#searchfilter_head_div").show();    
+                    $("#price_slider_div").show();    
+                    $("#brand_check_div").show(); 
+                }
+                
 
-        SetFunc($(this_b).attr('id'));
-      
+                SetFunc($(this_b).attr('id'));
+        }
         // $('.innerchecksboxdivs').hide();
         // $('.map_select_label').hide();
         // $('.show_select_tag').hide();
@@ -4102,6 +4149,12 @@ function mobileCatalog(){
         // $('#selfbuttondiv').hide();
         // $('#prebuttondiv').hide();
         // $('#upload').prop('disabled',true);
+        }
+        else {
+            $("#phones_main_button_div").show();
+            $('#mobile_catalog_div').show();
+
+        }
         var current=$(".active");
         current.prop('class',current.attr('class').replace('active',""));
         $('#create_exp_mobile_catalog').prop('class', 'custom_nav_btn active');
@@ -4113,7 +4166,7 @@ function NextStep(element){
         console.log("phoneset_dic-->",phoneset_dic[active_button])
         for (i in phoneset_dic){
             console.log("phoneset_dic[active_button][i]",phoneset_dic[i])
-            if (phoneset_dic[i]===undefined || phoneset_dic[i].length<1){
+            if (phoneset_dic[i]===undefined || phoneset_dic[i].length<=1){
             alert("Please select at least two phones for the set");
             return;
         }
@@ -4223,7 +4276,8 @@ function NextStep(element){
                                     // }
                                     // console.log(i)
                                  }
-                                // console.log("global_phones_exp_phones",global_phones_exp_phones);
+
+                                console.log("specmobphones",specmobphones);
                                 for (phones in global_phones_exp_phones){
                                     $('input:checkbox[id^='+global_phones_exp_phones[phones]+"cat"+']:not(:checked)').prop('checked',true);
                                     // console.log("catt",$('input:checkbox[id^='+global_phones_exp_phones[phones].id+"cat"+']:not(:checked)').attr('id'));
@@ -4271,7 +4325,7 @@ function NextStep(element){
         $('#process_buttons').empty();
         $('#save_button').empty();
         $('#price_slider_div').empty();
-        $('#brand_check_div').empty();
+        $('#brand_check_div').hide();
 
 
         $('#process_buttons').append(backbutton);
@@ -4279,8 +4333,39 @@ function NextStep(element){
 
         
     }
+function SavePhoneSet_P0(element){
+        phoneset_dic={};
+        phonename_dic={};
+        $.ajax({
+            url: "{% url 'savephonesets_p0' %}",
+                type:'POST',
+                'data': {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                },
+                dataType: "json",
+                success: function(data){
+                    if(exp_id===""){
+                    exp_id = data['exp_id'];
+                    custom_exp_id = data['custom_exp_id'];
+                    showExpWIP()
+                    }
+                    // if (data['block_list']!=null){
+                    //     blockList = data['block_list']
+                    //     table_blocks=draw_block_table(blockList)
+                    //     display_blocktable(table_blocks);
+                    //     window.localStorage.setItem("blockList", JSON.stringify(blockList));
+                    // }
+                    
+                    $("#expphonelist_div").empty();
+                    showFeatureLvls();
+                    var current=$(".active");
+                    current.prop('class',current.attr('class').replace('active',""));
+                    $('#ftlvl').prop('class', 'custom_nav_btn active');
+                }
+        });
+}
 function SavePhoneSet(element){
-        console.log("phoneset_dic",phoneset_dic)
+    console.log("DDDDD",dict)
         $.ajax({
                 // Ajax call to savephoneset  
                 url: "{% url 'savephonesets' %}",
@@ -4313,8 +4398,15 @@ function SavePhoneSet(element){
 
 
                    showFeatureLvls();
-                   ele= document.getElementById('6')
-                   ele.checked=true; 
+                   if (active_button==="P.Default"){
+                        $("#6").prop('checked', false);
+
+                    }
+                    else{
+                   
+                     ele= document.getElementById('6')
+                     ele.checked=true; 
+                    }
                    
 
                 }
@@ -4323,7 +4415,8 @@ function SavePhoneSet(element){
     }
 function backFunc (element){
         
-        
+    $('#brand_check_div').show();
+
         
         var nextstep=document.createElement('button');
         nextstep.innerHTML="Next Step";
@@ -4338,95 +4431,35 @@ function backFunc (element){
         SetFunc(active_button);
         
     }
-function SetFunc(active_id){
-        if(active_button!==""){
+function defSetFunc(active_id){
+    if(active_button!==""){
             document.getElementById(active_button).style.backgroundColor = ""
         }
         
-        active_button=active_id;
-        // brandCheck_Html_Crt();
+    active_button=active_id;
 
-        // For  displaying phone list on sidebar
+    if(active_button==="P.Default"){
 
-            $('#expphonelist_div').empty();
-            if (phonename_dic[active_button]===undefined){
-                phonename_dic[active_button]=[]
-                    }
-            var expphonelist_div=document.getElementById('expphonelist_div');
-            var main_row_div=document.createElement("div");
-            main_row_div.setAttribute("class","row");
-            expphonelist_div.append(main_row_div);
-
-            var main_col_div=document.createElement('div');
-            main_col_div.setAttribute('class','col-md-12');
-            main_col_div.id=active_button+"unq";
-
-            main_row_div.append(main_col_div);
-            var h_div=document.createElement("div");
-            h_div.innerHTML=active_button;
-
-            main_col_div.append(h_div);
-
-                        for (var i in phonename_dic[active_button]){
-                            var row_div=document.createElement("div");
-                            row_div.setAttribute("class","row");
-                            var col_div=document.createElement('div');
-                            col_div.setAttribute('class','col-md-12');
-                            main_col_div.append(row_div);
-                            row_div.append(col_div);
-                            
-                            if(phonename_dic[active_button].length===0){
-                                                    col_div.append(phonename_dic[active_button]);
-                                                }
-                                                else{
-                                                    col_div.append(phonename_dic[active_button][i]);
-                                                }
-                        }
-                        
-                        for (var key in phonename_dic){
-
-                            if (key!==active_button){
-                                if (phonename_dic[key]===undefined){
-                                    phonename_dic[key]=[]
-
-                                }
-                                var main_col_div=document.createElement('div');
-                                main_col_div.setAttribute('class','col-md-12');
-                                main_col_div.id=active_button+"unq";
-                                main_row_div.append(main_col_div);
-                                var h_div=document.createElement("div");
-                                h_div.id=key;
-                                h_div.innerHTML=key;
-                                main_col_div.append(h_div);
-
-                                    for (var i in phonename_dic[key]){
-                                        var row_div=document.createElement("div");
-                                        row_div.setAttribute("class","row");
-                                        var col_div=document.createElement('div');
-                                        col_div.setAttribute('class','col-md-12');
-                                        main_col_div.append(row_div);
-                                        row_div.append(col_div);
-                                                if(phonename_dic[key].length===0){
-                                                    col_div.append(phonename_dic[key]);
-                                                }
-                                                else{
-                                                    col_div.append(phonename_dic[key][i]);
-                                                }
-                                        }
-                            }
-                            else{
-                                console.log("Match")
-                            }
-                        }
-            // $('#expphonelist_div').append(phonename_dic[active_button])
+        $('#save_button').empty();
+        $('#expphonelist_div').empty();
+        $("#process_buttons").empty();
+        $("#searchfilter_head_div").show();    
+       $("#price_slider_div").show();    
+       $("#brand_check_div").show(); 
         
+        var nextstep=document.createElement('button');
+        nextstep.id="nextStep_Prc_bttns"
+        nextstep.innerHTML="Next Step";
+        nextstep.setAttribute("onclick","NextStep($(this))");
+        $("#process_buttons").append(nextstep);
+        if (phonename_dic[active_button]===undefined){
+            phonename_dic[active_button]=[]
+        }
 
-        // red color
+        phone_sidebarHtmlPop();
         document.getElementById(active_button).style.backgroundColor = "#94000e"
-        // check if back button exists
-        var temp_list=[]
-       
-        console.log("slider_set_dict[P.1],",slider_set_dict[active_button])
+        console.log("phoneset_dic",phoneset_dic)
+        console.log("specmobphones",specmobphones)
         if ($('#backbutton_id').text()==="Back"){
             
             $('#mobile_catalog_div').empty();
@@ -4449,6 +4482,166 @@ function SetFunc(active_id){
             var json_data_mobiles=temp_list
             console.log("json_data_mobiles",json_data_mobiles)
             row_fluid=$('#mobile_catalog_div');
+            var row=document.createElement('div');
+            row.setAttribute('class','row');
+            row_fluid.append(row);
+            var col_md_12=document.createElement("div");
+            col_md_12.setAttribute('class','col-md-12');
+            row.append(col_md_12);
+            var lps=document.createElement("div");
+            lps.setAttribute("class",'latest-product-section');
+            col_md_12.append(lps);
+            var rtc=document.createElement('DIV');
+            rtc.setAttribute("class","row text-center");
+            rtc.id="grid";
+            lps.append(rtc);
+            for (var i=0;i<json_data_mobiles.length;i++){
+                // if (i%3===0 && i!==0){
+                //     var hr=document.createElement('hr');
+                //     lps.append(hr); 
+                //     var rtc=document.createElement('DIV');
+                //     rtc.setAttribute("class","row text-center");
+                //     lps.append(rtc);
+                // }
+                var col_md_4_post=document.createElement('DIV');
+                col_md_4_post.setAttribute("class","col-md-4 sm-margin-b-50 pull-left post");
+                col_md_4_post.id=i+1;
+                rtc.append(col_md_4_post);
+                var margin_b_20=document.createElement('DIV');
+                margin_b_20.setAttribute("class","margin-b-20");
+                col_md_4_post.append(margin_b_20);
+                var input_checkb=document.createElement('input');
+                input_checkb.type="checkbox";
+                
+                if (phoneset_dic[active_button]===undefined ){
+                    phoneset_dic[active_button]=[];
+                }
+                else{
+                    //  a check to check if the retrieved mob id matches the id in the list 
+                    
+                    if (phoneset_dic[active_button].includes(json_data_mobiles[i]['id'])){
+                        input_checkb.checked=true;
+                    }
+
+                }
+                
+                input_checkb.value=json_data_mobiles[i]['id'];
+                input_checkb.id=json_data_mobiles[i]['id']+"cat";
+                input_checkb.name=json_data_mobiles[i]['id']+"-"+json_data_mobiles[i]['Mobile_Name'];
+                input_checkb.setAttribute('onchange','toggleCheckbox(this)')
+                var img=document.createElement('img');
+                img.setAttribute('class','img-responsive')
+                // console.log("/static/"+json_data_mobiles[i]['imagepath1'])
+                img.src="/static/"+json_data_mobiles[i]['imagepath1'];
+
+                margin_b_20.append(input_checkb);
+                margin_b_20.append(img);
+                var mobile_name_p=document.createElement('p')
+                mobile_name_p.innerHTML=json_data_mobiles[i]['Mobile_Name']
+                col_md_4_post.append(mobile_name_p)
+                var mobile_price_p=document.createElement('p')
+                mobile_price_p.innerHTML=json_data_mobiles[i]['price']
+                col_md_4_post.append(mobile_price_p)
+                var link=document.createElement('a');
+                link.setAttribute('class','link btn btn-success');
+                // took alot of time finding this solution...
+                var url = "{% url 'mobileinfo' id=4  %}".replace("4", json_data_mobiles[i]['id']);
+                link.href= url;
+                link.target='_blank';
+                link.text="READ MORE";
+                col_md_4_post.append(link); 
+                }
+                // console.log("global_phones_exp_phones",global_phones_exp_phones);
+                for (phones in global_phones_exp_phones){
+                    $('input:checkbox[id^='+global_phones_exp_phones[phones]+"cat"+']:not(:checked)').prop('checked',true);
+                    // console.log("catt",$('input:checkbox[id^='+global_phones_exp_phones[phones].id+"cat"+']:not(:checked)').attr('id'));
+
+                }
+                var ds="grid_"+active_button;
+                console.log("ds",ds)
+                $("#grid").sortable({
+                stop: function( event, ui ) {
+                    var arr=[]
+                    var id = ui.item.attr("id");
+                    console.log("id",id);
+                    console.log("children",$(this).find('input'));
+                    $(this).find('input').each(function(){
+                    arr.push($(this).val());  
+                    });         
+                        console.log("array",arr)
+                    // var data = $(this).sortable('toArray', { attribute: 'id' });
+                    var result = arr.map(function (x) { 
+                    return parseInt(x, 10); 
+                    });
+                    phoneset_dic[active_button]=result;
+                    },
+                
+                    });
+                        $( "#grid" ).disableSelection();
+
+                    }   
+        else{
+           
+            // creation of html slide div!
+            $('#price_slider_div').empty();
+            var row_fluid=$('#price_slider_div');
+            var row=document.createElement('div');
+            row.setAttribute('class','row');
+            row_fluid.append(row);
+            var col_md_4_1=document.createElement("div");
+            col_md_4_1.setAttribute('class','col-md-2');
+            row.append(col_md_4_1);
+            var col_md_4_2=document.createElement("div");
+            col_md_4_2.setAttribute('class','col-md-8');
+            row.append(col_md_4_2);
+            var col_md_4_3=document.createElement("div");
+            col_md_4_3.setAttribute('class','col-md-2');
+            row.append(col_md_4_3);
+            var input=document.createElement('input');
+            input.setAttribute('class','slider')
+            input.setAttribute('id','price_slider')
+            col_md_4_2.append(input)
+            $('#price_slider').show();
+            var set_value=[];
+            if (slider_set_dict[active_button]===undefined){
+                set_value=[5000,70000];
+            }
+            else{
+                set_value=slider_set_dict[active_button]
+            }
+
+        var slider2 = new rSlider({
+                    target: '#price_slider',
+                    values: {min:5000,max:70000},
+                    range: true,
+                    tooltip: true,
+                    scale: false,
+                    labels: false,
+                    set: set_value,
+                    step:500,
+                    onChange:function (values) { 
+                        var values=values.split(',');
+                        console.log("values-->",values);
+
+                        $.ajax({
+                             // Ajax call to getrange of phones ...  
+                                url: "{% url 'createexp' %}",
+                                type:'GET',
+                                'data': {
+                                'price_range_values':JSON.stringify(values),
+                                'brandnames':JSON.stringify(brand_set_dict[active_button])
+                                // 'csrfmiddlewaretoken': '{{ csrf_token }}',
+                                },
+                                dataType: "json",
+                                success: function(data){
+                                console.log("data",data);// location.reload();
+                                $('#mobile_catalog_div').empty();                            
+                                // var json_data_mobiles=data['samsung_phones']
+                                var json_data_mobiles=data['mobilephones']
+                                // var row_fluid=document.createElement('div');
+                                // row_fluid.setAttribute('class','row-fluid');
+                                // row_fluid.setAttribute('id','mobile_catalog_div');
+                                row_fluid=$('#mobile_catalog_div');
                                 var row=document.createElement('div');
                                 row.setAttribute('class','row');
                                 row_fluid.append(row);
@@ -4460,28 +4653,39 @@ function SetFunc(active_id){
                                 col_md_12.append(lps);
                                 var rtc=document.createElement('DIV');
                                 rtc.setAttribute("class","row text-center");
-                                rtc.id="grid";
                                 lps.append(rtc);
                                 for (var i=0;i<json_data_mobiles.length;i++){
+                                   
                                     // if (i%3===0 && i!==0){
+                                    //     console.log("asd",i)
                                     //     var hr=document.createElement('hr');
                                     //     lps.append(hr); 
                                     //     var rtc=document.createElement('DIV');
                                     //     rtc.setAttribute("class","row text-center");
                                     //     lps.append(rtc);
+                                      
                                     // }
                                     var col_md_4_post=document.createElement('DIV');
                                     col_md_4_post.setAttribute("class","col-md-4 sm-margin-b-50 pull-left post");
-                                    col_md_4_post.id=i+1;
                                     rtc.append(col_md_4_post);
                                     var margin_b_20=document.createElement('DIV');
                                     margin_b_20.setAttribute("class","margin-b-20");
                                     col_md_4_post.append(margin_b_20);
                                     var input_checkb=document.createElement('input');
                                     input_checkb.type="checkbox";
-                                 
-                                    if (phoneset_dic[active_button]===undefined ){
+                                    var temp_set_val_list=[];
+                                    temp_set_val_list=data['price_range_values'];
+
+                                    if (slider_set_dict[active_button]===undefined){
+                                        slider_set_dict[active_button]=[]
+                                        slider_set_dict[active_button]=temp_set_val_list
+                                    }else{
+                                        slider_set_dict[active_button]=temp_set_val_list
+                                    }
+                                    // console.log('slider_set_dict',slider_set_dict)
+                                    if (phoneset_dic[active_button]===undefined    ){
                                         phoneset_dic[active_button]=[];
+
                                     }
                                     else{
                                         //  a check to check if the retrieved mob id matches the id in the list 
@@ -4491,7 +4695,6 @@ function SetFunc(active_id){
                                         }
 
                                     }
-                                    
                                     input_checkb.value=json_data_mobiles[i]['id'];
                                     input_checkb.id=json_data_mobiles[i]['id']+"cat";
                                     input_checkb.name=json_data_mobiles[i]['id']+"-"+json_data_mobiles[i]['Mobile_Name'];
@@ -4517,36 +4720,325 @@ function SetFunc(active_id){
                                     link.target='_blank';
                                     link.text="READ MORE";
                                     col_md_4_post.append(link); 
-                                    }
-                                    // console.log("global_phones_exp_phones",global_phones_exp_phones);
-                                    for (phones in global_phones_exp_phones){
-                                        $('input:checkbox[id^='+global_phones_exp_phones[phones]+"cat"+']:not(:checked)').prop('checked',true);
-                                        // console.log("catt",$('input:checkbox[id^='+global_phones_exp_phones[phones].id+"cat"+']:not(:checked)').attr('id'));
+                                    // if (i%3===0 && i!==0){
+                                       
+                                    // }
+                                    // console.log(i)
+                                }
+                                // console.log("global_phones_exp_phones",global_phones_exp_phones);
+                                for (phones in global_phones_exp_phones){
+                                    $('input:checkbox[id^='+global_phones_exp_phones[phones]+"cat"+']:not(:checked)').prop('checked',true);
+                                    // console.log("catt",$('input:checkbox[id^='+global_phones_exp_phones[phones].id+"cat"+']:not(:checked)').attr('id'));
 
-                                    }
-                                    var ds="grid_"+active_button;
-                                    console.log("ds",ds)
-                                    $("#grid").sortable({
-                                    stop: function( event, ui ) {
-                                        var arr=[]
-                                        var id = ui.item.attr("id");
-                                        console.log("id",id);
-                                        console.log("children",$(this).find('input'));
-                                        $(this).find('input').each(function(){
-                                        arr.push($(this).val());  
-                                        });         
-                                            console.log("array",arr)
-                                        // var data = $(this).sortable('toArray', { attribute: 'id' });
-                                        var result = arr.map(function (x) { 
-                                        return parseInt(x, 10); 
-                                        });
-                                        phoneset_dic[active_button]=result;
-                                        },
-                                  
-                                });
-                                $( "#grid" ).disableSelection();
+                                }
+                                $('#pager_div').empty();
+                                var pager_div=document.getElementById('pager_div');
+                                var pager=document.createElement("div");
+                                pager.setAttribute('class','turn-page');
+                                pager.id="pager";
+                                pager_div.append(pager);
+                                $("#mobile_catalog_div").cPager({
+                                    // how many items per page
+                                    pageSize:9,
+                                    // container ID
+                                    pageid: "pager",
+                                    // item class
+                                    itemClass: "post",
+                                    pageIndex: 1
+                                    });
+                                    $("#pager").show();
+                            }
+                                
+                          
+                         }); 
+                       
+                    }
+        });
 
-                            }   
+    }
+   
+    }
+    else{
+       $("#searchfilter_head_div").hide();    
+       $("#price_slider_div").hide();    
+       $("#brand_check_div").hide();    
+
+        var savebutton=document.createElement('button');
+        savebutton.innerHTML="Save"
+        savebutton.setAttribute('onclick','SavePhoneSet_P0($(this))')
+        savebutton.setAttribute('id','savebutton_id')
+        $("#process_buttons").empty();
+        $('#save_button').empty()
+
+        $('#save_button').append(savebutton)
+        $.ajax({
+                             // Ajax call to getrange of phones ...  
+                                url: "{% url 'get_mobile_data' %}",
+                                type:'GET',
+                                'data': {
+                                // 'price_range_values':JSON.stringify(values),
+                                
+                                //'brandnames':JSON.stringify(brand_set_dict[active_button])
+                                // 'csrfmiddlewaretoken': '{{ csrf_token }}',
+                                },
+                                dataType: "json",
+                                success: function(data){
+                                console.log("data",data);// location.reload();
+                                $('#mobile_catalog_div').empty();                            
+                                // var json_data_mobiles=data['samsung_phones']
+                                var json_data_mobiles=data['mobilephones']
+                                // var row_fluid=document.createElement('div');
+                                // row_fluid.setAttribute('class','row-fluid');
+                                // row_fluid.setAttribute('id','mobile_catalog_div');
+                                row_fluid=$('#mobile_catalog_div');
+                                var row=document.createElement('div');
+                                row.setAttribute('class','row');
+                                row_fluid.append(row);
+                                var col_md_12=document.createElement("div");
+                                col_md_12.setAttribute('class','col-md-12');
+                                row.append(col_md_12);
+                                var lps=document.createElement("div");
+                                lps.setAttribute("class",'latest-product-section');
+                                col_md_12.append(lps);
+                                var rtc=document.createElement('DIV');
+                                rtc.setAttribute("class","row text-center");
+                                lps.append(rtc);
+                                for (var i=0;i<json_data_mobiles.length;i++){
+                                    var col_md_4_post=document.createElement('DIV');
+                                    col_md_4_post.setAttribute("class","col-md-4 sm-margin-b-50 pull-left post");
+                                    rtc.append(col_md_4_post);
+                                    var margin_b_20=document.createElement('DIV');
+                                    margin_b_20.setAttribute("class","margin-b-20");
+                                    col_md_4_post.append(margin_b_20);
+                                    var input_checkb=document.createElement('input');
+                                    input_checkb.type="checkbox";
+                                    var temp_set_val_list=[];
+                                    temp_set_val_list=data['price_range_values'];
+
+                                    // if (slider_set_dict[active_button]===undefined){
+                                    //     slider_set_dict[active_button]=[]
+                                    //     slider_set_dict[active_button]=temp_set_val_list
+                                    // }else{
+                                    //     slider_set_dict[active_button]=temp_set_val_list
+                                    // }
+                                    // // console.log('slider_set_dict',slider_set_dict)
+                                    // if (phoneset_dic[active_button]===undefined    ){
+                                    //     phoneset_dic[active_button]=[];
+
+                                    // }
+                                    // else{
+                                    //     //  a check to check if the retrieved mob id matches the id in the list 
+                                        
+                                    //     if (phoneset_dic[active_button].includes(json_data_mobiles[i]['id'])){
+                                    //         input_checkb.checked=true;
+                                    //     }
+
+                                    // }
+                                    input_checkb.value=json_data_mobiles[i]['id'];
+                                    input_checkb.id=json_data_mobiles[i]['id']+"cat";
+                                    input_checkb.name=json_data_mobiles[i]['id']+"-"+json_data_mobiles[i]['Mobile_Name'];
+                                    input_checkb.setAttribute('onchange','toggleCheckbox(this)')
+                                    var img=document.createElement('img');
+                                    img.setAttribute('class','img-responsive')
+                                    // console.log("/static/"+json_data_mobiles[i]['imagepath1'])
+                                    img.src="/static/"+json_data_mobiles[i]['imagepath1'];
+
+                                    // margin_b_20.append(input_checkb);
+                                    margin_b_20.append(img);
+                                    var mobile_name_p=document.createElement('p')
+                                    mobile_name_p.innerHTML=json_data_mobiles[i]['Mobile_Name']
+                                    col_md_4_post.append(mobile_name_p)
+                                    var mobile_price_p=document.createElement('p')
+                                    mobile_price_p.innerHTML=json_data_mobiles[i]['price']
+                                    col_md_4_post.append(mobile_price_p)
+                                    var link=document.createElement('a');
+                                    link.setAttribute('class','link btn btn-success');
+                                    // took alot of time finding this solution...
+                                    var url = "{% url 'mobileinfo' id=4  %}".replace("4", json_data_mobiles[i]['id']);
+                                    link.href= url;
+                                    link.target='_blank';
+                                    link.text="READ MORE";
+                                    col_md_4_post.append(link); 
+                                    // if (i%3===0 && i!==0){
+                                       
+                                    // }
+                                    // console.log(i)
+                                }
+                                // console.log("global_phones_exp_phones",global_phones_exp_phones);
+                                // for (phones in global_phones_exp_phones){
+                                //     $('input:checkbox[id^='+global_phones_exp_phones[phones]+"cat"+']:not(:checked)').prop('checked',true);
+                                //     // console.log("catt",$('input:checkbox[id^='+global_phones_exp_phones[phones].id+"cat"+']:not(:checked)').attr('id'));
+
+                                // }
+                                $('#pager_div').empty();
+                                var pager_div=document.getElementById('pager_div');
+                                var pager=document.createElement("div");
+                                pager.setAttribute('class','turn-page');
+                                pager.id="pager";
+                                pager_div.append(pager);
+                                $("#mobile_catalog_div").cPager({
+                                    // how many items per page
+                                    pageSize:9,
+                                    // container ID
+                                    pageid: "pager",
+                                    // item class
+                                    itemClass: "post",
+                                    pageIndex: 1
+                                    });
+                                    $("#pager").show();
+                            }
+                                
+                          
+        }); 
+                       
+       
+        document.getElementById(active_button).style.backgroundColor = "#94000e"
+        
+
+    }
+}
+function SetFunc(active_id){
+        if(active_button!==""){
+            document.getElementById(active_button).style.backgroundColor = ""
+        }
+        
+        active_button=active_id;
+        // red color
+        document.getElementById(active_button).style.backgroundColor = "#94000e"
+
+        // brandCheck_Html_Crt();
+
+        // For  displaying phone list on sidebar
+        $('#expphonelist_div').empty();
+        if (phonename_dic[active_button]===undefined){
+            phonename_dic[active_button]=[]
+        }
+        phone_sidebarHtmlPop();
+        
+
+        // check if back button exists 
+        //*It is a check for next step
+        var temp_list=[]
+        if ($('#backbutton_id').text()==="Back"){
+            
+            $('#mobile_catalog_div').empty();
+            var json_data_mobiles=specmobphones[active_button]
+            console.log("phoneset_dic---",phoneset_dic[active_button]);
+            console.log("specmobphones",specmobphones);
+            if (phoneset_dic[active_button]!==undefined){
+                        if (phoneset_dic[active_button].length===specmobphones[active_button].length){
+                            var len=phoneset_dic[active_button].length;
+                            for (var i=0;i<len;i++){
+                                for (var j=0;j<len;j++){
+                                    if(specmobphones[active_button][j].id===phoneset_dic[active_button][i]){
+                                            temp_list.push(specmobphones[active_button][j])
+                                    }
+                                }
+                            }
+                        }
+            }
+            
+            var json_data_mobiles=temp_list
+            console.log("json_data_mobiles",json_data_mobiles)
+            row_fluid=$('#mobile_catalog_div');
+            var row=document.createElement('div');
+            row.setAttribute('class','row');
+            row_fluid.append(row);
+            var col_md_12=document.createElement("div");
+            col_md_12.setAttribute('class','col-md-12');
+            row.append(col_md_12);
+            var lps=document.createElement("div");
+            lps.setAttribute("class",'latest-product-section');
+            col_md_12.append(lps);
+            var rtc=document.createElement('DIV');
+            rtc.setAttribute("class","row text-center");
+            rtc.id="grid";
+            lps.append(rtc);
+            for (var i=0;i<json_data_mobiles.length;i++){
+                // if (i%3===0 && i!==0){
+                //     var hr=document.createElement('hr');
+                //     lps.append(hr); 
+                //     var rtc=document.createElement('DIV');
+                //     rtc.setAttribute("class","row text-center");
+                //     lps.append(rtc);
+                // }
+                var col_md_4_post=document.createElement('DIV');
+                col_md_4_post.setAttribute("class","col-md-4 sm-margin-b-50 pull-left post");
+                col_md_4_post.id=i+1;
+                rtc.append(col_md_4_post);
+                var margin_b_20=document.createElement('DIV');
+                margin_b_20.setAttribute("class","margin-b-20");
+                col_md_4_post.append(margin_b_20);
+                var input_checkb=document.createElement('input');
+                input_checkb.type="checkbox";
+                
+                if (phoneset_dic[active_button]===undefined ){
+                    phoneset_dic[active_button]=[];
+                }
+                else{
+                    //  a check to check if the retrieved mob id matches the id in the list 
+                    
+                    if (phoneset_dic[active_button].includes(json_data_mobiles[i]['id'])){
+                        input_checkb.checked=true;
+                    }
+
+                }
+                
+                input_checkb.value=json_data_mobiles[i]['id'];
+                input_checkb.id=json_data_mobiles[i]['id']+"cat";
+                input_checkb.name=json_data_mobiles[i]['id']+"-"+json_data_mobiles[i]['Mobile_Name'];
+                input_checkb.setAttribute('onchange','toggleCheckbox(this)')
+                var img=document.createElement('img');
+                img.setAttribute('class','img-responsive')
+                // console.log("/static/"+json_data_mobiles[i]['imagepath1'])
+                img.src="/static/"+json_data_mobiles[i]['imagepath1'];
+
+                margin_b_20.append(input_checkb);
+                margin_b_20.append(img);
+                var mobile_name_p=document.createElement('p')
+                mobile_name_p.innerHTML=json_data_mobiles[i]['Mobile_Name']
+                col_md_4_post.append(mobile_name_p)
+                var mobile_price_p=document.createElement('p')
+                mobile_price_p.innerHTML=json_data_mobiles[i]['price']
+                col_md_4_post.append(mobile_price_p)
+                var link=document.createElement('a');
+                link.setAttribute('class','link btn btn-success');
+                // took alot of time finding this solution...
+                var url = "{% url 'mobileinfo' id=4  %}".replace("4", json_data_mobiles[i]['id']);
+                link.href= url;
+                link.target='_blank';
+                link.text="READ MORE";
+                col_md_4_post.append(link); 
+                }
+                // console.log("global_phones_exp_phones",global_phones_exp_phones);
+                for (phones in global_phones_exp_phones){
+                    $('input:checkbox[id^='+global_phones_exp_phones[phones]+"cat"+']:not(:checked)').prop('checked',true);
+                    // console.log("catt",$('input:checkbox[id^='+global_phones_exp_phones[phones].id+"cat"+']:not(:checked)').attr('id'));
+
+                }
+                var ds="grid_"+active_button;
+                console.log("ds",ds)
+                $("#grid").sortable({
+                stop: function( event, ui ) {
+                    var arr=[]
+                    var id = ui.item.attr("id");
+                    console.log("id",id);
+                    console.log("children",$(this).find('input'));
+                    $(this).find('input').each(function(){
+                    arr.push($(this).val());  
+                    });         
+                        console.log("array",arr)
+                    // var data = $(this).sortable('toArray', { attribute: 'id' });
+                    var result = arr.map(function (x) { 
+                    return parseInt(x, 10); 
+                    });
+                    phoneset_dic[active_button]=result;
+                    },
+                
+                    });
+                        $( "#grid" ).disableSelection();
+
+                    }   
         else{
            
             // creation of html slide div!
@@ -4726,7 +5218,75 @@ function SetFunc(active_id){
    
       
 }
+function phone_sidebarHtmlPop(){
+        var expphonelist_div=document.getElementById('expphonelist_div');
+        var main_row_div=document.createElement("div");
+        main_row_div.setAttribute("class","row");
+        expphonelist_div.append(main_row_div);
 
+        var main_col_div=document.createElement('div');
+        main_col_div.setAttribute('class','col-md-12');
+        main_col_div.id=active_button+"unq";
+
+        main_row_div.append(main_col_div);
+        var h_div=document.createElement("div");
+        h_div.innerHTML=active_button;
+
+        main_col_div.append(h_div);
+
+        for (var i in phonename_dic[active_button]){
+            var row_div=document.createElement("div");
+            row_div.setAttribute("class","row");
+            var col_div=document.createElement('div');
+            col_div.setAttribute('class','col-md-12');
+            main_col_div.append(row_div);
+            row_div.append(col_div);
+            
+            if(phonename_dic[active_button].length===0){
+                col_div.append(phonename_dic[active_button]);
+            }
+            else{
+                col_div.append(phonename_dic[active_button][i]);
+            }
+        }
+                        
+        for (var key in phonename_dic){
+
+            if (key!==active_button){
+                if (phonename_dic[key]===undefined){
+                    phonename_dic[key]=[]
+
+                }
+                var main_col_div=document.createElement('div');
+                main_col_div.setAttribute('class','col-md-12');
+                main_col_div.id=active_button+"unq";
+                main_row_div.append(main_col_div);
+                var h_div=document.createElement("div");
+                h_div.id=key;
+                h_div.innerHTML=key;
+                main_col_div.append(h_div);
+
+                    for (var i in phonename_dic[key]){
+                        var row_div=document.createElement("div");
+                        row_div.setAttribute("class","row");
+                        var col_div=document.createElement('div');
+                        col_div.setAttribute('class','col-md-12');
+                        main_col_div.append(row_div);
+                        row_div.append(col_div);
+                                if(phonename_dic[key].length===0){
+                                    col_div.append(phonename_dic[key]);
+                                }
+                                else{
+                                    col_div.append(phonename_dic[key][i]);
+                                }
+                        }
+
+                    }
+                else{
+                    console.log("Match")
+                }
+        }
+}
 // fetch data from server against the experiment underconstruction and see if there is any mobiles present. 
 //  NO NEED FOR THIS NOW, REMOVE IN Future,
 function populateExpPhones(){
@@ -5030,6 +5590,8 @@ function toggleCheckbox(element){
             namelist.splice(ind,1);
 
             list.splice(list.indexOf(mob_id),1);
+            console.log("namelist",namelist)
+            console.log("list",list)
             if (list.length===0){
                 // delete phoneset_dic[active_button];
                 // delete phonename_dic[active_button];
@@ -5039,7 +5601,8 @@ function toggleCheckbox(element){
                 if ($('#backbutton_id').text()==="Back"){
                     $(element).parent().parent().remove();
                 }
-                
+                $('#expphonelist_div').empty();
+
                 console.log("after removing phoneset_dic",phoneset_dic)
             }else{
             phoneset_dic[active_button]=list;
@@ -5147,6 +5710,38 @@ function toggleCheckbox(element){
     var def_cdm_passed="false";
     ///////////////////////////////////////////////////////////
     var cataloglist=[];
+function saveCatalogCrit_cdm_on_co_off(){
+    var num=$('#input_num_field_catalog_crit').val();
+   
+   var ul=document.createElement("ul")
+   cataloglist=[];
+   for (i=0;i<num;i++){
+       cataloglist.push(default_crit_show_dict['cdm'][i]);
+       var li=document.createElement("li");
+       li.innerHTML=default_crit_show_dict['cdm'][i]
+       ul.append(li)
+   }
+   console.log("Catalog List",cataloglist)
+   $("#catalog_crit_disp_col").empty();
+
+   $("#catalog_crit_disp_col").append(ul);
+}
+function saveCatalogCrit_cdm_on_co_on(){
+    var num=$('#input_num_field_catalog_crit').val();
+   
+   var ul=document.createElement("ul")
+   cataloglist=[];
+   for (i=0;i<num;i++){
+       cataloglist.push(default_crit_show_dict['C.Full'][i]);
+       var li=document.createElement("li");
+       li.innerHTML=default_crit_show_dict['C.Full'][i]
+       ul.append(li)
+   }
+   console.log("Catalog List",cataloglist)
+   $("#catalog_crit_disp_col").empty();
+
+   $("#catalog_crit_disp_col").append(ul);
+}
 function saveCatalogCrit(){
     var num=$('#input_num_field_catalog_crit').val();
    
@@ -6488,6 +7083,43 @@ function get_data_Ajax_Co(colist){
         $("#cdm_criteria_div").empty();
         $("#cdm_co_on_div").empty();
         $("#cdm_criteria_div").show();
+
+
+        $("#catalog_crit_sel").empty();
+        var catalog_crit_sel=document.getElementById("catalog_crit_sel")
+        var catalog_crit_sel_row_div=document.createElement("div")
+        catalog_crit_sel.append(catalog_crit_sel_row_div)
+        catalog_crit_sel_row_div.setAttribute("class","row")
+        var col=document.createElement("div");
+        col.setAttribute("class","col");
+        catalog_crit_sel_row_div.append(col);
+        var p_ele=document.createElement("p");
+        p_ele.innerHTML="Catalog Criteria"
+        col.append(p_ele);
+        var col=document.createElement("div");
+        col.setAttribute("class","col")
+
+        catalog_crit_sel_row_div.append(col);
+        var  input_num_field_catalog_crit=document.createElement("input")
+        input_num_field_catalog_crit.setAttribute("id","input_num_field_catalog_crit")
+        input_num_field_catalog_crit.setAttribute("type","number")
+        col.append(input_num_field_catalog_crit);
+        var  save_btn_catalog_crit=document.createElement("button")
+        save_btn_catalog_crit.setAttribute("id","save_btn_catalog_crit")
+        save_btn_catalog_crit.setAttribute("onclick","saveCatalogCrit_cdm_on_co_off()")
+        save_btn_catalog_crit.innerHTML="Save"
+        col.append(save_btn_catalog_crit);
+        var col=document.createElement("div");
+        col.setAttribute("class","col")
+        col.setAttribute("id","catalog_crit_disp_col")
+        catalog_crit_sel_row_div.append(col);
+
+
+
+
+
+
+
         var cdm_criteria_div=document.getElementById("cdm_criteria_div");
         var container=document.createElement("div");
         container.setAttribute('class','container-fluid text-center');
@@ -7041,6 +7673,8 @@ function get_data_Ajax_Co(colist){
                                 'featlevels_dic': JSON.stringify(dict,undefined,''),
                                 'cdm_crit_show_dict': JSON.stringify(cdm_crit_show_dict,undefined,''),
                                 'cdm_crit_hide_dict': JSON.stringify(cdm_crit_hide_dict,undefined,''),
+                                'cataloglist':JSON.stringify(cataloglist),
+
                                 'csrfmiddlewaretoken': '{{ csrf_token }}',
                                 },
                                 url: "{% url 'cdmcriteriasetup' %}",
@@ -7912,6 +8546,36 @@ function get_data_Ajax_Co(colist){
             $("#cdm_co_on_div").empty();
             $("#cdm_co_on_div").show();
             $("#cdm_co_on_show_Option").empty();
+            $("#catalog_crit_sel").empty();
+        
+            var catalog_crit_sel=document.getElementById("catalog_crit_sel")
+            var catalog_crit_sel_row_div=document.createElement("div")
+            catalog_crit_sel.append(catalog_crit_sel_row_div)
+            catalog_crit_sel_row_div.setAttribute("class","row")
+            var col=document.createElement("div");
+            col.setAttribute("class","col");
+            catalog_crit_sel_row_div.append(col);
+            var p_ele=document.createElement("p");
+            p_ele.innerHTML="Catalog Criteria"
+            col.append(p_ele);
+            var col=document.createElement("div");
+            col.setAttribute("class","col")
+
+            catalog_crit_sel_row_div.append(col);
+            var  input_num_field_catalog_crit=document.createElement("input")
+            input_num_field_catalog_crit.setAttribute("id","input_num_field_catalog_crit")
+            input_num_field_catalog_crit.setAttribute("type","number")
+            col.append(input_num_field_catalog_crit);
+            var  save_btn_catalog_crit=document.createElement("button")
+            save_btn_catalog_crit.setAttribute("id","save_btn_catalog_crit")
+            save_btn_catalog_crit.setAttribute("onclick","saveCatalogCrit_cdm_on_co_on()")
+            save_btn_catalog_crit.innerHTML="Save"
+            col.append(save_btn_catalog_crit);
+            var col=document.createElement("div");
+            col.setAttribute("class","col")
+            col.setAttribute("id","catalog_crit_disp_col")
+
+            catalog_crit_sel_row_div.append(col);
 
 
         var cdm_co_on_div=document.getElementById("cdm_co_on_div");
@@ -9222,6 +9886,7 @@ function get_data_Ajax_Co(colist){
                                         'featlevels_dic': JSON.stringify(dict,undefined,''),
                                         'crit_order_dict':JSON.stringify(crit_order_dict),
                                         'crit_hide_dict':JSON.stringify(crit_hide_dict),
+                                        'cataloglist':JSON.stringify(cataloglist),
 
                                         'csrfmiddlewaretoken': '{{ csrf_token }}',
                                         },
@@ -11440,5 +12105,11 @@ $(document).on({
      ajaxStop: function() { $body.removeClass("loading"); }    
 });
 
+
+function submitDescription(){
+    $('#text_area_desp').val();
+    console.log( $('#text_area_desp').val())
+
+}
 </script>
 {%endblock%}

@@ -21,10 +21,10 @@ OUT_PATH="biasweb/data/output/"
 
 #    STATUS LEVELS:
 DESIGN_MODE = 'DESIGN_MODE' #Under Construction
+INACTIVE = 'INACTIVE' #Partially completed but no Subjects
 READY = 'READY' #Design complete + Subjects List attached
 OPEN = 'OPEN' #READY + login shared w/ Subjects
 ACTIVE = 'ACTIVE' #Subject(s) are undergoing experiment
-INACTIVE = 'INACTIVE' #Partially completed but no Subjects
 CLOSED = 'CLOSED' #No longer accepting Subjects - awaiting analysis
 SUSPENDED = 'SUSPENDED' #Not accepting Subjects - could be reopened - some design changes allowed
 CANCELLED = 'CANCELLED' #Abandoned - not accepting subjects ever
