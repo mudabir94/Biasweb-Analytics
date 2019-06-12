@@ -4,8 +4,8 @@
 
 <div class="container-fluid text-center "> 
     <!-- MAIN ROW CONTENT DIV  -->
-    
-    <div class="row is-flex ">
+
+    <div class="row is-flex content">
         <!-- 1st SIDEBAR COL DIV -->
         <div class="col-md-2" style='background:rgb(74, 116, 89)'>
             <div class='container-fluid'>
@@ -406,7 +406,7 @@
                                         <p1><b><i>Assign subjects to latest set of feature blocks?</b></i></p1>
                                         <br>
                                         <br>
-                                        <button style="background: #1f8c6e;box-shadow: 0 0 0.5px 0.5px #1f8c6e;border: none;" onclick='assignToBlocks()'> Assign to Blocks </button>
+                                        <button style="background: #1f8c6e;box-shadow: 0 0 0.5px 0.5px #1f8c6e;border: none; cursor:pointer" onclick='assignToBlocks()'> Assign to Blocks </button>
                                     </div>
                         </div>
                     </div>
@@ -541,7 +541,7 @@
               </div>
         </div>   
     </div>
-   
+
 </div>   
 
 <footer>
@@ -1354,6 +1354,7 @@ function showBatchManagement(){
     $('#mobile_catalog_div').hide();
     $("#price_slider_div").hide(); 
     $('#brand_check_div').hide();
+    $("#catalog_crit_sel").hide();
 
     $("#phones_main_button_div").hide(); 
     $('#importSubdiv').slideDown();
@@ -1416,6 +1417,8 @@ function HideALL(){
 }
 function showBlockManagement(){
     // hiding all unneccesary rows
+    $("#catalog_crit_sel").hide();
+
     $('#importSubdiv').hide();
     $('#feat_lvl_div').hide();
     $('#dispFileFeatLvldiv').hide();
@@ -1471,6 +1474,7 @@ function showCritrtia(){
         $("#ol1").show();
         $("#default_tree_view_div").show();
         $("#default_criteria_div").show();
+        $("#default_criteria_main_div").show();
 
         // if ($('.breadcrumb li').length>0 && $('.breadcrumb li').length===1 ){
         //     defualtCriteriaOrderHtmlSetup();
@@ -3355,19 +3359,14 @@ function sendFeatureLevels(){
     $("#ol2").empty();
     $("#ol3").empty();
     $("#ol4").empty();
-
-   
+  
 if (dict['C']===undefined && dict['CO']===undefined){
-    // alert("Please Choose Criteria Display Method ")
-    // delete default_crit_show_dict["C.Full"];
-    // delete default_crit_show_dict['C.Prune'];
-    // delete default_crit_show_dict['cdm'];
-    // delete default_crit_show_dict['Cdm.Def'];
-
-    // delete default_crit_hide_dict["C.Full"];
-    // delete default_crit_hide_dict['C.Prune'];
-    // delete default_crit_hide_dict['cdm'];
-    // delete default_crit_hide_dict['Cdm.Def'];
+  
+    CO_CDM_COMB="CDM_off_CO_off";
+    if (current_save_state===CO_CDM_COMB){
+        console.log("Doing Nothing")
+    }
+    else{
     if (default_crit_show_dict["C.Full"]!==undefined){
         delete default_crit_show_dict["C.Full"];
     }
@@ -3414,9 +3413,6 @@ if (dict['C']===undefined && dict['CO']===undefined){
 
 
     }
-
-
-    CO_CDM_COMB="CDM_off_CO_off";
     console.log("default_crit_show_dict!!!",default_crit_show_dict);
     if (default_crit_show_dict['default']===undefined || default_crit_hide_dict['default']===undefined ){
         $('#defualt_criteria_popup').empty();
@@ -3442,13 +3438,16 @@ if (dict['C']===undefined && dict['CO']===undefined){
                                 $("#default_tree_view_div").empty();
                                  $("#default_tree_view_div").show();
                                  $("#default_criteria_main_div").show();
+                                 $("#catalog_crit_sel").show();
                                  dict_not_empty_flag="false";
                                 defualtCriteriaOrderHtmlSetup();
                                 // defualtCriteriaHtmlSetup();
-                                                               }
+                            }
                             
                                
-                    }
+                    },
+                   
+                    
         ]
               
                 }); // Initialize dialog plugin
@@ -3495,82 +3494,91 @@ if (dict['C']===undefined && dict['CO']===undefined){
             return;
         }
     }
-    // show popup telling admin that by default full criteria is selected. if ok pressed then
+    
+    }
+    
+    /* show popup telling admin that by default full criteria is selected. if ok pressed then
     // show all critria list and option for hiding, once user finishes. 
     // c.full will be added to dict. 
     // automatically back to feat_lvl_div. 
     // now criteria display method will be ticked and only c.full will be ticked all else not ticked. 
     // if box unchecked it'll remove everything set for exp. it will check if exp_id is empty or not if not then it will run sendfeature level func. 
     // 
-    // 
+    */ 
     
 }
 else if (dict['C']!==undefined && dict['CO']===undefined){
     CO_CDM_COMB="CDM_on_CO_off";
-    $("#def_main_row_co_def").empty();
-    $("#default_criteria_div").empty();
-    console.log("default_crit_show_dict['C.Full']",default_crit_show_dict)
-    if (default_crit_show_dict["C.Full"]!==undefined){
-        delete default_crit_show_dict["C.Full"];
+    if (current_save_state===CO_CDM_COMB){
+        console.log("Doing Nothing")
+    }
+    else{
+        $("#def_main_row_co_def").empty();
+        $("#default_criteria_div").empty();
+        console.log("default_crit_show_dict['C.Full']",default_crit_show_dict)
+        if (default_crit_show_dict["C.Full"]!==undefined){
+            delete default_crit_show_dict["C.Full"];
 
-    }
-    if (default_crit_show_dict['C.Prune']!==undefined){
-        delete default_crit_show_dict['C.Prune'];
+        }
+        if (default_crit_show_dict['C.Prune']!==undefined){
+            delete default_crit_show_dict['C.Prune'];
 
-    }
-    if (default_crit_show_dict['default']!==undefined){
-        delete default_crit_show_dict['default'];
+        }
+        if (default_crit_show_dict['default']!==undefined){
+            delete default_crit_show_dict['default'];
 
-    }
-    if (default_crit_show_dict['Cdm.Def']!==undefined){
-        delete default_crit_show_dict['Cdm.Def'];
+        }
+        if (default_crit_show_dict['Cdm.Def']!==undefined){
+            delete default_crit_show_dict['Cdm.Def'];
 
-    }
-    if (default_crit_show_dict['cdm']!==undefined){
-        delete default_crit_show_dict['cdm'];
-    }
-    if (default_crit_hide_dict["C.Full"]!==undefined){
-        delete default_crit_hide_dict["C.Full"];
+        }
+        if (default_crit_show_dict['cdm']!==undefined){
+            delete default_crit_show_dict['cdm'];
+        }
+        if (default_crit_hide_dict["C.Full"]!==undefined){
+            delete default_crit_hide_dict["C.Full"];
 
-    }
-    if (default_crit_hide_dict['C.Prune']!==undefined){
-        delete default_crit_hide_dict['C.Prune'];
+        }
+        if (default_crit_hide_dict['C.Prune']!==undefined){
+            delete default_crit_hide_dict['C.Prune'];
 
-    }
-    if (default_crit_hide_dict['default']!==undefined){
-        delete default_crit_hide_dict['default'];
+        }
+        if (default_crit_hide_dict['default']!==undefined){
+            delete default_crit_hide_dict['default'];
 
-    }
-    if (default_crit_hide_dict['Cdm.Def']!==undefined){
-        delete default_crit_hide_dict['Cdm.Def'];
+        }
+        if (default_crit_hide_dict['Cdm.Def']!==undefined){
+            delete default_crit_hide_dict['Cdm.Def'];
 
-    }
-    if (default_crit_hide_dict['cdm']!==undefined){
-        delete default_crit_hide_dict['cdm'];
+        }
+        if (default_crit_hide_dict['cdm']!==undefined){
+            delete default_crit_hide_dict['cdm'];
+            
+
+        }
+        cdm_crit_hide_dict={};
+        cdm_crit_show_dict={};
+    
+
+
+
+        HideALL();
+        enableCriteriaButton();
         
-
+        $("#cdm_on_co_off_tree_view_div").empty();
+        $("#cdm_on_co_off_tree_view_div").show();
+        prune_empty_flag="true"
+        
+        cdm_defaultCriteriaOrderHTMLSetup();
+        // CdmCriteriaHTMLSetup();
+        var current=$(".active");
+        current.prop('class',current.attr('class').replace('active',""));
+        $('#def_crit_list_btn').prop('class', 'custom_nav_btn active');
+        $("#criteria_option_name").empty();
+        $("#criteria_option_name").append("<h4> Active CDM and Default CO</h4>");
+                    
+        return;
     }
-    cdm_crit_hide_dict={};
-    cdm_crit_show_dict={};
-    
-
-
-
-    HideALL();
-    enableCriteriaButton();
-    
-    $("#cdm_on_co_off_tree_view_div").empty();
-    $("#cdm_on_co_off_tree_view_div").show();
-    prune_empty_flag="true"
-    cdm_defaultCriteriaOrderHTMLSetup();
-    // CdmCriteriaHTMLSetup();
-    var current=$(".active");
-    current.prop('class',current.attr('class').replace('active',""));
-    $('#def_crit_list_btn').prop('class', 'custom_nav_btn active');
-    $("#criteria_option_name").empty();
-    $("#criteria_option_name").append("<h4> Active CDM and Default CO</h4>");
-                
-    return;
     /*
         // This means C.Full and C.Prune level active. 
         // show admin the criteria list for full and allow to make changes.
@@ -3587,67 +3595,66 @@ else if (dict['C']===undefined && dict['CO']!==undefined){
     crit_order_dict={};
     crit_hide_dict={};
     CO_CDM_COMB="CDM_off_CO_on"
-    // delete default_crit_show_dict["C.Full"];
-    // delete default_crit_show_dict['C.Prune'];
-    // delete default_crit_show_dict['cdm'];
-    // delete default_crit_show_dict['default'];
+    if (current_save_state===CO_CDM_COMB){
+        console.log("Doing Nothing")
+    }
+    else{
     
-    // delete default_crit_hide_dict["C.Full"];
-    // delete default_crit_hide_dict['C.Prune'];
-    // delete default_crit_hide_dict['cdm'];
-    // delete default_crit_hide_dict['default'];
-    if (default_crit_show_dict["C.Full"]!==undefined){
-        delete default_crit_show_dict["C.Full"];
+        if (default_crit_show_dict["C.Full"]!==undefined){
+            delete default_crit_show_dict["C.Full"];
 
-    }
-    if (default_crit_show_dict['C.Prune']!==undefined){
-        delete default_crit_show_dict['C.Prune'];
+        }
+        if (default_crit_show_dict['C.Prune']!==undefined){
+            delete default_crit_show_dict['C.Prune'];
 
-    }
-    if (default_crit_show_dict['default']!==undefined){
-        delete default_crit_show_dict['default'];
+        }
+        if (default_crit_show_dict['default']!==undefined){
+            delete default_crit_show_dict['default'];
 
-    }
-    if (default_crit_show_dict['Cdm.Def']!==undefined){
-        delete default_crit_show_dict['Cdm.Def'];
+        }
+        if (default_crit_show_dict['Cdm.Def']!==undefined){
+            delete default_crit_show_dict['Cdm.Def'];
 
-    }
-    if (default_crit_hide_dict["C.Full"]!==undefined){
-        delete default_crit_hide_dict["C.Full"];
+        }
+        if (default_crit_hide_dict["C.Full"]!==undefined){
+            delete default_crit_hide_dict["C.Full"];
 
-    }
-    if (default_crit_hide_dict['C.Prune']!==undefined){
-        delete default_crit_hide_dict['C.Prune'];
+        }
+        if (default_crit_hide_dict['C.Prune']!==undefined){
+            delete default_crit_hide_dict['C.Prune'];
 
-    }
-    if (default_crit_hide_dict['default']!==undefined){
-        delete default_crit_hide_dict['default'];
+        }
+        if (default_crit_hide_dict['default']!==undefined){
+            delete default_crit_hide_dict['default'];
 
-    }
-    if (default_crit_hide_dict['Cdm.Def']!==undefined){
-        delete default_crit_hide_dict['Cdm.Def'];
+        }
+        if (default_crit_hide_dict['Cdm.Def']!==undefined){
+            delete default_crit_hide_dict['Cdm.Def'];
 
-    }
+        }
 
+        
     
-    
-    HideALL();
-    $("#ol4").empty();
+        HideALL();
+        $("#ol4").empty();
 
-    $("#cdm_off_co_on_tree_view_div").empty();
+        $("#cdm_off_co_on_tree_view_div").empty();
 
-    $("#cdm_off_co_on_tree_view_div").show();
-    dict_not_empty_flag="false";
-    def_cdm_co_on_HtmlSetup();
-    enableCriteriaButton();
+        $("#cdm_off_co_on_tree_view_div").show();
+        $("#catalog_crit_sel").show();
 
-    // orderCriteriaHtmlSetup("CO",dict["CO"],default_active);
-    var current=$(".active");
-    current.prop('class',current.attr('class').replace('active',""));
-    $('#def_crit_list_btn').prop('class', 'custom_nav_btn active');
-    $("#criteria_option_name").empty();
-    $("#criteria_option_name").append("<h4>Active CO</h4>");
-    return;
+        dict_not_empty_flag="false";
+        def_cdm_co_on_HtmlSetup();
+        enableCriteriaButton();
+
+        // orderCriteriaHtmlSetup("CO",dict["CO"],default_active);
+        var current=$(".active");
+        current.prop('class',current.attr('class').replace('active',""));
+        $('#def_crit_list_btn').prop('class', 'custom_nav_btn active');
+        $("#criteria_option_name").empty();
+        $("#criteria_option_name").append("<h4>Active CO</h4>");
+        return;
+    }
     /*
         // Now first we get number of sets admin wants. 
         // Then admin will be shown default criteria list along with number of sets. 
@@ -3668,25 +3675,30 @@ else if (dict['C']!==undefined && dict['CO']!==undefined){
     // delete default_crit_hide_dict['default'];
     // delete default_crit_hide_dict['Cdm.Def'];
     
-    CO_CDM_COMB="CDM_on_CO_on"
-    cdm_crit_order_on_flag="false";
+    CO_CDM_COMB="CDM_on_CO_on";
+    if (current_save_state===CO_CDM_COMB){
+        console.log("Doing Nothing")
+    }
+    else{
+        cdm_crit_order_on_flag="false";
 
-    
-    HideALL();
+        
+        HideALL();
 
-    // cdm_On_Full_Co_HtmlSetup();
-    $("#cdm_on_co_on_tree_view_div").empty();
-    $("#cdm_on_co_on_tree_view_div").show();
-    $("#cdm_co_on_show_Option").show();
-    cdm_on_co_on_DefaultCriteriaHtmlSetup();
-    enableCriteriaButton();
-    var current=$(".active");
-    current.prop('class',current.attr('class').replace('active',""));
-    $('#def_crit_list_btn').prop('class', 'custom_nav_btn active');
-    $("#criteria_option_name").empty();
-    $("#criteria_option_name").append("<h4> Default CDM and Active CO</h4>");
-                
-    return;
+        // cdm_On_Full_Co_HtmlSetup();
+        $("#cdm_on_co_on_tree_view_div").empty();
+        $("#cdm_on_co_on_tree_view_div").show();
+        $("#cdm_co_on_show_Option").show();
+        cdm_on_co_on_DefaultCriteriaHtmlSetup();
+        enableCriteriaButton();
+        var current=$(".active");
+        current.prop('class',current.attr('class').replace('active',""));
+        $('#def_crit_list_btn').prop('class', 'custom_nav_btn active');
+        $("#criteria_option_name").empty();
+        $("#criteria_option_name").append("<h4> Default CDM and Active CO</h4>");
+                    
+        return;
+    } 
     /*
         // Now as both are checked, 
         // First the Admin will select order criteria sets. 
@@ -3734,6 +3746,11 @@ success: function(data){
         }
     }
   }); 
+
+
+
+
+
 }
 function removeFeatureLevel(){
     $.ajax({
@@ -4007,7 +4024,12 @@ function mobileCatalog(){
                                     }else{
                                         slider_set_dict[active_button]=temp_set_val_list
                                     }
-                                    
+                                    if (Object.keys(phoneset_dic).length === 0){
+                                        for (i in setlist){
+                                            phoneset_dic[setlist[i]]=[]
+                                        }
+                                        console.log("prhones doct---OPP",phoneset_dic)
+                                    }
                                     if (phoneset_dic[active_button]===undefined    ){
                                         phoneset_dic[active_button]=[];
 
@@ -4163,14 +4185,32 @@ function mobileCatalog(){
     
 function NextStep(element){
         // send all mobile id to server and request for there details. 
-        console.log("phoneset_dic-->",phoneset_dic[active_button])
-        for (i in phoneset_dic){
-            console.log("phoneset_dic[active_button][i]",phoneset_dic[i])
-            if (phoneset_dic[i]===undefined || phoneset_dic[i].length<=1){
-            alert("Please select at least two phones for the set");
-            return;
+        console.log(Object.keys(phoneset_dic).length);
+        dict_len=Object.keys(phoneset_dic).length;
+        if (dict_len===setlist.length){
+            var count=0
+            for (i in phoneset_dic){
+                console.log("IIII",i)
+                console.log("phoneset_dic[i]",phoneset_dic[i])
+                if (phoneset_dic[i]===undefined || phoneset_dic[i].length<=1){
+                count=count+1;
+                }
+        
+            }
+          
+
+            if (count===setlist.length){
+                alert("Please select at least two phones for the set");
+                return;
+
+            }
+            else if (count<setlist.length && count>0){
+                alert("Please select  phones for the sets");
+                return;
+            }
         }
-        }
+
+        
         // CHECK FOR ALL PHONESET_DICT keys if there list value is less than 1 or undefined
         
         $.ajax({
@@ -5708,6 +5748,7 @@ function toggleCheckbox(element){
     var static_default_crit_show_dict={};
     var static_default_crit_hide_dict={};
     var def_cdm_passed="false";
+    var current_save_state=""
     ///////////////////////////////////////////////////////////
     var cataloglist=[];
 function saveCatalogCrit_cdm_on_co_off(){
@@ -5719,6 +5760,21 @@ function saveCatalogCrit_cdm_on_co_off(){
        cataloglist.push(default_crit_show_dict['cdm'][i]);
        var li=document.createElement("li");
        li.innerHTML=default_crit_show_dict['cdm'][i]
+       ul.append(li)
+   }
+   console.log("Catalog List",cataloglist)
+   $("#catalog_crit_disp_col").empty();
+
+   $("#catalog_crit_disp_col").append(ul);
+}
+function saveCatalogCrit_cdm_off_co_on(){
+   var num=$('#input_num_field_catalog_crit').val();
+   var ul=document.createElement("ul")
+   cataloglist=[];
+   for (i=0;i<num;i++){
+       cataloglist.push(crit_order_dict["CO.1_Cdm.Def"][i]);
+       var li=document.createElement("li");
+       li.innerHTML=crit_order_dict["CO.1_Cdm.Def"][i]
        ul.append(li)
    }
    console.log("Catalog List",cataloglist)
@@ -5787,6 +5843,38 @@ function def_cdm_co_on_HtmlSetup(){
         $("#cdm_criteria_div").empty();
         $("#cdm_co_on_div").empty();
         $("#order_criteria_div").show();
+
+        $("#catalog_crit_sel").empty();
+        
+        var catalog_crit_sel=document.getElementById("catalog_crit_sel")
+        var catalog_crit_sel_row_div=document.createElement("div")
+        catalog_crit_sel.append(catalog_crit_sel_row_div)
+        catalog_crit_sel_row_div.setAttribute("class","row")
+        var col=document.createElement("div");
+        col.setAttribute("class","col");
+        catalog_crit_sel_row_div.append(col);
+        var p_ele=document.createElement("p");
+        p_ele.innerHTML="Catalog Criteria"
+        col.append(p_ele);
+        var col=document.createElement("div");
+        col.setAttribute("class","col")
+
+        catalog_crit_sel_row_div.append(col);
+        var  input_num_field_catalog_crit=document.createElement("input")
+        input_num_field_catalog_crit.setAttribute("id","input_num_field_catalog_crit")
+        input_num_field_catalog_crit.setAttribute("type","number")
+        col.append(input_num_field_catalog_crit);
+        var  save_btn_catalog_crit=document.createElement("button")
+        save_btn_catalog_crit.setAttribute("id","save_btn_catalog_crit")
+        save_btn_catalog_crit.setAttribute("onclick","saveCatalogCrit_cdm_off_co_on()")
+        save_btn_catalog_crit.innerHTML="Save"
+        col.append(save_btn_catalog_crit);
+        var col=document.createElement("div");
+        col.setAttribute("class","col")
+        col.setAttribute("id","catalog_crit_disp_col")
+
+        catalog_crit_sel_row_div.append(col);
+
         var default_criteria_div=document.getElementById("order_criteria_div");
         var container=document.createElement("div");
         container.setAttribute('class','container-fluid text-center');
@@ -6323,6 +6411,7 @@ function get_data_Ajax_Co(colist){
     function saveOrderSet(){
         console.log("crit_order_dict",crit_order_dict);
         console.log("crit_hide_dict",crit_hide_dict);
+        current_save_state="CDM_off_CO_on"
         // make an ajax call that will send the two dicts to server. 
         $.ajax({
                                 
@@ -6961,7 +7050,7 @@ function get_data_Ajax_Co(colist){
     function saveDefaultCriteriaSet(){
             // dict['C']=['C.full'];
             // console.log("DICTO",dict);
-
+            current_save_state="CDM_off_CO_off"
           // make an ajax call that will send full criterias that will be enabled for the experiment. 
           $.ajax({
                                 
@@ -7664,7 +7753,7 @@ function get_data_Ajax_Co(colist){
 }
     function saveCdmCriteriaHTMLSetup(){  
          // make an ajax call that will send full criterias that will be enabled for the experiment. 
-          
+         current_save_state="CDM_on_CO_off";
           $.ajax({
                                 
                                 type: 'POST',
@@ -9875,6 +9964,7 @@ function get_data_Ajax_Co(colist){
 
    }
     function Save_Cdm_CO_On(){
+        current_save_state="CDM_on_CO_on"
         console.log("crit_order_dict",crit_order_dict);
         console.log("crit_hide_dict",crit_hide_dict);
         // make an ajax call that will send the two dicts to server. 
@@ -11693,17 +11783,7 @@ function get_data_Ajax_Co(colist){
 
 
                 }
-                   
-
-                     
-
-
-                  
-
-                    
-                    
-                    
-                            
+                          
 
     
     main_treeview_dict['children']=mainchildlist
@@ -12109,6 +12189,22 @@ $(document).on({
 function submitDescription(){
     $('#text_area_desp').val();
     console.log( $('#text_area_desp').val())
+    exp_description=$('#text_area_desp').val();
+    alert(exp_id)
+    if (exp_id!==""){
+        alert(exp_id)
+        $.ajax({
+                type:"POST",
+                dataType:"json",
+                'data':{
+                    'exp_description':exp_description,
+                    'exp_id':exp_id,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                },
+                url: "{% url 'addexpdiscp' %}",
+                        success: function(data){}
+        });
+    }
 
 }
 </script>

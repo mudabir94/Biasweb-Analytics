@@ -1,0 +1,414 @@
+{% extends "webapp/crudexperiment/base_experiment.html" %}
+{% block content %}
+{%load static from staticfiles%}
+<div class="container-fluid text-center "> 
+        <div class="row is-flex content">
+                <div class="col-md-2" >
+                        <div class='container-fluid'>
+                                {% with template_sidebar=template_sidebar %}
+                                {% include template_sidebar %}
+                                {% endwith %}
+                        </div>
+                </div>
+
+                <div class="col-md-8 text-left" >
+                    
+                    <div class="row is-flex  custom_row">
+                        <div class='col'>
+                            <div class="row is-flex custom_row">
+                                <div class='col'>
+                                    <div class="rowcustom_row">Experiment List</div>
+                                    <div class="rowcustom_row">
+                                        <div id="list_exp_id_div">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class='col'>
+                                        <div class="row custom_row">Status Button</div>
+                                        <div class="row custom_row">
+                                            <!-- <button class="" onclick="exp_Filter_By_Statuses($(this))" value="ALL">ALL</button> -->
+                                            <button class="" id="DESIGN_MODE_BTN" onclick="exp_Filter_By_Statuses($(this))" value="DESIGN_MODE">DESIGN MODE</button>
+                                            <button class="" onclick="exp_Filter_By_Statuses($(this))" value="UNASSIGNED">UNASSIGNED</button>
+                                            <button class="" onclick="exp_Filter_By_Statuses($(this))" value="READY">READY</button>
+                                            <button class="" onclick="exp_Filter_By_Statuses($(this))" value="CLOSED">CLOSED</button>
+                                            <button class="" onclick="exp_Filter_By_Statuses($(this))" value="SUSPENDED">SUSPENDED</button>
+                                            <button class="" onclick="exp_Filter_By_Statuses($(this))" value="CANCELLED">CANCELLED</button>
+                                            <button class="" onclick="exp_Filter_By_Statuses($(this))" value="ANALYZED">ANALYZED</button>
+                                            <button class="" onclick="exp_Filter_By_Statuses($(this))" value="HOLD"> HOLD</button>
+                                            <button class="" onclick="exp_Filter_By_Statuses($(this))" value="OPEN">OPEN</button>
+                                            <button class="" onclick="exp_Filter_By_Statuses($(this))" value="ACTIVE">ACTIVE</button>
+
+                                        </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class='col' style="background: #8fbc8f8a;">
+                                <div class="row custom_row">Experiment Form</div>
+                                <div class="row custom_row">
+                                    <div id="exp_form_div">
+                                    </div>
+                               
+                                </div>
+                        </div>
+                    </div>
+                    <div class="row is-flex custom_row">
+                </div>
+                <div class="col-md-2" ></div>
+        </div>
+        
+</div>
+
+<script>
+    var exp_detail_wrt_status_dict={};
+    var updated_detail_wrt_status={}
+    var status_query_list=[];
+    var temp_list=[]
+    var ajax_for_li_data_flag=true;
+    var statusCode_list=[]
+   $(document).ready(function () {   
+
+        $.ajax({
+                type:"GET",
+                dataType:"json",
+                'data':{
+                    // 'csrfmiddlewaretoken': '{{ csrf_token }}',
+                },
+                url: "{% url 'manageexp' %}",
+                        success: function(data){
+                            console.log(data['exp_wrt_statuscode']);
+                            exp_detail_wrt_status_dict= JSON.parse(JSON.stringify(data['exp_wrt_statuscode']));
+                            updated_detail_wrt_status= JSON.parse(JSON.stringify(data['exp_wrt_statuscode']));
+                            statusCode_list=data['statusCode_list']
+                            console.log("statusCode_list",statusCode_list)
+                            li_Html_Genertor(data['exp_wrt_statuscode']["DESIGN_MODE"],ajax_for_li_data_flag);
+                        }
+        });
+    });
+    original_status="";
+    function exp_Filter_By_Statuses(element){
+        var element_value=$(element).val()
+        var clss=$(element).attr('class');
+        if (clss===""){
+            $(element).attr('class',"active");
+            status_query_list.push(element_value)
+        }
+        else{
+            $(element).attr('class',"");
+            var index=status_query_list.indexOf(element_value);
+            status_query_list.splice(index,1);
+            console.log("status_query_list")
+            console.log(status_query_list)
+
+        }
+        temp_list=[];
+        console.log("status_query_list",status_query_list)
+        for (var i in status_query_list){
+                for (var f in exp_detail_wrt_status_dict[status_query_list[i]]){
+                        console.log( exp_detail_wrt_status_dict[status_query_list[i]][f].id);
+                        id=exp_detail_wrt_status_dict[status_query_list[i]][f].id
+                        temp_list.push(id)                
+                    }
+        }
+        console.log("temp_list",temp_list)
+        ajax_for_li_data_flag=false;
+        li_Html_Genertor(temp_list,ajax_for_li_data_flag)
+
+    }
+    function li_Ret_Id_Detail(element){
+        element_value=[$(element).val()];
+        console.log("Elemenntvale",element_value)
+        $(".active_li").removeClass("active_li");
+        $(element).attr("class","active_li");
+        // When li is click show a form 
+        // var lost=[883];
+        $("#exp_form_div").empty();
+        var exp_form_div=document.getElementById("exp_form_div");
+        var main_row_div=document.createElement("div");
+
+        main_row_div.setAttribute("class","row is-flex custom_row")
+        main_row_div.id="main_row_div";
+        exp_form_div.append(main_row_div);
+        var ids_row_div=document.createElement("div");
+        ids_row_div.setAttribute("class","row custom_row");
+        ids_row_div.id="ids_row_div";
+        main_row_div.append(ids_row_div);
+        var status_row_div=document.createElement("div");
+        status_row_div.setAttribute("class","row custom_row");
+        status_row_div.id="status_row_div";
+        main_row_div.append(status_row_div);
+        var descp_row_div=document.createElement("div");
+        descp_row_div.setAttribute("class","row custom_row");
+        descp_row_div.id="descp_row_div";
+        main_row_div.append(descp_row_div);
+        var save_row_div=document.createElement("div");
+        save_row_div.setAttribute("class","row custom_row");
+        save_row_div.id="save_row_div";
+        main_row_div.append(save_row_div);
+        for (var j in status_query_list){
+
+            for (var k in exp_detail_wrt_status_dict[status_query_list[j]]){
+               if (element_value.includes(exp_detail_wrt_status_dict[status_query_list[j]][k].id)){
+                   var exp_obj=exp_detail_wrt_status_dict[status_query_list[j]][k];
+                   console.log("TEMPLIST ID ",temp_list[k]);
+                   console.log("exp_detail_wrt_status_dict_wholevalue",exp_detail_wrt_status_dict[status_query_list[j]][k]);
+                   var id_col1=document.createElement("div");
+                   id_col1.setAttribute("class","col");
+                   id_col1.id="id_col1";
+                   var id_col2=document.createElement("div");
+                   id_col2.setAttribute("class","col");
+                   id_col2.id="id_col2";
+                   var id_col3=document.createElement("div");
+                   id_col3.setAttribute("class","col");
+                   id_col3.id="id_col3";
+
+                   ids_row_div.append(id_col1);
+                   ids_row_div.append(id_col2);
+                   ids_row_div.append(id_col3);
+                   var h6=document.createElement("h6");
+                   h6.innerText="Id:"
+                   var input_idcol1=document.createElement("input");
+                   input_idcol1.setAttribute("class","input_id_cols")
+                   input_idcol1.value=element_value;
+                   input_idcol1.disabled=true;
+
+                   id_col1.append(h6);
+                   id_col1.append(input_idcol1);
+
+
+                   var h6=document.createElement("h6");
+                   h6.innerText="owner_id:"
+                   var input_idcol2=document.createElement("input");
+                   input_idcol2.setAttribute("class","input_id_cols")
+
+                   input_idcol2.value=exp_obj.owner_id;
+                   input_idcol2.disabled=true;
+                   id_col2.append(h6);
+                   id_col2.append(input_idcol2);
+
+                   var h6=document.createElement("h6");
+                   h6.innerText="custom_exp_id:"
+                   var input_idcol3=document.createElement("input");
+                   input_idcol3.setAttribute("class","input_id_cols")
+
+                   input_idcol3.value=exp_obj.custom_exp_id;
+                   input_idcol3.disabled=true;
+                   id_col3.append(h6);
+                   id_col3.append(input_idcol3);
+                   original_status=exp_obj.status
+                //    var status_col1=document.createElement("div");
+                //    status_col1.setAttribute("class","col");
+                //    status_col1.id="status_col1";
+                //    var h6=document.createElement("h6");
+                //    h6.innerText="Status:";
+                //    var input_elem=document.createElement("input");
+                //    input_elem.setAttribute("class","input_id_cols");
+                //    input_elem.value=exp_obj.status;
+                //    input_elem.disabled=true;
+
+                //    status_col1.append(h6);
+                //    var status_col2=document.createElement("div");
+                //    status_col2.setAttribute("class","col");
+                //    status_col2.id="status_col2";
+                //    status_col1.append(input_elem);
+
+                   var status_col3=document.createElement("div");
+                   status_col3.setAttribute("class","col");
+                   status_col3.id="status_col3";
+                   var h6=document.createElement("h6");
+                   h6.innerText="Status:"
+                   var select_elem=document.createElement("select");
+                   select_elem.setAttribute("id","select_elem");
+                   for (code in statusCode_list){
+                    var option = document.createElement("option");
+                    option.value = statusCode_list[code][1];;
+                    option.text = statusCode_list[code][1];;
+                    select_elem.appendChild(option);
+                   }
+                  
+                //    $('#'+select_elem).va
+                   status_col3.append(h6);
+                   var status_col4=document.createElement("div");
+                   status_col4.setAttribute("class","col");
+                   status_col4.id="status_col4";
+                   status_col4.append(select_elem);
+                //    status_row_div.append(status_col1);
+                //    status_row_div.append(status_col2);
+                   status_row_div.append(status_col3);
+                   status_row_div.append(status_col4);
+                   $("#select_elem option[value="+exp_obj.status+"]").attr('selected', 'selected');
+
+                   var descp_col1=document.createElement("div");
+                   descp_col1.setAttribute("class","col-md-4");
+                   descp_col1.id="descp_col1";
+                   var h6=document.createElement("h6");
+                   h6.innerText="Description:"
+                   descp_col1.append(h6);
+                   var descp_col2=document.createElement("div");
+                   descp_col2.setAttribute("class","col-md-8");
+                   descp_col2.id="descp_col2";
+                   var textarea=document.createElement("textarea");
+                   textarea.id="descp_area";
+                   textarea.value=exp_obj.desc;
+                   descp_col2.append(textarea)
+                   descp_row_div.append(descp_col1);
+                   descp_row_div.append(descp_col2)
+
+                   var save_col1=document.createElement("div");
+                   save_col1.setAttribute("class","col-md-8");
+                   save_col1.id="save_col1"
+                
+                   var save_col2=document.createElement("div");
+                   save_col2.setAttribute("class","col-md-4");
+                   save_col2.id="save_col2"
+                   
+                   var save_button=document.createElement("button");
+                   save_button.id="save_button";
+                   save_button.innerHTML="SAVE"
+                   save_button.value=element_value;
+                   save_col2.append(save_button);
+                   save_button.setAttribute("onclick","save_exp_state($(this))");
+                   save_row_div.append(save_col1);
+                   save_row_div.append(save_col2);
+
+
+
+
+
+
+
+
+                   
+            
+
+
+                
+                
+                //    exp_detail_wrt_status_dict[status_query_list[j]][k].status_code_id=9;
+                //    exp_detail_wrt_status_dict[status_query_list[j]][k].status="OPEN";
+                //    updated_detail_wrt_status[status_query_list[j]][k].status_code_id=9;
+                //    updated_detail_wrt_status[status_query_list[j]][k].status="OPEN";
+                //    exp_detail_wrt_status_dict["OPEN"].push(exp_detail_wrt_status_dict[status_query_list[j]][k]);
+                //    exp_detail_wrt_status_dict[status_query_list[j]].splice(k,1)
+                //    console.log("exp_detail_wrt_status_dict_wholevalue",exp_detail_wrt_status_dict);
+                //    console.log("updated_detail_wrt_status",updated_detail_wrt_status);
+               }
+            }
+        }
+     
+    
+    }
+    function li_Html_Genertor(data,flag){
+        active_in_list=$(".active_li").attr("id");
+        console.log("ACTIVE LIST li",active_in_list)
+        $("#list_exp_id_div").empty();
+        list_exp_id_div=document.getElementById("list_exp_id_div");
+        
+        var ul=document.createElement("ul");
+
+        ul.id="";
+        list_exp_id_div.append(ul)
+        if (flag===true){
+            first_in_list=data[0].id
+            for (var i in data){
+                // console.log(data['exp_wrt_statuscode']["DESIGN_MODE"][i].id);   
+                var li=document.createElement("li")
+                li.id=data[i].id+"_li";
+                li.setAttribute("role","option");
+                li.value=data[i].id;
+                li.setAttribute("onclick","li_Ret_Id_Detail($(this))")
+                li.innerHTML=data[i].id;
+                ul.append(li);
+            }
+            status_query_list.push("DESIGN_MODE");
+            $("#DESIGN_MODE_BTN").attr("class","active");
+            element=$("#"+first_in_list+"_li");
+            
+            li_Ret_Id_Detail($(element));
+
+        }
+        else{
+            
+            for (var i in data){
+                // console.log(data['exp_wrt_statuscode']["DESIGN_MODE"][i].id);   
+                var li=document.createElement("li")
+                li.id=data[i]+"_li";
+                li.setAttribute("role","option");
+                li.value=data[i];
+                li.setAttribute("onclick","li_Ret_Id_Detail($(this))")
+                li.innerHTML=data[i];
+                ul.append(li);
+            }
+            if ($(".active_li").empty===false){
+                console.log("NOT UND",$(".active_li"))
+                console.log($("#"+active_in_list+"_li"))
+                li_Ret_Id_Detail($("#"+active_in_list+"_li"));
+            }
+            else {
+                first_in_list=data[0];
+                element=$("#"+first_in_list+"_li");
+                li_Ret_Id_Detail($(element));
+
+            }
+        }
+    }
+    function save_exp_state(element){
+        var id=[parseInt($(element).val())];
+        status_value_changed=$("#select_elem").children("option:selected").val();
+        description=$("#descp_area").val()
+       
+        for (code in statusCode_list){
+                
+                if(statusCode_list[code][1]===status_value_changed)
+                {
+                  
+                    status_code_id=statusCode_list[code][0];
+                    console.log("status_code_id",status_code_id)
+                }
+        }
+       
+        for (var k in exp_detail_wrt_status_dict[original_status]){
+            
+
+            if (id.includes(exp_detail_wrt_status_dict[original_status][k].id)){
+                
+                console.log("IDDD",id)
+                console.log("exp_detail_wrt_id",exp_detail_wrt_status_dict[original_status][k].id)
+                exp_detail_wrt_status_dict[original_status][k].status_code_id=status_code_id;
+                exp_detail_wrt_status_dict[original_status][k].status=status_value_changed;
+                exp_detail_wrt_status_dict[original_status][k].desc=description;
+
+                updated_detail_wrt_status[original_status][k].status_code_id=status_code_id;
+                updated_detail_wrt_status[original_status][k].status=status_value_changed;
+                updated_detail_wrt_status[original_status][k].desc=description;
+
+
+
+                exp_detail_wrt_status_dict[status_value_changed].push(exp_detail_wrt_status_dict[original_status][k]);
+                exp_detail_wrt_status_dict[original_status].splice(k,1)   
+                }
+
+            }
+        
+                console.log("exp_detail_wrt_status_dict");
+                console.log(exp_detail_wrt_status_dict); 
+                console.log("updated_detail_wrt_status");
+                console.log(updated_detail_wrt_status);
+       $.ajax({
+                type:"POST",
+                dataType:"json",
+                'data':{
+                    'updated_detail_wrt_status':JSON.stringify(updated_detail_wrt_status),
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                },
+                url: "{% url 'manageexp' %}",
+                    success: function(data){
+
+                    }
+            });
+    
+    
+    }
+</script>
+
+{%endblock%}

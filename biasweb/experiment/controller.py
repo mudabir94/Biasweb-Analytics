@@ -13,7 +13,7 @@ from webapp.models import experiment as Experiment
 from webapp.models import Block
 from webapp.models import experiment_feature as ExpFeature
 from webapp.models import platform_feature as PFeature
-from webapp.models import User, Subject
+from webapp.models import User, Subject,exStatusCd
 from webapp.forms import SubjectCreationForm as scf
 
 # WHERE SAVED FILES WILL BE STORED
@@ -46,6 +46,7 @@ class ExperimentController:
         else:
             print("In else")
             self.exp.status = DESIGN_MODE
+            self.exp.status_code=exStatusCd.objects.get(id=1)
             self.exp.owner = User.objects.get(custom_id=a_id)      #TODO@MUDABIR - NEED TO MODIFY EXPERIMENT ADMIN IMPLEMENTATION
             print(" self.exp.owner", self.exp.owner)
             self.exp.custom_exp_id = 'TBA' #can only be created after Experient table assigns an id
@@ -99,17 +100,19 @@ class ExperimentController:
             newFSet = list(newFLevels.keys())
         #3 things
         #1. add all features (incl existing) in newFSet along with any new LevList
-        for f in newFSet:
-            nLev = None
-            if newFLevels:
-                nLev = newFLevels[f]
-            self.addFeature(fSymbol=f, newLevList=nLev, byPrompt=prompt)
+        print("newFSet",newFSet)
+        if  newFSet is not None:
+            for f in newFSet:
+                nLev = None
+                if newFLevels:
+                    nLev = newFLevels[f]
+                self.addFeature(fSymbol=f, newLevList=nLev, byPrompt=prompt)
         #2. compare the existing fSet with proposed, and identify diffs
-        curFSet = list(self.fSet.values_list('p_feature__feature_symbol', flat=True))
-        dropFList = list(set(curFSet)-set(newFSet))
-        #3. delete any features not required
-        for d in dropFList:
-            self.delFeature(d)
+            curFSet = list(self.fSet.values_list('p_feature__feature_symbol', flat=True))
+            dropFList = list(set(curFSet)-set(newFSet))
+            #3. delete any features not required
+            for d in dropFList:
+                self.delFeature(d)
         #self.fSet.bulk_create(self.fInSet)
 
     

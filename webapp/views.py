@@ -41,13 +41,15 @@ from biasweb.utils.assign import Assigner
 from .forms import (NameForm, SignUpForm, blogForm, filterform,
                     sort_filter_form)
 #-----------------------------------------------------------------
+from webapp.models import experiment as Experiment
+
 from .models import Role, User, blog
 from .models import experiment as exp
 from .models import ( mobilephones, platform_feature,
                      samsung_phone, sort_feature, userscoreRecord,ExpCriteriaOrder,PhoneCriteria)
 
 
-from .models import selectedAdminPhones,criteria_catalog_disp
+from .models import selectedAdminPhones,criteria_catalog_disp,exStatusCd
 from django.views.decorators.cache import never_cache
 
 
@@ -121,7 +123,8 @@ class Home(TemplateView):
         elif role=='Subject':
             # all other conditions of subjects will be done here. 
             exp_list = userobj.subject_set.values_list('exp', flat=True) 
-            inner_qs = exp.objects.filter(id__in=list(exp_list),status__contains="ACTIVE")
+            exStatusCd_list=exStatusCd.objects.filter(status_code__gte=10)
+            inner_qs = exp.objects.filter(id__in=list(exp_list),status_code__in=exStatusCd_list)
             print("inner_qs",inner_qs.values('id'))
             explist=inner_qs.values('id')
             print("explst",explist)
@@ -133,9 +136,6 @@ class Home(TemplateView):
                 'template_main_homepage':template_main_homepage,
                 'explist':explist
             }
-            # return render(request,'webapp/2by2comparemobilespecs.html')
-            # return redirect('/filtered_mobile_view')
-
         #*****************************************************
         return render(request,self.template_name,data)
     def post(self,request):
@@ -2426,7 +2426,7 @@ class createExperiment(TemplateView):
                 'sess_expId':sess_expId,
                 'sess_custExpId':sess_custExpId,
                 # 'samsung_phones':samsung_phones
-                                            }
+            }
             )
                                         
                                     
@@ -2449,12 +2449,19 @@ class createExperiment(TemplateView):
                 #or for existing one [TODO: CHECK STATUS OF EXPERIMENT AS IN DESIGN_MODE]
                 expCont = getExpController(request)
                 existExpId = expCont.exp.id
-    
+
                 #SET FLEVELS
+                #@Todo: TEST: Add Condition if postedFLevels are empty then newFLevels set to None)
+                if not postedFLevels:
+                    postedFLevels=None
                 expCont.setFSet(newFLevels=postedFLevels,prompt=False)
-                block_set = expCont.generateBlocks()
-                block_list = list(block_set.all().values('serial_no','levels_set'))
-                
+                if postedFLevels is not None:
+                    block_set = expCont.generateBlocks()
+                    block_list = list(block_set.all().values('serial_no','levels_set'))
+                else:
+                    block_list=[]
+
+                    
                 # # blockStr = "\n".join(str(b) for b in expCont.exp.block_set.all())
                 print('<<<<<<TO DISPLAY ON PAGE>>>>>>')
                 print(block_list)
@@ -2465,7 +2472,200 @@ class createExperiment(TemplateView):
                 }
                 return JsonResponse(data) #, safe=False)
         #return render(request,'webapp/crudexperiment/create_experiment.html',data)
-from webapp.models import experiment as Experiment
+
+    def addDesp(request):
+        # If experiment object exsists then add the descp returned from ajax request. 
+        if request.is_ajax():
+            exp_description= request.POST.get('exp_description')
+            exp_id= request.POST.get('exp_id')
+
+            print("exp_des")
+            expCont = getExpController(request)
+            existExpId = expCont.exp.id
+            exp.objects.filter(id=existExpId).update(desc=exp_description)
+            print(exp_description)
+
+            return JsonResponse({'data':"success"})
+statusCode_list=[]
+exp_wrt_statuscode={}
+
+class ManageExperiment(TemplateView):
+    template_name='webapp/crudexperiment/manage_experiment.html'
+    template_sidebar="webapp/sidebartemplates/sidebartemp_superadmin.html"
+    def get(self,request):
+        
+        if request.is_ajax():
+            userobj=User.objects.get(pk=request.user.id)
+            role=userobj.role_id_id
+            roleobj=Role.objects.get(pk=role)
+            role=roleobj.role_name
+            if role=='Super_Admin':
+                global statusCode_list
+                global exp_wrt_statuscode
+                statusCode_list=exStatusCd.objects.values_list("status_code","status_name").distinct()
+                statusCode_list=list(statusCode_list)
+                print(statusCode_list)
+                for code in statusCode_list:
+                    temp_dict={}
+                    print(code[0])
+                    print(code[1])
+                    # code[0] contains the index and code[1] name of the status
+                    exStatusCd_index=exStatusCd.objects.get(status_code=code[0])
+                    all_exp_list = exp.objects.filter(status_code=exStatusCd_index)
+                    all_exp_list=list(all_exp_list.values())
+                    exp_wrt_statuscode[code[1]]=all_exp_list
+                
+
+                # print(exp_wrt_statuscode)
+
+
+            data={
+                "Success":"Sucess",
+                "statusCode_list":statusCode_list,
+                "exp_wrt_statuscode":exp_wrt_statuscode
+            }
+            return JsonResponse(data)
+        else:
+            userobj=User.objects.get(pk=request.user.id)
+            role=userobj.role_id_id
+            roleobj=Role.objects.get(pk=role)
+            role=roleobj.role_name
+            if role=='Super_Admin':
+                exp_wrt_statuscode={}
+                statusCode_list=exStatusCd.objects.values_list("status_code","status_name").distinct()
+                statusCode_list=list(statusCode_list)
+                print(statusCode_list)
+                for code in statusCode_list:
+                    print(code[0])
+                    print(code[1])
+                    exStatusCd_index=exStatusCd.objects.get(status_code=code[0])
+                    all_exp_list = exp.objects.filter(status_code=exStatusCd_index)
+                    exp_wrt_statuscode[code[1]]=all_exp_list
+                print(exp_wrt_statuscode)
+
+
+
+            
+            data={
+                'template_sidebar':self.template_sidebar,
+            }
+            return render(request,self.template_name,data)
+    def post(self,request):
+        if request.is_ajax():
+            updated_detail_wrt_status=request.POST.get('updated_detail_wrt_status')
+            updated_detail_wrt_status = json.loads(updated_detail_wrt_status)
+            # print(updated_detail_wrt_status)
+            global statusCode_list
+            global exp_wrt_statuscode
+            print("statusCode_list",statusCode_list)
+            for code in statusCode_list:
+                    # print("AAAA",code[1])
+                    for h,m in zip(exp_wrt_statuscode[code[1]],updated_detail_wrt_status[code[1]]):
+                        
+                        
+                        if h['status']!=m['status']:
+                            print(h['status'])
+                            print("--------------")
+                            print(m['status'])
+                            print("status different ")
+                            print("m['status_code_id']",m['status_code_id'])
+                            exStatusCdObj=exStatusCd.objects.get(status_code=m['status_code_id'])
+                            exp.objects.filter(id=h['id']).update(status=m['status'],status_code_id=exStatusCdObj.id,desc=m["desc"])
+                        elif h['desc']!=m['desc']:
+                            print("description different ")
+
+                            print("m['status_code_id']",m['status_code_id'])
+                            exStatusCdObj=exStatusCd.objects.get(status_code=m['status_code_id'])
+                            
+                            exp.objects.filter(id=h['id']).update(status=m['status'],status_code_id=exStatusCdObj.id,desc=m["desc"])
+
+                        # IF J.STATUS CODE, STATUS OR DESCRIPTION IS DIFFERENT FROM THE DICT SEND THROUGH AJAX THEN UPDATE THE J. 
+
+            data={
+                "Success":"Sucess"
+            }
+        return JsonResponse(data)
+def getSpecificMobileData(request):
+    if request.is_ajax():
+        if request.method=="POST":
+            specsmobdata = request.POST.get('specsmobdata')
+            
+            specsmobdata = json.loads(specsmobdata)
+            print("specsmobdata",type(specsmobdata))
+            specmob_dic={}
+            for key,val in specsmobdata.items():
+                print(key,val)
+                specmobret=mobilephones.objects.filter(id__in=val)
+                specmobret = list(specmobret.values())   
+                specmobret_str=specmobret
+                specmob_dic[key]=specmobret_str
+            # print("specsmobdata",specmobret)
+            print(specmob_dic)
+            
+            # specmobret = list(specmobret.values())   
+            # specmobret_str=specmobret
+            return JsonResponse(
+            {  'mobilephones':specmob_dic}
+            )
+catalogcrit_show_list=[]
+def getMobiledata(request):
+    if request.is_ajax():
+        if request.method=="GET":
+            print("GET MOBILE DATA")
+            mobiles_retrieved=mobilephones.objects.all()
+            mobiles_retrieved = list(mobiles_retrieved.values())   
+            mobiles_retrieved_list=mobiles_retrieved
+            # global catalogcrit_show_list
+            # catalogcrit_show_list=["price","OS"]
+            cat_obj=criteria_catalog_disp.objects.get(id=1)
+            catalogcrit_show_list=cat_obj.catalog_crit_display_order
+            return JsonResponse(
+                {
+                    'mobilephones':mobiles_retrieved_list,
+                    'catalogcrit_show_list':catalogcrit_show_list,
+
+                }
+            )
+def getReqPhones(request):
+    if request.method=="POST":
+        if request.is_ajax:
+            brandname=request.POST.get("brands")
+            brandname = json.loads(brandname)
+            price_range=request.POST.get("price")
+            price_range = json.loads(price_range)
+
+            print ("brand name",brandname)
+
+            print ("price_range",price_range)
+            # fetch mobile phones based on these... 
+            if not brandname:
+                mobiles_retrieved=mobilephones.objects.filter(price__range=(price_range[0], price_range[1])).order_by('id') 
+            else:
+                mobiles_retrieved=mobilephones.objects.filter(price__range=(price_range[0], price_range[1]),Mobile_Companny__in=brandname).order_by('id') 
+
+            print("MOBILES RETR")
+            print(mobiles_retrieved)
+            listofmob=list(mobiles_retrieved.values())
+            print("list of mob",listofmob)
+            data={
+                'mobilephones':listofmob
+            }
+            return JsonResponse(data)
+def retSpecMobilePhone(request):
+
+    if request.method=="POST":
+        if request.is_ajax:
+            mobile_id=request.POST.get("mobile_id") 
+            # based on mobile id ret phone from mobilephones model.
+            print("mobile_id",mobile_id) 
+            mobile=mobilephones.objects.get(id=mobile_id)
+            phone=mobile.Mobile_Name
+            
+            data={
+                "phone":phone
+            }
+            return JsonResponse(data)
+
 def SavePhoneSets_P0(request):
     if request.method=="POST":
         if request.is_ajax:
@@ -2673,125 +2873,5 @@ def SavePhoneSets(request):
                      'block_list':block_list
                 }
                 return JsonResponse(data) #, safe=False)
-
-
-
-class editExperiment(TemplateView):
-        def get(self,request):
-            # Get user id. 
-            # check admin status.
-            # fetch all exp created by this admin
-            # get the latest exp .. In future only get the exp which has status=active. 
-            # userid= request.user.id
-            # userobj=user.objects.get(pk=userid)
-            uid=request.user.id
-            print(uid)
-            print(Experiment.objects.filter(owner=uid).values_list('id',flat=True))
-            expList=Experiment.objects.filter(owner=uid).values_list('id',flat=True)
-            expactive=max(expList)
-            print(expactive)
-            request.session['sess_expId'] = expactive
-            expCont = getExpController(request)
-            existExpId = expCont.exp.id
-             #SET FLEVELS
-            expCont.setFSet(newFLevels=postedFLevels,prompt=False)
-            block_set = expCont.generateBlocks()
-            block_list = list(block_set.all().values('serial_no','levels_set'))
-                
-                # # blockStr = "\n".join(str(b) for b in expCont.exp.block_set.all())
-            print('<<<<<<TO DISPLAY ON PAGE>>>>>>')
-            print(block_list)
-            data = {
-                    'exp_id':existExpId,
-                    'custom_exp_id':expCont.exp.custom_exp_id,
-                    'block_list':block_list
-                }
-            
-
-
-            
-            pass
-        def post(self,request):
-            pass
-def getSpecificMobileData(request):
-    if request.is_ajax():
-        if request.method=="POST":
-            specsmobdata = request.POST.get('specsmobdata')
-            
-            specsmobdata = json.loads(specsmobdata)
-            print("specsmobdata",type(specsmobdata))
-            specmob_dic={}
-            for key,val in specsmobdata.items():
-                print(key,val)
-                specmobret=mobilephones.objects.filter(id__in=val)
-                specmobret = list(specmobret.values())   
-                specmobret_str=specmobret
-                specmob_dic[key]=specmobret_str
-            # print("specsmobdata",specmobret)
-            print(specmob_dic)
-            
-            # specmobret = list(specmobret.values())   
-            # specmobret_str=specmobret
-            return JsonResponse(
-            {  'mobilephones':specmob_dic}
-            )
-catalogcrit_show_list=[]
-def getMobiledata(request):
-    if request.is_ajax():
-        if request.method=="GET":
-            print("GET MOBILE DATA")
-            mobiles_retrieved=mobilephones.objects.all()
-            mobiles_retrieved = list(mobiles_retrieved.values())   
-            mobiles_retrieved_list=mobiles_retrieved
-            # global catalogcrit_show_list
-            # catalogcrit_show_list=["price","OS"]
-            cat_obj=criteria_catalog_disp.objects.get(id=1)
-            catalogcrit_show_list=cat_obj.catalog_crit_display_order
-            return JsonResponse(
-                {
-                    'mobilephones':mobiles_retrieved_list,
-                    'catalogcrit_show_list':catalogcrit_show_list,
-
-                }
-            )
-def getReqPhones(request):
-    if request.method=="POST":
-        if request.is_ajax:
-            brandname=request.POST.get("brands")
-            brandname = json.loads(brandname)
-            price_range=request.POST.get("price")
-            price_range = json.loads(price_range)
-
-            print ("brand name",brandname)
-
-            print ("price_range",price_range)
-            # fetch mobile phones based on these... 
-            if not brandname:
-                mobiles_retrieved=mobilephones.objects.filter(price__range=(price_range[0], price_range[1])).order_by('id') 
-            else:
-                mobiles_retrieved=mobilephones.objects.filter(price__range=(price_range[0], price_range[1]),Mobile_Companny__in=brandname).order_by('id') 
-
-            print("MOBILES RETR")
-            print(mobiles_retrieved)
-            listofmob=list(mobiles_retrieved.values())
-            print("list of mob",listofmob)
-            data={
-                'mobilephones':listofmob
-            }
-            return JsonResponse(data)
-def retSpecMobilePhone(request):
-
-    if request.method=="POST":
-        if request.is_ajax:
-            mobile_id=request.POST.get("mobile_id") 
-            # based on mobile id ret phone from mobilephones model.
-            print("mobile_id",mobile_id) 
-            mobile=mobilephones.objects.get(id=mobile_id)
-            phone=mobile.Mobile_Name
-            
-            data={
-                "phone":phone
-            }
-            return JsonResponse(data)
 
             

@@ -50,9 +50,20 @@ class platform_feature(models.Model):
     class Meta:
         verbose_name_plural="platform_feature"
         ordering = ['pk']
-
+class exStatusCd(models.Model):
+    status_name=models.CharField(max_length=100,null=True,blank=True)
+    status_code=models.IntegerField()
+    s_description=models.TextField(null=True,blank=True)
+    def __str__(self):
+        return self.status_name
+    class Meta:
+        verbose_name_plural="ExpStatusCode"
+        ordering = ['pk']
+DEFAULT_EXAM_ID=1
 class  experiment(models.Model):
+
     status = models.CharField(max_length=100,default='DESIGN_MODE')
+    status_code=models.ForeignKey(exStatusCd,on_delete=models.CASCADE,default=DEFAULT_EXAM_ID)
     """
     STATUS LEVELS:
      DESIGN_MODE = Under Construction
@@ -91,7 +102,9 @@ class  experiment(models.Model):
     class Meta:
         verbose_name_plural="experiment"
         ordering = ['pk']
-    
+
+
+
 class Batch(models.Model):
      exp = models.ForeignKey(experiment, on_delete=models.CASCADE)
      batch_label= models.CharField(max_length=100, null=True, blank=True)

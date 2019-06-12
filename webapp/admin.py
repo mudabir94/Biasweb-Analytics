@@ -8,7 +8,7 @@ from import_export.admin import ImportExportActionModelAdmin
 from .models import User
 from .models import signup_table,blog,mobilephones,experiment
 from .models import samsung_phone,sort_feature,userscoreRecord,Role,platform_feature
-from .models import selectedAdminPhones,PhoneCriteria
+from .models import selectedAdminPhones,PhoneCriteria,exStatusCd
 from .models import Subject,experiment_feature,Batch,Block,ExpCriteriaOrder,criteria_catalog_disp
 
 
@@ -44,10 +44,16 @@ class PhoneCriteriaAdmin(ImportExportActionModelAdmin):
     list_display=('id','criteria_name','status','priority','position')
 
 class ExperimentAdmin(admin.ModelAdmin):
-    list_display= ('id','custom_exp_id','status','batches_title')
+    list_display= ('id','custom_exp_id','status','status_code','batches_title',"desc")
 
 class experiment_featureAdmin(admin.ModelAdmin):
     list_display= ('id','used_in','p_feature','chosen_levels')
+
+class exStatusCdResourse(resources.ModelResource):
+    class meta:
+        model=exStatusCd
+class exStatusCdAdmin(ImportExportActionModelAdmin):
+    list_display=('id',"status_name","status_code","s_description")
 
 
 #----------------------------------------------------------------------------
@@ -130,6 +136,8 @@ admin.site.register(Subject)
 admin.site.register(Batch)
 admin.site.register(Block)
 admin.site.register(experiment,ExperimentAdmin)
+admin.site.register(exStatusCd,exStatusCdAdmin)
+
 admin.site.register(experiment_feature,experiment_featureAdmin)
 
 admin.site.register(criteria_catalog_disp, criteria_catalog_disp_Admin)
