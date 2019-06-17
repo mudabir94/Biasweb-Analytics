@@ -1,0 +1,33 @@
+{% extends "webapp/newbase.html" %}
+{% block content %}
+{%load static from staticfiles%}
+
+
+
+
+
+<script>
+$(document).ready(function(){
+    alert("EEE")
+     $.ajax({
+                type: 'POST',
+                dataType: "json",
+                'data': {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                },
+                url: "{% url 'comparemobile_1by1_direct' %}",
+                success: function(data){
+                    allmobile=data['allmobiles'] 
+                    alternatives_list=data['alternative_list'];
+                    criteria_list=data['criteria_list'];
+                    mobiletesting=data['allmobiles'];
+                    console.log("allmobile",allmobile)
+                    console.log("alternatives_list",alternatives_list)
+                    console.log("criteria_list",criteria_list)
+                    console.log("mobiletesting",mobiletesting)
+
+                }
+     });
+});
+</script>
+{%endblock%}

@@ -5,7 +5,7 @@ from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 from import_export.admin import ImportExportActionModelAdmin
 
-from .models import User
+from .models import User,MobilePhones_Test
 from .models import signup_table,blog,mobilephones,experiment
 from .models import samsung_phone,sort_feature,userscoreRecord,Role,platform_feature
 from .models import selectedAdminPhones,PhoneCriteria,exStatusCd
@@ -77,7 +77,14 @@ class samsung_phone_Resource(resources.ModelResource):
 class SamsungAdmin(ImportExportActionModelAdmin):
     pass
 
-#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>    
+#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   
+# 
+class MobilePhones_Test_Resource(resources.ModelResource):
+    class meta:
+        model=MobilePhones_Test
+class MobilePhones_TestAdmin(ImportExportActionModelAdmin):
+    pass
+ 
 #----------------------------------------------------------------------------
 
 class roleResource(resources.ModelResource):
@@ -124,6 +131,7 @@ admin.site.register(PhoneCriteria, PhoneCriteriaAdmin)
 admin.site.register(samsung_phone,SamsungAdmin)
 admin.site.register(Role,RoleAdmin)
 admin.site.register(platform_feature,PlatformFeatureAdmin)
+admin.site.register(MobilePhones_Test,MobilePhones_TestAdmin)
 
 admin.site.register(sort_feature,sort_featureAdmin)
 admin.site.register(mobilephones,mobilephonesAdmin)
@@ -131,7 +139,7 @@ admin.site.register(userscoreRecord)
 admin.site.register(signup_table)
 admin.site.register(blog)
 
-
+MobilePhones_Test
 admin.site.register(Subject)
 admin.site.register(Batch)
 admin.site.register(Block)

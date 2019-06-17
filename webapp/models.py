@@ -176,6 +176,41 @@ class mobilephones(models.Model):
     Mobile_Name= models.CharField(max_length=300, null= True)
     Whats_new= models.TextField( null= True)
     price=models.IntegerField( null= True)
+    Memory=models.CharField(max_length=500, null= True,blank=True)
+    Ram=models.CharField(max_length=500, null= True,blank=True)
+    Cpu=models.CharField(max_length=500, null= True)
+    Dimensions=models.CharField(max_length=300, null= True)
+    Gpu=models.CharField(max_length=500, null= True)
+    Resolution=models.CharField(max_length=500, null= True)
+    Size=models.FloatField(null=True)
+    Weight=models.IntegerField(null= True)
+    Chip=models.CharField(max_length=500, null= True)  
+    Colors=models.CharField(max_length=300, null= True) 
+    # changed from price_in_pkr
+   
+    price_in_usd=models.IntegerField( null= True)
+    rating=models.FloatField(null= True)
+    OS=models.CharField(max_length=300, null= True)
+    # imagepath1 = models.ImageField(null=True, blank=True, upload_to="webapp/img/sampleimages/")
+    # imagepath2=  models.ImageField(null=True, blank=True, upload_to="webapp/img/sampleimages/")
+    imagepath1=models.CharField(max_length=300,null=True,blank=True)
+    imagepath2=models.CharField(max_length=300,null=True,blank=True)
+    
+    # changed from back_camera
+    battery=models.CharField(max_length=400,null=True)
+    backcam=models.CharField(max_length=400,null=True)
+ 
+    
+    def __str__(self):
+        return self.Mobile_Name
+    
+    class Meta:
+        verbose_name_plural="mobilephones"
+class MobilePhones_Test(models.Model):
+    Mobile_Companny= models.CharField(max_length=200, null= True)
+    Mobile_Name= models.CharField(max_length=300, null= True)
+    Whats_new= models.TextField( null= True)
+    price=models.IntegerField( null= True)
     battery=models.CharField(max_length=400,null=True)
    
     Cpu=models.CharField(max_length=500, null= True)
@@ -204,8 +239,8 @@ class mobilephones(models.Model):
         return self.Mobile_Name
     
     class Meta:
-        verbose_name_plural="mobilephones"
-    
+        verbose_name_plural="Mobile Phones Test"
+
 class criteria_catalog_disp(models.Model):
     
        catalog_crit_display_order=ListCharField(

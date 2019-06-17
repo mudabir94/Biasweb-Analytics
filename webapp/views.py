@@ -45,7 +45,7 @@ from webapp.models import experiment as Experiment
 
 from .models import Role, User, blog
 from .models import experiment as exp
-from .models import ( mobilephones, platform_feature,
+from .models import ( mobilephones, platform_feature, Subject,
                      samsung_phone, sort_feature, userscoreRecord,ExpCriteriaOrder,PhoneCriteria)
 
 
@@ -122,12 +122,27 @@ class Home(TemplateView):
 
         elif role=='Subject':
             # all other conditions of subjects will be done here. 
+            # Checking the experiments assigned to the Subjects. 
             exp_list = userobj.subject_set.values_list('exp', flat=True) 
-            exStatusCd_list=exStatusCd.objects.filter(status_code__gte=10)
+            # Getting the status codes that are active.
+            exStatusCd_list=exStatusCd.objects.filter(status_code__gte=11)
+            # Fetching that the experiments who has status code as active for the user/subject. 
             inner_qs = exp.objects.filter(id__in=list(exp_list),status_code__in=exStatusCd_list)
-            print("inner_qs",inner_qs.values('id'))
+            # Using the experiment list for display
+            print("inner_qs",list(inner_qs.values('id'))[0]['id'])
             explist=inner_qs.values('id')
             print("explst",explist)
+            # Now we know how many experiments the subject is invovled. 
+            # For now we'll hard code to get one subject having one active exp... 
+
+            exp_obj=exp.objects.get(id=1099)
+            Sub_obj=Subject.objects.get(user=userobj,exp=exp_obj)
+            print(Sub_obj.block)
+
+
+
+
+
             template_sidebar='webapp/sidebartemplates/sidebartemp_subject.html'
             template_main_homepage="webapp/main_content_temps/homepage_main/subject_hp.html"
             data={
@@ -331,7 +346,18 @@ def showMob(request):
             sizeofmob=size_of_mobile
             print(comp_mobiles)
             dict = {'size_of_mobile':size_of_mobile}
-    return HttpResponse(json.dumps(dict))
+            userobj=User.objects.get(pk=request.user.id)
+
+            exp_obj=exp.objects.get(id=1099)
+            Sub_obj=Subject.objects.get(user=userobj,exp=exp_obj)
+            print(Sub_obj.block.levels_set)
+            data={
+                # 'dict':json.dumps(dict),
+                'subject_block':Sub_obj.block.levels_set,
+                'data':"success",
+            }
+
+    return JsonResponse(data)
     #return render_to_response(request,'webapp/showmob.html',{'mobiles':mobiles}) 
     '''
     query = 'SELECT * FROM webapp_samsung_phone WHERE id=1 or id=2'
@@ -339,6 +365,85 @@ def showMob(request):
     print(mobiles)
     return render(request,'webapp/showmob.html',{'mobiles':mobiles})
     '''
+crit_list=[]
+criteria_weights_dict={}
+allmobile=[]
+numofmobiles=[]
+criteria_list=[]
+alternative_list=[]
+
+def criteriaWeights(request):
+    global crit_list
+    global criteria_weights_dict
+    template_name='webapp/criteriaweights.html'
+    if request.method=="POST":
+        if request.is_ajax:
+            critlist_val_dict = request.POST.get('critlist_val_dict')
+            critlist_val_dict = json.loads(critlist_val_dict)
+            print("critlist_val_dict",critlist_val_dict)
+            criteria_weights_dict=critlist_val_dict
+            data={}
+            return JsonResponse(data) 
+    else:
+        # get the criterias set by admin for the exp... 
+        exp_obj=exp.objects.get(id=1099)
+        ExpCriteria_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj)
+        crit_list_obj=ExpCriteria_obj.values_list('pCriteria__criteria_name',flat=True)
+        crit_list=list(crit_list_obj)
+        data={
+            'crit_list':crit_list
+        }
+
+
+        return render(request,template_name,data)
+
+def compareMobileOneByOneDirect(request):
+    template_name='webapp/comparemobile1by1direct.html'
+      
+            
+    global crit_list
+    global comp_mobiles
+    global catalogcrit_show_list
+    if request.method=="GET":
+        data={}
+        return render(request,template_name,data)
+    elif request.method=="POST":
+        print("POSSSST")
+        mobile={}
+        allmobile={}
+        alternative_list=[]
+
+        criteria_list=['imagepath1']
+        if crit_list:
+            for crit in crit_list:
+                criteria_list.append(crit)
+        test_mobiles = comp_mobiles
+        print("crit_list",criteria_list)
+        for m in test_mobiles:
+            print('m objest',m)
+            for crit in criteria_list:
+                print(crit)
+                mobile[crit]=getattr(m, crit)
+            mobile['Others']=m.Mobile_Name
+
+            alternative_list.append(m.Mobile_Name)
+            allmobile[m.Mobile_Name]=mobile
+            # print(allmobile)
+            numofmobiles=len(allmobile)
+            mobile={}
+            print("alternative_list",alternative_list)
+            # features=['price','resolution','size']
+            data={
+                'allmobiles':allmobile,
+                'numofmobiles':numofmobiles,
+                'criteria_list':criteria_list,
+                'alternative_list':alternative_list
+            }
+        # data={}
+        return JsonResponse(data)
+
+   
+
 def compareMobileSpecsFilterVer(request):
     if request.method=="GET":
         return render(request,'webapp/2by2comapremobilespecsfiltver.html')
@@ -379,7 +484,7 @@ def compareMobileSpecsFilterVer(request):
             # code returns on this one. 
             # if allmobile:
             return JsonResponse(data)
-    
+
      
 def compareMobileSpecs(request):
     
@@ -498,9 +603,6 @@ def updateFeaturePosition(request):
         
         #print ("test", d['color'])
         return render(request, 'webapp/admin_setup.html')
-
-
-
 
 def hideFeature(request):
    
@@ -777,7 +879,6 @@ class defaultCriteria_Setup(TemplateView):
                 }
                 return JsonResponse(data)
 
-               
 class orderCriteria_Setup(TemplateView):
     def get(self,request):
         role_name=['']
@@ -968,7 +1069,6 @@ class orderCriteria_Setup(TemplateView):
                 }
                 return JsonResponse(data)
 
-
 class Cdm_On_Co_On_CriteriaSetup(TemplateView):
     def get(self,request):
         role_name=['']
@@ -1089,6 +1189,7 @@ class Cdm_On_Co_On_CriteriaSetup(TemplateView):
                 'block_list':block_list
                 }
                 return JsonResponse(data)
+
 class cdmCriteria_Setup(TemplateView):
     def get(self,request):
         flag="true"
@@ -1251,7 +1352,7 @@ class cdmCriteria_Setup(TemplateView):
                 'block_list':block_list
                 }
                 return JsonResponse(data)      
-         
+        
 class adminSetup(TemplateView):
     # global  role
     global feature_to_display
@@ -1735,7 +1836,7 @@ class mobile_phone_view(TemplateView):
         print("mobiles",mobiles)
         if role=='Super_Admin':
             
-            mobiles= mobilephones.objects.all() 
+            mobiles= mobilephones.objects.all()
             print("mobiles ---<>",mobiles)
             paginator = Paginator(mobiles,9)
             print("paginator",paginator)
@@ -2612,7 +2713,7 @@ def getMobiledata(request):
     if request.is_ajax():
         if request.method=="GET":
             print("GET MOBILE DATA")
-            mobiles_retrieved=mobilephones.objects.all()
+            mobiles_retrieved=mobilephones.objects.all().order_by('-id')
             mobiles_retrieved = list(mobiles_retrieved.values())   
             mobiles_retrieved_list=mobiles_retrieved
             # global catalogcrit_show_list

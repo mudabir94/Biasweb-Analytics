@@ -109,7 +109,7 @@
                                         value="{{feature.feature_symbol}}" 
                                         onclick="outerCheckBox($(this).attr('value'),$(this).attr('id'))">
                                         {{feature.feature_name}} 
-                                        <div  id='{{feature.id}}-innercheckboxdiv' class='innerchecksboxdivs' title='{{feature.feature_symbol}}'>
+                                        <div  id='{{feature.id}}-innercheckboxdiv' class='innerchecksboxdivs' title='{{feature.feature_symbol}}' value='{{feature.feature_symbol}}'>
                                         </div>
                                 </input>
                                 <br>
@@ -3148,6 +3148,8 @@ function innerCheckBox(innercheckval,innercheckid,outercheckdivtitle,outercheckd
 
 console.log('outercheckbox title',outercheckdivtitle)
 var innercheckboxid = $('#'+innercheckid);
+console.log('outercheckbox title',$('#1-innercheckbox-1').parent().attr("value"))
+
 //var parentdiv=innercheckboxid.parent();
 //var parentdivid=parentdiv.attr('id');
 var temparr=outercheckdivid.split('-');
@@ -3204,7 +3206,8 @@ if ($(innercheckboxid).prop('checked') == true){
 
         
     
-} else if ($(innercheckboxid).prop('checked') == false) {
+} 
+else if ($(innercheckboxid).prop('checked') == false) {
    // PROCESS TO DELETE THE UNCHECKED  FEATURE LEVEL FROM DICT 
                     // Getting all the feature levels of the feature in a list. 
                     arr_feature_levels=dict[outercheckdivtitle];
@@ -3294,7 +3297,7 @@ for (var o in data){
                 type:  'checkbox',
                 checked:true,
                 onclick:"innerCheckBox($(this).attr('value'),$(this).attr('id'),\
-                $(this).parent().attr('title'), $(this).parent().attr('id')\
+                $(this).parent().attr('value'), $(this).parent().attr('id')\
                 )"
             
         })
@@ -5800,7 +5803,6 @@ function saveCatalogCrit_cdm_on_co_on(){
 }
 function saveCatalogCrit(){
     var num=$('#input_num_field_catalog_crit').val();
-   
     var ul=document.createElement("ul")
     cataloglist=[];
     for (i=0;i<num;i++){

@@ -29,6 +29,8 @@ urlpatterns = [
     url(r'^comparemobile_specs/',views.compareMobileSpecs, name='comparemobile_specs'),
     url(r'^comparemobilespecsfilt_ver/',views.compareMobileSpecsFilterVer, name='comparemobilespecsfilt_ver'),
     url(r'^filtered_mobile_view/',views.filteredMobileView,name='filtered_mobile_view'),
+    url(r'^criteria_weights/',views.criteriaWeights,name='criteria_weights'),
+    url(r'^comparemobile_1by1_direct/',views.compareMobileOneByOneDirect,name='comparemobile_1by1_direct'),
 
 
     url(r'^showmob/',views.showMob, name='showmobile'),

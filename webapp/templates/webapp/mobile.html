@@ -38,7 +38,7 @@
         
       <div class="container-fluid text-center">    
         <div class="row content">
-            <div class="col-sm-3 sidenav" ">
+            <div class="col-sm-3 sidenav" >
                     <div class='container-fluid'>
                         {% with template_sidebar=template_sidebar %}
                         {% include template_sidebar %}
@@ -166,21 +166,16 @@
                     },
                     url: "{% url 'showmobile' %}",
                     success: function(response){
-                        if (response['role']!=undefined){
-                            if (response['role']=="Super_Admin")
-                            {
-                                console.log("size_of_mobile",response['som']);
-                                window.location="{%url 'comparemobile_specs'%}"
-                            }
-                            else{
-                                window.location="{%url 'comparemobilespecsfilt_ver'%}"
-                            }
+                        console.log(response['subject_block'])
+                    
+                        if (response['subject_block'].includes("W.direct")){
+                            alert("W>DIRECT")
+                            window.location="{%url 'criteria_weights'%}"
                         }
-                        else{
-                            console.log("size_of_mobile",response['som']);
-                        window.location="{%url 'comparemobilespecsfilt_ver'%}"
-                        }
-                        
+                        // GET BLOCKS AND REDIRECT based on it.
+                        // window.location="{%url 'comparemobilespecsfilt_ver'%}"
+                
+                
                      
                     
                     }

@@ -1,0 +1,105 @@
+{% extends "webapp/newbase.html" %}
+{% block content %}
+{%load static from staticfiles%}
+<div class="container-fluid text-center">    
+    <div class="row content">
+        <div class="col-md-2 sidenav" >
+        </div>
+        <div class=" col-md-8 text-left"  >
+            <div class="row is-flex">
+                <div class="col">
+                    <ul class="crit_list">
+                        
+                    {%for crit in crit_list%}
+                    <li  rel="{{crit}}" style="padding-top:20px"> 
+                        <div class="row is-flex">
+                            <div class="col-md-3">{{crit}}</div>
+                            <div class="col-md-9"><input id="{{crit}}" class="slider"></input></div>
+
+                        </div>
+                    
+                    
+
+                    </li>
+                    {%endfor%}
+
+                    </ul>
+                </div>
+               
+         </div>              
+
+            
+        </div>
+        
+        <div class="col-md-2 sidenav" >
+                <button  onclick="SaveWeights()">Save</button>
+                <button  onclick="NextPage()">Next</button>
+
+        </div>
+    
+    
+    </div>
+    
+    </div>
+<script>
+    var critlist_val_dict={}
+    var crit_list=[]
+$(document).ready(function(){ 
+    // GET CRIT LIST and run the slider.... 
+   
+    $(".crit_list li").each(function(i)
+    {
+         console.log($(this).attr('rel')) // This is your rel value
+         crit_list.push($(this).attr('rel'));
+    });
+    for (var c in crit_list){
+        var slider = new rSlider({
+
+        target:crit_list[c] ,
+        values: [1,2,3,4,5,6,7,8,9,10],
+        widget:false,
+        labels:[1,2,3,4,5,6,7,8,9,10],
+        labels:true,
+        set:1,
+        tooltip:true,
+        onChange: function (event) {
+            // console.log("EVENT",event)
+            // console.log("THIS",this.target)
+            if (critlist_val_dict[this.target]===undefined){
+                critlist_val_dict[this.target]=[]
+            }
+            else{
+                critlist_val_dict[this.target]=event;
+            }
+            console.log("critlist_val_dict",critlist_val_dict)
+        }
+        });
+
+    }
+   
+ }) 
+
+function SaveWeights(){
+    $.ajax({
+    type: 'POST',
+    dataType: "json",
+    'data': {
+        'critlist_val_dict':JSON.stringify(critlist_val_dict),
+        'csrfmiddlewaretoken': '{{ csrf_token }}',
+
+    },
+    // the ajax call is sent to subdetails url name in the post function.  
+    url: "{% url 'criteria_weights' %}",
+    success: function(data){
+        alert()
+
+    }
+    
+    });
+}
+function NextPage(){
+    window.location="{%url 'comparemobile_1by1_direct'%}"
+}
+
+</script>
+{%endblock%}
