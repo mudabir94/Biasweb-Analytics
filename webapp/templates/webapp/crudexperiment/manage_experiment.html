@@ -79,6 +79,8 @@
                             console.log(data['exp_wrt_statuscode']);
                             exp_detail_wrt_status_dict= JSON.parse(JSON.stringify(data['exp_wrt_statuscode']));
                             updated_detail_wrt_status= JSON.parse(JSON.stringify(data['exp_wrt_statuscode']));
+                            crit_exp_wrt_statuscode=JSON.parse(JSON.stringify(data['crit_exp_wrt_statuscode']));
+                            console.log("data['crit_exp_wrt_statuscode']",data['crit_exp_wrt_statuscode']);
                             statusCode_list=data['statusCode_list']
                             console.log("statusCode_list",statusCode_list)
                             li_Html_Genertor(data['exp_wrt_statuscode']["DESIGN_MODE"],ajax_for_li_data_flag);

@@ -13,7 +13,11 @@
                     {%for crit in crit_list%}
                     <li  rel="{{crit}}" style="padding-top:20px"> 
                         <div class="row is-flex">
+                            {%if crit == "imagepath1" %}
+                            <div class="col-md-3">Look and Feel</div>
+                            {%else%}
                             <div class="col-md-3">{{crit}}</div>
+                            {%endif%}
                             <div class="col-md-9"><input id="{{crit}}" class="slider"></input></div>
 
                         </div>
@@ -42,9 +46,11 @@
     
     </div>
 <script>
-    var critlist_val_dict={}
+    var critlist_val_dict=null
     var crit_list=[]
 $(document).ready(function(){ 
+    // localStorage.removeItem("critlist_val_dict");
+
     // GET CRIT LIST and run the slider.... 
    
     $(".crit_list li").each(function(i)
@@ -52,7 +58,42 @@ $(document).ready(function(){
          console.log($(this).attr('rel')) // This is your rel value
          crit_list.push($(this).attr('rel'));
     });
+    // $.ajax({
+    // type: 'GET',
+    // dataType: "json",
+    // 'data': {
+
+    // },
+    // url: "{% url 'criteria_weights' %}",
+    // success: function(data){
+    //     critlist_val_dict=JSON.parse(data['criteria_weights_dict'])
+    //     console.log("critlist_val_dict",critlist_val_dict)
+    // }
+    
+    // });
+    critlist_val_dict=JSON.parse(window.localStorage.getItem("critlist_val_dict")); 
+    if (critlist_val_dict!=null){
+    console.log("critlist_val_dict",critlist_val_dict["criteria_weights"])
+    console.log("crit_list",crit_list)
+    }
+    else{
+    critlist_val_dict={}
+    }
+    
+   
     for (var c in crit_list){
+        console.log("criteria_list",crit_list[c])
+        var value=[5];
+        if(critlist_val_dict==null){
+            critlist_val_dict={}
+        }
+        if (critlist_val_dict!==undefined){
+            // console.log("CHECK2",critlist_val_dict.criteria_weights)
+            if (critlist_val_dict["criteria_weights"]!=undefined){
+                value=[parseInt(critlist_val_dict["criteria_weights"][c][1])];
+            }
+        }
+        
         var slider = new rSlider({
 
         target:crit_list[c] ,
@@ -60,18 +101,18 @@ $(document).ready(function(){
         widget:false,
         labels:[1,2,3,4,5,6,7,8,9,10],
         labels:true,
-        set:1,
+        set:value,
         tooltip:true,
         onChange: function (event) {
             // console.log("EVENT",event)
             // console.log("THIS",this.target)
-            if (critlist_val_dict[this.target]===undefined){
-                critlist_val_dict[this.target]=[]
-            }
-            else{
-                critlist_val_dict[this.target]=event;
-            }
-            console.log("critlist_val_dict",critlist_val_dict)
+            // if (critlist_val_dict[this.target]===undefined){
+            //     critlist_val_dict[this.target]=[]
+            // }
+            // else{
+            //     critlist_val_dict[this.target]=event;
+            // }
+            // console.log("critlist_val_dict",critlist_val_dict)
         }
         });
 
@@ -80,6 +121,22 @@ $(document).ready(function(){
  }) 
 
 function SaveWeights(){
+    var input_class=document.getElementsByClassName('slider')
+    var temp_slider_id_val_check_list=[];
+    var temp_final_list=[];
+    for (var i=0;i<input_class.length;i++){
+        
+            temp_slider_id_val_check_list.push(input_class[i].id) 
+            temp_slider_id_val_check_list.push(input_class[i].value)  
+            temp_final_list.push(temp_slider_id_val_check_list);
+            temp_slider_id_val_check_list=[];
+    }
+    criteria_weights=["criteria_weights"]
+    if (critlist_val_dict==null){
+        critlist_val_dict={}
+    }
+    critlist_val_dict[criteria_weights[0]]=temp_final_list
+    console.log("critlist_val_dict",critlist_val_dict)
     $.ajax({
     type: 'POST',
     dataType: "json",
@@ -102,4 +159,11 @@ function NextPage(){
 }
 
 </script>
+
+<script>
+        // Warning before leaving the page (back button, or outgoinglink)
+        window.onbeforeunload = function() {
+            window.localStorage.setItem("critlist_val_dict",JSON.stringify( critlist_val_dict));
+        }
+</script>  
 {%endblock%}

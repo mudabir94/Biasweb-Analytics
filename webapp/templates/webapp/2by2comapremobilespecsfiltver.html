@@ -350,6 +350,7 @@ function ahptesting(){
     }
     final_result_dict['final']=finalresult_list;
     final_result_dict['criteria']=test_result_vecs['criteria'];
+    
 }
 function myrecord(pair,score,criteria){
     let rankmat=    all_rank_matrix_dict[criteria];
@@ -937,8 +938,8 @@ function showSliderRangeVal(parent_id,value){
         val=-val;
     }
     document.getElementById(criteria+'span').innerHTML=val;
- 
-    
+    // console.log("final_result_dict",final_result_dict)
+    console.log("slider_id_val_check_dict",slider_id_val_check_dict)
     showchart_final();
     // showchart_criteria();
    
@@ -949,7 +950,6 @@ var myChart;
 var final_backg_col=[];
 var final_bor_col=[];
 function showchart_final(){
-
     var main_data={};
     var dataset=[];
     var dataset_dic={};
@@ -961,13 +961,17 @@ function showchart_final(){
         data_per.push( 100* final_result_dict['final'][t])
     }
     var data=data_per;
+    console.log("DATA",data)
+    console.log("Criteria list",criteria_list)
+    console.log("criteria_list.length",criteria_list.length)
     // change color. 
     if (final_backg_col.length===0 && final_bor_col.length===0){
         var red = Math.floor(Math.random() * 255);
         var green = Math.floor(Math.random() * 255);
         var blue = Math.floor(Math.random() * 255);
         var alpha=0.8;
-        for (var c=1;c<criteria_list.length+1;c++){
+        // previously it was criteria_list....
+        for (var c=0;c<alternatives_list.length;c++){
             
             var rgba='rgba('+red+','+ green+','+blue+','+ alpha+')'
             var red = Math.floor(Math.random() * 255);

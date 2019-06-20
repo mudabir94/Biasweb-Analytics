@@ -3953,12 +3953,12 @@ function mobileCatalog(){
 
         var slider2 = new rSlider({
                     target: '#price_slider',
-                    values: {min:5000,max:70000},
+                    values: {min:5000,max:200000},
                     range: true,
                     tooltip: true,
                     scale: false,
                     labels: false,
-                    set: [5000, 70000],
+                    set: [5000, 200000],
                     step:500,
                     onChange:function (values) { 
                         var values=values.split(',');
@@ -4647,7 +4647,7 @@ function defSetFunc(active_id){
             $('#price_slider').show();
             var set_value=[];
             if (slider_set_dict[active_button]===undefined){
-                set_value=[5000,70000];
+                set_value=[5000,200000];
             }
             else{
                 set_value=slider_set_dict[active_button]
@@ -4655,7 +4655,7 @@ function defSetFunc(active_id){
 
         var slider2 = new rSlider({
                     target: '#price_slider',
-                    values: {min:5000,max:70000},
+                    values: {min:5000,max:200000},
                     range: true,
                     tooltip: true,
                     scale: false,
@@ -5106,7 +5106,7 @@ function SetFunc(active_id){
             $('#price_slider').show();
             var set_value=[];
             if (slider_set_dict[active_button]===undefined){
-                set_value=[5000,70000];
+                set_value=[5000,200000];
             }
             else{
                 set_value=slider_set_dict[active_button]
@@ -5114,7 +5114,7 @@ function SetFunc(active_id){
 
         var slider2 = new rSlider({
                     target: '#price_slider',
-                    values: {min:5000,max:70000},
+                    values: {min:5000,max:200000},
                     range: true,
                     tooltip: true,
                     scale: false,
@@ -6586,10 +6586,6 @@ function get_data_Ajax_Co(colist){
         col.setAttribute("id","catalog_crit_disp_col")
 
         catalog_crit_sel_row_div.append(col);
-
-
-
-
 
         var default_criteria_div=document.getElementById("default_criteria_div");
         var container=document.createElement("div");
@@ -11615,7 +11611,7 @@ function get_data_Ajax_Co(colist){
       }
     function brandCheck_Html_Crt(){
           console.log("brand_set_dict@@@",brand_set_dict)
-          var listoftotalbrands=["Samsung","QMobile","Oppo"];
+          var listoftotalbrands=["Samsung","QMobile","Oppo","Apple"];
         
           $("#brand_check_div").empty();
           var brand_check_div=document.getElementById("brand_check_div");

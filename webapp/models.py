@@ -172,7 +172,7 @@ class blog(models.Model):
 
         
 class mobilephones(models.Model):
-    Mobile_Companny= models.CharField(max_length=200, null= True)
+    Brand= models.CharField(max_length=200, null= True)
     Mobile_Name= models.CharField(max_length=300, null= True)
     Whats_new= models.TextField( null= True)
     price=models.IntegerField( null= True)
