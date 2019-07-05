@@ -422,13 +422,13 @@ function  makeCombinations(mobiles){
         // Get the keys from data['allmobiles']
             var keys = Object.keys(mobiles)
            
-            var list1=['Samsung Galaxy A3 2017','Samsung galaxy S7']
-            var list2=['Samsung Galaxy A3 2017','Samsung galaxy A5']
-            var list3=['Samsung galaxy S7','Samsung galaxy A5']
-            var dict={}
-            dict[0]=list1;
-            dict[1]=list2;
-            dict[2]=list3;
+            // var list1=['Samsung Galaxy A3 2017','Samsung galaxy S7']
+            // var list2=['Samsung Galaxy A3 2017','Samsung galaxy A5']
+            // var list3=['Samsung galaxy S7','Samsung galaxy A5']
+            // var dict={}
+            // dict[0]=list1;
+            // dict[1]=list2;
+            // dict[2]=list3;
             var k_combs=k_combinations(keys, 2);
             return k_combs;
             // make combinations of the keys.
@@ -442,7 +442,7 @@ function processMobileData(keynum){
     }
 
         if (prev_compared_mobiles_list.length===0){
-        var listofcomb=dict_contains_listofCombiations[keynum];
+                var listofcomb=dict_contains_listofCombiations[keynum];
                  allmobiles[listofcomb[0]]=mobiletesting[listofcomb[0]];
                  allmobiles[listofcomb[1]]=mobiletesting[listofcomb[1]];
                  makeTable(allmobiles,keynum);
@@ -616,15 +616,8 @@ function previousMobilePair(currentKeycombination){
 
                     //processMobileData func will be called. 
                     processMobileData(keynum)
-                    // 
-                    // 
-                
-                   
-                
-                
-                   
-                
-            }
+                    
+    }
 function makeTable(allmobile,keynum){
     // features=['Model','price']
     var table=document.createElement("TABLE");

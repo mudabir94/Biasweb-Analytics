@@ -31,6 +31,7 @@ urlpatterns = [
     url(r'^filtered_mobile_view/',views.filteredMobileView,name='filtered_mobile_view'),
     url(r'^criteria_weights/',views.criteriaWeights,name='criteria_weights'),
     url(r'^comparemobile_1by1_direct/',views.compareMobileOneByOneDirect,name='comparemobile_1by1_direct'),
+    url(r'^comparemobile_2by2_direct/',views.compareMobileTwoByTwoDirect,name='comparemobile_2by2_direct'),
 
 
     url(r'^showmob/',views.showMob, name='showmobile'),

@@ -416,7 +416,6 @@ def criteriaWeights(request):
 def compareMobileOneByOneDirect(request):
     template_name='webapp/comparemobile1by1direct.html'
       
-            
     global crit_list
     global comp_mobiles
     global catalogcrit_show_list
@@ -468,7 +467,52 @@ def compareMobileOneByOneDirect(request):
             }
         return JsonResponse(data)
 
-   
+def compareMobileTwoByTwoDirect(request):
+    template_name='webapp/comparemobile2by2direct.html'
+    if request.method=="GET":
+        data={}
+        return render(request,template_name,data)
+    elif request.method=="POST":
+        print("criteria_weights_dict",criteria_weights_dict)
+        mobile={}
+        allmobile={}
+        alternative_list=[]
+        data={}
+        criteria_list=[]
+        print("crit_list",crit_list)
+
+        if crit_list:
+            for crit in crit_list:
+                criteria_list.append(crit)
+        test_mobiles = comp_mobiles
+        for m in test_mobiles:
+            print('m objest',m)
+            for crit in criteria_list:
+                if (crit!="Others"):
+                    print("crit",crit)
+                    print(getattr(m, crit))
+                    print("M",m)
+                    mobile[crit]=getattr(m, crit)
+
+            mobile['Others']=m.Mobile_Name
+            print("MOBILE")
+            print(mobile)
+            alternative_list.append(m.Mobile_Name)
+            allmobile[m.Mobile_Name]=mobile
+
+            print("criteria_list",criteria_list)
+            numofmobiles=len(allmobile)
+            mobile={}
+            print("alternative_list",alternative_list)
+            # features=['price','resolution','size']
+            data={
+                'allmobiles':allmobile,
+                'numofmobiles':numofmobiles,
+                'criteria_list':criteria_list,
+                'alternative_list':alternative_list,
+                "criteria_weights_dict":json.dumps(criteria_weights_dict)
+            }
+        return JsonResponse(data)
 
 def compareMobileSpecsFilterVer(request):
     if request.method=="GET":
@@ -2658,9 +2702,10 @@ class ManageExperiment(TemplateView):
                 print(statusCode_list)                    
                 exStatusCd_index=exStatusCd.objects.get(status_code=11)
 
-                
+               
 
                 for code in statusCode_list:
+                    foo_dict={}
                     temp_dict={}
                     print(code[0])
                     print(code[1])
@@ -2668,11 +2713,21 @@ class ManageExperiment(TemplateView):
                     exStatusCd_index=exStatusCd.objects.get(status_code=code[0])
                     all_exp_list_obj = exp.objects.filter(status_code=exStatusCd_index)
                     all_exp_list_values=list(all_exp_list_obj.values())
+                    all_exp_id_list_values=list(all_exp_list_obj.values_list("id",flat=True))
+                    print("all_exp_id_list_values",all_exp_id_list_values)
+                    # print("all_exp_list_values",all_exp_list_values)
                     exp_wrt_statuscode[code[1]]=all_exp_list_values
+                    for bar in all_exp_id_list_values:
+                        print("var",bar)
+                        exp_obj=exp.objects.get(id=bar)
+                        ExpCritObj=ExpCriteriaOrder.objects.filter(exp=exp_obj)
+                        foo_dict[bar]=list(ExpCritObj.values_list("pCriteria","pCriteria__criteria_name","sh_hd"))
+                    print("foo_dict",foo_dict)
+                    crit_exp_wrt_statuscode[code[1]]=foo_dict
 
-                    ExpCritObj=ExpCriteriaOrder.objects.filter(exp__in=all_exp_list_obj)
-                    crit_exp_wrt_statuscode[code[1]]=list(ExpCritObj.values())
 
+
+                    print("crit_exp_wrt_statuscode",crit_exp_wrt_statuscode)
                     
                     
 
@@ -2705,10 +2760,14 @@ class ManageExperiment(TemplateView):
                     exp_wrt_statuscode[code[1]]=all_exp_list
                 print(exp_wrt_statuscode)
 
+               
+                
+
 
 
             
             data={
+                
                 'template_sidebar':self.template_sidebar,
             }
             return render(request,self.template_name,data)
@@ -2742,8 +2801,37 @@ class ManageExperiment(TemplateView):
                             exp.objects.filter(id=h['id']).update(status=m['status'],status_code_id=exStatusCdObj.id,desc=m["desc"])
 
                         # IF J.STATUS CODE, STATUS OR DESCRIPTION IS DIFFERENT FROM THE DICT SEND THROUGH AJAX THEN UPDATE THE J. 
+            
+            
+            # UPDATING crit_exp_wrt_statuscode
+            # 
+            statusCode_list=exStatusCd.objects.values_list("status_code","status_name").distinct()
+            statusCode_list=list(statusCode_list)
+            print(statusCode_list)                    
+            exStatusCd_index=exStatusCd.objects.get(status_code=11)
 
+            
+
+            for code in statusCode_list:
+                foo_dict={}
+                temp_dict={}
+                print(code[0])
+                print(code[1])
+                # code[0] contains the index and code[1] name of the status
+                exStatusCd_index=exStatusCd.objects.get(status_code=code[0])
+                all_exp_list_obj = exp.objects.filter(status_code=exStatusCd_index)
+                all_exp_id_list_values=list(all_exp_list_obj.values_list("id",flat=True))
+                print("all_exp_id_list_values",all_exp_id_list_values)
+                for bar in all_exp_id_list_values:
+                    print("var",bar)
+                    exp_obj=exp.objects.get(id=bar)
+                    ExpCritObj=ExpCriteriaOrder.objects.filter(exp=exp_obj)
+                    foo_dict[bar]=list(ExpCritObj.values_list("pCriteria","pCriteria__criteria_name","sh_hd"))
+                    print("foo_dict",foo_dict)
+                crit_exp_wrt_statuscode[code[1]]=foo_dict
+                print("crit_exp_wrt_statuscode",crit_exp_wrt_statuscode)
             data={
+                "crit_exp_wrt_statuscode":crit_exp_wrt_statuscode,
                 "Success":"Sucess"
             }
         return JsonResponse(data)
@@ -2787,7 +2875,7 @@ def getMobiledata(request):
                 mobiles_retrieved = list(mobiles_retrieved.values())   
                 mobiles_retrieved_list=mobiles_retrieved
                 #///////////////////////
-            else:
+            elif role=='Subject':
                 exp_list = userobj.subject_set.values_list('exp', flat=True) 
                 # Getting the status codes that are active.
                 exStatusCd_list=exStatusCd.objects.filter(status_code__gte=11)
@@ -2803,11 +2891,14 @@ def getMobiledata(request):
                 exp_obj=exp.objects.get(id=1102)
                 Sub_obj=Subject.objects.get(user=userobj,exp=exp_obj)
 
-                    
-                phoneobjs=selectedAdminPhones.objects.filter(exp=exp_obj).order_by("-id")
-                mobiles_retrieved = list(phoneobjs.values())   
+                # seeing the block e.g/ P.default,P.0,P.1,P.2 send the query
+                phoneobjs=selectedAdminPhones.objects.filter(exp=exp_obj,pset_id="P.2").order_by("-id")
+                mobiles_retrieved = list(phoneobjs.values_list('mob',flat=True))   
+                mobiles_retrieved=list(mobilephones.objects.filter(id__in=mobiles_retrieved).values())
+                print(mobiles_retrieved)
                 mobiles_retrieved_list=mobiles_retrieved
-            
+
+                print(mobiles_retrieved_list)
             # // This is the default code to retrieve all
             # mobiles_retrieved=mobilephones.objects.all().order_by('-id')
             # mobiles_retrieved = list(mobiles_retrieved.values())   

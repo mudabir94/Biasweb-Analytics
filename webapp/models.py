@@ -310,12 +310,12 @@ class userroles(models.Model):
     userrole=models.CharField(max_length=200,null=True)
 
 class selectedAdminPhones(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
-    exp = models.ForeignKey(experiment, on_delete=models.CASCADE,null=True)
-    block = models.ForeignKey(Block, on_delete=models.CASCADE, null=True)
-    pset_id = models.CharField(max_length=10,null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True)
+    exp = models.ForeignKey(experiment, on_delete=models.CASCADE,null=True,blank=True)
+    block = models.ForeignKey(Block, on_delete=models.CASCADE, null=True,blank=True)
+    pset_id = models.CharField(max_length=10,null=True,blank=True)
     mob = models.ForeignKey(mobilephones, on_delete=models.CASCADE,null=True)
-    p_order = models.IntegerField(null=True)
+    p_order = models.IntegerField(null=True,blank=True)
 
 class PhoneCriteria(models.Model):
     criteria_name=models.CharField(max_length=20,null=True)

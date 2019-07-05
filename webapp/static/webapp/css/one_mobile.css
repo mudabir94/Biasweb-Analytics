@@ -11,7 +11,7 @@ li.active{border-bottom:3px solid silver;}
     overflow: overlay;    }
    
 .menu-items{list-style-type:none;font-size:11px;display:inline-flex;margin-bottom:0;margin-top:20px}
-.btn-success{width:50%;border-radius:0;}
+.btn-success{width:100%;border-radius:0;}
 .section{width:100%;margin-left:-15px;padding:2px;padding-left:15px;padding-right:15px;background:#f8f9f9}
 .title-price{margin-top:30px;margin-bottom:0;color:black}
 .title-attr{margin-top:0;margin-bottom:0;color:black;}
