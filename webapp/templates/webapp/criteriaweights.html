@@ -148,7 +148,6 @@ function SaveWeights(){
     // the ajax call is sent to subdetails url name in the post function.  
     url: "{% url 'criteria_weights' %}",
     success: function(data){
-        alert()
 
     }
     
@@ -156,8 +155,8 @@ function SaveWeights(){
 }
 function NextPage(){
     // if 1by1 in block then show 1by1 page other wise show 2by2 page.. 
-    // window.location="{%url 'comparemobile_1by1_direct'%}"
-    window.location="{%url 'comparemobile_2by2_direct'%}"
+    window.location="{%url 'comparemobile_1by1_direct'%}"
+    // window.location="{%url 'comparemobile_2by2_direct'%}"
 
 }
 

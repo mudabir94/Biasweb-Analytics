@@ -1899,14 +1899,11 @@ class mobile_phone_view(TemplateView):
         #form=mobile_phone_form(request.POST)
         querry_array=[]
         querry=''
-        
         userobj=User.objects.get(pk=request.user.id)
         role=userobj.role_id_id
         roleobj=Role.objects.get(pk=role)
         role=roleobj.role_name
         global mobiles
-        
-        
         print("mobiles",mobiles)
         if role=='Super_Admin':
             
@@ -1940,7 +1937,7 @@ class mobile_phone_view(TemplateView):
             exp_obj=exp.objects.get(id=1102)
             Sub_obj=Subject.objects.get(user=userobj,exp=exp_obj)
 
-            # CHANGE THIS CODE... 
+            # CHANGE THIS CODE... Changed...
 
             # exp_list = userobj.subject_set.values_list('exp', flat=True) 
             # inner_qs = exp.objects.filter(id__in=list(exp_list),status__contains="ACTIVE")

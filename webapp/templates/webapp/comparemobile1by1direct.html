@@ -393,8 +393,9 @@ function CalculateWeightsWithAlts(){
 
             console.log("crit_wght",crit_wght_name)
             console.log("crit_wght_val",crit_wght_val)
-               foo=slider_id_val_check_dict[mobile_name][crit][0].split('-')
-               outOf=10
+            if (slider_id_val_check_dict[mobile_name]!==undefined){
+                foo=slider_id_val_check_dict[mobile_name][crit][0].split('-')
+                outOf=10
 
                 if (foo[0].includes(crit_wght_name)){
                     console.log("PPP")
@@ -404,6 +405,9 @@ function CalculateWeightsWithAlts(){
                     mobile_bar_sum=mobile_bar_sum+bar
                     console.log("bar",bar)
                 }
+            }
+        
+             
        }
        mobile_crit_sum_dict[alternatives_list[mobilename]]=mobile_bar_sum;
        mobile_crit_sum_list.push(mobile_bar_sum);
@@ -422,6 +426,7 @@ function show_FinalChart(){
     var main_data={};
     var dataset=[];
     var dataset_dic={};
+    //  Have to Make it dynamic in Future. 
     var labels=["MOB A","MOB B","MOB C"];
     var label='Final Score';
     var data_percentage=[];
