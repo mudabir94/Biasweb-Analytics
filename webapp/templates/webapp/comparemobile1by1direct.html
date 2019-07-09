@@ -45,6 +45,21 @@
     var criteria_list=[]
     var temp_crit_list=[]
 $(document).ready(function(){
+        $.ajax({
+                    type: 'GET',
+                    dataType: "json",
+                    'data': {
+                    },
+                    url: "{% url 'comparemobile_1by1_direct' %}",
+                    success: function(data){
+                        if (data["InT"]="I.0"){
+                            Interactivity_On=false
+                        }
+                        else if (data["InT"]="I.1"){
+                            Interactivity_On=true
+                        }   
+                    }
+        });
      $.ajax({
                 type: 'POST',
                 dataType: "json",
@@ -97,7 +112,6 @@ $(document).ready(function(){
                 }
      });
 });
-
 
 function makeTable(allmobile,mob_name){
     var table=document.createElement("TABLE");
@@ -358,6 +372,7 @@ function showSliderRangeVal(parent_id,value){
     // console.log("temp_crit_list",temp_crit_list)
     CalculateWeightsWithAlts();
     // if I.O in blocks then dont run these functions
+    
     show_FinalChart();
     showchart_criteria();
           

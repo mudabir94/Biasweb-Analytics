@@ -44,13 +44,13 @@ from .forms import (NameForm, SignUpForm, blogForm, filterform,
 from webapp.models import experiment as Experiment
 
 from .models import Role, User, blog
-from .models import experiment as exp
 from .models import ( mobilephones, platform_feature, Subject,
                      samsung_phone, sort_feature, userscoreRecord,ExpCriteriaOrder,PhoneCriteria)
 
 
 from .models import selectedAdminPhones,criteria_catalog_disp,exStatusCd
 from django.views.decorators.cache import never_cache
+from .models import experiment as exp
 
 
 #--------------------------------------------------------------------------------------------------
@@ -61,6 +61,8 @@ mobiles=None
 filter_flag=None
 sizeofmob=0 # global variable assigned in filter class.
 filt_mobiles=None
+exp_under_test=0
+
 #-------------------------------------------------------------------------------------------------
 
             
@@ -131,11 +133,11 @@ class Home(TemplateView):
             # Using the experiment list for display
             print("inner_qs",list(inner_qs.values('id'))[0]['id'])
             explist=inner_qs.values('id')
-            print("explst",explist)
+            print("explst",list(explist))
             # Now we know how many experiments the subject is invovled. 
             # For now we'll hard code to get one subject having one active exp... 
-
-            exp_obj=exp.objects.get(id=1102)
+            # I have changed from hard coded id to get the exp obj based on first active experiment. 
+            exp_obj=exp.objects.get(id=list(inner_qs.values('id'))[0]['id'])
             Sub_obj=Subject.objects.get(user=userobj,exp=exp_obj)
             print(Sub_obj.block)
 
@@ -390,14 +392,22 @@ def criteriaWeights(request):
         
 
         if request.is_ajax():
+            # add other block checks such as C.Full and C.prune. 
+            # 
+            userobj=User.objects.get(pk=request.user.id)
+            exp_obj=exp.objects.get(id=exp_under_test)
+            Sub_obj=Subject.objects.get(user=userobj,exp=exp_obj)
+            print("blocks",Sub_obj.block.levels_set)
+            res1 = [idx for idx in Sub_obj.block.levels_set if idx.startswith("A.")] 
+            print("res",res1[0])
            
             data={
-                "criteria_weights_dict":json.dumps(criteria_weights_dict)
+                "ADM":res1[0],
                 }
             return JsonResponse(data)
         else:
             # get the criterias set by admin for the exp... 
-            exp_obj=exp.objects.get(id=1102)
+            exp_obj=exp.objects.get(id=exp_under_test)
             ExpCriteria_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1)
             print("ExpCriteria_obj",ExpCriteria_obj)
             crit_list_obj=ExpCriteria_obj.values_list('pCriteria__criteria_name',flat=True)
@@ -421,7 +431,15 @@ def compareMobileOneByOneDirect(request):
     global catalogcrit_show_list
 
     if request.method=="GET":
-        data={}
+        userobj=User.objects.get(pk=request.user.id)
+        exp_obj=exp.objects.get(id=exp_under_test)
+        Sub_obj=Subject.objects.get(user=userobj,exp=exp_obj)
+        print("blocks",Sub_obj.block.levels_set)
+        res2 = [idx for idx in Sub_obj.block.levels_set if idx.startswith("I.")] 
+        print("res",res2[0])
+        data={
+            "InT":res2[0],
+        }
         return render(request,template_name,data)
     elif request.method=="POST":
         print("criteria_weights_dict",criteria_weights_dict)
@@ -2884,18 +2902,20 @@ def getMobiledata(request):
                 print("explst",explist)
                 # Now we know how many experiments the subject is invovled. 
                 # For now we'll hard code to get one subject having one active exp... 
-
-                exp_obj=exp.objects.get(id=1102)
+                print(exp_under_test)
+                exp_obj=exp.objects.get(id=exp_under_test)
                 Sub_obj=Subject.objects.get(user=userobj,exp=exp_obj)
-
+                print("blocks",Sub_obj.block.levels_set)
+                res = [idx for idx in Sub_obj.block.levels_set if idx.startswith("P.")] 
+                print("res",res)
                 # seeing the block e.g/ P.default,P.0,P.1,P.2 send the query
-                phoneobjs=selectedAdminPhones.objects.filter(exp=exp_obj,pset_id="P.2").order_by("-id")
+                phoneobjs=selectedAdminPhones.objects.filter(exp=exp_obj,pset_id__in=res).order_by("-id")
                 mobiles_retrieved = list(phoneobjs.values_list('mob',flat=True))   
                 mobiles_retrieved=list(mobilephones.objects.filter(id__in=mobiles_retrieved).values())
-                print(mobiles_retrieved)
+                # print(mobiles_retrieved)
                 mobiles_retrieved_list=mobiles_retrieved
 
-                print(mobiles_retrieved_list)
+                # print(mobiles_retrieved_list)
             # // This is the default code to retrieve all
             # mobiles_retrieved=mobilephones.objects.all().order_by('-id')
             # mobiles_retrieved = list(mobiles_retrieved.values())   
@@ -3158,4 +3178,13 @@ def SavePhoneSets(request):
                 }
                 return JsonResponse(data) #, safe=False)
 
-            
+def SaveCurrentSubjExp(request):
+    if request.method=="POST":
+        if request.is_ajax:
+            global exp_under_test
+            exp_under_test= request.POST.get('exp_num')
+            exp_under_test=json.loads(exp_under_test)
+            print("exp_under_test",exp_under_test)
+            data={"success":"success"}
+            return JsonResponse(data)
+

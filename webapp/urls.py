@@ -34,6 +34,8 @@ urlpatterns = [
     url(r'^comparemobile_2by2_direct/',views.compareMobileTwoByTwoDirect,name='comparemobile_2by2_direct'),
 
 
+    url(r'^save_current_subj_exp/',views.SaveCurrentSubjExp, name='save_current_subj_exp'),
+
     url(r'^showmob/',views.showMob, name='showmobile'),
     url(r'^showScore/',views.showScore, name='showscore'),
 

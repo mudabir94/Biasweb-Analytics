@@ -154,9 +154,29 @@ function SaveWeights(){
     });
 }
 function NextPage(){
+    $.ajax({
+    type: 'GET',
+    dataType: "json",
+    'data': {
+
+    },
+    // the ajax call is sent to subdetails url name in the post function.  
+    url: "{% url 'criteria_weights' %}",
+    success: function(data){
+        
+            if (data['ADM']=="A.1by1"){
+                window.location="{%url 'comparemobile_1by1_direct'%}"
+
+            }
+            else if  (data['ADM']=="A.2by2"){
+                window.location="{%url 'comparemobile_2by2_direct'%}"
+            }
+        }
+    
+    });
     // if 1by1 in block then show 1by1 page other wise show 2by2 page.. 
-    window.location="{%url 'comparemobile_1by1_direct'%}"
-    // window.location="{%url 'comparemobile_2by2_direct'%}"
+
+    
 
 }
 
