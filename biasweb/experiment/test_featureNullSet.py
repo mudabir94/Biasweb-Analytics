@@ -50,10 +50,10 @@ texp.delFeature(fSymbol)
 texp.delFeature(xFSym)
 print(texp.retrieveFLevels())
 
-texp.addFeature(fSymbol=levFSym, byPrompt=True)
-texp.delFeature(levFSym)
-print(list(texp.fSet.all()))
-print(texp.retrieveFLevels())
+# texp.addFeature(fSymbol=levFSym, byPrompt=True)
+# texp.delFeature(levFSym)
+# print(list(texp.fSet.all()))
+# print(texp.retrieveFLevels())
 
 ## 4. TEST FSET MODIFICATION (EN MASSE) ----
 #Edit feature levels
