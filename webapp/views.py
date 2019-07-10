@@ -377,6 +377,7 @@ alternative_list=[]
 def criteriaWeights(request):
     global crit_list
     global criteria_weights_dict
+    # No check if block is CDM (C.Full and C.Prune... )
 
     template_name='webapp/criteriaweights.html'
     if request.method=="POST":
@@ -392,7 +393,6 @@ def criteriaWeights(request):
         
 
         if request.is_ajax():
-            # add other block checks such as C.Full and C.prune. 
             # 
             userobj=User.objects.get(pk=request.user.id)
             exp_obj=exp.objects.get(id=exp_under_test)
@@ -400,14 +400,20 @@ def criteriaWeights(request):
             print("blocks",Sub_obj.block.levels_set)
             res1 = [idx for idx in Sub_obj.block.levels_set if idx.startswith("A.")] 
             print("res",res1[0])
+
            
+            # print("critlist_val_dict",critlist_val_dict)
+            # criteria_weights_dict=critlist_val_dict
+
             data={
                 "ADM":res1[0],
+                # "criteria_weights_dict":criteria_weights_dict,
                 }
             return JsonResponse(data)
         else:
             # get the criterias set by admin for the exp... 
             exp_obj=exp.objects.get(id=exp_under_test)
+
             ExpCriteria_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1)
             print("ExpCriteria_obj",ExpCriteria_obj)
             crit_list_obj=ExpCriteria_obj.values_list('pCriteria__criteria_name',flat=True)
