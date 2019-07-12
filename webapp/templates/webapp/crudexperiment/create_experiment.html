@@ -3354,7 +3354,7 @@ function dummysendFeatureLevels(){
                     feat_key=$(this).val();
                     if (block_feat_dict_def[feat_key]===undefined){
                         block_feat_dict_def[feat_key]=["I.0","I.1"];
-                        block_feat_dict[feat_key]=["I.0","I.1"];
+                        // block_feat_dict[feat_key]=["I.0","I.1"];
                     }
                     console.log("I",block_feat_dict_def);
                 }
@@ -3362,7 +3362,7 @@ function dummysendFeatureLevels(){
                     feat_key=$(this).val()
                     if (block_feat_dict_def[feat_key]===undefined){
                     block_feat_dict_def[feat_key]=["R.0","R.1"];
-                    block_feat_dict[feat_key]=["R.0","R.1"];
+                    // block_feat_dict[feat_key]=["R.0","R.1"];
                     }
                     console.log("R",block_feat_dict_def)
                 }
@@ -3370,7 +3370,7 @@ function dummysendFeatureLevels(){
                     feat_key=$(this).val()
                     if (block_feat_dict_def[feat_key]===undefined){
                     block_feat_dict_def[feat_key]=["W.direct"]
-                    block_feat_dict[feat_key]=["W.direct"]
+                    // block_feat_dict[feat_key]=["W.direct"]
                     }
                     console.log("W",block_feat_dict_def)
 
@@ -3379,7 +3379,7 @@ function dummysendFeatureLevels(){
                     feat_key=$(this).val()
                     if (block_feat_dict_def[feat_key]===undefined){
                         block_feat_dict_def[feat_key]=["A.1by1","A.2by2"];
-                        block_feat_dict[feat_key]=["A.1by1","A.2by2"]
+                        // block_feat_dict[feat_key]=["A.1by1","A.2by2"]
 
                     }
                     console.log("A",block_feat_dict_def)
@@ -3399,7 +3399,7 @@ function dummysendFeatureLevels(){
                     feat_key=$(this).val();
                     if (block_feat_dict_def[feat_key]===undefined){
                         block_feat_dict_def[feat_key]=["P.All"];
-                        block_feat_dict[feat_key]=["P.All"]
+                        // block_feat_dict[feat_key]=["P.All"]
 
                     }
                     console.log("P",block_feat_dict_def)
@@ -3432,7 +3432,7 @@ function dummysendFeatureLevels(){
     $("#defaultfeatLevel_tablediv").append("<hr>");
     $("#defaultfeatLevel_tablediv").append("<h4>Status Report Default</h4>")
     for ( var indx in block_feat_dict_def){
-        featlevels=block_feat_dict[indx]
+        featlevels=block_feat_dict_def[indx]
         row_div=$("<div class='row'></div>");
         $(row_div).append(featlevels);
         $("#defaultfeatLevel_tablediv").append(row_div);

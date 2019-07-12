@@ -137,6 +137,14 @@ class Subject(models.Model):
     def __str__(self):
         return str(self.user.custom_id)
 
+class exp_defaults(models.Model):
+    used_in = models.ForeignKey(experiment, on_delete=models.CASCADE)
+    p_feature = models.ForeignKey(platform_feature, on_delete=models.CASCADE)
+    default_level = models.CharField(max_length=20)
+    def __str__(self):
+        fName = self.p_feature.feature_name
+        return fName
+
 class experiment_feature(models.Model):
     used_in = models.ForeignKey(experiment, on_delete=models.CASCADE)
     p_feature = models.ForeignKey(platform_feature, on_delete=models.CASCADE)

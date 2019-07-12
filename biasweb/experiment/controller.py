@@ -33,16 +33,22 @@ ANALYZED = 'ANALYZED' #Analysis Reports
 class ExperimentController:
     def __init__(self, a_id, e_id = None, cap = 100):
         self.exp = Experiment()
-        self.fLevels = {}
+        self.fLevels = {}  #ONLY FEATURES TO BE ADDED TO BLOCKS
         self.subjData = pd.DataFrame()
         self.subjects = Subject()
         self.idField = None
         self.assigner = Assigner()
+        self.defFSet = {}  #ONLY FEATURES TO BE KEPT OUT OF BLOCKS AND IN DEFAULTS
+        
         # check is to be made if the user wants to save the current exp so that its status changes from design mode to active and the previous exps status changes to inactive.
         if e_id:
             self.exp = Experiment.objects.get(id=e_id)
             self.fSet = self.exp.experiment_feature_set.select_related('p_feature')
             self.fLevels = self.retrieveFLevels()
+            #self.defFSet = self.exp.exp_defaults_set.select_related('p_feature')
+            #TODO: SEPARATE THE DEFAULTS FROM THE BLOCK LEVELS
+            # populate self.defFLevels & self.fLevels
+            #TODO: CREATE setDefFSet() and getDefFSet()
         else:
             print("In else")
             self.exp.status = DESIGN_MODE
@@ -58,8 +64,8 @@ class ExperimentController:
             #print(exp_id)
             exp_id = '-' + str(exp_id).zfill(4)  #ensuring the id is now a 4 digit numeric string
             self.exp.custom_exp_id += exp_id
-           
             self.fSet = self.exp.experiment_feature_set
+            self.defFSet = self.exp.exp_defaults_set  #TODO TO BE TESTED!!
             self.saveExperiment()
 
     def saveExperiment(self):
@@ -117,11 +123,15 @@ class ExperimentController:
 
     
     def addFeature(self, fSymbol, newLevList = None, byPrompt = False):
+        #ADD EXTRA ATTRIBUTE OF "DEFAULT"
         pf = PFeature.objects.filter(feature_symbol=fSymbol)[0]
         if newLevList:
+            #EDIT TASK: A new list is given for an existing feature in fSet
             print("New Levels for ",fSymbol," are: ",newLevList)
             self.fLevels[fSymbol] = newLevList
         elif fSymbol not in self.fLevels:
+            #CREATE TASK: New fSymbol added to fLevels and its default features
+            #picked from platform features table (user can later add/drop)
             self.fLevels[fSymbol] = pf.feature_levels
         #check if feature already exists, else create
         expF = self.fSet.filter(p_feature__feature_symbol=fSymbol)
@@ -214,6 +224,7 @@ class ExperimentController:
         self.blocks = list(
             itertools.product(
                 *self.fLevels.values()
+                #TODO: SUBSTITUTE fLevels with blockFLevels
             )
         )
         self.saveBlocks()

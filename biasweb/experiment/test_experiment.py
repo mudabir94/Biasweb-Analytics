@@ -95,6 +95,8 @@ texp.addFeature('P', p_levList)
 
 #newLevs = {'W': ['direct', 'AHP'], 'C': ['full', 'pruned']}
 newLevs = {'W': ['direct', 'AHP'], 'A': ['all', '2by2','user'], 'R': ['0', '1']}
+#TODO: Now need to differentiate between default/block features
+#SE
 texp.setFSet(newFLevels=newLevs,prompt=True)
 texp.saveExperiment()
 #Edit feature levels
