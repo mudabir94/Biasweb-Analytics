@@ -99,7 +99,7 @@
             <!--FEATURES LEVELS ROW DIV -->
             <div class='row-fluid' id='feat_lvl_div'>
                 <div class='row'>
-                    <div class='col-md-3'>
+                    <div class='col-md-3' id="ft_levels_div">
                             <p1><b>Select features to enable:</b></p1>
                     {% for feature in platformfeatobj%}
                         <div class='row-fluid'>
@@ -121,19 +121,21 @@
                             <button id="sendfeatlvl_btn" onclick='sendFeatureLevels()'> Set Feature Levels </button>
                         </div> 
                     </div>
-                    <div class=col-md-3   >
+                    <div class=col-md-5>
                         <div id='defaultfeatLevel_tablediv'>
-                            
+                            <hr>
+                            <h4>Status Report Default</h4>
+
                         </div>
                     </div>
-                    <div class='col-md-5'  >
+                    <div class='col-md-3'  >
                         <div class='row'>
                             <div class='col-md-12'>
                             </div>
                         </div>
                         <div class='row'>
                             <div class='col-md-12'>
-                                <div class='table-responsive' id='generated_blocks'></div>
+                                <div class='table-responsive' id='generated_blocks' style="height:500px"></div>
                             </div>    
                         </div>
                        
@@ -543,19 +545,14 @@
     </div>
 
 </div>   
-
-<footer>
-    
-</footer>
 <div class="modal"><!-- Place at bottom of page --></div>
 
 <script>
 var active_button=''
 
-
 var global_phones_exp_phones=[]
 //Global Variable
-var dict = {};
+var block_feat_dict = {};
 
 var arr_feature_levels=[];
 var globalfiledatalist=[];
@@ -689,13 +686,13 @@ if(exp_id===""){
         //else try to get data from local storage... 
         
         //* Fetching feature_level dictionary containing feature symbol as key and its sub levels as values.*
-        dict=JSON.parse(window.localStorage.getItem("feat_dict")); 
+        block_feat_dict=JSON.parse(window.localStorage.getItem("feat_dict")); 
         //* Dictionary of checkboxes already checked by the user along with sub checklevels as values ( for history of checkboxes  checked )*
         checkbox_id_dict=JSON.parse(window.localStorage.getItem("checkbox_id_dict")); 
         //* block list contains the combinations of feature levels that will be used for display as a table*
         var blockList = JSON.parse(window.localStorage.getItem("blockList")); 
 
-        console.log("Feature_levels_dict",dict)
+        console.log("Feature_levels_dict",block_feat_dict)
         console.log("checkbox_id_dict",checkbox_id_dict)
         //* Population of block list table with block list. 
         if ( blockList===null){
@@ -707,8 +704,8 @@ if(exp_id===""){
         }
         //* Population of feature level table with feature levels . 
 
-        if (dict==null ){
-            dict={}
+        if (block_feat_dict==null ){
+            block_feat_dict={}
         }
         else {
             displayfeaturelevelTable();
@@ -840,12 +837,12 @@ console.log('outercheckbox obj',outerckbox);
             // For now its purpose is simply to hide the innercheckdivs.  
             hideInnerCheckBoxDivs(outercheckid);
             // console.log(outercheckval);
-            // dict[outercheckval]=null;
-            // if (dict[outercheckval]==null  ){
-            //     delete dict[outercheckval];
+            // block_feat_dict[outercheckval]=null;
+            // if (block_feat_dict[outercheckval]==null  ){
+            //     delete block_feat_dict[outercheckval];
             //     console.log('in else condition');  
             // }
-            // console.log(dict)
+            // console.log(block_feat_dict)
             // updateFeatureLvls();
         }
 }
@@ -863,22 +860,22 @@ function showInnerCheckBoxDivs_Stored(outercheckid,data){
         /* Phone set and Criteria Ordering are the Anamolies
             ** For both of them different checks but same functionality. **
             ** Fetching the innerCheckBox Div it will first clear it.**
-            ** FOR NOW, Getting the data from dict while the others from subdetails/-> Data. **
-            ** Load the Data Present in feature level dict in it. **
+            ** FOR NOW, Getting the data from block_feat_dict while the others from subdetails/-> Data. **
+            ** Load the Data Present in feature level block_feat_dict in it. **
             ** And simply display the div. **
 
          */
         
         if (outercheckid==="6"){
 
-            console.log(dict);
+            console.log(block_feat_dict);
             $('#6-innercheckboxdiv').empty();
             var row_div=document.createElement("div");
             row_div.setAttribute("class",'row');
             var col_md_6_div=document.createElement("div");
             col_md_6_div.setAttribute("class","col-md-12");
             row_div.append(col_md_6_div);
-            col_md_6_div.append(dict['P'])
+            col_md_6_div.append(block_feat_dict['P'])
             var col_md_6_div_2=document.createElement("div");
             col_md_6_div_2.setAttribute("class","col-md-12");
             row_div.append(col_md_6_div_2);
@@ -906,7 +903,7 @@ function showInnerCheckBoxDivs_Stored(outercheckid,data){
             var col_md_6_div=document.createElement("div");
             col_md_6_div.setAttribute("class","col-md-12");
             row_div.append(col_md_6_div);
-            col_md_6_div.append(dict["CO"])
+            col_md_6_div.append(block_feat_dict["CO"])
             var col_md_6_div_2=document.createElement("div");
             col_md_6_div_2.setAttribute("class","col-md-12");
             row_div.append(col_md_6_div_2);
@@ -980,7 +977,7 @@ function showInnerCheckBoxDivs_Stored(outercheckid,data){
             }
 
             checkbox_id_dict[outercheckid]=innercheckbox_id_list;
-            console.log('DICTionary',dict);
+            console.log('DICTionary',block_feat_dict);
 
             console.log('All innercheck boxid added to checkbox dict',checkbox_id_dict);
 }
@@ -1069,7 +1066,7 @@ function defaultFeatLevel_Table(){
     
     console.log(table)
     $(table).appendTo('#defaultfeatLevel_tablediv');
-    //dict=default_dic;
+    //block_feat_dict=default_dic;
 }
 
  $(function () {
@@ -1277,11 +1274,11 @@ function makeFeatureLvldicTable(){
     var th=document.createElement('TH')
     th.append('Feature Levels')
     trh.appendChild(th)
-    if (dict==='{}'){
+    if (block_feat_dict==='{}'){
         console.log('emoty table');
     }
     else{
-        for (var row in dict){
+        for (var row in block_feat_dict){
       
         var tr=document.createElement('TR');
         tbody.appendChild(tr)
@@ -1291,7 +1288,7 @@ function makeFeatureLvldicTable(){
         tr.appendChild(td)
         var td=document.createElement('TD')
         
-        td.append(dict[row])
+        td.append(block_feat_dict[row])
         tr.appendChild(td)
          }
     }
@@ -1299,10 +1296,10 @@ function makeFeatureLvldicTable(){
     console.log(table)
     $(table).appendTo("#displayfeaturelevelTablediv");
     $(table).appendTo(".displayfeaturelevelTable");
-    window.localStorage.setItem("dispfeatlevels", JSON.stringify(dict));
+    window.localStorage.setItem("dispfeatlevels", JSON.stringify(block_feat_dict));
 }
 function updateFeatureLvls(){
-    window.localStorage.setItem("dispfeatlevels", JSON.stringify(dict));
+    window.localStorage.setItem("dispfeatlevels", JSON.stringify(block_feat_dict));
     $('.displayfeaturelevelTable').empty();
     displayfeaturelevelTable();
 }
@@ -1498,7 +1495,7 @@ function showCritrtia(){
         // if ($('.breadcrumb li').length>0 && $('.breadcrumb li').length===1 ){
         //     def_cdm_co_on_HtmlSetup();
         // }else{
-        //     orderCriteriaHtmlSetup("CO",dict["CO"],default_active);
+        //     orderCriteriaHtmlSetup("CO",block_feat_dict["CO"],default_active);
         // }
 
 
@@ -2731,7 +2728,7 @@ console.log(outercheckval);
     console.log("success");
     var outerckbox = $('#'+outercheckid);
     console.log('outercheckbox obj',outerckbox);
-    console.log('dict',dict);
+    console.log('block_feat_dict',block_feat_dict);
    
 
     // checking if the user has checked or not. 
@@ -2741,6 +2738,7 @@ if (outerckbox.is(':checked')) {
         console.log('outercheckval',outercheckval);
         console.log('data retrieved',data);
     if (outercheckval==="P"){ 
+                delete block_feat_dict["P"];
                 $('#phsetnum_div').empty();
                 $('#phsetnum_div').dialog({ 
                 title: "Phone Set",
@@ -2797,8 +2795,8 @@ if (outerckbox.is(':checked')) {
                                     setlist.push(str);
                                 }
                                 console.log("SetList",setlist);
-                                if (dict[outercheckval]===undefined){
-                                    dict[outercheckval]=setlist;
+                                if (block_feat_dict[outercheckval]===undefined){
+                                    block_feat_dict[outercheckval]=setlist;
                                 }
                                 $('#'+outercheckid+'-innercheckboxdiv').empty();
                                 var row_div=document.createElement("div");
@@ -2806,7 +2804,7 @@ if (outerckbox.is(':checked')) {
                                 var col_md_6_div=document.createElement("div");
                                 col_md_6_div.setAttribute("class","col-md-12 col-sm-12");
                                 row_div.append(col_md_6_div);
-                                col_md_6_div.append(dict[outercheckval])
+                                col_md_6_div.append(block_feat_dict[outercheckval])
                                 var col_md_6_div_2=document.createElement("div");
                                 col_md_6_div_2.setAttribute("class","col-md-12 col-sm-12");
                                 row_div.append(col_md_6_div_2);
@@ -2822,7 +2820,7 @@ if (outerckbox.is(':checked')) {
                                 
 
 
-                                window.localStorage.setItem("feat_dict", JSON.stringify(dict));
+                                window.localStorage.setItem("feat_dict", JSON.stringify(block_feat_dict));
                                 checkbox_id_dict[outercheckid]=[];
                                 window.localStorage.setItem("checkbox_id_dict", JSON.stringify(checkbox_id_dict));
    
@@ -2872,7 +2870,7 @@ if (outerckbox.is(':checked')) {
 
             
     else if(outercheckval==="CO"){
-        dict[outercheckval]=[];
+        block_feat_dict[outercheckval]=[];
 
         var numofsets=0;
         $('order_criteria_div').empty();
@@ -2892,7 +2890,7 @@ if (outerckbox.is(':checked')) {
             click: function() {
                 $( this ).dialog( "close" );
                 $("#7").prop('checked', false);
-                delete dict['CO'];
+                delete block_feat_dict['CO'];
             }
 
         },
@@ -2910,12 +2908,12 @@ if (outerckbox.is(':checked')) {
                 setlst.push(str);
             }
             console.log("SetList",setlst);
-            dict[outercheckval]=setlst;
+            block_feat_dict[outercheckval]=setlst;
             // orderCriteriaHtmlSetup(outercheckval,setlst);
             
 
-            if (dict[outercheckval]===undefined){
-                dict[outercheckval]=[];
+            if (block_feat_dict[outercheckval]===undefined){
+                block_feat_dict[outercheckval]=[];
             }
             $('#'+outercheckid+'-innercheckboxdiv').empty();
            
@@ -2928,7 +2926,7 @@ if (outerckbox.is(':checked')) {
             var col_md_6_div=document.createElement("div");
             col_md_6_div.setAttribute("class","col-md-12");
             row_div.append(col_md_6_div);
-            col_md_6_div.append(dict[outercheckval])
+            col_md_6_div.append(block_feat_dict[outercheckval])
 
             var col_md_6_div_2=document.createElement("div");
             col_md_6_div_2.setAttribute("class","col-md-12");
@@ -2945,7 +2943,7 @@ if (outerckbox.is(':checked')) {
 
             $("#7").prop('checked', true);
 
-            window.localStorage.setItem("feat_dict", JSON.stringify(dict));
+            window.localStorage.setItem("feat_dict", JSON.stringify(block_feat_dict));
             checkbox_id_dict[7]=[];
             window.localStorage.setItem("checkbox_id_dict", JSON.stringify(checkbox_id_dict));
             
@@ -3004,12 +3002,13 @@ if (outerckbox.is(':checked')) {
       
     }
     else {
-            dict[outercheckval]=data
+        delete block_feat_dict[outercheckval]
+        block_feat_dict[outercheckval]=data
            
             if (data==null){
-                dict[outercheckval]=[0,1]
+                block_feat_dict[outercheckval]=[0,1]
             }
-            console.log('dictionary',dict)
+            console.log('dictionary',block_feat_dict)
             // calling innercheckboxdivs. 
             // these divs basically come after outercheckbox that contain innerchecks.
             // outercheck id and the data is sent to this function.
@@ -3058,15 +3057,16 @@ if (outerckbox.is(':checked')) {
                 $("#set_buttons").empty();
                 $('#expphonelist_div').empty();
                 active_button=""
+                
                 // $("#phones_main_button_div").empty();
                 $('#mobile_catalog_div').empty();
         }
         hideInnerCheckBoxDivs(outercheckid);
         console.log("outercheckval",outercheckval);
-        console.log("dict",dict)
-        dict[outercheckval]=null;
-        if (dict[outercheckval]===null || dict[outercheckval].length===0){
-            delete dict[outercheckval];
+        console.log("block_feat_dict",block_feat_dict)
+        block_feat_dict[outercheckval]=null;
+        if (block_feat_dict[outercheckval]===null || block_feat_dict[outercheckval].length===0){
+            delete block_feat_dict[outercheckval];
             
         }
         if (outercheckval==="CO"){
@@ -3088,11 +3088,11 @@ if (outerckbox.is(':checked')) {
         phoneset_dic={}
         console.log("phoneset_dic",phoneset_dic)
 
-        console.log("dict",dict)
+        console.log("dict",block_feat_dict)
 
 
         var get_dict=JSON.parse(window.localStorage.getItem("feat_dict")); 
-        get_dict=dict;
+        get_dict=block_feat_dict;
         var set_dict=get_dict;
         window.localStorage.setItem("feat_dict", JSON.stringify(set_dict));
         removeFeatureLevel();
@@ -3165,20 +3165,20 @@ console.log("innercheckbox-",innercheckboxid );
     // $('#'+temparr[0]).prop('checked',true);
     
 if ($(innercheckboxid).prop('checked') == true){
-    //Process for adding the innercheck value in dict. 
-            if (dict[outercheckdivtitle] == null) {
-                    dict[outercheckdivtitle]=[]
+    //Process for adding the innercheck value in block_feat_dict. 
+            if (block_feat_dict[outercheckdivtitle] == null) {
+                block_feat_dict[outercheckdivtitle]=[]
                 }   
-            arr_feature_levels=dict[outercheckdivtitle];
-            console.log('Specific dict in Checked',dict[outercheckdivtitle]);
+            arr_feature_levels=block_feat_dict[outercheckdivtitle];
+            console.log('Specific dict in Checked',block_feat_dict[outercheckdivtitle]);
             console.log('insert',arr_feature_levels);
             arr_feature_levels.push(innercheckval);
-            dict[outercheckdivtitle]=arr_feature_levels;
+            block_feat_dict[outercheckdivtitle]=arr_feature_levels;
             console.log('arr',arr_feature_levels);
-            console.log('All dict in checked condition.',dict);
+            console.log('All dict in checked condition.',block_feat_dict);
             // updating feat_dict in session. 
             var get_dict=JSON.parse(window.localStorage.getItem("feat_dict")); 
-            get_dict=dict;
+            get_dict=block_feat_dict;
             var set_dict=get_dict;
             window.localStorage.setItem("feat_dict", JSON.stringify(set_dict));
 
@@ -3210,35 +3210,30 @@ if ($(innercheckboxid).prop('checked') == true){
 else if ($(innercheckboxid).prop('checked') == false) {
    // PROCESS TO DELETE THE UNCHECKED  FEATURE LEVEL FROM DICT 
                     // Getting all the feature levels of the feature in a list. 
-                    arr_feature_levels=dict[outercheckdivtitle];
-                    console.log('Specific dict in UnChecked',dict[outercheckdivtitle]);
+                    arr_feature_levels=block_feat_dict[outercheckdivtitle];
+                    console.log('Specific dict in UnChecked',block_feat_dict[outercheckdivtitle]);
                     console.log('arr',arr_feature_levels);
                     console.log(innercheckval);
                     var index = $.inArray(innercheckval, arr_feature_levels);
                         if (index != -1) {
                             var removedvalue=arr_feature_levels.splice(index, 1);
                             console.log('removedvalue',removedvalue);
-                    
-                        
-
                         }
                     console.log('del arr',arr_feature_levels);  
                     console.log('del arr',arr_feature_levels.length);
                     // A Check to see if all inner checks are unchecked then remove the key aswell
                     if (arr_feature_levels.length===0){
-                        delete  dict[outercheckdivtitle];
+                        delete  block_feat_dict[outercheckdivtitle];
                         console.log('condition check');
-                        console.log('deleted dic',dict);
-   
+                        console.log('deleted dic',block_feat_dict);
                     }
                     else{ 
-                        dict[outercheckdivtitle]=arr_feature_levels;
-                        console.log('dict',dict);
-                        
+                        block_feat_dict[outercheckdivtitle]=arr_feature_levels;
+                        console.log('block_feat_dict',block_feat_dict);
                     }
                     // UPdate Feat_dict in session. 
                     var get_dict=JSON.parse(window.localStorage.getItem("feat_dict")); 
-                    get_dict=dict;
+                    get_dict=block_feat_dict;
                     var set_dict=get_dict;
                     window.localStorage.setItem("feat_dict", JSON.stringify(set_dict));
 
@@ -3334,14 +3329,140 @@ for (var o in data){
     }
      checkbox_id_dict[outercheckid]=innercheckbox_id_list;
     // alert(checkbox_id_dict[outercheckid]);
-     console.log('DICTionary',dict);
-     window.localStorage.setItem("feat_dict", JSON.stringify(dict));
+     console.log('DICTionary',block_feat_dict);
+     window.localStorage.setItem("feat_dict", JSON.stringify(block_feat_dict));
      window.localStorage.setItem("checkbox_id_dict", JSON.stringify(checkbox_id_dict));
    
      console.log('All innercheck boxid added to checkbox dict',checkbox_id_dict);
 }
 var cdm_full_btn_on="false"; var default_active="false";
 var CO_CDM_COMB="";
+var status_report_dictionary={}
+var block_feat_dict_def={}
+function dummysendFeatureLevels(){
+    block_feat_dict_def={};
+    // all outerchecks are unchecked?
+    all_unchecked=false
+    var feat_key="";
+    var total_feat_len=$("#feat_lvl_div :input").not(':button').length;
+    var count=0
+    $("#feat_lvl_div :input").not(':button').each(function() {
+        console.log($(this).prop("checked"));
+        if($(this).prop("checked")==false){
+            if ($(this).val()==="I"){
+                    feat_key=$(this).val();
+                    if (block_feat_dict_def[feat_key]===undefined){
+                        block_feat_dict_def[feat_key]=["I.0","I.1"];
+                        block_feat_dict[feat_key]=["I.0","I.1"];
+                    }
+                    console.log("I",block_feat_dict_def);
+                }
+            else if ($(this).val()==="R"){
+                    feat_key=$(this).val()
+                    if (block_feat_dict_def[feat_key]===undefined){
+                    block_feat_dict_def[feat_key]=["R.0","R.1"];
+                    block_feat_dict[feat_key]=["R.0","R.1"];
+                    }
+                    console.log("R",block_feat_dict_def)
+                }
+            else if ($(this).val()==="W"){
+                    feat_key=$(this).val()
+                    if (block_feat_dict_def[feat_key]===undefined){
+                    block_feat_dict_def[feat_key]=["W.direct"]
+                    block_feat_dict[feat_key]=["W.direct"]
+                    }
+                    console.log("W",block_feat_dict_def)
+
+                }
+            else if ($(this).val()==="A"){
+                    feat_key=$(this).val()
+                    if (block_feat_dict_def[feat_key]===undefined){
+                        block_feat_dict_def[feat_key]=["A.1by1","A.2by2"];
+                        block_feat_dict[feat_key]=["A.1by1","A.2by2"]
+
+                    }
+                    console.log("A",block_feat_dict_def)
+
+                }
+            // else if ($(this).val()==="C"){
+            //         feat_key=$(this).val();
+            //         if (block_feat_dict_def[feat_key]===undefined){
+            //             block_feat_dict_def[feat_key]=["C.def"];
+            //             block_feat_dict[feat_key]=["C.def"]
+
+            //         }
+            //         console.log("C",block_feat_dict_def)
+                    
+            //     }
+            else if ($(this).val()==="P"){
+                    feat_key=$(this).val();
+                    if (block_feat_dict_def[feat_key]===undefined){
+                        block_feat_dict_def[feat_key]=["P.All"];
+                        block_feat_dict[feat_key]=["P.All"]
+
+                    }
+                    console.log("P",block_feat_dict_def)
+                    SavePhoneSet_P0()
+
+                }
+            all_unchecked=true
+            count+=1
+        }
+        else{
+            delete block_feat_dict_def[$(this).val()];
+            all_unchecked=false
+        }
+    });
+    if(count!==total_feat_len){all_unchecked=true}
+
+    // if (all_unchecked===true){
+    //     block_feat_dict_def["I"]=["I.0","I.1"]
+    //     block_feat_dict_def["R"]=["R.0","R.1"];
+    //     block_feat_dict_def["W"]=["W.direct","W.AHP"];
+    //     block_feat_dict_def["A"]=["A.1by1"];
+    //     block_feat_dict_def["C"]=["C.Def"];
+    //     block_feat_dict_def["P"]=["P.All"];
+    //     block_feat_dict=block_feat_dict_def
+    //     console.log("In Here");
+    // }
+       
+    $("#defaultfeatLevel_tablediv").empty()
+    var featlevels="default"
+    $("#defaultfeatLevel_tablediv").append("<hr>");
+    $("#defaultfeatLevel_tablediv").append("<h4>Status Report Default</h4>")
+    for ( var indx in block_feat_dict_def){
+        featlevels=block_feat_dict[indx]
+        row_div=$("<div class='row'></div>");
+        $(row_div).append(featlevels);
+        $("#defaultfeatLevel_tablediv").append(row_div);
+    }
+        // default cdm full and co. and Select P.O 
+        cdm_crit_show_dict['c.full']; 
+        console.log("all_unchecked",all_unchecked)
+        console.log("block_feat_dict_def",block_feat_dict_def)
+        console.log("block_feat_dict",block_feat_dict)
+
+        // if all unchecked then populate the Status Report Default with all defualts features. 
+
+        // get default cdm, CO 
+        // Get 
+        // saveDefaultCriteriaSet
+        // 'default_crit_show_dict': JSON.stringify(default_crit_show_dict,undefined,''),
+        //  'default_crit_hide_dict': JSON.stringify(default_crit_hide_dict,undefined,''),
+        // saveCdmCriteriaHTMLSetup
+        // 'cdm_crit_show_dict': JSON.stringify(cdm_crit_show_dict,undefined,''),
+        // 'cdm_crit_hide_dict': JSON.stringify(cdm_crit_hide_dict,undefined,''),
+        // saveOrderSet
+        // 'crit_order_dict':JSON.stringify(crit_order_dict),
+        // 'crit_hide_dict':JSON.stringify(crit_hide_dict),
+        // SavePhoneSet
+        // 'phoneset_dic':JSON.stringify(phoneset_dic),
+
+    sendFeatureLevels();
+}
+
+
+
 function sendFeatureLevels(){ 
     dict_not_empty_flag="false";
     $("#default_tree_view_div").empty();
@@ -3363,8 +3484,8 @@ function sendFeatureLevels(){
     $("#ol3").empty();
     $("#ol4").empty();
   
-if (dict['C']===undefined && dict['CO']===undefined){
-  
+if (block_feat_dict['C']===undefined && block_feat_dict['CO']===undefined){
+  alert("1")
     CO_CDM_COMB="CDM_off_CO_off";
     if (current_save_state===CO_CDM_COMB){
         console.log("Doing Nothing")
@@ -3510,7 +3631,9 @@ if (dict['C']===undefined && dict['CO']===undefined){
     */ 
     
 }
-else if (dict['C']!==undefined && dict['CO']===undefined){
+else if (block_feat_dict['C']!==undefined && block_feat_dict['CO']===undefined){
+    alert("2")
+
     CO_CDM_COMB="CDM_on_CO_off";
     if (current_save_state===CO_CDM_COMB){
         console.log("Doing Nothing")
@@ -3593,7 +3716,9 @@ else if (dict['C']!==undefined && dict['CO']===undefined){
         // CFID: Default
     */
 }
-else if (dict['C']===undefined && dict['CO']!==undefined){
+else if (block_feat_dict['C']===undefined && block_feat_dict['CO']!==undefined){
+    alert("3")
+
     default_active="true"
     crit_order_dict={};
     crit_hide_dict={};
@@ -3666,8 +3791,10 @@ else if (dict['C']===undefined && dict['CO']!==undefined){
     
     */
 }
-else if (dict['C']!==undefined && dict['CO']!==undefined){
-    // orderCriteriaHtmlSetup("CO",dict["CO"],default_active);
+else if (block_feat_dict['C']!==undefined && block_feat_dict['CO']!==undefined){
+    // orderCriteriaHtmlSetup("CO",block_feat_dict["CO"],default_active);
+    alert("4")
+
     crit_order_dict={};
     crit_hide_dict={};
     // delete default_crit_show_dict["cdm"];
@@ -3713,19 +3840,20 @@ else if (dict['C']!==undefined && dict['CO']!==undefined){
     */
 }
 
-if (jQuery.isEmptyObject(dict))
+if (jQuery.isEmptyObject(block_feat_dict))
 {
     alert("Please enable at least one Feature. Thank you!!")
-    console.log("DIIICCCT",dict['C']);
-    console.log("DIIICCCT",dict['CO']);
-    console.log("DIIICCCT",dict);
+    console.log("DIIICCCT",block_feat_dict['C']);
+    console.log("DIIICCCT",block_feat_dict['CO']);
+    console.log("DIIICCCT",block_feat_dict);
     return;
 }
+  
 $.ajax({
 type: 'POST',
 dataType: "json",
 'data': {
-'dict': JSON.stringify(dict,undefined,''),
+'block_feat_dict': JSON.stringify(block_feat_dict,undefined,''),
 'exp_id': exp_id,
 'csrfmiddlewaretoken': '{{ csrf_token }}',
 },
@@ -3733,7 +3861,7 @@ dataType: "json",
 url: "{% url 'createexp' %}",
 success: function(data){
     console.log("<<---FEATURES POSTED SUCCESSFULLY--->>");
-    console.log(data)
+    console.log(data);
     //console.log('Blocks---> ',data);
     if(exp_id===""){
         exp_id = data['exp_id'];
@@ -3750,17 +3878,13 @@ success: function(data){
     }
   }); 
 
-
-
-
-
 }
 function removeFeatureLevel(){
     $.ajax({
 type: 'POST',
 dataType: "json",
 'data': {
-'dict': JSON.stringify(dict,undefined,''),
+'block_feat_dict': JSON.stringify(block_feat_dict,undefined,''),
 'exp_id': exp_id,
 'csrfmiddlewaretoken': '{{ csrf_token }}',
 },
@@ -3840,7 +3964,7 @@ function sendFilePath(id){
         type: 'POST',
         dataType: "json",
         'data': {
-        'dict': JSON.stringify(filepath),
+        'block_feat_dict': JSON.stringify(filepath),
         'csrfmiddlewaretoken': '{{ csrf_token }}',
         },
         // the ajax call is sent to subdetails url name in the post function.  
@@ -3901,12 +4025,12 @@ $(document).ready(function () {
 
         });
 function mobileCatalog(){
+
         $("#exp_description_div").hide();
         $('#importSubdiv').hide();
         $('#dispFileFeatLvldiv').hide();
         $('#subj_split_batch_rowdiv').hide();
         $('#pager').hide();
-
         $('#block_assign_row_div').hide();
         $('#feat_lvl_div').hide();
         $('#batchmngprvbtn_div').hide();
@@ -4134,21 +4258,23 @@ function mobileCatalog(){
         col_md_2.setAttribute('class','col-md-1');
         col_md_2.id="save_button"
         row.append(col_md_2);
-        console.log("DICTIONARY!!!!!",dict['P'])
-        default_list=["P.Default","P.0"]
-        if (dict['P']===undefined){
+        console.log("DICTIONARY!!!!!",block_feat_dict['P']);
+        default_list=["P.Default","P.All"]
+        if (block_feat_dict['P']===undefined ||  block_feat_dict['P'][0]==="P.All"){
+                alert("PPPP")
                 for (var i=0;i<default_list.length;i++){
-                var button=document.createElement('button')
-                button.id=default_list[i]
-                button.innerHTML=default_list[i];
-                button.setAttribute("onclick","defSetFunc($(this).attr('id'))")
-                if (i===0){
-                    var this_b=button
-                }
-                $('#set_buttons').append(button)
-                defSetFunc($(this_b).attr('id'))
+                    var button=document.createElement('button')
+                    button.id=default_list[i]
+                    button.innerHTML=default_list[i];
+                    button.setAttribute("onclick","defSetFunc($(this).attr('id'))")
+                    if (i===0){
+                        var this_b=button
+                    }
+                    $('#set_buttons').append(button)
+                    defSetFunc($(this_b).attr('id'))
+            }
         }
-        }else{
+        else{
                 for (var i=0;i<setlist.length;i++){
                     var button=document.createElement('button')
                     button.id=setlist[i]
@@ -4198,10 +4324,7 @@ function NextStep(element){
                 if (phoneset_dic[i]===undefined || phoneset_dic[i].length<=1){
                 count=count+1;
                 }
-        
             }
-          
-
             if (count===setlist.length){
                 alert("Please select at least two phones for the set");
                 return;
@@ -4376,7 +4499,7 @@ function NextStep(element){
 
         
     }
-function SavePhoneSet_P0(element){
+function SavePhoneSet_P0(){
         phoneset_dic={};
         phonename_dic={};
         $.ajax({
@@ -4408,14 +4531,13 @@ function SavePhoneSet_P0(element){
         });
 }
 function SavePhoneSet(element){
-    console.log("DDDDD",dict)
         $.ajax({
                 // Ajax call to savephoneset  
                 url: "{% url 'savephonesets' %}",
                 type:'POST',
                 'data': {
                 'phoneset_dic':JSON.stringify(phoneset_dic),
-                'featlevels_dic': JSON.stringify(dict,undefined,''),
+                'featlevels_dic': JSON.stringify(block_feat_dict,undefined,''),
                 'csrfmiddlewaretoken': '{{ csrf_token }}',
                 },
                 dataType: "json",
@@ -4435,8 +4557,8 @@ function SavePhoneSet(element){
                     current.prop('class',current.attr('class').replace('active',""));
                     $('#ftlvl').prop('class', 'custom_nav_btn active');
                     
-                    console.log("DICT<<<<<!!!!")
-                    console.log(dict)
+                    console.log("block_feat_dict<<<<<!!!!")
+                    console.log(block_feat_dict)
                               
 
 
@@ -4808,7 +4930,7 @@ function defSetFunc(active_id){
 
         var savebutton=document.createElement('button');
         savebutton.innerHTML="Save"
-        savebutton.setAttribute('onclick','SavePhoneSet_P0($(this))')
+        savebutton.setAttribute('onclick','SavePhoneSet_P0()')
         savebutton.setAttribute('id','savebutton_id')
         $("#process_buttons").empty();
         $('#save_button').empty()
@@ -5959,7 +6081,7 @@ function def_cdm_co_on_HtmlSetup(){
             var feat_hide=crit_hide_dict["CO.1_Cdm.Def"]
             feat_to_hide=feat_hide;
             cdm_crit_order_on_flag="false";
-            var colist=dict['CO'];
+            var colist=block_feat_dict['CO'];
             data=htmlF(shw_disp,hide_disp,mandatory_list,feat_dsp,feat_hide,flg);
             // for (var co in colist){
             //     crit_order_dict[colist[co]+"_Cdm.Def"]=data['shw_disp'];
@@ -5988,7 +6110,7 @@ function def_cdm_co_on_HtmlSetup(){
                                 var feat_hide=data['feature_to_hide'];
                                 feat_to_hide=feat_hide;
                                 cdm_crit_order_on_flag="false";
-                                var colist=dict['CO'];
+                                var colist=block_feat_dict['CO'];
                                 data=htmlF(shw_disp,hide_disp,mandatory_list,feat_dsp,feat_hide,flg);
                               
                                 for (var co in colist){
@@ -6023,7 +6145,7 @@ function def_cdm_co_on_HtmlSetup(){
 function orderCriteriaHtmlSetup_Next(){
     def_cdm_passed="true";
 
-    orderCriteriaHtmlSetup("CO",dict["CO"],"true");
+    orderCriteriaHtmlSetup("CO",block_feat_dict["CO"],"true");
     cdm_off_co_on_TreeView();
 }
 function orderCriteriaHtmlSetup(CO,CO_list,default_active){
@@ -6182,7 +6304,7 @@ function product_Section(){
     }
 function get_data_Ajax_Co(colist){
         // ajax call to get feature_to_display, feature_to_hide
-        colist=dict["CO"]
+        colist=block_feat_dict["CO"]
         // if (default_crit_show_dict["Cdm.Def"]!==undefined && default_crit_hide_dict["Cdm.Def"]!==undefined){
           if (def_cdm_passed==="true")  {
             $('#select_div').empty();
@@ -6194,7 +6316,7 @@ function get_data_Ajax_Co(colist){
             col_md_12.setAttribute('class','col-md-9 btn-group');
             col_md_12.id="set_button_cdm_off_co_on"
             toggle_btn_row_div.append(col_md_12);
-            colist=dict["CO"];
+            colist=block_feat_dict["CO"];
             for (var i=0;i<colist.length;i++){
                 var button=document.createElement('button')
                 button.id=colist[i]+"btn"
@@ -6415,6 +6537,7 @@ function get_data_Ajax_Co(colist){
         console.log("crit_hide_dict",crit_hide_dict);
         current_save_state="CDM_off_CO_on"
         // make an ajax call that will send the two dicts to server. 
+        dummysendFeatureLevels();
         $.ajax({
                                 
                                         type: 'POST',
@@ -7050,12 +7173,14 @@ function get_data_Ajax_Co(colist){
             // console.log("DICTO",dict);
             current_save_state="CDM_off_CO_off"
           // make an ajax call that will send full criterias that will be enabled for the experiment. 
+          dummysendFeatureLevels();
+
           $.ajax({
                                 
                                 type: 'POST',
                                 dataType: "json",
                                 'data': {
-                                'featlevels_dic': JSON.stringify(dict,undefined,''),
+                                'featlevels_dic': JSON.stringify(block_feat_dict,undefined,''),
                                 'default_crit_show_dict': JSON.stringify(default_crit_show_dict,undefined,''),
                                 'default_crit_hide_dict': JSON.stringify(default_crit_hide_dict,undefined,''),
                                 'cataloglist':JSON.stringify(cataloglist),
@@ -7752,12 +7877,13 @@ function get_data_Ajax_Co(colist){
     function saveCdmCriteriaHTMLSetup(){  
          // make an ajax call that will send full criterias that will be enabled for the experiment. 
          current_save_state="CDM_on_CO_off";
+         dummysendFeatureLevels();
           $.ajax({
                                 
                                 type: 'POST',
                                 dataType: "json",
                                 'data': {
-                                'featlevels_dic': JSON.stringify(dict,undefined,''),
+                                'featlevels_dic': JSON.stringify(block_feat_dict,undefined,''),
                                 'cdm_crit_show_dict': JSON.stringify(cdm_crit_show_dict,undefined,''),
                                 'cdm_crit_hide_dict': JSON.stringify(cdm_crit_hide_dict,undefined,''),
                                 'cataloglist':JSON.stringify(cataloglist),
@@ -9104,7 +9230,7 @@ function get_data_Ajax_Co(colist){
                     feat_to_hide=feat_hide
                     var flg="true";
                     data=htmlF(shw_disp,hide_disp,mandatory_list,feat_dsp,feat_hide,flg)         
-                    var colist=dict['CO']
+                    var colist=block_feat_dict['CO']
                     for (var co in colist){
                         // crit_order_dict[colist[co]+"_"+co_feature_active]=data_obj_show;
                         // crit_hide_dict[colist[co]+"_"+co_feature_active]=data_obj_hide;
@@ -9122,7 +9248,7 @@ function get_data_Ajax_Co(colist){
                     var flg="true";
                     data=htmlF(shw_disp,hide_disp,mandatory_list,feat_dsp,feat_hide,flg)  
                     //    TESTING PHASE> 
-                    // var colist=dict['CO']
+                    // var colist=block_feat_dict['CO']
                         // for (var co in colist){
                         //     // crit_order_dict[colist[co]+"_"+co_feature_active]=data_obj_show;
                         //     // crit_hide_dict[colist[co]+"_"+co_feature_active]=data_obj_hide;
@@ -9148,7 +9274,7 @@ function get_data_Ajax_Co(colist){
                 var flg="true";
             
                 data=htmlF(shw_disp,hide_disp,mandatory_list,feat_dsp,feat_hide,flg)
-                var colist=dict["CO"];
+                var colist=block_feat_dict["CO"];
                 data_obj_show=JSON.parse(JSON.stringify(data['shw_disp']));
                 data_obj_hide=JSON.parse(JSON.stringify(data['hide_disp']));
 
@@ -9172,7 +9298,7 @@ function get_data_Ajax_Co(colist){
             //                     dataType: "json",
                                 
             //                     success: function(data){
-            //                     // var inputdata =dict["CO"]
+            //                     // var inputdata =block_feat_dict["CO"]
             //                     // var select=document.createElement('select');
             //                     // select.setAttribute('id', 'sel_options');
             //                     // select.setAttribute('onchange',"selChangeFunc($(this))")
@@ -9199,7 +9325,7 @@ function get_data_Ajax_Co(colist){
             //                     // $('#select_div').append(select);   
 
             //                     data=htmlF(shw_disp,hide_disp,mandatory_list,feat_dsp,feat_hide,flg)
-            //                     var colist=dict["CO"];
+            //                     var colist=block_feat_dict["CO"];
             //                     data_obj_show=JSON.parse(JSON.stringify(data['shw_disp']));
             //                     data_obj_hide=JSON.parse(JSON.stringify(data['hide_disp']));
 
@@ -9397,7 +9523,7 @@ function get_data_Ajax_Co(colist){
             }
             else{               
                 $("#cdm_co_on_div").show();
-                var colist=dict['CO'];
+                var colist=block_feat_dict['CO'];
                 for (var co in colist){
                     
                         prune_list_show=crit_order_dict[colist[co]+"_C.Prune"];
@@ -9466,7 +9592,7 @@ function get_data_Ajax_Co(colist){
  
 
         data=htmlF(shw_disp,hide_disp,mandatory_list,feat_dsp,feat_hide,flg)
-        var colist=dict["CO"];
+        var colist=block_feat_dict["CO"];
         data_obj_show=JSON.parse(JSON.stringify(data['shw_disp']));
         data_obj_hide=JSON.parse(JSON.stringify(data['hide_disp']));
 
@@ -9700,7 +9826,7 @@ function get_data_Ajax_Co(colist){
         col_md_12.setAttribute('class','col-md-9 btn-group');
         col_md_12.id="set_button_cdm_on_co_on"
         toggle_btn_row_div.append(col_md_12);
-        colist=dict["CO"];
+        colist=block_feat_dict["CO"];
         for (var i=0;i<colist.length;i++){
             var button=document.createElement('button')
             button.id=colist[i]+"btn"
@@ -9714,7 +9840,7 @@ function get_data_Ajax_Co(colist){
         }
         document.getElementById("CO.1btn").style.backgroundColor = "#94000e"
 
-        // var inputdata =dict["CO"];
+        // var inputdata =block_feat_dict["CO"];
         // var select=document.createElement('select');
         // select.setAttribute('id', 'sel_options');
         // select.setAttribute('onchange',"select_Cmd_Co_On_Changer($(this))")
@@ -9750,7 +9876,7 @@ function get_data_Ajax_Co(colist){
  
 
         data=htmlF(shw_disp,hide_disp,mandatory_list,feat_dsp,feat_hide,flg)
-        var colist=dict["CO"];
+        var colist=block_feat_dict["CO"];
         data_obj_show=JSON.parse(JSON.stringify(data['shw_disp']));
         data_obj_hide=JSON.parse(JSON.stringify(data['hide_disp']));
 
@@ -9839,7 +9965,7 @@ function get_data_Ajax_Co(colist){
 
         
             data=htmlF(shw_disp,hide_disp,mandatory_list,feat_dsp,feat_hide,flg)
-            // var colist=dict["CO"];
+            // var colist=block_feat_dict["CO"];
             // data_obj_show=JSON.parse(JSON.stringify(data['shw_disp']));
             // data_obj_hide=JSON.parse(JSON.stringify(data['hide_disp']));
             
@@ -9890,7 +10016,7 @@ function get_data_Ajax_Co(colist){
         ul_hiddenfeat.setAttribute("id","hiddenfeat");
         hide_feature_div.append(ul_hiddenfeat);
       
-            var colist=dict["CO"];
+            var colist=block_feat_dict["CO"];
             // for (var co in colist){
             //     var koool=colist[co]+"_C.Prune";
             //     console.log("pruned list",crit_order_dict[koool])
@@ -9905,7 +10031,7 @@ function get_data_Ajax_Co(colist){
             //     crit_order_dict[koool]=temp_list;
                     
             // }
-            var colist=dict['CO'];
+            var colist=block_feat_dict['CO'];
                 for (var co in colist){
                     
                         prune_list_show=crit_order_dict[colist[co]+"_C.Prune"];
@@ -9971,7 +10097,7 @@ function get_data_Ajax_Co(colist){
                                         type: 'POST',
                                         dataType: "json",
                                         'data': {
-                                        'featlevels_dic': JSON.stringify(dict,undefined,''),
+                                        'featlevels_dic': JSON.stringify(block_feat_dict,undefined,''),
                                         'crit_order_dict':JSON.stringify(crit_order_dict),
                                         'crit_hide_dict':JSON.stringify(crit_hide_dict),
                                         'cataloglist':JSON.stringify(cataloglist),
@@ -10297,7 +10423,7 @@ function get_data_Ajax_Co(colist){
             // if active_co doesnt exsist then user is using default func so 
             // check if active_co exists, if it doesn't then simply 
             // run default_crit_show_dict['default'].indexOf(elem);;;;
-            var colist=dict["CO"];
+            var colist=block_feat_dict["CO"];
             // def_dict_show_obj=JSON.parse(JSON.stringify(default_crit_show_dict));
             for ( var co in colist){
                 var koool=colist[co]+"_Cdm.Def";
@@ -10387,7 +10513,7 @@ function get_data_Ajax_Co(colist){
             
                
                     console.log("active_co",active_co)
-                    var colist=dict["CO"];
+                    var colist=block_feat_dict["CO"];
                     for (var co in colist){
                         var koool=colist[co]+"_Cdm.Def"
                         var index = crit_hide_dict[koool].indexOf(elem);
@@ -10909,7 +11035,7 @@ function get_data_Ajax_Co(colist){
          }
 
     function cdm_off_co_on_TreeView(){
-        var colist=dict['CO'];
+        var colist=block_feat_dict['CO'];
                         $("#cdm_off_co_on_tree_view_div").empty();
                         var main_treeview_list=[];
                         var main_treeview_dict={};
@@ -11684,7 +11810,7 @@ function get_data_Ajax_Co(colist){
                             }
                     defaut_criteria_order_dict['children']=defaut_criteria_order_dict_childlist;
             mainchildlist.push(defaut_criteria_order_dict);
-                var colist=dict["CO"];
+                var colist=block_feat_dict["CO"];
                 console.log("OPLO",crit_order_dict)
                 console.log("OPLO hide",crit_hide_dict)
 
@@ -11825,7 +11951,7 @@ function get_data_Ajax_Co(colist){
             // if active_co doesnt exsist then user is using default func so 
             // check if active_co exists, if it doesn't then simply 
             // run default_crit_show_dict['default'].indexOf(elem);;;;
-            var colist=dict["CO"];
+            var colist=block_feat_dict["CO"];
             // def_dict_show_obj=JSON.parse(JSON.stringify(default_crit_show_dict));
             for ( var co in colist){
                 var koool=colist[co]+"_"+co_feature_active;
@@ -11926,7 +12052,7 @@ function get_data_Ajax_Co(colist){
             
                
                     console.log("active_co",active_co)
-                    var colist=dict["CO"];
+                    var colist=block_feat_dict["CO"];
                     for (var co in colist){
                         var koool=colist[co]+"_"+co_feature_active;
                         var index = crit_hide_dict[koool].indexOf(elem);

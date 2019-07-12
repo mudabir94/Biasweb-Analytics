@@ -2650,7 +2650,7 @@ class createExperiment(TemplateView):
             data = {'data':"data"}
 
             if request.is_ajax:
-                d = request.POST.get('dict')
+                d = request.POST.get('block_feat_dict')
                 print(request.POST.get('price_range_values'))
                 #print('d',d)
                 postedFLevels = json.loads(d)
@@ -2990,7 +2990,7 @@ def SavePhoneSets_P0(request):
             
             expPSets = selectedAdminPhones()
             expPSets.exp = expCont.exp
-            expPSets.pset_id= "P.0"
+            expPSets.pset_id= "P.All"
             # expPSets.mob = p_set.get(id=m)
             expPSets.p_order = 0
             expPSets.save()
@@ -3193,4 +3193,15 @@ def SaveCurrentSubjExp(request):
             print("exp_under_test",exp_under_test)
             data={"success":"success"}
             return JsonResponse(data)
+
+def deleteSelectedAdminPhones(request):
+     if request.method=="POST":
+        if request.is_ajax:
+            exp_id= request.POST.get('exp_id')
+            print("*******************************************************")
+            print("eEXPID",exp_id)
+            print("*******************************************************")
+            exp_obj=exp.objects.get(id=exp_id)
+            selectedAdminPhones.objects.get(exp=exp_obj).delete()
+
 

@@ -32,6 +32,7 @@ urlpatterns = [
     url(r'^criteria_weights/',views.criteriaWeights,name='criteria_weights'),
     url(r'^comparemobile_1by1_direct/',views.compareMobileOneByOneDirect,name='comparemobile_1by1_direct'),
     url(r'^comparemobile_2by2_direct/',views.compareMobileTwoByTwoDirect,name='comparemobile_2by2_direct'),
+    url(r'^delete_selected_adminphones/',views.deleteSelectedAdminPhones,name='delete_selected_adminphones'),
 
 
     url(r'^save_current_subj_exp/',views.SaveCurrentSubjExp, name='save_current_subj_exp'),
