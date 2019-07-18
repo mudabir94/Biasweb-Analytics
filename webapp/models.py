@@ -43,6 +43,13 @@ class platform_feature(models.Model):
         null=True,
         blank=True
     )
+    default_levels=ListCharField(
+        base_field=models.CharField(max_length=20),
+        size=6,
+        max_length=(6 * 21), # 6 * 10 character nominals, plus commas
+        null=True,
+        blank=True
+    )
 
     #feature_levels=models
     def __str__(self):
@@ -78,7 +85,7 @@ class  experiment(models.Model):
      ANALYZED = Analysis Reports
      HOLD = Not accepting Subjects - non-design - experiment admin issue 
     """
-    custom_exp_id=models.CharField(max_length=100,null=True,blank=True,unique=True)
+    custom_exp_id=models.CharField(max_length=100,null=True,blank=True)
     batches_title=models.CharField(max_length=100, null=True, blank=True)
     # subj_id_field=models.CharField(max_length=100, null=True, blank=True)
     # subj_email_field=models.CharField(max_length=100, null=True, blank=True)
@@ -137,13 +144,16 @@ class Subject(models.Model):
     def __str__(self):
         return str(self.user.custom_id)
 
-class exp_defaults(models.Model):
+class exp_fdefaults(models.Model):
     used_in = models.ForeignKey(experiment, on_delete=models.CASCADE)
-    p_feature = models.ForeignKey(platform_feature, on_delete=models.CASCADE)
+    d_feature = models.ForeignKey(platform_feature, on_delete=models.CASCADE)
     default_level = models.CharField(max_length=20)
     def __str__(self):
         fName = self.p_feature.feature_name
         return fName
+    class Meta:
+        verbose_name_plural="Exp Default Feature"
+
 
 class experiment_feature(models.Model):
     used_in = models.ForeignKey(experiment, on_delete=models.CASCADE)
@@ -153,11 +163,19 @@ class experiment_feature(models.Model):
          size=6,
          max_length=(6 * 21) # 6 * 10 character nominals, plus commas
     )
+    default_levels= ListCharField(
+        base_field=models.CharField(max_length=20),
+        size=6,
+        max_length=(6 * 21), # 6 * 10 character nominals, plus commas
+        null=True,
+        blank=True,
+   )
     def __str__(self):
         fName = self.p_feature.feature_name
         return fName
     
 class exp_fLevel(models.Model):
+    used_in = models.ForeignKey(experiment, on_delete=models.CASCADE,null=True,blank=True)
     e_feature = models.ForeignKey(experiment_feature, on_delete=models.CASCADE)
     chosen_level = models.CharField(max_length=100)
     def __str__(self):
@@ -251,7 +269,7 @@ class MobilePhones_Test(models.Model):
 
 class criteria_catalog_disp(models.Model):
     
-       catalog_crit_display_order=ListCharField(
+        catalog_crit_display_order=ListCharField(
         base_field=CharField(max_length=20),
         size=10,
         max_length=(10*21),

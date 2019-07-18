@@ -2,7 +2,7 @@ from django.conf.urls import url, include
 from django.urls import path
 from . import views 
 urlpatterns = [
-   url(r'^index_ahp/',views.indexAhp, name='index_ahp'),   
+    url(r'^index_ahp/',views.indexAhp, name='index_ahp'),   
    
    
    
@@ -49,6 +49,8 @@ urlpatterns = [
     url(r'^manageshortlist/',views.ManageShortList.as_view(), name='manage_shortlisting'),
     url(r'^createexp/',views.createExperiment.as_view(), name='createexp'),
     url(r'^addexpdiscp/',views.createExperiment.addDesp, name='addexpdiscp'),
+    url(r'^get_default_f_levels_from_platform_feature/',views.createExperiment.getDefaultFLevelsFromPlatformFeature, name='get_default_f_levels_from_platform_feature'),
+
 
     url(r'^manageexp/',views.ManageExperiment.as_view(), name='manageexp'),
     url(r'^subdetails/',views.subDetails, name='subdetails'),

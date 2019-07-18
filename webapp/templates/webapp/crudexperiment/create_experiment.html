@@ -574,6 +574,7 @@ window.row_filedata=null;
 $(document).ready(function () {       
     $('#pager').hide();
     initializePage();
+    getDefaultFLevelsFromPlatformFeature();
 });
 /* ** Hides all divs except feat_lvl_div.**
    ** checks exp_id, if it exsists then asks for working on it, else discards**
@@ -3302,23 +3303,18 @@ for (var o in data){
            innercheckbox_id_list.push(inner_id);
         }
         else{
-           
             // IT WILL BE ALWAYS FALSE if check_id_dict[key] is empty> IT SHOULD BE FALSE>
             for (var value_id in stored_innercheckbox_id_list){
                     console.log(stored_innercheckbox_id_list[value_id]);
                     console.log (inner_id)
-                
 
                             if (stored_innercheckbox_id_list[value_id]===inner_id)
                             {    console.log('in if cond')
                                 innercheckbox_id_list.push(inner_id)
-                                
-
                             }
                             else{
                                 console.log('in else cond')
                                 innercheck_element.prop('checked',false)
-
                             }
                 }
         }
@@ -3339,37 +3335,42 @@ var cdm_full_btn_on="false"; var default_active="false";
 var CO_CDM_COMB="";
 var status_report_dictionary={}
 var block_feat_dict_def={}
- 
+var final_def_blocks_to_send={}
 function dummysendFeatureLevels(){
-    block_feat_dict_def={};
+    var temp_block_feat_dict_def={};
     // all outerchecks are unchecked?
-    all_unchecked=false
+    all_unchecked=false;
     var feat_key="";
     var total_feat_len=$("#feat_lvl_div :input").not(':button').length;
-    var count=0
+    var count=0;
     $("#feat_lvl_div :input").not(':button').each(function() {
         console.log($(this).prop("checked"));
         if($(this).prop("checked")==false){
             if ($(this).val()==="I"){
                     feat_key=$(this).val();
-                    if (block_feat_dict_def[feat_key]===undefined){
-                        block_feat_dict_def[feat_key]=["I.0","I.1"];
+                    if (temp_block_feat_dict_def[feat_key]===undefined){
+                        temp_block_feat_dict_def[feat_key]=block_feat_dict_def[feat_key];
+                        // block_feat_dict_def[feat_key]=["I.0","I.1"];
                         // block_feat_dict[feat_key]=["I.0","I.1"];
                     }
                     console.log("I",block_feat_dict_def);
                 }
             else if ($(this).val()==="R"){
                     feat_key=$(this).val()
-                    if (block_feat_dict_def[feat_key]===undefined){
-                    block_feat_dict_def[feat_key]=["R.0","R.1"];
+                    if (temp_block_feat_dict_def[feat_key]===undefined){
+                        temp_block_feat_dict_def[feat_key]=block_feat_dict_def[feat_key];
+
+                    // block_feat_dict_def[feat_key]=["R.0","R.1"];
                     // block_feat_dict[feat_key]=["R.0","R.1"];
                     }
                     console.log("R",block_feat_dict_def)
                 }
             else if ($(this).val()==="W"){
                     feat_key=$(this).val()
-                    if (block_feat_dict_def[feat_key]===undefined){
-                    block_feat_dict_def[feat_key]=["W.direct"]
+                    if (temp_block_feat_dict_def[feat_key]===undefined){
+                        temp_block_feat_dict_def[feat_key]=block_feat_dict_def[feat_key];
+
+                    // block_feat_dict_def[feat_key]=["W.direct"]
                     // block_feat_dict[feat_key]=["W.direct"]
                     }
                     console.log("W",block_feat_dict_def)
@@ -3377,40 +3378,46 @@ function dummysendFeatureLevels(){
                 }
             else if ($(this).val()==="A"){
                     feat_key=$(this).val()
-                    if (block_feat_dict_def[feat_key]===undefined){
-                        block_feat_dict_def[feat_key]=["A.1by1","A.2by2"];
+                    if (temp_block_feat_dict_def[feat_key]===undefined){
+                        temp_block_feat_dict_def[feat_key]=block_feat_dict_def[feat_key];
+
+                        // block_feat_dict_def[feat_key]=["A.1by1","A.2by2"];
                         // block_feat_dict[feat_key]=["A.1by1","A.2by2"]
 
                     }
                     console.log("A",block_feat_dict_def)
 
                 }
-            // else if ($(this).val()==="C"){
-            //         feat_key=$(this).val();
-            //         if (block_feat_dict_def[feat_key]===undefined){
-            //             block_feat_dict_def[feat_key]=["C.def"];
-            //             block_feat_dict[feat_key]=["C.def"]
+            else if ($(this).val()==="C"){
+                    feat_key=$(this).val();
+                    if (temp_block_feat_dict_def[feat_key]===undefined){
+                         temp_block_feat_dict_def[feat_key]=block_feat_dict_def[feat_key];
 
-            //         }
-            //         console.log("C",block_feat_dict_def)
+                        // block_feat_dict_def[feat_key]=["C.def"];
+                        // block_feat_dict[feat_key]=["C.def"]
+
+                    }
+                    console.log("C",block_feat_dict_def)
                     
-            //     }
+                }
             else if ($(this).val()==="P"){
                     feat_key=$(this).val();
-                    if (block_feat_dict_def[feat_key]===undefined){
-                        block_feat_dict_def[feat_key]=["P.All"];
+                    if (temp_block_feat_dict_def[feat_key]===undefined){
+                        temp_block_feat_dict_def[feat_key]=block_feat_dict_def[feat_key];
+
+                        // block_feat_dict_def[feat_key]=["P.All"];
                         // block_feat_dict[feat_key]=["P.All"]
 
                     }
                     console.log("P",block_feat_dict_def)
-                    SavePhoneSet_P0()
+                    // SavePhoneSet_P0();
 
                 }
             all_unchecked=true
             count+=1
         }
         else{
-            delete block_feat_dict_def[$(this).val()];
+            delete temp_block_feat_dict_def[$(this).val()];
             all_unchecked=false
         }
     });
@@ -3431,8 +3438,8 @@ function dummysendFeatureLevels(){
     var featlevels="default"
     $("#defaultfeatLevel_tablediv").append("<hr>");
     $("#defaultfeatLevel_tablediv").append("<h4>Status Report Default</h4>")
-    for ( var indx in block_feat_dict_def){
-        featlevels=block_feat_dict_def[indx]
+    for ( var indx in temp_block_feat_dict_def){
+        featlevels=temp_block_feat_dict_def[indx]
         row_div=$("<div class='row'></div>");
         $(row_div).append(featlevels);
         $("#defaultfeatLevel_tablediv").append(row_div);
@@ -3440,8 +3447,10 @@ function dummysendFeatureLevels(){
         // default cdm full and co. and Select P.O 
         cdm_crit_show_dict['c.full']; 
         console.log("all_unchecked",all_unchecked)
-        console.log("block_feat_dict_def",block_feat_dict_def)
-        console.log("block_feat_dict",block_feat_dict)
+        console.log("temp_block_feat_dict_def",temp_block_feat_dict_def)
+        final_def_blocks_to_send=temp_block_feat_dict_def;
+        console.log("block_feat_dict_def",block_feat_dict_def);
+        console.log("block_feat_dict",block_feat_dict);
 
         // if all unchecked then populate the Status Report Default with all defualts features. 
 
@@ -3486,7 +3495,6 @@ function sendFeatureLevels(){
     $("#ol4").empty();
   
 if (block_feat_dict['C']===undefined && block_feat_dict['CO']===undefined){
-  alert("1")
     CO_CDM_COMB="CDM_off_CO_off";
     if (current_save_state===CO_CDM_COMB){
         console.log("Doing Nothing")
@@ -3616,6 +3624,36 @@ if (block_feat_dict['C']===undefined && block_feat_dict['CO']===undefined){
             
         }
         else{
+         $.ajax({
+                    type: 'POST',
+                    dataType: "json",
+                    'data': {
+                    'block_feat_dict': JSON.stringify(block_feat_dict,undefined,''),
+                    "final_def_blocks_to_send":JSON.stringify(final_def_blocks_to_send),
+
+                    'exp_id': exp_id,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    },
+                    // the ajax call is sent to createexp url name in the post function.  
+                    url: "{% url 'createexp' %}",
+                    success: function(data){
+                        console.log("<<---FEATURES POSTED SUCCESSFULLY--->>");
+                        console.log(data);
+                        //console.log('Blocks---> ',data);
+                        if(exp_id===""){
+                            exp_id = data['exp_id'];
+                            custom_exp_id = data['custom_exp_id'];
+                            showExpWIP()
+                        }
+                            if (data['block_list']!=null){
+                                blockList = data['block_list']
+                                table_blocks=draw_block_table(blockList)
+                                display_blocktable(table_blocks);
+                                window.localStorage.setItem("blockList", JSON.stringify(blockList));
+                    
+                            }
+                        }
+                    }); 
             return;
         }
     }
@@ -3633,7 +3671,6 @@ if (block_feat_dict['C']===undefined && block_feat_dict['CO']===undefined){
     
 }
 else if (block_feat_dict['C']!==undefined && block_feat_dict['CO']===undefined){
-    alert("2")
 
     CO_CDM_COMB="CDM_on_CO_off";
     if (current_save_state===CO_CDM_COMB){
@@ -3841,43 +3878,45 @@ else if (block_feat_dict['C']!==undefined && block_feat_dict['CO']!==undefined){
     */
 }
 
-if (jQuery.isEmptyObject(block_feat_dict))
-{
-    alert("Please enable at least one Feature. Thank you!!")
-    console.log("DIIICCCT",block_feat_dict['C']);
-    console.log("DIIICCCT",block_feat_dict['CO']);
-    console.log("DIIICCCT",block_feat_dict);
-    return;
-}
+// if (jQuery.isEmptyObject(block_feat_dict))
+// {
+//     alert("Please enable at least one Feature. Thank you!!")
+//     console.log("DIIICCCT",block_feat_dict['C']);
+//     console.log("DIIICCCT",block_feat_dict['CO']);
+//     console.log("DIIICCCT",block_feat_dict);
+//     return;
+// }
   
-$.ajax({
-type: 'POST',
-dataType: "json",
-'data': {
-'block_feat_dict': JSON.stringify(block_feat_dict,undefined,''),
-'exp_id': exp_id,
-'csrfmiddlewaretoken': '{{ csrf_token }}',
-},
-// the ajax call is sent to createexp url name in the post function.  
-url: "{% url 'createexp' %}",
-success: function(data){
-    console.log("<<---FEATURES POSTED SUCCESSFULLY--->>");
-    console.log(data);
-    //console.log('Blocks---> ',data);
-    if(exp_id===""){
-        exp_id = data['exp_id'];
-        custom_exp_id = data['custom_exp_id'];
-        showExpWIP()
-    }
-        if (data['block_list']!=null){
-            blockList = data['block_list']
-            table_blocks=draw_block_table(blockList)
-            display_blocktable(table_blocks);
-            window.localStorage.setItem("blockList", JSON.stringify(blockList));
+// $.ajax({
+// type: 'POST',
+// dataType: "json",
+// 'data': {
+// 'block_feat_dict': JSON.stringify(block_feat_dict,undefined,''),
+// "final_def_blocks_to_send":JSON.stringify(final_def_blocks_to_send),
+
+// 'exp_id': exp_id,
+// 'csrfmiddlewaretoken': '{{ csrf_token }}',
+// },
+// // the ajax call is sent to createexp url name in the post function.  
+// url: "{% url 'createexp' %}",
+// success: function(data){
+//     console.log("<<---FEATURES POSTED SUCCESSFULLY--->>");
+//     console.log(data);
+//     //console.log('Blocks---> ',data);
+//     if(exp_id===""){
+//         exp_id = data['exp_id'];
+//         custom_exp_id = data['custom_exp_id'];
+//         showExpWIP()
+//     }
+//         if (data['block_list']!=null){
+//             blockList = data['block_list']
+//             table_blocks=draw_block_table(blockList)
+//             display_blocktable(table_blocks);
+//             window.localStorage.setItem("blockList", JSON.stringify(blockList));
  
-        }
-    }
-  }); 
+//         }
+//     }
+//   }); 
 
 }
 function removeFeatureLevel(){
@@ -4507,7 +4546,8 @@ function SavePhoneSet_P0(){
             url: "{% url 'savephonesets_p0' %}",
                 type:'POST',
                 'data': {
-                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
                 },
                 dataType: "json",
                 success: function(data){
@@ -7175,13 +7215,15 @@ function get_data_Ajax_Co(colist){
             current_save_state="CDM_off_CO_off"
           // make an ajax call that will send full criterias that will be enabled for the experiment. 
           dummysendFeatureLevels();
-
+          console.log("final_def_blocks_to_send",final_def_blocks_to_send)
           $.ajax({
                                 
                                 type: 'POST',
                                 dataType: "json",
                                 'data': {
                                 'featlevels_dic': JSON.stringify(block_feat_dict,undefined,''),
+                                "final_def_blocks_to_send":JSON.stringify(final_def_blocks_to_send),
+
                                 'default_crit_show_dict': JSON.stringify(default_crit_show_dict,undefined,''),
                                 'default_crit_hide_dict': JSON.stringify(default_crit_hide_dict,undefined,''),
                                 'cataloglist':JSON.stringify(cataloglist),
@@ -12310,7 +12352,21 @@ $(document).on({
      ajaxStop: function() { $body.removeClass("loading"); }    
 });
 
-
+function getDefaultFLevelsFromPlatformFeature(){
+    $.ajax({
+                type:"POST",
+                dataType:"json",
+                'data':{
+               
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                },
+                url: "{% url 'get_default_f_levels_from_platform_feature' %}",
+                success: function(data){
+                    block_feat_dict_def=JSON.parse(data['def_featlvl_frm_pf_dict']);
+                    console.log("block_feat_dict_def",block_feat_dict_def)
+                }
+        });
+}
 function submitDescription(){
     $('#text_area_desp').val();
     console.log( $('#text_area_desp').val())

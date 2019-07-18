@@ -8,7 +8,7 @@ from import_export.admin import ImportExportActionModelAdmin
 from .models import User,MobilePhones_Test
 from .models import signup_table,blog,mobilephones,experiment
 from .models import samsung_phone,sort_feature,userscoreRecord,Role,platform_feature
-from .models import selectedAdminPhones,PhoneCriteria,exStatusCd
+from .models import selectedAdminPhones,PhoneCriteria,exStatusCd,exp_fdefaults
 from .models import Subject,experiment_feature,Batch,Block,ExpCriteriaOrder,criteria_catalog_disp
 
 
@@ -47,13 +47,20 @@ class ExperimentAdmin(admin.ModelAdmin):
     list_display= ('id','custom_exp_id','status','status_code','batches_title',"desc")
 
 class experiment_featureAdmin(admin.ModelAdmin):
-    list_display= ('id','used_in','p_feature','chosen_levels')
+    list_display= ('id','used_in','p_feature','chosen_levels',"default_levels")
 
 class exStatusCdResourse(resources.ModelResource):
     class meta:
         model=exStatusCd
 class exStatusCdAdmin(ImportExportActionModelAdmin):
     list_display=('id',"status_name","status_code","s_description")
+
+
+class exp_fdefaultsResourse(resources.ModelResource):
+    class meta:
+        model=exp_fdefaults
+class exp_fdefaultsAdmin(ImportExportActionModelAdmin):
+    list_display=('id',"used_in","d_feature","default_level")
 
 
 #----------------------------------------------------------------------------
@@ -64,7 +71,7 @@ class platformResource(resources.ModelResource):
         model=platform_feature
 #platform_feature admin
 class PlatformFeatureAdmin(ImportExportActionModelAdmin):
-    list_display= ('id', 'feature_name','feature_symbol','feature_levels')
+    list_display= ('id', 'feature_name','feature_symbol','feature_levels',"default_levels")
 
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>    
 #----------------------------------------------------------------------------
@@ -144,6 +151,9 @@ admin.site.register(Subject)
 admin.site.register(Batch)
 admin.site.register(Block)
 admin.site.register(experiment,ExperimentAdmin)
+admin.site.register(exp_fdefaults,exp_fdefaultsAdmin)
+
+
 admin.site.register(exStatusCd,exStatusCdAdmin)
 
 admin.site.register(experiment_feature,experiment_featureAdmin)
