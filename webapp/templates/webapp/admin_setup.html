@@ -30,36 +30,33 @@
         <div class="row content">
           <div class="col-sm-1 sidenav">
                 <ul class="nav nav-pills nav-stacked">
-                       
                        <!-- <li ><a href="{%url 'admin_setup'%}">Advance Search Setup</a></li>
-                       -->  
-                        
+                       -->          
                 </ul><br>
           </div>
         <div class="col-sm-7 text-left"> 
-                <select id="roles" >
-                    <!-- In Future this has to become dynamic -->
+          <p>Exp:1</p>
+                <!-- <select id="roles" >
+                    In Future this has to become dynamic
                         <option >Please Select</option>
-                        <option  value=1>Exp1</option>
-                        <option  value=2>Exp2</option>
-                        <option  value=3>Exp3</option>
-                </select>
+                        <option  value="Set1">Set1</option>
+                        <option  value="Set2">Set2</option>
+                        <option  value="Set3">Set3</option>
+                </select> -->
+                <div id="sel"></div>
                 <input type="hidden" value="" id="role_value" name="role_value"/>
               
             <div class="container latest-product-section" id="product-section"> 
                 
-                    <p>Role :  Exp1 </p>   
-                    <div id="display_feature_div"></div> 
+                   
+                  <div id="display_feature_div"></div> 
                   
                   <div class="row">
                                 <div class="col-md-8" >
                                         <a href="{%url 'filter'%}" class="button">Look up</a>     
                                 </div>     
-                        </div>
-               
+                  </div>  
             </div>                 
-                            
-               
           </div>
           <div class="col-sm-4 sidenav">
           
@@ -94,7 +91,19 @@ $(document).ready(function () {
                                 dataType: "json",
                                 
                                 success: function(data){
-                                    var feat_dsp=data['feature_to_display']
+                                  var inputdata = data['numofsets']
+                                  console.log(inputdata)
+                                  var select = $('<select name="options" id="options"></select>');
+                                  $.each(inputdata, function(index, value) {
+                                    var option = $('<option></option>');
+                                    console.log("value",value)
+                                    option.attr('value', value);
+                                    option.text(value);
+                                    select.append(option);
+                                  });
+                                  $('#sel').empty().append(select); 
+                                  
+                                    var feat_dsp=data['feature_to_display'];
                                     var disp_feat_div=document.getElementById('display_feature_div');
                                     var ul_sortable=document.createElement('ul');
                                     ul_sortable.setAttribute('id','sortable');
@@ -223,16 +232,149 @@ $(document).ready(function () {
 function testingfunction(){
     console.log("helloo")
 }
-$("#roles").change(function() {
-role_data=$('#roles option:selected').val()
+$("#options").change(function() {
+role_data=$('#options option:selected').val()
 console.log(typeof role_data ); 
-a =JSON.stringify(role_data);
+var set_num =JSON.stringify(role_data);
+alert(set_num)
+$.ajax({
+                                url: "{% url 'gf' %}",
+                                type:'POST',
+                                'data': {
+                                  'set': set_num,
+                                  'csrfmiddlewaretoken': '{{ csrf_token }}',
+                                },
+                                dataType: "json",
+                                
+                                success: function(data){
+                                  $("#display_feature_div").empty();
+                                    var feat_dsp=data['feature_to_display'];
+                                    var disp_feat_div=document.getElementById('display_feature_div');
+                                    var ul_sortable=document.createElement('ul');
+                                    ul_sortable.setAttribute('id','sortable');
+                                    disp_feat_div.append(ul_sortable);
+                                    for (var i in feat_dsp){
+                                      console.log(feat_dsp[i].feature);
+                                    var li_sortable=document.createElement('li');
+                                    li_sortable.id=feat_dsp[i].feature+"_"+feat_dsp[i].position;
+                                    ul_sortable.append(li_sortable);
+                                    var div_row=document.createElement('div');
+                                    div_row.setAttribute("class",'row');
+                                    li_sortable.append(div_row);    
+                                    var div_col_md_6_1=document.createElement('div');
+                                    div_col_md_6_1.setAttribute("class","col-md-6");
+                                    div_row.append(div_col_md_6_1);
+                                    var btn_btn_primary=document.createElement('button');
+                                    btn_btn_primary.setAttribute("class","btn btn-primary");
+                                    btn_btn_primary.innerHTML=feat_dsp[i].feature;
+                                    div_col_md_6_1.appendChild(btn_btn_primary);
+                                    var div_col_md_6_2=document.createElement('div');
+                                    div_col_md_6_2.setAttribute('class',"col-md-6");
+                                    div_row.append(div_col_md_6_2);
+                                    var btn_show_hide=document.createElement('button');
+                                    btn_show_hide.setAttribute("class","show_hide");
+                                    btn_show_hide.setAttribute("onclick","hideFromDisplay($(this).parent().parent().parent().attr('id'))");
+                                    btn_show_hide.innerHTML="Hide";
+                                    div_col_md_6_2.appendChild(btn_show_hide);
+                                  }
+                                    var feat_hide=data['feature_to_hide'];
+                                    var hide_feat_div=document.getElementById('hide_feature_div');
+                                    var ul_hiddenfeat=document.createElement('ul');
+                                    ul_hiddenfeat.setAttribute("id","hiddenfeat");
+                                    hide_feat_div.append(ul_hiddenfeat);
+                                    for (var i in feat_hide){
+
+                                      console.log(feat_hide[i].feature);
+                                      var li_hiddenfeat=document.createElement('li');
+                                      li_hiddenfeat.id=feat_hide[i].feature+"_"+feat_hide[i].position
+                                      ul_hiddenfeat.append(li_hiddenfeat);
+
+                                      // var div_row=document.createElement('div');
+                                      // div_row.setAttribute('class','row');
+                                      // temp.append(div_row);
+                                      // var div_col_md_6_1=document.createElement('div');
+                                      // div_col_md_6_1.setAttribute('class','col-md-6');
+                                      // div_row.append(div_col_md_6_1);
+                                      // var btn_btn_primary=document.createElement('btn');
+                                      // btn_btn_primary.setAttribute('class','btn btn-primary');
+                                      // btn_btn_primary.innerHTML=data[0];
+                                      // div_col_md_6_1.append(btn_btn_primary);
+                                      // var div_col_md_6_2=document.createElement('div');
+                                      // div_col_md_6_2.setAttribute('class','col-md-6');
+                                      // div_row.append(div_col_md_6_2);
+                                      // var btn=document.createElement('button');
+                                      // btn.setAttribute('class','show_hide');
+                                      // btn.setAttribute('onclick','showToDisplay($(this).parent().parent().parent().attr("id"))');
+                                      // btn.innerHTML="show";
+                                      // div_col_md_6_2.append(btn);
+
+
+
+                                      var div_row=document.createElement('div')
+                                      div_row.setAttribute('class','row');
+                                      li_hiddenfeat.append(div_row);
+                                      var div_col_md_6_1=document.createElement('div');
+                                      div_col_md_6_1.setAttribute('class','col-md-6');
+                                      div_row.append(div_col_md_6_1);
+                                      var div_col_md_6_2=document.createElement('div');
+                                      div_col_md_6_2.setAttribute('class','col-md-6');
+                                      div_row.append(div_col_md_6_2);
+                                      var btn_btn_primary=document.createElement('btn');
+                                      btn_btn_primary.setAttribute('class','btn btn-primary');
+                                      btn_btn_primary.innerHTML=feat_hide[i].feature;
+                                      div_col_md_6_1.append(btn_btn_primary);
+                                      var btn_show_hide=document.createElement('button');
+                                      btn_show_hide.setAttribute('class','show_hide');
+                                      btn_show_hide.setAttribute('onclick','showToDisplay($(this).parent().parent().parent().attr("id"))');
+                                      btn_show_hide.innerHTML="show";
+                                      div_col_md_6_2.append(btn_show_hide);
+
+
+
+
+                                    }
+                                  $('ul').sortable({
+                                      axis: 'y',
+                                      stop: function (event, ui) {
+                                      console.log("thus",$(this))
+                                      var data = $(this).sortable('serialize').split("&");
+                                      var arr=[];
+                                      console.log("data",data)
+                                      for (var key in data)
+                                      {   
+                                          console.log("key",key)
+                                          arr.push(data[key].split("=")[0].replace('[]',''));
+
+                                      }
+                                      console.log("arr",arr)
+                                      console.log("jason string",JSON.stringify(arr))
+                                      $('span').text(data);
+                                      $.ajax({
+                                  
+                                            type: 'POST',
+                                            dataType: "json",
+                                            'data': {
+                                            'd': JSON.stringify(arr),
+
+                                            'csrfmiddlewaretoken': '{{ csrf_token }}',
+                                          },
+                                          
+                                            url: "{% url 'updatefeatureposition' %}",
+                                            success: function(response){
+                                            console.log("success");
+                                            }
+                                        });
+                                      }
+                                  });
+                                }
+                            });
+});
 
 // $.ajax({
 //        type: 'POST',
 //        dataType: "json",
 //        'data': {
-//        'd': a,
+//        'set': set_num,
 //        'csrfmiddlewaretoken': '{{ csrf_token }}',
 //         },
 //        url: "{% url 'gf' %}",
@@ -240,9 +382,9 @@ a =JSON.stringify(role_data);
 //            console.log("success");
 //        }
 //    });
-//       location.reload().delay(800);
+      // location.reload().delay(800);
  
- });
+
 function hideFromDisplay(id) {
    var item = $('#'+id);
    console.log(id);
@@ -464,5 +606,5 @@ function showToDisplay(id) {
 //  });
 
 
-     </script>
+</script>
 {%endblock%}

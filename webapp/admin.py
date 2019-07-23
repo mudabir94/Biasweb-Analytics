@@ -5,11 +5,12 @@ from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 from import_export.admin import ImportExportActionModelAdmin
 
-from .models import User
-from .models import signup_table,blog,mobile_phone,mobilephones,experiment
+from .models import User,MobilePhones_Test
+from .models import signup_table,blog,mobilephones,experiment
 from .models import samsung_phone,sort_feature,userscoreRecord,Role,platform_feature
-from .models import template_roles,templates,feature,selectedAdminPhones
-from .models import Subject,experiment_feature,Batch,Block,prunedmobilephones
+from .models import selectedAdminPhones,PhoneCriteria,exStatusCd,exp_fdefaults
+from .models import Subject,experiment_feature,Batch,Block,ExpCriteriaOrder,criteria_catalog_disp
+
 
 class MyUserChangeForm(UserChangeForm):
     class Meta(UserChangeForm.Meta):
@@ -29,15 +30,39 @@ class MyUserAdmin(UserAdmin):
              )}),
 
     )
-class templateAdmin(admin.ModelAdmin):
-    list_display=('id','template_name')    
-class templateRoleAdmin(admin.ModelAdmin):
-    list_display=('id','role_id','template_id',\
-    'can_add','can_view','can_del',\
-    'created_at','update_at',)    
+class ExpCriteriaOrderResource(resources.ModelResource):
+    class meta:
+        model=ExpCriteriaOrder
+class ExpCriteriaOrderAdmin(ImportExportActionModelAdmin):
+    list_display=('id','exp','cOrder_id','pCriteria','fvp','position','sh_hd')
+
+class PhoneCriteriaResource(resources.ModelResource):
+    class meta:
+        model=PhoneCriteria
+
+class PhoneCriteriaAdmin(ImportExportActionModelAdmin):
+    list_display=('id','criteria_name','status','priority','position')
 
 class ExperimentAdmin(admin.ModelAdmin):
-    list_display= ('id','custom_exp_id')
+    list_display= ('id','custom_exp_id','status','status_code','batches_title',"desc")
+
+class experiment_featureAdmin(admin.ModelAdmin):
+    list_display= ('id','used_in','p_feature','chosen_levels',"default_levels")
+
+class exStatusCdResourse(resources.ModelResource):
+    class meta:
+        model=exStatusCd
+class exStatusCdAdmin(ImportExportActionModelAdmin):
+    list_display=('id',"status_name","status_code","s_description")
+
+
+class exp_fdefaultsResourse(resources.ModelResource):
+    class meta:
+        model=exp_fdefaults
+class exp_fdefaultsAdmin(ImportExportActionModelAdmin):
+    list_display=('id',"used_in","d_feature","default_level")
+
+
 #----------------------------------------------------------------------------
 
 # platform_feature resource
@@ -46,7 +71,7 @@ class platformResource(resources.ModelResource):
         model=platform_feature
 #platform_feature admin
 class PlatformFeatureAdmin(ImportExportActionModelAdmin):
-    list_display= ('id', 'feature_name','feature_symbol','feature_levels')
+    list_display= ('id', 'feature_name','feature_symbol','feature_levels',"default_levels")
 
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>    
 #----------------------------------------------------------------------------
@@ -59,7 +84,14 @@ class samsung_phone_Resource(resources.ModelResource):
 class SamsungAdmin(ImportExportActionModelAdmin):
     pass
 
-#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>    
+#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   
+# 
+class MobilePhones_Test_Resource(resources.ModelResource):
+    class meta:
+        model=MobilePhones_Test
+class MobilePhones_TestAdmin(ImportExportActionModelAdmin):
+    pass
+ 
 #----------------------------------------------------------------------------
 
 class roleResource(resources.ModelResource):
@@ -74,8 +106,7 @@ class selectedAdminPhonesResource(resources.ModelResource):
     class meta:
         model=selectedAdminPhones
 class selectedAdminPhones_Admin(ImportExportActionModelAdmin):
-    pass
-
+    list_display=('id','exp','block','pset_id','mob','p_order')
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>    
 #----------------------------------------------------------------------------
 
@@ -95,27 +126,36 @@ class mobilephonesAdmin(ImportExportActionModelAdmin):
 
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>    
 #----------------------------------------------------------------------------
+class criteria_catalog_disp_Admin(admin.ModelAdmin):
+    list_display=('id','catalog_crit_display_order')  
+      
 
 
 admin.site.register(User, MyUserAdmin)
-
+admin.site.register(ExpCriteriaOrder, ExpCriteriaOrderAdmin)
+admin.site.register(selectedAdminPhones, selectedAdminPhones_Admin)
+admin.site.register(PhoneCriteria, PhoneCriteriaAdmin)
 admin.site.register(samsung_phone,SamsungAdmin)
 admin.site.register(Role,RoleAdmin)
 admin.site.register(platform_feature,PlatformFeatureAdmin)
-admin.site.register(experiment,ExperimentAdmin)
-admin.site.register(templates,templateAdmin)
-admin.site.register(template_roles,templateRoleAdmin)
-admin.site.register(selectedAdminPhones,selectedAdminPhones_Admin)
+admin.site.register(MobilePhones_Test,MobilePhones_TestAdmin)
+
 admin.site.register(sort_feature,sort_featureAdmin)
 admin.site.register(mobilephones,mobilephonesAdmin)
 admin.site.register(userscoreRecord)
 admin.site.register(signup_table)
 admin.site.register(blog)
-admin.site.register(mobile_phone)
 
+MobilePhones_Test
 admin.site.register(Subject)
-admin.site.register(experiment_feature)
 admin.site.register(Batch)
 admin.site.register(Block)
-admin.site.register(prunedmobilephones)
-admin.site.register(feature)
+admin.site.register(experiment,ExperimentAdmin)
+admin.site.register(exp_fdefaults,exp_fdefaultsAdmin)
+
+
+admin.site.register(exStatusCd,exStatusCdAdmin)
+
+admin.site.register(experiment_feature,experiment_featureAdmin)
+
+admin.site.register(criteria_catalog_disp, criteria_catalog_disp_Admin)

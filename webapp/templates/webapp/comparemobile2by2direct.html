@@ -1,0 +1,650 @@
+{% extends "webapp/newbase.html" %}
+{% block content %}
+{%load static from staticfiles%}
+<div class='container-fluid'>
+    <div class='row content'>
+        <div class="col-md-2" style="background:black">
+            <div id="prevbtn_div"></div>
+        </div>
+        <div class="col-md-9">
+                <div class="row">
+                        <div class="col-md-7" >
+                            <div id="tablediv">   </div>
+                        </div>
+                        <div class='col-md-5'>
+                                <!-- <div id="chartContainer" style="height: 300px; width: 100%;"></div> -->
+                                <div class='row'>
+                                    <div class='col-md-12'>
+                                        <canvas id="bar_chart" width="400"height="200" style="background:white"></canvas>
+                                    </div>
+                                </div>
+                                <div class='row'>
+                                    <div class='col-md-12'>
+                                    </div>
+                                </div>
+                                    <div class='row'>
+                                        <div class='col-md-12'>
+                                            <canvas id="bar_chart_criteria" width="400"height="200" style="background:rgba(158, 193, 248, 0.431)"></canvas>
+                                        </div>
+                                    </div>       
+                        </div>
+                </div>
+
+        </div>
+        <div class="col-md-1" style="background:black">
+            <div class="row"> 
+                <div id="nextbtn_div"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+      var nextmob_index=0
+    var criteria_weights_dict={}
+    var criteria_list=[]
+    var temp_crit_list=[]
+    var slider_id_val_check_dict=null;
+    var allmobiles={}
+    var prev_compared_mobiles_list=[];
+    var dict_contains_listofCombiations=null;
+    // In future change the name. 
+    var mobiletesting={};
+    var alt_combs=[];
+
+
+$(document).ready(function(){
+     $.ajax({
+                type: 'POST',
+                dataType: "json",
+                'data': {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                },
+                url: "{% url 'comparemobile_2by2_direct' %}",
+                success: function(data){
+                    criteria_weights_dict=JSON.parse(data['criteria_weights_dict'])
+                 
+                    allmobile=data['allmobiles'] 
+                    alternatives_list=data['alternative_list'];
+                    criteria_list=[]
+                    criteria_list=data['criteria_list'];
+
+                    // LATER ADD THIS BLOCK OF CODE TO A FUNCTION
+                    for (var crit in criteria_list){
+                        crit_wght_name=criteria_weights_dict['criteria_weights'][crit][0];
+                        crit_wght_val=criteria_weights_dict['criteria_weights'][crit][1];
+                    
+                        templist=[]
+                        templist.push(crit_wght_name)
+                        templist.push(crit_wght_val)
+                        temp_crit_list.push(templist)
+                    
+                    }
+                    // 
+                    mobiletesting=data['allmobiles'];
+                    console.log("allmobile",allmobile)
+                    console.log("alternatives_list",alternatives_list)
+                    console.log("criteria_list",criteria_list)
+                    console.log("mobiletesting",mobiletesting)
+                    // alt_combs=k_combinations(alternatives_list,2);
+                    // console.log("alt_combs",alt_combs)
+                    dict_lst_comb_keynum=0
+                    processMobileData(dict_lst_comb_keynum);
+
+                    // makeTable(allmobile,alternatives_list[nextmob_index]);
+                // As it is only one by one. We won't be needing any combinations. 
+                // allmobile is a dictionary containing data of each mobile,where mobile name is the key. 
+                // Alternative_list contain only the name of the phones. 
+                // criteria list contains all the criterias admin has set for the subject. 
+                // mobile testing is the same as allmobile
+                // WORKFLOW!!!!
+                // -Pass the allmobile dictionary to maketable function. Which will populate the data... 
+                // -Keeping the number of phones in check we will show the next button, which will again
+                //    populate the next in line phone data to the table. 
+                // *Here we will check the permission given to the subject if revisiablity is on only then
+                // we'll show it the option of going back. 
+                // -Similarly seeing if interactivity check is On we'll populate the charts as well.
+
+
+                }
+     });
+});
+
+function k_combinations(set, k) {
+	var i, j, combs, head, tailcombs;
+	
+	// There is no way to take e.g. sets of 5 elements from
+	// a set of 4.
+	if (k > set.length || k <= 0) {
+		return [];
+	}
+	
+	// K-sized set has only one K-sized subset.
+	if (k == set.length) {
+		return [set];
+	}
+	
+	// There is N 1-sized subsets in a N-sized set.
+	if (k == 1) {
+		combs = [];
+		for (i = 0; i < set.length; i++) {
+			combs.push([set[i]]);
+		}
+		return combs;
+	}
+	
+	// Assert {1 < k < set.length}
+	
+	// Algorithm description:
+	// To get k-combinations of a set, we want to join each element
+	// with all (k-1)-combinations of the other elements. The set of
+	// these k-sized sets would be the desired result. However, as we
+	// represent sets with lists, we need to take duplicates into
+	// account. To avoid producing duplicates and also unnecessary
+	// computing, we use the following approach: each element i
+	// divides the list into three: the preceding elements, the
+	// current element i, and the subsequent elements. For the first
+	// element, the list of preceding elements is empty. For element i,
+	// we compute the (k-1)-computations of the subsequent elements,
+	// join each with the element i, and store the joined to the set of
+	// computed k-combinations. We do not need to take the preceding
+	// elements into account, because they have already been the i:th
+	// element so they are already computed and stored. When the length
+	// of the subsequent list drops below (k-1), we cannot find any
+	// (k-1)-combs, hence the upper limit for the iteration:
+	combs = [];
+	for (i = 0; i < set.length - k + 1; i++) {
+		// head is a list that includes only our current element.
+		head = set.slice(i, i + 1);
+		// We take smaller combinations from the subsequent elements
+		tailcombs = k_combinations(set.slice(i + 1), k - 1);
+		// For each (k-1)-combination we join it with the current
+		// and store it to the set of k-combinations.
+		for (j = 0; j < tailcombs.length; j++) {
+			combs.push(head.concat(tailcombs[j]));
+		}
+	}
+	return combs;
+}
+
+function processMobileData(keynum){
+                           
+        if (dict_contains_listofCombiations===null){
+                dict_contains_listofCombiations=k_combinations(alternatives_list,2)
+        }
+        
+        if (prev_compared_mobiles_list.length===0){
+            var listofcomb=dict_contains_listofCombiations[keynum];
+            allmobiles[listofcomb[0]]=mobiletesting[listofcomb[0]];
+            allmobiles[listofcomb[1]]=mobiletesting[listofcomb[1]];
+            makeTable(allmobiles,keynum);
+            allmobiles={};
+        } 
+        else{
+            var listofcomb=dict_contains_listofCombiations[keynum];
+            allmobiles[listofcomb[0]]=mobiletesting[listofcomb[0]];
+            allmobiles[listofcomb[1]]=mobiletesting[listofcomb[1]];
+            makeTable(allmobiles,keynum);
+            allmobiles={};
+        }
+                       
+                                   
+}
+
+function makeTable(allmobile,keynum){
+    // features=['Model','price']
+    var table=document.createElement("TABLE");
+    // table.setAttribute('class','table-bordered')
+    var thead=document.createElement("THEAD");
+    table.appendChild(thead)
+    var tbody=document.createElement("TBODY");
+    table.appendChild(tbody);
+    var trh=document.createElement("TR");
+    thead.appendChild(trh);
+    var th=document.createElement('TH')
+    th.setAttribute("style","padding-right:1pc")
+    trh.appendChild(th);
+    th.append("Criteria");
+    var count=0;
+    var mobilename=[];
+    var specs=[];
+    for (var namekey  in allmobile){
+        
+        mobilename.push(namekey)
+        // console.log("namekey",namekey)
+        // console.log('allmobile[namekey]',allmobile[namekey])
+        var th=document.createElement('TH')
+        th.setAttribute("style","padding-right:1pc")
+        trh.appendChild(th);
+        th.append(namekey)
+        if (count==0){
+            var rowcount=0
+            for (var mobilespec in allmobile[namekey]){
+            if (mobilespec==='imagepath1'){
+                specs.push('imagepath1')
+                
+                var tr=document.createElement('TR');
+                tr.setAttribute('id','imagepath1'+rowcount)
+                tbody.appendChild(tr);
+                var td=document.createElement('TD');
+                td.setAttribute("align","center")
+                tr.appendChild(td);
+                td.append('Models');
+                var td=document.createElement('TD');
+                td.setAttribute("align","center")
+                tr.appendChild(td);
+                var img=document.createElement('img');
+                img.setAttribute('class','img-responsive')
+                var im=allmobile[namekey][mobilespec]
+                img.src="/static/"+im;
+                img.style="height: 154px;"
+                td.append(img);
+                // console.log('mobilespec',mobilespec)
+                // console.log('allmobile[namekey][mobilespec]',allmobile[namekey][mobilespec])
+                
+                rowcount++;
+                $('#tablediv').append(table) 
+                }
+            else{
+                specs.push(mobilespec)
+                
+                var tr=document.createElement('TR');
+                tr.setAttribute('id',mobilespec+rowcount)
+                tbody.appendChild(tr);
+                var td=document.createElement('TD');
+                td.setAttribute("align","center")
+                tr.appendChild(td);
+                td.append(mobilespec);
+                var td=document.createElement('TD');
+                td.setAttribute("align","center")
+                tr.appendChild(td);
+                td.append(allmobile[namekey][mobilespec]);
+                // console.log('mobilespec',mobilespec)
+                // console.log('allmobile[namekey][mobilespec]',allmobile[namekey][mobilespec])
+                
+                rowcount++;
+                $('#tablediv').append(table) 
+            }
+        }
+           
+        }
+        else{
+            var rowcount=0
+            for (var mobilespec in allmobile[namekey]){
+                if (mobilespec==='imagepath1'){
+                    var img=document.createElement('img');
+                img.setAttribute('class','img-responsive')
+                var im=allmobile[namekey][mobilespec]
+                // console.log("hhbjn",im)
+                img.src="/static/"+im;
+                img.style="height: 154px;"
+                    var extendrow=document.getElementById(mobilespec+rowcount)
+                    td_cell=extendrow.insertCell(-1);
+                    td_cell.setAttribute("align","center")
+                    td_cell.append(img);
+                rowcount++;
+                 
+                }
+                else{
+                var extendrow=document.getElementById(mobilespec+rowcount)
+                td_cell=extendrow.insertCell(-1);
+                td_cell.setAttribute('align',"center")
+                td_cell.innerHTML=allmobile[namekey][mobilespec]
+                rowcount++;
+                }
+            }
+        
+        }
+        count++;
+    }
+
+
+/// ADDING Sliderss...
+    var rowcount=0;
+    
+    for (var mbs in specs){
+               
+    var refrow =document.getElementById(specs[mbs]+rowcount);
+
+    if (refrow!=null){
+        var newrow = document.createElement("TR");
+        newrow.setAttribute('align','center')
+        newrow.setAttribute('id',specs[mbs]+'-'+mobilename)
+        // var td=document.createElement('TD');
+        // newrow.appendChild(td);
+        // td.append("Slider ");
+        var td=document.createElement('TD');
+        td.setAttribute('id',specs[mbs]+'-'+mobilename+'-td')
+        td.setAttribute("align","center")
+        td.setAttribute('colSpan',"3")
+        newrow.appendChild(td);
+        // creating style divs ... 
+        var div_row=document.createElement('div')
+        div_row.setAttribute('class','row');
+        td.append(div_row);
+        var div_col=document.createElement('div');
+        div_col.setAttribute('class','col-md-2')
+        div_row.append(div_col);
+        var div_col1=document.createElement('div');
+        div_col1.setAttribute('class','col-md-8');
+        div_row.append(div_col1);
+        
+        var input = document.createElement("input");
+        input.type = "text";
+        input.id=specs[mbs]+'-'+mobilename+'-td'+'__'+specs[mbs]+'-slider';
+        input.setAttribute('class','slider')
+        div_col1.append(input);
+       
+      
+        var span=document.createElement('span');
+        span.id=specs[mbs]+'span';
+        span.innerHTML=1;
+        
+        var div_col2=document.createElement('div');
+        div_col2.setAttribute('class','col-md-2');
+        div_col2.append(span)
+        div_row.append(div_col2);
+
+        td.append(div_row);
+        refrow.parentNode.insertBefore(newrow, refrow.nextSibling);
+        rowcount++;
+       
+  
+      // on creation check if the comparison is already done or not ? 
+      // if already done then load the values of ranges selected earlier 
+      // into the slider value ... THATS it.   
+      // if target id matched the stored slider id then get value
+      
+      // GEt the  current pair of mobile in comparison
+      // search in dict if the pair already exsists. 
+      // if it exsists then get the values of slider one by one, which is based on the loop. 
+
+        var current_slider_comb=mobilename;
+        current_slider_comb=current_slider_comb.join(',')
+        var value=[5];
+        if (slider_id_val_check_dict!=null){
+            if (slider_id_val_check_dict[current_slider_comb]!=undefined){
+                value=[parseInt(slider_id_val_check_dict[current_slider_comb][mbs][1])];
+            }
+          
+            
+        }
+        
+       
+    
+        var slider2 = new rSlider({
+                    target: specs[mbs]+'-'+mobilename+'-td'+'__'+specs[mbs]+'-slider',
+                    
+                    values: [1,2,3,4,5,6,7,8,9,10],
+                    widget:false,
+                    labels:[1,2,3,4,5,6,7,8,9,10],
+                    
+                    labels:true,
+                    set:value,
+                    tooltip:true,
+                    
+                  
+                    onChange: function (event) {
+                        // console.log(this.target);
+                        var split_arr=this.target.split('__');
+                        var parent_id=document.getElementById(split_arr[0]).parentNode;
+                        showSliderRangeVal(parent_id,event)
+                    }
+        });
+       
+
+        }
+    }
+
+    // Check for next button generation @TODO:
+         //check if combination dict_contains_listofCombiations[key+1]  undefined for next then don't generate next button.  
+    var comb_list_check_maketable=dict_contains_listofCombiations[keynum+1]
+    if (comb_list_check_maketable==undefined){
+        $('#nextbtn_div').empty();
+        var submit_button=document.createElement("BUTTON");
+        submit_button.setAttribute("class","btn btn-success");
+        var text = document.createTextNode("Submit");
+        submit_button.appendChild(text);
+        $(submit_button).appendTo('#nextbtn_div');
+
+    }
+    else{
+         // Generate Next button
+         $('#nextbtn_div').empty();
+        var nextbutton=document.createElement('button');
+        nextbutton.setAttribute("onclick","nextMobilePair("+keynum+")")
+        nextbutton.setAttribute("class","btn btn-primary");
+        var text = document.createTextNode("Next ");
+        nextbutton.appendChild(text);
+        var itag=document.createElement("I")
+        itag.setAttribute("class","fa fa-arrow-circle-right");
+        nextbutton.appendChild(itag);
+      
+        $(nextbutton).appendTo('#nextbtn_div');
+    }
+   
+    if (prev_compared_mobiles_list.length===0 ){
+        console.log("prev_compared_mobiles_list.length",prev_compared_mobiles_list)
+        $('#prevbtn_div').empty(); 
+    }
+    else{
+        var prevbutton=document.createElement('button');
+        prevbutton.setAttribute("onclick","previousMobilePair("+keynum+")");
+        prevbutton.setAttribute("class","btn btn-primary");
+        var itag=document.createElement("I")
+        itag.setAttribute("class","fa fa-arrow-circle-left");
+        prevbutton.appendChild(itag);
+        var text = document.createTextNode("Prev ");
+        prevbutton.appendChild(text);
+       
+        $(prevbutton).appendTo('#prevbtn_div');
+    }
+}
+function showSliderRangeVal(parent_id,value){
+    var val=parseInt(value);
+    var split_arr=parent_id.id.split('-');
+    // console.log("split_arr",split_arr)
+    var criteria=split_arr[0];
+    document.getElementById(criteria+'span').innerHTML=val;
+    var input_class=document.getElementsByClassName('slider')
+    var temp_slider_id_val_check_list=[];
+    var temp_final_list=[];
+    for (var i=0;i<input_class.length;i++){
+        
+            temp_slider_id_val_check_list.push(input_class[i].id) 
+            temp_slider_id_val_check_list.push(input_class[i].value)  
+            temp_final_list.push(temp_slider_id_val_check_list);
+            temp_slider_id_val_check_list=[];
+    }
+    
+    // console.log("temp_final_list",temp_final_list)
+    if (slider_id_val_check_dict==null){
+        slider_id_val_check_dict={}
+    }
+    else{
+        // console.log("split_arr",split_arr)
+
+        // console.log("split_arr[1]",split_arr[1])
+        slider_id_val_check_dict[split_arr[1]]=temp_final_list
+        
+
+    }
+    console.log("slider_id_val_check_dict",slider_id_val_check_dict)
+    // calculation process on every slide change...
+    // console.log("criteria_list",criteria_list)
+
+   
+    // // console.log("temp_crit_list",temp_crit_list)
+    // CalculateWeightsWithAlts();
+    // // if I.O in blocks then dont run these functions
+    // show_FinalChart();
+    // showchart_criteria();
+          
+}
+
+
+
+function nextMobilePair(currentKeycombination){
+       console.log("currentKeycombination",currentKeycombination)
+
+        // console.log("prev_compared_mobiles_list_NEXT ",prev_compared_mobiles_list)
+        // key num increment
+        var keynum=currentKeycombination+1;
+
+        // // dict_contains_listofCombiations will be accessed 
+        // var comb_list_check=dict_contains_listofCombiations[keynum]
+        // // if value would contain null then there would be nothing to compare and no table will be generated
+        // console.log('comb_list_check',comb_list_check)
+        // if (comb_list_check==undefined){
+        //     $('#nextbtn_div').empty();
+        //     console.log("dont process the data")
+        // }
+        // else {
+      
+      
+            var input_class=document.getElementsByClassName('slider')
+            var temp_slider_id_val_check_list=[];
+            var temp_final_list=[];
+            for (var i=0;i<input_class.length;i++){
+                
+                 temp_slider_id_val_check_list.push(input_class[i].id) 
+                 temp_slider_id_val_check_list.push(input_class[i].value)  
+                 temp_final_list.push(temp_slider_id_val_check_list);
+              
+                 temp_slider_id_val_check_list=[];
+            }
+            if (slider_id_val_check_dict==null){
+                slider_id_val_check_dict={};
+            }
+            slider_id_val_check_dict[dict_contains_listofCombiations[keynum-1]]=temp_final_list;
+            temp_final_list=[]
+            prev_compared_mobiles_list.push(currentKeycombination);
+            $('#tablediv').empty();
+            $('#prevbtn_div').empty();
+            processMobileData(keynum);
+            // work under construction
+                                                            // if (currentKeycombination===0 && prev_compared_mobiles_list.length!==0){
+                                                            //     prev_compared_mobiles_list.unshift(currentKeycombination);
+                                                            //     console.log("prev_compared_mobiles_list----",prev_compared_mobiles_list)
+                                                            //     keynum=prev_compared_mobiles_list.pop();
+                                                            //     console.log("keynum<<<<",keynum)
+                                                            //     console.log("slider_id_val_check_dict>>>>",slider_id_val_check_dict)
+                                                            //     $('#tablediv').empty();
+                                                            //     $('#prevbtn_div').empty();
+                                                            //     processMobileData(keynum);
+                                                            // }
+        
+                        // var input_class=document.getElementsByClassName('slider')
+                        // var temp_slider_id_val_check_list=[];
+                        // var temp_final_list=[];
+                        // for (var i=0;i<input_class.length;i++){
+                            
+                        //      temp_slider_id_val_check_list.push(input_class[i].id) 
+                        //      temp_slider_id_val_check_list.push(input_class[i].value)  
+                        //      temp_final_list.push(temp_slider_id_val_check_list);
+                        
+                        //      temp_slider_id_val_check_list=[];
+                        // }
+                        // if (slider_id_val_check_dict==null){
+                        //     slider_id_val_check_dict={};
+                        // }
+                        // slider_id_val_check_dict[dict_contains_listofCombiations[keynum-1]]=temp_final_list;
+                        // temp_final_list=[]
+            // slider_id_val_check_list=temp_slider_id_val_check_list;
+            // store the id and value in a list. 
+                        // $('#tablediv').empty();
+                        // $('#prevbtn_div').empty();
+            // store index/keynum in prev_compared_mobiles_list
+         
+            
+            // call the processMobileData function
+            // get all the slider ids from the current page and store in 
+            // a list. 
+             console.log("prev_compared_mobiles_list_NEXT",prev_compared_mobiles_list)
+
+                        // processMobileData(keynum);
+           
+        // }
+
+}
+function previousMobilePair(currentKeycombination){
+
+// console.log("prev_compared_mobiles_list_prev before",prev_compared_mobiles_list)
+console.log("currentKeycombination-precv",currentKeycombination);
+// this logic doesnt make any sense..lol but it is required.....
+if ($('#prevbtn_div').empty()===true){
+    $('#prevbtn_div').empty();
+}
+if ($('#nextbtn_div').children().text()==='Submit'){
+    // alert("Coming in it ")
+    keynum=currentKeycombination;
+    // get current sliders 
+        var input_class=document.getElementsByClassName('slider');
+        var temp_slider_id_val_check_list=[];
+        var temp_final_list=[];
+    for (var i=0;i<input_class.length;i++){
+    
+        temp_slider_id_val_check_list.push(input_class[i].id) 
+        temp_slider_id_val_check_list.push(input_class[i].value)  
+        temp_final_list.push(temp_slider_id_val_check_list);
+        temp_slider_id_val_check_list=[];
+    }
+    if (slider_id_val_check_dict==null){
+        slider_id_val_check_dict={};
+    }
+    slider_id_val_check_dict[dict_contains_listofCombiations[keynum]]=temp_final_list;
+    temp_final_list=[]
+}
+// work under construction
+                        // if ($('#nextbtn_div').children().text()==='Next '){
+                        //         keynum=currentKeycombination+1;
+                        //         // get current sliders 
+                        //             var input_class=document.getElementsByClassName('slider');
+                        //             var temp_slider_id_val_check_list=[];
+                        //             var temp_final_list=[];
+                        //         for (var i=0;i<input_class.length;i++){
+                                
+                        //             temp_slider_id_val_check_list.push(input_class[i].id) 
+                        //             temp_slider_id_val_check_list.push(input_class[i].value)  
+                        //             temp_final_list.push(temp_slider_id_val_check_list);
+                        //             temp_slider_id_val_check_list=[];
+                        //         }
+                        //         if (slider_id_val_check_dict==null){
+                        //             slider_id_val_check_dict={};
+                        //         }
+                        //         slider_id_val_check_dict[dict_contains_listofCombiations[keynum]]=temp_final_list;
+                        //         temp_final_list=[]
+                        //         temp_final_list=[]
+                        //         // slider_id_val_check_list=temp_slider_id_val_check_list;
+                        //         // store the id and value in a list. 
+                        //         $('#tablediv').empty();
+                        //         $('#prevbtn_div').empty();
+                        //         // store index/keynum in prev_compared_mobiles_list
+                        //         console.log("prev_compared_mobiles_list_prev nextbefore",prev_compared_mobiles_list)
+                        //         prev_compared_mobiles_list.push(currentKeycombination);
+                        //         var keynum=prev_compared_mobiles_list.shift();
+                        //         console.log("prev_compared_mobiles_list_prev nextafter",prev_compared_mobiles_list)
+                                
+                        //         //processMobileData func will be called. 
+                        //         processMobileData(keynum)
+                        // }
+                        // else{
+    $('#tablediv').empty();
+    // Previous Button would be created this time as prev_compared_mobiles_list is not empty
+    // ***Its main job is to getting the previous/last updated 
+    // listofcombination from prev_compared_list and make table according to it.***
+    // get the last index stored in prev_compared_mobiles_list and pass to the func->
+    // console.log("prev_compared_mobiles_list",prev_compared_mobiles_list)
+    // console.log("prev_compared_mobiles_list-secondl",prev_compared_mobiles_list.reverse()[1]);
+    var keynum=prev_compared_mobiles_list.pop();
+    // console.log("prev_compared_mobiles_list_prev after",prev_compared_mobiles_list)
+
+    //processMobileData func will be called. 
+    processMobileData(keynum)
+    
+}
+
+
+</script>
+
+      
+{%endblock%}

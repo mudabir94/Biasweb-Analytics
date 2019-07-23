@@ -1,0 +1,32 @@
+
+<div class='row'>
+        <div class="col-md-12 sidenav_testing">        
+         <!-- <a href="{%url 'mobileview' %}" class="custom_side_rows"> -->
+                <a href="#" onclick="mobileCatalog_pageLoader()" class="custom_side_rows">
+
+                        <span> Mobile Catalog  </span> 
+                    </a>
+        <a href="{%url 'showfilter' %}" class="custom_side_rows"><span>ShowFilter</span></a>          
+        </div>
+</div>
+<script>
+        function mobileCatalog_pageLoader(){
+                var exp_num=$(".active_li").attr("value")
+                $.ajax({
+                type: 'POST',
+                dataType: "json",
+                'data': {
+                "exp_num":exp_num,
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                },
+                url: "{% url 'save_current_subj_exp' %}",
+                success: function(data){
+                        window.location="{%url 'mobileview' %}"
+
+                }
+                });
+                // make ajax call to save the exp the user wants to continue with. 
+                // and run the mobile catalog page. 
+                
+        }
+</script>

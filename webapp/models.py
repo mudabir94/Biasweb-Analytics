@@ -31,33 +31,19 @@ class User(AbstractUser):
         userStr = str(self.custom_id) + ": " + str(self.username)
         return userStr
 
-class templates(models.Model):
-    template_name=models.CharField(max_length=100,null=True)
-    created_at = models.DateTimeField(auto_now_add=True, blank=True)
-    update_at = models.DateTimeField(auto_now_add=True, blank=True)
-    def __str__(self):
-        return self.template_name
-    class Meta:
-        verbose_name_plural="Templates"
-    
-class template_roles(models.Model):
-    role_id = models.ForeignKey(Role, on_delete=models.CASCADE,default=None,null=True)
-    template_id = models.ForeignKey(templates, on_delete=models.CASCADE,default=None,null=True)
-    can_add=models.BooleanField(default=True)
-    can_view=models.BooleanField(default=True)
-    can_edit=models.BooleanField(default=True)
-    can_del=models.BooleanField(default=True)
-    created_at = models.DateTimeField(auto_now_add=True, blank=True)
-    update_at = models.DateTimeField(auto_now_add=True, blank=True)
-    def __str__(self):
-        return str(self.id)
-    class Meta:
-        verbose_name_plural="Template Roles"
+
         
 class platform_feature(models.Model):
     feature_name=models.CharField(max_length=100,null=True,blank=True)
     feature_symbol=models.CharField(max_length=3,null=True)
     feature_levels = ListCharField(
+        base_field=models.CharField(max_length=20),
+        size=6,
+        max_length=(6 * 21), # 6 * 10 character nominals, plus commas
+        null=True,
+        blank=True
+    )
+    default_levels=ListCharField(
         base_field=models.CharField(max_length=20),
         size=6,
         max_length=(6 * 21), # 6 * 10 character nominals, plus commas
@@ -71,9 +57,20 @@ class platform_feature(models.Model):
     class Meta:
         verbose_name_plural="platform_feature"
         ordering = ['pk']
-
+class exStatusCd(models.Model):
+    status_name=models.CharField(max_length=100,null=True,blank=True)
+    status_code=models.IntegerField()
+    s_description=models.TextField(null=True,blank=True)
+    def __str__(self):
+        return self.status_name
+    class Meta:
+        verbose_name_plural="ExpStatusCode"
+        ordering = ['pk']
+DEFAULT_EXAM_ID=1
 class  experiment(models.Model):
+
     status = models.CharField(max_length=100,default='DESIGN_MODE')
+    status_code=models.ForeignKey(exStatusCd,on_delete=models.CASCADE,default=DEFAULT_EXAM_ID)
     """
     STATUS LEVELS:
      DESIGN_MODE = Under Construction
@@ -85,9 +82,10 @@ class  experiment(models.Model):
      SUSPENDED = Not accepting Subjects - 
                  but could be reopened - some design changes (such as cap change) allowed
      CANCELLED = Abandoned - not accepting subjects ever
-     ANALYZED = Analysis Reports 
+     ANALYZED = Analysis Reports
+     HOLD = Not accepting Subjects - non-design - experiment admin issue 
     """
-    custom_exp_id=models.CharField(max_length=100,null=True,blank=True,unique=True)
+    custom_exp_id=models.CharField(max_length=100,null=True,blank=True)
     batches_title=models.CharField(max_length=100, null=True, blank=True)
     # subj_id_field=models.CharField(max_length=100, null=True, blank=True)
     # subj_email_field=models.CharField(max_length=100, null=True, blank=True)
@@ -105,11 +103,14 @@ class  experiment(models.Model):
     owner=models.ForeignKey(User, on_delete=models.PROTECT, related_name='creator')
     inFile=models.CharField(max_length=256,null=True,blank=True)
     outFile=models.CharField(max_length=256,null=True,blank=True)
+    desc=models.CharField(max_length=256,null=True,blank=True)
     def __str__(self):
         return self.custom_exp_id
     class Meta:
         verbose_name_plural="experiment"
         ordering = ['pk']
+
+
 
 class Batch(models.Model):
      exp = models.ForeignKey(experiment, on_delete=models.CASCADE)
@@ -143,6 +144,17 @@ class Subject(models.Model):
     def __str__(self):
         return str(self.user.custom_id)
 
+class exp_fdefaults(models.Model):
+    used_in = models.ForeignKey(experiment, on_delete=models.CASCADE)
+    d_feature = models.ForeignKey(platform_feature, on_delete=models.CASCADE)
+    default_level = models.CharField(max_length=20)
+    def __str__(self):
+        fName = self.p_feature.feature_name
+        return fName
+    class Meta:
+        verbose_name_plural="Exp Default Feature"
+
+
 class experiment_feature(models.Model):
     used_in = models.ForeignKey(experiment, on_delete=models.CASCADE)
     p_feature = models.ForeignKey(platform_feature, on_delete=models.CASCADE)
@@ -151,11 +163,19 @@ class experiment_feature(models.Model):
          size=6,
          max_length=(6 * 21) # 6 * 10 character nominals, plus commas
     )
+    default_levels= ListCharField(
+        base_field=models.CharField(max_length=20),
+        size=6,
+        max_length=(6 * 21), # 6 * 10 character nominals, plus commas
+        null=True,
+        blank=True,
+   )
     def __str__(self):
         fName = self.p_feature.feature_name
         return fName
     
 class exp_fLevel(models.Model):
+    used_in = models.ForeignKey(experiment, on_delete=models.CASCADE,null=True,blank=True)
     e_feature = models.ForeignKey(experiment_feature, on_delete=models.CASCADE)
     chosen_level = models.CharField(max_length=100)
     def __str__(self):
@@ -175,31 +195,60 @@ class blog(models.Model):
         return self.title
     class Meta:
         verbose_name_plural="Blog"
-class mobile_phone(models.Model):
-    mobile_companny= models.CharField(max_length=200, null= True)
-    mobile_name= models.CharField(max_length=300)
-    price=models.IntegerField()
-    rating=models.CharField(max_length=300)
-    description=models.TextField()
-    def __str__(self):
-        return self.mobile_companny
-    class Meta:
-        verbose_name_plural="mobile_phone"
+
         
 class mobilephones(models.Model):
-    Mobile_Companny= models.CharField(max_length=200, null= True)
+    Brand= models.CharField(max_length=200, null= True)
     Mobile_Name= models.CharField(max_length=300, null= True)
     Whats_new= models.TextField( null= True)
-    Chip=models.CharField(max_length=500, null= True)  
-    Colors=models.CharField(max_length=300, null= True) 
+    price=models.IntegerField( null= True)
+    Memory=models.CharField(max_length=500, null= True,blank=True)
+    Ram=models.CharField(max_length=500, null= True,blank=True)
     Cpu=models.CharField(max_length=500, null= True)
     Dimensions=models.CharField(max_length=300, null= True)
     Gpu=models.CharField(max_length=500, null= True)
     Resolution=models.CharField(max_length=500, null= True)
     Size=models.FloatField(null=True)
     Weight=models.IntegerField(null= True)
+    Chip=models.CharField(max_length=500, null= True)  
+    Colors=models.CharField(max_length=300, null= True) 
     # changed from price_in_pkr
+   
+    price_in_usd=models.IntegerField( null= True)
+    rating=models.FloatField(null= True)
+    OS=models.CharField(max_length=300, null= True)
+    # imagepath1 = models.ImageField(null=True, blank=True, upload_to="webapp/img/sampleimages/")
+    # imagepath2=  models.ImageField(null=True, blank=True, upload_to="webapp/img/sampleimages/")
+    imagepath1=models.CharField(max_length=300,null=True,blank=True)
+    imagepath2=models.CharField(max_length=300,null=True,blank=True)
+    
+    # changed from back_camera
+    battery=models.CharField(max_length=400,null=True)
+    backcam=models.CharField(max_length=400,null=True)
+ 
+    
+    def __str__(self):
+        return self.Mobile_Name
+    
+    class Meta:
+        verbose_name_plural="mobilephones"
+class MobilePhones_Test(models.Model):
+    Mobile_Companny= models.CharField(max_length=200, null= True)
+    Mobile_Name= models.CharField(max_length=300, null= True)
+    Whats_new= models.TextField( null= True)
     price=models.IntegerField( null= True)
+    battery=models.CharField(max_length=400,null=True)
+   
+    Cpu=models.CharField(max_length=500, null= True)
+    Dimensions=models.CharField(max_length=300, null= True)
+    Gpu=models.CharField(max_length=500, null= True)
+    Resolution=models.CharField(max_length=500, null= True)
+    Size=models.FloatField(null=True)
+    Weight=models.IntegerField(null= True)
+    Chip=models.CharField(max_length=500, null= True)  
+    Colors=models.CharField(max_length=300, null= True) 
+    # changed from price_in_pkr
+   
     price_in_usd=models.IntegerField( null= True)
     rating=models.FloatField(null= True)
     OS=models.CharField(max_length=300, null= True)
@@ -207,16 +256,25 @@ class mobilephones(models.Model):
     # imagepath2=  models.ImageField(null=True, blank=True, upload_to="webapp/img/sampleimages/")
     imagepath1=models.CharField(max_length=300,null=True)
     imagepath2=models.CharField(max_length=300,null=True)
-    battery=models.CharField(max_length=400,null=True)
+    
     # changed from back_camera
     backcam=models.CharField(max_length=400,null=True)
+ 
     
     def __str__(self):
         return self.Mobile_Name
     
     class Meta:
-        verbose_name_plural="mobilephones"
-        
+        verbose_name_plural="Mobile Phones Test"
+
+class criteria_catalog_disp(models.Model):
+    
+        catalog_crit_display_order=ListCharField(
+        base_field=CharField(max_length=20),
+        size=10,
+        max_length=(10*21),
+        null=True
+    )
 
 class samsung_phone(models.Model):
     Mobile_Companny= models.CharField(max_length=200, null= True)
@@ -252,20 +310,12 @@ class sort_feature(models.Model):
     sh_hd=models.IntegerField(null=True)
     # roles=models.IntegerField(null=True)
     roles = models.ForeignKey(Role, on_delete=models.CASCADE,default=None,null=True)
-
+    exp_sets=models.CharField(max_length=200,null=True)
 
     def __str__(self):
         return self.feature
     class Meta:
         verbose_name_plural="Sort Feature"
-
-class feature(models.Model):
-    feature=models.CharField(max_length=200,null=True)
-    def __str__(self):
-        return self.id
-    class Meta:
-
-        verbose_name_plural="feature"
 
 class userscoreRecord (models.Model):
     column_id=models.IntegerField(null=True)
@@ -280,19 +330,39 @@ class userscoreRecord (models.Model):
         return self.feat_name
     class Meta:
         verbose_name_plural="User Score Record"
-class prunedmobilephones(models.Model):
-    u_id=models.IntegerField(null=True)
-    m_id=models.IntegerField(null=True)
-    roles=models.IntegerField(null=True)
-    def __str__(self):
-        return self.u_id
-    class Meta:
-       verbose_name_plural="Pruned Mobile Phones"
+
 
 class userroles(models.Model):
     userrole=models.CharField(max_length=200,null=True)
 
 class selectedAdminPhones(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    exp = models.ForeignKey(experiment, on_delete=models.CASCADE)
-    mob = models.ForeignKey(mobilephones, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True)
+    exp = models.ForeignKey(experiment, on_delete=models.CASCADE,null=True,blank=True)
+    block = models.ForeignKey(Block, on_delete=models.CASCADE, null=True,blank=True)
+    pset_id = models.CharField(max_length=10,null=True,blank=True)
+    mob = models.ForeignKey(mobilephones, on_delete=models.CASCADE,null=True)
+    p_order = models.IntegerField(null=True,blank=True)
+
+class PhoneCriteria(models.Model):
+    criteria_name=models.CharField(max_length=20,null=True)
+    status=models.CharField(max_length=20,null=True)
+    priority=models.CharField(max_length=20,null=True)
+    position=models.IntegerField(null=True)
+    def __str__(self):
+        return self.criteria_name
+    class Meta:
+       verbose_name_plural="Phone Criteria"
+
+
+class ExpCriteriaOrder(models.Model):
+    exp = models.ForeignKey(experiment, on_delete=models.CASCADE,null=True)
+    block = models.ForeignKey(Block, on_delete=models.CASCADE,null=True)
+    cOrder_id = models.CharField(max_length=10,null=True)
+    fvp=models.CharField(max_length=10,null=True)
+    #NEED TO KEEP A RECORD OF THE EXISTING SET OF AVAILABLE CRITERIA IN THE MOBILE PHONES TABLE
+    pCriteria = models.ForeignKey(PhoneCriteria, on_delete=models.CASCADE,null=True)
+
+    # pCriteria = models.CharField(max_length=200, null=True)
+    position = models.IntegerField(null=True)
+
+    sh_hd=models.IntegerField(null=True)

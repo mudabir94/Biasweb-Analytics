@@ -9,6 +9,8 @@ from webapp.models import experiment_feature as ExpFeature
 from webapp.models import platform_feature as PFeature
 from webapp.models import User, Subject
 from webapp.forms import SubjectCreationForm as scf
+from webapp.models import selectedAdminPhones as PSets
+from webapp.models import mobilephones as Phones
 
 def setSelfDefinedBatches(expCont, defaultNo=None):
     if not defaultNo:
@@ -37,6 +39,12 @@ def setPreDefinedBatches():
 OUT_PATH="biasweb/data/output/"
 interactive = False #Make True if you want this test to ask for field names mapping
 feature_editing = True
+
+#Initialize phone sets for adding as block feature levels
+set1 = [91,14,49]
+set2 = [43,6,101]
+setDict = {1:set1, 2:set2}
+
 ## 1. RETRIEVE AN EXISTING EXPERIMENT
 
 admin_id = "ses-007" #USING THE CUSTOM-ID OF SUPERUSER #2 (shazib [not dr.shazib]) ses-007 for Shazib
@@ -50,31 +58,54 @@ admin_id = "ses-007" #USING THE CUSTOM-ID OF SUPERUSER #2 (shazib [not dr.shazib
 texp = ExperimentController(a_id=admin_id)
 print("NEW Exp Custom Id:",texp.exp.custom_exp_id)
 ## 3. TEST INDIV FEATURE MODIFICATION
-if feature_editing:
-    fSymbol = 'W' #JUST TO test individual feature handling
-    xFSym = 'D' #Againd Ditto
-    levFSym= 'A' #FOR testing levels change in an existing feature
-    texp.addFeature(fSymbol)
-    texp.delFeature(fSymbol)
-    texp.addFeature(fSymbol=levFSym, byPrompt=True)
-    #texp.delFeature(levFSymbol)
+# if feature_editing:
+fSymbol = 'W' #JUST TO test individual feature handling
+xFSym = 'D' #Againd Ditto
+levFSym= 'A' #FOR testing levels change in an existing feature
+texp.addFeature(fSymbol)
+texp.delFeature(fSymbol)
+texp.addFeature(fSymbol=levFSym, byPrompt=True)
+#texp.delFeature(levFSymbol)
 
-    ## 4. TEST FSET MODIFICATION (EN MASSE) ----
-    nFSym = 'P' #For testing the addition of new feature
-    newFSet = ['W','A',nFSym]  #please change depending on what's in the database
-    texp.setFSet(newFSet,prompt=False)
-    print(texp.fSet.all())
-    #newLevs = {'W': ['direct', 'AHP'], 'C': ['full', 'pruned']}
-    newLevs = {'W': ['direct', 'AHP'], 'A': ['all', '2by2','user'], 'R': ['0', '1']}
-    texp.setFSet(newFLevels=newLevs,prompt=True)
-    texp.saveExperiment()
-    #Edit feature levels
-    #texp.autoSetFLevels(True)
-    print(texp.fLevels)
-    texp.saveExperiment()
+## 4. TEST FSET MODIFICATION (EN MASSE) ----
+nFSym = 'P' #For testing the addition of new feature
+newFSet = ['W','A',nFSym]  #please change depending on what's in the database
+texp.setFSet(newFSet,prompt=False)
+set1 = [91,14,49]
+set2 = [43,6,101]
+setDict = {1:set1, 2:set2}
+p_levList = list()
+for key,s in setDict.items():
+    print(key,":",s)
+    p_set = Phones.objects.filter(id__in=s)
+    p_levList.append('P.'+str(key))
+    for count, i in enumerate(s):
+        expPSets = PSets()
+        expPSets.exp = texp.exp
+        expPSets.pset_id= key
+        expPSets.mob = p_set.get(id=i)
+        expPSets.p_order = count
+        expPSets.save()
+print(PSets.objects.filter(exp_id = texp.exp.id))       
 
-    ## 5. Test BLOCK GENERATION -- only proceed if DB has feature levels
-    blocks = texp.generateBlocks()
+texp.addFeature('P', p_levList)
+
+
+
+
+#newLevs = {'W': ['direct', 'AHP'], 'C': ['full', 'pruned']}
+newLevs = {'W': ['direct', 'AHP'], 'A': ['all', '2by2','user'], 'R': ['0', '1']}
+#TODO: Now need to differentiate between default/block features
+#SE
+texp.setFSet(newFLevels=newLevs,prompt=True)
+texp.saveExperiment()
+#Edit feature levels
+#texp.autoSetFLevels(True)
+print(texp.fLevels)
+texp.saveExperiment()
+
+## 5. Test BLOCK GENERATION -- only proceed if DB has feature levels
+blocks = texp.generateBlocks()
 
 ##TEST ASSIGNMENT TO BATCHES AND BLOCKS
 fPath = "biasweb/data/input/MBA_RCM1_SampleData.csv"
