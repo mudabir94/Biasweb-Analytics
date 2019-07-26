@@ -2423,8 +2423,12 @@ def deleteAllSubjects(request):
 def getExpController(request):
     try:
         sess_expId = request.session['sess_expId']
+        print("session>>>>>>>>>>>>>>",request.session['sess_expId'])
+
         print('SESSION ID',sess_expId)
     except KeyError:
+        print("session_________")
+
         sess_expId = None
     if sess_expId:
         print("----->>>>>RETRIEVED EXP ID:",sess_expId,"FROM SESSION<<<<<<-----")
@@ -2674,7 +2678,7 @@ class createExperiment(TemplateView):
                 mobiles_retrieved=mobilephones.objects.filter(price__range=(price_range_values[0], price_range_values[1])).order_by('-id') 
               
             else:
-                mobiles_retrieved=mobilephones.objects.filter(price__range=(price_range_values[0], price_range_values[1]),Mobile_Companny__in=brandnames).order_by('id') 
+                mobiles_retrieved=mobilephones.objects.filter(price__range=(price_range_values[0], price_range_values[1]),Brand__in=brandnames).order_by('id') 
                 
 
             # print(mobiles_retrieved) 

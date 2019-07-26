@@ -130,6 +130,7 @@
     box-shadow: 0 0 0.5px 0.5px  lightskyblue;
     padding: 5px 15px; /* Some padding */
     float: left; /* Float the buttons side by side */
+    border-radius:1pc;
 
 }
 .show_hide{
@@ -146,6 +147,7 @@
     color: green; /* White text */
 
     box-shadow: 0 0 0.5px 0.5px #ea0000;
+    border-radius:1pc;
   }
   .bdcrumb_active a{
    
@@ -163,6 +165,7 @@
     border: 1px solid rgba(60, 138, 24, 0.863);
     cursor: pointer;
     font-size: 13px;
+    border-radius: 2pc;
 
 }
 #grid{
@@ -172,9 +175,9 @@
     background: #105796;
     color: white; 
     padding: 10px 10px; /* Some padding */
-    /* box-shadow: 0 0 0.5px 0.5px #105796; */
+    box-shadow: 0 0 0.5px 0.5px #105796;
     cursor: pointer;
-    border:none;
+    border-radius: 8px;
 
 }
 #exp_sel_phones_div{
@@ -184,12 +187,25 @@
   color:palegoldenrod;
 
 }
+#exp_select_phns_h4{
+  font-family: 'Agency FB';
+
+}
+#crit_opt_h4{
+  font-family: 'Agency FB';
+
+}
 .crit_option_sidebar_div{
   color:palegoldenrod;
 
 }
 #criteria_option_name{
   padding: 5%;
+}
+.exp_phonelist_span_h{
+  font-family: 'Agency FB';
+  font-size: larger;
+
 }
 /* #create_exp_mobile_catalog{
   background: black;
@@ -311,4 +327,19 @@ body.loading .modal {
   font-size: 13px !important;
     font-weight: 700 !important;
     color: #4c4d4e !important;
+}
+
+
+#saveDescriptionbtn{
+  background-color: rgba(100, 179, 64, 0.863); /* Green background */
+  border: 1px solid rgba(60, 138, 24, 0.863);/* Green border */
+  color: white; /* White text */
+  padding: 5px 15px; /* Some padding */
+  cursor: pointer; /* Pointer/hand icon */
+  float: left; /* Float the buttons side by side */ 
+  border-radius: 10px;
+}
+#price_slider_div{
+  margin-top:2pc;
+  margin-botton:1pc;
 }

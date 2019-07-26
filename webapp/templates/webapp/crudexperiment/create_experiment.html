@@ -431,7 +431,7 @@
             </div> 
             <!-- Previous Btn -->
             <div class='row-fluid' id='batchmngprvbtn_div'>
-                    <div class='col-md-1'>
+                    <!-- <div class='col-md-1'>
                         <div id='prev_btn_div'>
                         <button style="background: #105796;box-shadow: 0 0 0.5px 0.5px #105796;border: none;" onclick="showFeatLvlDiv()">Previous</button>
                         </div>
@@ -441,7 +441,7 @@
                         <div id='save_button_div'>
                                 <button onclick="saveExperiment()">Save</button>
                         </div>
-                    </div>
+                    </div> -->
             </div>
            
             <div class="row-fluid" id="phones_main_button_div">
@@ -606,7 +606,7 @@ $('#dispFileFeatLvldiv').hide();
 $('#subj_split_batch_rowdiv').hide();
 $('#block_assign_row_div').hide();
 $('#brand_check_div').hide();
-
+$('#crit_option_sidebar_div').hide();
 //$('#blkoutputsDiv').hide();
 $('#batchmngprvbtn_div').hide();
 $('#dataDiv').hide();
@@ -1374,7 +1374,7 @@ function showBatchManagement(){
     $("#ol2").hide();
     $("#ol3").hide();
     $("#ol4").hide();
-    $('#batchmngprvbtn_div').show();
+    $('#batchmngprvbtn_div').hide();
     $('#dispFileFeatLvldiv').show();
 
 }
@@ -3410,7 +3410,7 @@ function dummysendFeatureLevels(){
 
                     }
                     console.log("P",block_feat_dict_def)
-                    // SavePhoneSet_P0();
+                    SavePhoneSet_P0();
 
                 }
             all_unchecked=true
@@ -4301,7 +4301,6 @@ function mobileCatalog(){
         console.log("DICTIONARY!!!!!",block_feat_dict['P']);
         default_list=["P.Default","P.All"]
         if (block_feat_dict['P']===undefined ||  block_feat_dict['P'][0]==="P.All"){
-                alert("PPPP")
                 for (var i=0;i<default_list.length;i++){
                     var button=document.createElement('button')
                     button.id=default_list[i]
@@ -4524,9 +4523,9 @@ function NextStep(element){
        
         
         var savebutton=document.createElement('button');
-        savebutton.innerHTML="Save"
-        savebutton.setAttribute('onclick','SavePhoneSet($(this))')
-        savebutton.setAttribute('id','savebutton_id')
+        savebutton.innerHTML="Save";
+        savebutton.setAttribute('onclick','SavePhoneSet($(this))');
+        savebutton.setAttribute('id','savebutton_id');
         $(element).remove;
         $('#process_buttons').empty();
         $('#save_button').empty();
@@ -5112,7 +5111,7 @@ function SetFunc(active_id){
         // red color
         document.getElementById(active_button).style.backgroundColor = "#94000e"
 
-        // brandCheck_Html_Crt();
+        brandCheck_Html_Crt();
 
         // For  displaying phone list on sidebar
         $('#expphonelist_div').empty();
@@ -5273,6 +5272,7 @@ function SetFunc(active_id){
             }
             else{
                 set_value=slider_set_dict[active_button]
+                
             }
 
         var slider2 = new rSlider({
@@ -5413,11 +5413,8 @@ function SetFunc(active_id){
                                     });
                                     $("#pager").show();
                             }
-                                
-                          
-                         }); 
-                       
-                    }
+                 });         
+             }
         });
 
     }
@@ -5436,7 +5433,14 @@ function phone_sidebarHtmlPop(){
 
         main_row_div.append(main_col_div);
         var h_div=document.createElement("div");
-        h_div.innerHTML=active_button;
+        var span=document.createElement("span");
+        span.setAttribute('class',"exp_phonelist_span_h");
+
+        span.innerHTML=active_button;
+        // h_div.id=key;
+        // h_div.innerHTML=key;
+        h_div.append(span);
+        // h_div.innerHTML=active_button;
 
         main_col_div.append(h_div);
 
@@ -5449,10 +5453,20 @@ function phone_sidebarHtmlPop(){
             row_div.append(col_div);
             
             if(phonename_dic[active_button].length===0){
-                col_div.append(phonename_dic[active_button]);
+                var span_phname=document.createElement('span');
+                        span_phname.setAttribute("class","span_phname");
+                        span_phname.innerHTML=phonename_dic[active_button][i]
+
+                        col_div.append(span_phname);
+                // col_div.append(phonename_dic[active_button]);
             }
             else{
-                col_div.append(phonename_dic[active_button][i]);
+                var span_phname=document.createElement('span');
+                        span_phname.setAttribute("class","span_phname");
+                        span_phname.innerHTML=phonename_dic[active_button][i]
+
+                        col_div.append(span_phname);
+                // col_div.append(phonename_dic[active_button][i]);
             }
         }
                         
@@ -5468,8 +5482,13 @@ function phone_sidebarHtmlPop(){
                 main_col_div.id=active_button+"unq";
                 main_row_div.append(main_col_div);
                 var h_div=document.createElement("div");
-                h_div.id=key;
-                h_div.innerHTML=key;
+                // h_div.id=key;
+                // h_div.innerHTML=key;
+                var span=document.createElement("span");
+                span.setAttribute('class',"exp_phonelist_span_h");
+
+                span.innerHTML=key;
+                h_div.append(span);
                 main_col_div.append(h_div);
 
                     for (var i in phonename_dic[key]){
@@ -5647,8 +5666,12 @@ function toggleCheckbox(element){
 
                     main_row_div.append(main_col_div);
                     var h_div=document.createElement("div");
-                    h_div.innerHTML=active_button;
+                    var span=document.createElement("span");
+                    span.setAttribute('class',"exp_phonelist_span_h");
 
+                    span.innerHTML=active_button;
+                    h_div.append(span);
+                    // h_div.innerHTML=active_button;
                     main_col_div.append(h_div);
 
                     for (var i in phonename_dic[active_button]){
@@ -5658,8 +5681,11 @@ function toggleCheckbox(element){
                         col_div.setAttribute('class','col-md-12');
                         main_col_div.append(row_div);
                         row_div.append(col_div);
-                        
-                        col_div.append(phonename_dic[active_button][i]);
+                        var span_phname=document.createElement('span');
+                        span_phname.setAttribute("class","span_phname");
+                        span_phname.innerHTML=phonename_dic[active_button][i]
+
+                        col_div.append(span_phname);
                     }
                     
                     for (var key in phonename_dic){
@@ -5675,8 +5701,14 @@ function toggleCheckbox(element){
                             main_col_div.id=key;
                             main_row_div.append(main_col_div);
                             var h_div=document.createElement("div");
-                            h_div.id=key;
-                            h_div.innerHTML=key;
+                            // h_div.id=key;
+                            // h_div.innerHTML=key;
+                            var span=document.createElement("span");
+                            span.setAttribute('class',"exp_phonelist_span_h");
+
+                            span.innerHTML=key;
+                            h_div.append(span);
+                            
                             main_col_div.append(h_div);
 
                             for (var i in phonename_dic[key]){
@@ -5723,8 +5755,13 @@ function toggleCheckbox(element){
 
                     main_row_div.append(main_col_div);
                     var h_div=document.createElement("div");
-                    h_div.id=active_button;
-                    h_div.innerHTML=active_button;
+                    // h_div.id=active_button;
+                    // h_div.innerHTML=active_button;
+                    var span=document.createElement("span");
+                    span.setAttribute('class',"exp_phonelist_span_h");
+
+                    span.innerHTML=active_button;
+                    h_div.append(span);
 
                     main_col_div.append(h_div);
 
@@ -5736,7 +5773,11 @@ function toggleCheckbox(element){
                         main_col_div.append(row_div);
                         row_div.append(col_div);
                         
-                        col_div.append(phonename_dic[active_button][i]);
+                        var span_phname=document.createElement('span');
+                        span_phname.setAttribute("class","span_phname");
+                        span_phname.innerHTML=phonename_dic[active_button][i]
+
+                        col_div.append(span_phname);
                     }
                     
                     for (var key in phonename_dic){
@@ -5751,7 +5792,13 @@ function toggleCheckbox(element){
                             main_col_div.id=key+"unq";
                             main_row_div.append(main_col_div);
                             var h_div=document.createElement("div");
-                            h_div.innerHTML=key;
+                            
+                            // h_div.innerHTML=key;
+                            var span=document.createElement("span");
+                            span.setAttribute('class',"exp_phonelist_span_h");
+
+                            span.innerHTML=key;
+                            h_div.append(span);
                             main_col_div.append(h_div);
 
                             for (var i in phonename_dic[key]){
@@ -5825,7 +5872,12 @@ function toggleCheckbox(element){
 
             main_row_div.append(main_col_div);
             var h_div=document.createElement("div");
-            h_div.innerHTML=active_button;
+            // h_div.innerHTML=active_button;
+            var span=document.createElement("span");
+            span.setAttribute('class',"exp_phonelist_span_h");
+
+            span.innerHTML=active_button;
+            h_div.append(span);
             main_col_div.append(h_div);
             for (var i in phonename_dic[active_button]){
                 var row_div=document.createElement("div");
@@ -5834,8 +5886,12 @@ function toggleCheckbox(element){
                 col_div.setAttribute('class','col-md-12');
                 main_col_div.append(row_div);
                 row_div.append(col_div);
-                
-                col_div.append(phonename_dic[active_button][i]);
+                var span_phname=document.createElement('span');
+                        span_phname.setAttribute("class","span_phname");
+                        span_phname.innerHTML=phonename_dic[active_button][i]
+
+                        col_div.append(span_phname);
+                // col_div.append(phonename_dic[active_button][i]);
             }
                     
                     for (var key in phonename_dic){
@@ -5850,8 +5906,12 @@ function toggleCheckbox(element){
                             main_col_div.id=key+"unq"
                             main_row_div.append(main_col_div);
                             var h_div=document.createElement("div");
-                            h_div.id=key;
-                            h_div.innerHTML=key;
+                            var span=document.createElement("span");
+                            span.setAttribute('class',"exp_phonelist_span_h");
+                            span.innerHTML=key;
+                            // h_div.id=key;
+                            // h_div.innerHTML=key;
+                            h_div.append(span);
                             main_col_div.append(h_div);
 
                             for (var i in phonename_dic[key]){
@@ -11644,8 +11704,7 @@ function get_data_Ajax_Co(colist){
 
             ind=brand_set_dict[active_button].indexOf(element.value),1
             brand_set_dict[active_button].splice(ind,1);
-            console.log("brand dic>>>")
-            console.log(brand_set_dict)
+            console.log("brand dic>>>",brand_set_dict)
             $.ajax({
                 type:"POST",
                 dataType:"json",
