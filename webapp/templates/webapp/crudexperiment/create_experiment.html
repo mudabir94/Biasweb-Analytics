@@ -3755,7 +3755,6 @@ else if (block_feat_dict['C']!==undefined && block_feat_dict['CO']===undefined){
     */
 }
 else if (block_feat_dict['C']===undefined && block_feat_dict['CO']!==undefined){
-    alert("3")
 
     default_active="true"
     crit_order_dict={};
@@ -6644,7 +6643,7 @@ function get_data_Ajax_Co(colist){
                                         type: 'POST',
                                         dataType: "json",
                                         'data': {
-                                        'featlevels_dic': JSON.stringify(dict,undefined,''),
+                                        'featlevels_dic': JSON.stringify(block_feat_dict,undefined,''),
                                         'crit_order_dict':JSON.stringify(crit_order_dict),
                                         'crit_hide_dict':JSON.stringify(crit_hide_dict),
 
@@ -6653,6 +6652,7 @@ function get_data_Ajax_Co(colist){
                                         
                                         url: "{% url 'ordercriteriasetup' %}",
                                         success: function(data){
+                                            alert("FFF")
                                             if(exp_id===""){
                                                     exp_id = data['exp_id'];
                                                     custom_exp_id = data['custom_exp_id'];
