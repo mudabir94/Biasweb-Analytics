@@ -6646,6 +6646,7 @@ function get_data_Ajax_Co(colist){
                                         'featlevels_dic': JSON.stringify(block_feat_dict,undefined,''),
                                         'crit_order_dict':JSON.stringify(crit_order_dict),
                                         'crit_hide_dict':JSON.stringify(crit_hide_dict),
+                                        "final_def_blocks_to_send":JSON.stringify(final_def_blocks_to_send),
 
                                         'csrfmiddlewaretoken': '{{ csrf_token }}',
                                         },
@@ -7990,7 +7991,8 @@ function get_data_Ajax_Co(colist){
                                 'cdm_crit_show_dict': JSON.stringify(cdm_crit_show_dict,undefined,''),
                                 'cdm_crit_hide_dict': JSON.stringify(cdm_crit_hide_dict,undefined,''),
                                 'cataloglist':JSON.stringify(cataloglist),
-
+                                "final_def_blocks_to_send":JSON.stringify(final_def_blocks_to_send),
+       
                                 'csrfmiddlewaretoken': '{{ csrf_token }}',
                                 },
                                 url: "{% url 'cdmcriteriasetup' %}",
@@ -8293,8 +8295,8 @@ function get_data_Ajax_Co(colist){
             data=htmlF(shw_disp,hide_disp,mandatory_list,feat_dsp,feat_hide,flg);
             data_obj_show=JSON.parse(JSON.stringify(data['shw_disp']));
             data_obj_hide=JSON.parse(JSON.stringify(data['hide_disp']));
-            cdm_crit_show_dict['c.prune']=shw_disp;
-            cdm_crit_hide_dict['c.prune']=[];
+            cdm_crit_show_dict['c.pruned']=shw_disp;
+            cdm_crit_hide_dict['c.pruned']=[];
             console.log("cdm_crit_show_dict",cdm_crit_show_dict);
             console.log("cdm_crit_hide_dict",cdm_crit_hide_dict);            
             var full_crit_sel_inner_div=document.getElementById('full_crit_sel_inner_div');
@@ -8419,9 +8421,9 @@ function get_data_Ajax_Co(colist){
 
         }
         else if(element_os==="C.PRUNEbtn"){
-                if (cdm_crit_show_dict['c.prune']!==undefined){
-                    prune_list_show=cdm_crit_show_dict['c.prune'];
-                    prune_list_hide=cdm_crit_hide_dict['c.prune'];
+                if (cdm_crit_show_dict['c.pruned']!==undefined){
+                    prune_list_show=cdm_crit_show_dict['c.pruned'];
+                    prune_list_hide=cdm_crit_hide_dict['c.pruned'];
                     temp_list=[];
                     temp_list2=[];
                     for (var i in cdm_crit_show_dict['c.full']){
@@ -8444,7 +8446,7 @@ function get_data_Ajax_Co(colist){
 
                         }
                     }
-                    cdm_crit_show_dict['c.prune']=temp_list;
+                    cdm_crit_show_dict['c.pruned']=temp_list;
                     for (  var i in cdm_crit_hide_dict['c.full']){
                         if (prune_list_hide.includes(cdm_crit_hide_dict['c.full'][i])){
                             var ind=prune_list_hide.indexOf(cdm_crit_hide_dict['c.full'][i]);
@@ -8452,7 +8454,7 @@ function get_data_Ajax_Co(colist){
                             // temp_list.push(cdm_crit_show_dict['c.full'][i])
                         }
                     }
-                    cdm_crit_hide_dict['c.prune']=prune_list_hide;
+                    cdm_crit_hide_dict['c.pruned']=prune_list_hide;
                     // if (cdm_crit_show_dict['c.full'].length!==cdm_crit_show_dict['c.prune'].length){
                     // alert("Please press NEXT TO set Pruned Criterias")
                     // return;
@@ -8556,8 +8558,8 @@ function get_data_Ajax_Co(colist){
 
         var shw_disp=[];var hide_disp=[];
         
-        var feat_dsp=cdm_crit_show_dict['c.prune'];
-        var feat_hide=cdm_crit_hide_dict['c.prune'];
+        var feat_dsp=cdm_crit_show_dict['c.pruned'];
+        var feat_hide=cdm_crit_hide_dict['c.pruned'];
         var flg="true";
         data=htmlF(shw_disp,hide_disp,mandatory_list,feat_dsp,feat_hide,flg);
         // var full_crit_sel_inner_div=document.getElementById('full_crit_sel_inner_div');
@@ -11265,7 +11267,7 @@ function get_data_Ajax_Co(colist){
 
                             cfull_criteria_dict['children']=cfull_criteria_childlist;
                         active_cdm_childlist.push(cfull_criteria_dict);
-                        if (cdm_full_btn_on==="false" || cdm_crit_show_dict['c.prune']!==undefined){
+                        if (cdm_full_btn_on==="false" || cdm_crit_show_dict['c.pruned']!==undefined){
 
                         
                             var cprune_criteria_dict={};
@@ -11274,9 +11276,9 @@ function get_data_Ajax_Co(colist){
                                 var prune_selected_dict={};
                                 var prune_selected_childlist=[];
                                 prune_selected_dict['name']="Prune Selected";
-                                for (var i in cdm_crit_show_dict['c.prune']){
+                                for (var i in cdm_crit_show_dict['c.pruned']){
                                     var prune_single_crit_dict={};
-                                    prune_single_crit_dict['name']=cdm_crit_show_dict['c.prune'][i];
+                                    prune_single_crit_dict['name']=cdm_crit_show_dict['c.pruned'][i];
                                     prune_single_crit_dict['children']=[];
                                     prune_selected_childlist.push(prune_single_crit_dict);
                                 }
@@ -11285,9 +11287,9 @@ function get_data_Ajax_Co(colist){
                                 var prune_hidden_dict={};
                                 var prune_hidden_childlist=[];
                                 prune_hidden_dict['name']="Prune Hidden";
-                                for (var i in cdm_crit_hide_dict['c.prune']){
+                                for (var i in cdm_crit_hide_dict['c.pruned']){
                                     var prune_single_crit_hidden_dict={};
-                                    prune_single_crit_hidden_dict['name']=cdm_crit_hide_dict['c.prune'][i];
+                                    prune_single_crit_hidden_dict['name']=cdm_crit_hide_dict['c.pruned'][i];
                                     prune_single_crit_hidden_dict['children']=[];
                                     prune_hidden_childlist.push(prune_single_crit_hidden_dict);
                                 }
@@ -11352,8 +11354,8 @@ function get_data_Ajax_Co(colist){
             console.log("cdm_crit_show_dict--prunecheck",cdm_crit_show_dict)
 
             console.log("cdm_crit_hide_dict--prunecheck",cdm_crit_hide_dict)
-            cdm_hide_list=cdm_crit_hide_dict['c.prune']
-            cdm_show_list=cdm_crit_show_dict['c.prune']
+            cdm_hide_list=cdm_crit_hide_dict['c.pruned']
+            cdm_show_list=cdm_crit_show_dict['c.pruned']
 
 
 
@@ -11404,8 +11406,8 @@ function get_data_Ajax_Co(colist){
                 else{
                     console.log("cdm_full_btn_on2.2 hide",cdm_full_btn_on)
 
-                cdm_crit_hide_dict['c.prune']= cdm_hide_list
-                cdm_crit_show_dict['c.prune']= cdm_show_list
+                cdm_crit_hide_dict['c.pruned']= cdm_hide_list
+                cdm_crit_show_dict['c.pruned']= cdm_show_list
 
    
                 }
@@ -11483,8 +11485,8 @@ function get_data_Ajax_Co(colist){
                 console.log("cdm_crit_show_dict--prunecheck",cdm_crit_show_dict)
 
                 console.log("cdm_crit_hide_dict--prunecheck",cdm_crit_hide_dict)
-                cdm_hide_list=cdm_crit_hide_dict['c.prune']
-                cdm_show_list=cdm_crit_show_dict['c.prune']
+                cdm_hide_list=cdm_crit_hide_dict['c.pruned']
+                cdm_show_list=cdm_crit_show_dict['c.pruned']
             }
             if (crit_hide_dict[active_co]===undefined){
                 var index = cdm_hide_list.indexOf(elem);
@@ -11527,8 +11529,8 @@ function get_data_Ajax_Co(colist){
             }else{
                 console.log("cdm_full_btn_on2.2 show",cdm_full_btn_on)
 
-                cdm_crit_hide_dict['c.prune']=cdm_hide_list
-                cdm_crit_show_dict['c.prune']=cdm_show_list
+                cdm_crit_hide_dict['c.pruned']=cdm_hide_list
+                cdm_crit_show_dict['c.pruned']=cdm_show_list
             }
 
                 console.log("cdm_crit_show_dict****",cdm_crit_show_dict)

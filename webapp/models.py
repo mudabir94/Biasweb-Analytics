@@ -159,9 +159,11 @@ class experiment_feature(models.Model):
     used_in = models.ForeignKey(experiment, on_delete=models.CASCADE)
     p_feature = models.ForeignKey(platform_feature, on_delete=models.CASCADE)
     chosen_levels = ListCharField(
-         base_field=models.CharField(max_length=20),
-         size=6,
-         max_length=(6 * 21) # 6 * 10 character nominals, plus commas
+        base_field=models.CharField(max_length=20),
+        size=6,
+        max_length=(6 * 21), # 6 * 10 character nominals, plus commas
+        null=True,
+        blank=True,
     )
     default_levels= ListCharField(
         base_field=models.CharField(max_length=20),
@@ -170,6 +172,8 @@ class experiment_feature(models.Model):
         null=True,
         blank=True,
    )
+    # default_levels=models.CharField(max_length=50,null=True,blank=True)
+
     def __str__(self):
         fName = self.p_feature.feature_name
         return fName
@@ -340,7 +344,7 @@ class selectedAdminPhones(models.Model):
     exp = models.ForeignKey(experiment, on_delete=models.CASCADE,null=True,blank=True)
     block = models.ForeignKey(Block, on_delete=models.CASCADE, null=True,blank=True)
     pset_id = models.CharField(max_length=10,null=True,blank=True)
-    mob = models.ForeignKey(mobilephones, on_delete=models.CASCADE,null=True)
+    mob = models.ForeignKey(mobilephones, on_delete=models.CASCADE,null=True,blank=True)
     p_order = models.IntegerField(null=True,blank=True)
 
 class PhoneCriteria(models.Model):
@@ -366,3 +370,24 @@ class ExpCriteriaOrder(models.Model):
     position = models.IntegerField(null=True)
 
     sh_hd=models.IntegerField(null=True)
+class StoreHoverBarChartLogs(models.Model):
+    user= models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    value=models.FloatField(null=True,blank=True)
+    phone_name=models.CharField(max_length=45,null=True,blank=True)
+    time=models.CharField(max_length=100,null=True,blank=True)
+class StoreHoverPieChartLogs(models.Model):
+    user=models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    value=models.FloatField(null=True,blank=True)
+    criteria_name=models.CharField(max_length=45,null=True,blank=True)
+    time=models.CharField(max_length=100,null=True,blank=True)
+class StoreNextPrevButtonLogs(models.Model):
+    user=models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    button_name=models.CharField(max_length=45,null=True,blank=True)
+    time=models.CharField(max_length=100,null=True,blank=True)
+    phone_name=models.CharField(max_length=45,null=True,blank=True)
+
+class StoreCritWeightLogs(models.Model):
+    user=models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    value=models.FloatField(null=True,blank=True)
+    criteria_name=models.CharField(max_length=45,null=True,blank=True)
+    time=models.CharField(max_length=100,null=True,blank=True)

@@ -10,8 +10,10 @@
         </div>
 </div>
 <script>
+        var exp_id='{{exp_id}}'
         function mobileCatalog_pageLoader(){
-                var exp_num=$(".active_li").attr("value")
+                //  var exp_num=$(".active_li").attr("value")
+                var exp_num= exp_id
                 $.ajax({
                 type: 'POST',
                 dataType: "json",

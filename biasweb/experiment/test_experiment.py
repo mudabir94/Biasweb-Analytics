@@ -91,6 +91,10 @@ print(PSets.objects.filter(exp_id = texp.exp.id))
 texp.addFeature('P', p_levList)
 
 
+#TODO: FIX THIS TO GET PHONES INTO CONTROLLER
+# texp.exp.selected_admin_phones_set.all()
+
+
 
 
 #newLevs = {'W': ['direct', 'AHP'], 'C': ['full', 'pruned']}

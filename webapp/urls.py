@@ -95,4 +95,7 @@ urlpatterns = [
     #url(r'^$', views.signUp, name='signup'), 
 
 #---------------------------------------------------------------------------------------------
+# Temprary...
+    url(r'^submit_data/' , views.submitData , name='submit_data') ,
+
 ]

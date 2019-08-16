@@ -15,7 +15,7 @@ from webapp.models import experiment_feature as ExpFeature
 from webapp.models import exp_fdefaults as exp_fdefaults
 
 from webapp.models import platform_feature as PFeature
-from webapp.models import User, Subject,exStatusCd
+from webapp.models import User, Subject,exStatusCd, Role
 from webapp.forms import SubjectCreationForm as scf
 
 # WHERE SAVED FILES WILL BE STORED
@@ -495,6 +495,7 @@ class ExperimentController:
         
         
     def saveSubjects(self, dSub=None, writeXL=False, fName=None):
+        roleSubj_id = Role.objects.get(role_name="Subject").id
         if isinstance(dSub,pd.DataFrame):
             self.subjData = dSub
         #WRITE TO DATABASE
@@ -515,6 +516,7 @@ class ExperimentController:
                     subjUser = scf().save(commit=False, pwd=c_id)
                     subjUser.username = c_id
                     subjUser.custom_id = c_id
+                    subjUser.role_id = roleSubj_id
                     subjUser.save()
                     subj_id = subjUser.id
                 #TODO@SHAZIB: CHECK IF SUBJECT USER EXISTS IN EXPERIMENT

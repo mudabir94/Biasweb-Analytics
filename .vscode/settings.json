@@ -1,5 +1,5 @@
 {
     "svn.ignoreMissingSvnWarning": true,
     "python.linting.pylintEnabled": false,
-    "python.pythonPath": "C:\\Users\\Mudabir Ahmad\\envs\\attenenv\\Scripts\\python.exe"
+    "python.pythonPath": "C:\\Users\\Mudabir Ahmad\\envs\\biaswebenv\\Scripts\\python.exe"
 }

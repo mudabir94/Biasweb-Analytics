@@ -50,9 +50,39 @@
     // In future change the name. 
     var mobiletesting={};
     var alt_combs=[];
+    var Interactivity_On=true
+    var Reviseability_On=true
+    var interactivity_data="";
+    var reviseability_data=""
 
 
 $(document).ready(function(){
+    $.ajax({
+                    type: 'GET',
+                    dataType: "json",
+                    'data': {
+                    },
+                    url: "{% url 'comparemobile_2by2_direct' %}",
+                    success: function(data){
+                        interactivity_data=data["interactivity_data"];
+                        reviseability_data=data["reviseability_data"];
+                        if (interactivity_data=="I.0"){
+                            Interactivity_On=false
+                        }
+                        else if (interactivity_data=="I.1"){
+                            Interactivity_On=true
+                        }   
+                        alert(interactivity_data)
+                        if (reviseability_data=="R.0"){
+                            Reviseability_On=false
+                        }
+                        else if (reviseability_data=="R.1"){
+                            Reviseability_On=true
+                        }   
+                        alert(reviseability_data)
+
+                    }
+    });
      $.ajax({
                 type: 'POST',
                 dataType: "json",
@@ -427,16 +457,23 @@ function makeTable(allmobile,keynum){
         $('#prevbtn_div').empty(); 
     }
     else{
-        var prevbutton=document.createElement('button');
-        prevbutton.setAttribute("onclick","previousMobilePair("+keynum+")");
-        prevbutton.setAttribute("class","btn btn-primary");
-        var itag=document.createElement("I")
-        itag.setAttribute("class","fa fa-arrow-circle-left");
-        prevbutton.appendChild(itag);
-        var text = document.createTextNode("Prev ");
-        prevbutton.appendChild(text);
-       
-        $(prevbutton).appendTo('#prevbtn_div');
+        if (Reviseability_On===true){
+
+            var prevbutton=document.createElement('button');
+            prevbutton.setAttribute("onclick","previousMobilePair("+keynum+")");
+            prevbutton.setAttribute("class","btn btn-primary");
+            var itag=document.createElement("I")
+            itag.setAttribute("class","fa fa-arrow-circle-left");
+            prevbutton.appendChild(itag);
+            var text = document.createTextNode("Prev ");
+            prevbutton.appendChild(text);
+        
+            $(prevbutton).appendTo('#prevbtn_div');
+        }
+        else{
+            console.log("Reviseability off")
+
+        }
     }
 }
 function showSliderRangeVal(parent_id,value){
@@ -478,6 +515,17 @@ function showSliderRangeVal(parent_id,value){
     // // if I.O in blocks then dont run these functions
     // show_FinalChart();
     // showchart_criteria();
+     // if I.O in blocks then dont run these functions
+     if (Interactivity_On===true){
+        console.log("Interactivity oN")
+
+        // show_FinalChart();
+        // showchart_criteria();
+    }
+        else{
+            console.log("Interactivity off")
+        }
+  
           
 }
 

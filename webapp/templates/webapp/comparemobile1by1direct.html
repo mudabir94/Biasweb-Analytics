@@ -5,6 +5,7 @@
         <div class='row'>
             <div class="col-md-2" style="background:black">
                 <div id="prevbtn_div"></div>
+                <div id="checkdiv_np"></div>
             </div>
             <div class="col-md-9">
                     <div class="row">
@@ -44,8 +45,25 @@
     var criteria_weights_dict={}
     var criteria_list=[]
     var temp_crit_list=[]
+    var pageloadedfrompressingnextorprev=true;
+
     var Interactivity_On=true
+    var Reviseability_On=true
+    var interactivity_data="";
+    var reviseability_data=""
+    var alt_labels_chart=[];
+    var storenextprevbuttonlogs={};
+    var storehoveronbarlog={};
+    var storehoveronpielog={};
+    // dict that stores alternatives as key, having a value as a dict as well. 
+    // Each value will be dictionary whose key will be criteria names and and in values a list containing ["user id","val","current time"];
+    var alt_crit_logs_dict={};
+    var userid=''
+    var slider2=""
+    var pagevisited="{{pagevisited}}"
 $(document).ready(function(){
+    $('#checkdiv_np').hide();
+    if (pagevisited!=="True"){
         $.ajax({
                     type: 'GET',
                     dataType: "json",
@@ -53,68 +71,107 @@ $(document).ready(function(){
                     },
                     url: "{% url 'comparemobile_1by1_direct' %}",
                     success: function(data){
-                        if (data["InT"]="I.0"){
-                            Interactivity_On=false
+                        alert("WW")
+                        if (data['pagevisited']==="True"){
+                            alert("SS")
+                            console.log("Sorry you can't go back. ")
                         }
-                        else if (data["InT"]="I.1"){
-                            Interactivity_On=true
-                        }   
+                        else{
+                            interactivity_data=data["interactivity_data"];
+                            reviseability_data=data["reviseability_data"];
+                            userid=data['userid'];
+                            if (interactivity_data=="I.0"){
+                                Interactivity_On=false
+                            }
+                            else if (interactivity_data=="I.1"){
+                                Interactivity_On=true
+                            }   
+                            alert(interactivity_data)
+                            if (reviseability_data=="R.0"){
+                                Reviseability_On=false
+                            }
+                            else if (reviseability_data=="R.1"){
+                                Reviseability_On=true
+                            }   
+                            alert(reviseability_data)
+                        }
                     }
+                      
         });
-     $.ajax({
-                type: 'POST',
-                dataType: "json",
-                'data': {
-                'csrfmiddlewaretoken': '{{ csrf_token }}',
-                },
-                url: "{% url 'comparemobile_1by1_direct' %}",
-                success: function(data){
-                    criteria_weights_dict=JSON.parse(data['criteria_weights_dict'])
-                 
-                    allmobile=data['allmobiles'] 
-                    alternatives_list=data['alternative_list'];
-                    criteria_list=[]
-                    criteria_list=data['criteria_list'];
+   
+        $.ajax({
+                    type: 'POST',
+                    dataType: "json",
+                    'data': {
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    },
+                    url: "{% url 'comparemobile_1by1_direct' %}",
+                    success: function(data){
+                        criteria_weights_dict=JSON.parse(data['criteria_weights_dict'])
+                    
+                        allmobile=data['allmobiles'] 
+                        alternatives_list=data['alternative_list'];
+                        criteria_list=[]
+                        criteria_list=data['criteria_list'];
+                        console.log("criteria_weights_dict",criteria_weights_dict)
+                        console.log("criteria_list",criteria_list)
+                        // LATER ADD THIS BLOCK OF CODE TO A FUNCTION
+                        for (var crit in criteria_list){
+                            crit_wght_name=criteria_weights_dict['criteria_weights'][crit][0];
+                            crit_wght_val=criteria_weights_dict['criteria_weights'][crit][1];
+                        
+                            templist=[]
+                            templist.push(crit_wght_name)
+                            templist.push(crit_wght_val)
+                            temp_crit_list.push(templist)
+                        
+                        }
+                        // 
+                        mobiletesting=data['allmobiles'];
+                        console.log("allmobile",allmobile)
+                        console.log("alternatives_list",alternatives_list)
+                        console.log("criteria_list",criteria_list)
+                        console.log("mobiletesting",mobiletesting)
+                        // LABEL ASSIGNING TO BAR CHART
+                        for (var i in alternatives_list){
+                            if (alternatives_list[i].length>5){
+                                var k=alternatives_list[i].split(' ');
+                                // change the name of alt_labels_chart to something relate able. IN FUTURE
+                                alt_labels_chart.push(k[k.length-1]);
+                            }
+                        }
 
-                    // LATER ADD THIS BLOCK OF CODE TO A FUNCTION
-                    for (var crit in criteria_list){
-                        crit_wght_name=criteria_weights_dict['criteria_weights'][crit][0];
-                        crit_wght_val=criteria_weights_dict['criteria_weights'][crit][1];
+                        slider_id_val_check_dict=JSON.parse(window.localStorage.getItem("slider_id_val_check_dict"));
+                        console.log("ffffffff",$('#checkdiv_np').is(":visible"))
+                        
+                        pageloadedfrompressingnextorprev=true;
+                        makeTable(allmobile,alternatives_list[nextmob_index]);
+                        pageloadedfrompressingnextorprev=false;
+
+                        //  $('#checkdiv_np').show();
+                        
+                        
                     
-                        templist=[]
-                        templist.push(crit_wght_name)
-                        templist.push(crit_wght_val)
-                        temp_crit_list.push(templist)
-                    
+                    // As it is only one by one. We won't be needing any combinations. 
+                    // allmobile is a dictionary containing data of each mobile,where mobile name is the key. 
+                    // Alternative_list contain only the name of the phones. 
+                    // criteria list contains all the criterias admin has set for the subject. 
+                    // mobile testing is the same as allmobile
+                    // WORKFLOW!!!!
+                    // -Pass the allmobile dictionary to maketable function. Which will populate the data... 
+                    // -Keeping the number of phones in check we will show the next button, which will again
+                    //    populate the next in line phone data to the table. 
+                    // *Here we will check the permission given to the subject if revisiablity is on only then
+                    // we'll show it the option of going back. 
+                    // -Similarly seeing if interactivity check is On we'll populate the charts as well.
+
+
                     }
-                    // 
-                    mobiletesting=data['allmobiles'];
-                    console.log("allmobile",allmobile)
-                    console.log("alternatives_list",alternatives_list)
-                    console.log("criteria_list",criteria_list)
-                    console.log("mobiletesting",mobiletesting)
-                    slider_id_val_check_dict=JSON.parse(window.localStorage.getItem("slider_id_val_check_dict")); 
-
-                    makeTable(allmobile,alternatives_list[nextmob_index]);
-                // As it is only one by one. We won't be needing any combinations. 
-                // allmobile is a dictionary containing data of each mobile,where mobile name is the key. 
-                // Alternative_list contain only the name of the phones. 
-                // criteria list contains all the criterias admin has set for the subject. 
-                // mobile testing is the same as allmobile
-                // WORKFLOW!!!!
-                // -Pass the allmobile dictionary to maketable function. Which will populate the data... 
-                // -Keeping the number of phones in check we will show the next button, which will again
-                //    populate the next in line phone data to the table. 
-                // *Here we will check the permission given to the subject if revisiablity is on only then
-                // we'll show it the option of going back. 
-                // -Similarly seeing if interactivity check is On we'll populate the charts as well.
-
-
-                }
-     });
+                });
+        }
 });
-
 function makeTable(allmobile,mob_name){
+
     var table=document.createElement("TABLE");
     // table.setAttribute('class','table-bordered')
     var thead=document.createElement("THEAD");
@@ -253,49 +310,88 @@ function makeTable(allmobile,mob_name){
                    
                   
                
-                   var slider2 = new rSlider({
+                 slider2 = new rSlider({
                                target: specs[mbs]+'-'+mobilename+'-td'+'__'+specs[mbs]+'-slider',
                                
-                               values: [1,2,3,4,5,6,7,8,9,10],
+                               values: [0,1,2,3,4,5,6,7,8,9,10],
                                widget:false,
-                               labels:[1,2,3,4,5,6,7,8,9,10],
+                               labels:[0,1,2,3,4,5,6,7,8,9,10],
                                
                                labels:true,
                                set:value,
                                tooltip:true,
                                
-                             
                                onChange: function (event) {
+                              
                                    console.log(this.target);
                                    var split_arr=this.target.split('__');
+                                   var breakid=split_arr[0].split("-");
+                                   var mobilename=breakid[1];
                                    var parent_id=document.getElementById(split_arr[0]).parentNode;
-                                   showSliderRangeVal(parent_id,event)
+                                   console.log("mobilename",mobilename);
+                                   console.log("BAR CHArt status",$("#bar_chart").hasClass("chartjs-render-monitor"));
+                                   console.log("pageloadedfrompressingnextorprev",pageloadedfrompressingnextorprev)
+                                   console.log($('#checkdiv_np').is(":visible"))
+                                //    if ($('#checkdiv_np').is(":visible")===true){
+
+                                   if (pageloadedfrompressingnextorprev===false){
+                                            var criteria_name=breakid[0]
+                                            if (alt_crit_logs_dict[mobilename]===undefined){
+                                                    alt_crit_logs_dict[mobilename]={}
+                                            }
+                                                var crit_log_dict=JSON.parse(JSON.stringify(alt_crit_logs_dict[mobilename]));
+                                                if (crit_log_dict[criteria_name]===undefined){
+                                                    crit_log_dict[criteria_name]=[];
+                                                }
+                                                else{
+                                                    crit_log_dict[criteria_name].push([userid,event,new Date($.now())]);
+                                                }
+                                                alt_crit_logs_dict[mobilename]=JSON.parse(JSON.stringify(crit_log_dict));
+                                                console.log("alt_crit_logs_dict",alt_crit_logs_dict)
+                                        }
+
+                                        
+                                   
+
+                                        
+                                        showSliderRangeVal(parent_id,event)
+
+                                    
                                }
-                   });
+                    });
 
             }
         }
            
         if (nextmob_index!==0){
             // if block contains R.O then dont show prev option.
-            $('#prevbtn_div').empty(); 
-            var prevbutton=document.createElement('button');
-            prevbutton.setAttribute("onclick","prevMobile()");
-            prevbutton.setAttribute("class","btn btn-primary");
-            var itag=document.createElement("I")
-            itag.setAttribute("class","fa fa-arrow-circle-left");
-            prevbutton.appendChild(itag);
-            var text = document.createTextNode("Prev ");
-            prevbutton.appendChild(text);
-            $(prevbutton).appendTo('#prevbtn_div');
+            if (Reviseability_On===true){
+                $('#prevbtn_div').empty(); 
+                var prevbutton=document.createElement('button');
+                prevbutton.setAttribute("onclick","prevMobile()");
+                prevbutton.setAttribute("class","btn btn-primary");
+                var itag=document.createElement("I")
+                itag.setAttribute("class","fa fa-arrow-circle-left");
+                prevbutton.appendChild(itag);
+                var text = document.createTextNode("Prev ");
+                prevbutton.appendChild(text);
+                $(prevbutton).appendTo('#prevbtn_div');
+            }
+            else{
+                console.log("Reviseability off")
+            }
+            
         }
         else{
             $('#prevbtn_div').empty(); 
         }
         if (nextmob_index===alternatives_list.length){
             $('#nextbtn_div').empty();
+            show_FinalChart();
+            showchart_criteria();
             var submit_button=document.createElement("BUTTON");
             submit_button.setAttribute("class","btn");
+            submit_button.setAttribute("onclick","submitData()")
             var text = document.createTextNode("Submit");
             submit_button.appendChild(text);
             $(submit_button).appendTo('#nextbtn_div');
@@ -313,8 +409,13 @@ function makeTable(allmobile,mob_name){
             nextbutton.appendChild(itag);
             $(nextbutton).appendTo('#nextbtn_div');
         }
+
 }
+
 function nextMobile(){
+    pageloadedfrompressingnextorprev=true;
+    storenextprevbuttonlogs[new Date($.now())]=['next',userid,alternatives_list[nextmob_index]];
+    console.log("storenextprevbuttonlogs",storenextprevbuttonlogs);
     $("#tablediv").empty();
     console.log("mob_index--1",nextmob_index)
     
@@ -322,10 +423,17 @@ function nextMobile(){
     console.log("mob_index--1--2",nextmob_index)
 
     makeTable(allmobile,alternatives_list[nextmob_index]);
+    pageloadedfrompressingnextorprev=false;
+
     
 
 }
 function prevMobile(){
+    pageloadedfrompressingnextorprev=true
+    storenextprevbuttonlogs[new Date($.now())]=['prev',userid,alternatives_list[nextmob_index]];
+    console.log("storenextprevbuttonlogs",storenextprevbuttonlogs);
+
+
     console.log("mob_index--2",nextmob_index)
 
     $("#tablediv").empty();
@@ -334,6 +442,8 @@ function prevMobile(){
     console.log("mob_index--2--2",nextmob_index)
 
     makeTable(allmobile,alternatives_list[nextmob_index]);
+    pageloadedfrompressingnextorprev=true
+
 }
 slider_id_val_check_dict=null
 function showSliderRangeVal(parent_id,value){
@@ -373,12 +483,12 @@ function showSliderRangeVal(parent_id,value){
     // console.log("temp_crit_list",temp_crit_list)
     CalculateWeightsWithAlts();
     // if I.O in blocks then dont run these functions
-    if (Interactivity_On==true){
+    if (Interactivity_On===true){
         show_FinalChart();
         showchart_criteria();
     }
     else{
-       pass
+        console.log("Interactivity off")
     }
   
           
@@ -399,32 +509,31 @@ function CalculateWeightsWithAlts(){
     for (var mobilename in alternatives_list){
        var mobile_name= alternatives_list[mobilename];
        mobile_bar_sum=0
-       console.log("MOBILE NAME",mobile_name)
-       console.log("mobilename",mobilename)
+      
        for (var crit in temp_crit_list){
             crit_wght_name=temp_crit_list[crit][0];
             crit_wght_val=temp_crit_list[crit][1];
 
             if (parseInt(mobilename)===0){
-                console.log("crit_wght_sum",crit)
+                // console.log("crit_wght_sum",crit)
                 crit_wght_sum=crit_wght_sum+parseInt(crit_wght_val)
                 crit_wght_list.push(parseInt(crit_wght_val))
                 crit_name_list.push(crit_wght_name);
             }
 
-            console.log("crit_wght",crit_wght_name)
-            console.log("crit_wght_val",crit_wght_val)
+            // console.log("crit_wght",crit_wght_name)
+            // console.log("crit_wght_val",crit_wght_val)
             if (slider_id_val_check_dict[mobile_name]!==undefined){
                 foo=slider_id_val_check_dict[mobile_name][crit][0].split('-')
                 outOf=10
 
                 if (foo[0].includes(crit_wght_name)){
-                    console.log("PPP")
+                    // console.log("PPP")
                     crit_slide_val=parseInt(slider_id_val_check_dict[mobile_name][crit][1])
                     bar=parseInt(crit_wght_val)/outOf*crit_slide_val
 
                     mobile_bar_sum=mobile_bar_sum+bar
-                    console.log("bar",bar)
+                    // console.log("bar",bar)
                 }
             }
         
@@ -433,11 +542,10 @@ function CalculateWeightsWithAlts(){
        mobile_crit_sum_dict[alternatives_list[mobilename]]=mobile_bar_sum;
        mobile_crit_sum_list.push(mobile_bar_sum);
     }
-    console.log("WT_TOTAL",crit_wght_sum)
-    console.log("Crit Total",mobile_crit_sum_dict)
-    console.log("crit_wght_list",crit_wght_list)
-    console.log("mobile_crit_sum_list",mobile_crit_sum_list)
-
+    // console.log("WT_TOTAL",crit_wght_sum)
+    // console.log("Crit Total",mobile_crit_sum_dict)
+    // console.log("crit_wght_list",crit_wght_list)
+    // console.log("mobile_crit_sum_list",mobile_crit_sum_list)
 
 }
 var final_backg_col=[];
@@ -448,7 +556,8 @@ function show_FinalChart(){
     var dataset=[];
     var dataset_dic={};
     //  Have to Make it dynamic in Future. 
-    var labels=["MOB A","MOB B","MOB C"];
+    // var labels=["MOB A","MOB B","MOB C"];
+    var labels=alt_labels_chart;
     var label='Final Score';
     var data_percentage=[];
     for (var t in mobile_crit_sum_list){
@@ -512,6 +621,30 @@ function show_FinalChart(){
                 fontFamily:'sans-serif', 
                 padding:5,
                 boxWidth:20
+            }
+        },
+        // onHover: function(evt) {
+        //     console.log(evt)
+        // },
+        tooltips: {
+            callbacks: {
+                labelColor: function(tooltipItem, chart) {
+                    return {
+                        borderColor: 'rgb(255, 0, 0)',
+                        backgroundColor: 'rgb(255, 0, 0)'
+                    };
+                },
+                labelTextColor: function(tooltipItem, chart) {
+                    console.log("tooltipItem ",tooltipItem);
+
+                    var ylabel=tooltipItem.yLabel
+                    var xlabel=tooltipItem.xLabel
+                    storehoveronbarlog[new Date($.now())]=[userid,xlabel,ylabel]
+                    console.log("storehoveronbarlog",storehoveronbarlog)
+                    return '#ff0000';
+                }
+ 
+
             }
         }
     }
@@ -592,8 +725,11 @@ function showchart_criteria(){
         //     }]
         // },
         legend: {
-            display: true,
+            // display: true,
             position:'left',
+            // now user cant click on labels...
+            onClick: (e) => e.stopPropagation(),
+
             labels: {
                 fontColor: 'rgb(255, 99, 132)',
                 fontSize:16,
@@ -603,13 +739,61 @@ function showchart_criteria(){
                 
                 
             }
+        },
+        tooltips: {
+            callbacks: {
+               
+                label: function(tooltipItem, data) { 
+            var indice = tooltipItem.index;   
+            console.log(" data.labels[indice]", data.labels[indice])  
+            var label=data.labels[indice]; 
+            var value=data.datasets[0].data[indice];
+            console.log("data.datasets[0].data[indice]",data.datasets[0].data[indice])
+
+            storehoveronpielog[new Date($.now())]=[userid,label,value]
+            console.log("storehoveronpielog",storehoveronpielog)
+            return  data.labels[indice] +': '+data.datasets[0].data[indice] + '';
+
         }
-        
+
+                }
+            
+        },
     }
 });
 
 
 }
+
+
+
+function submitData(){
+ console.log("storehoveronbarlog",storehoveronbarlog);
+ console.log("storehoveronpielog",storehoveronpielog);
+ console.log("alt_crit_logs_dict",alt_crit_logs_dict);
+ console.log("storenextprevbuttonlogs",storenextprevbuttonlogs);
+ console.log("criteria_weights_dict",criteria_weights_dict);
+ $.ajax({
+                type: 'POST',
+                dataType: "json",
+                'data': {
+                    "storehoveronbarlog":JSON.stringify(storehoveronbarlog),
+                    "storehoveronpielog":JSON.stringify(storehoveronpielog),
+                    "alt_crit_logs_dict":JSON.stringify(alt_crit_logs_dict),
+                    "storenextprevbuttonlogs":JSON.stringify(storenextprevbuttonlogs),
+
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                },
+                url: "{% url 'submit_data' %}",
+                success: function(data){
+                    console.log("SUCCESS")
+                }
+        });
+
+
+
+}
+
 </script>
 
 

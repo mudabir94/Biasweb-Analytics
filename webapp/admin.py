@@ -11,7 +11,7 @@ from .models import samsung_phone,sort_feature,userscoreRecord,Role,platform_fea
 from .models import selectedAdminPhones,PhoneCriteria,exStatusCd,exp_fdefaults
 from .models import Subject,experiment_feature,Batch,Block,ExpCriteriaOrder,criteria_catalog_disp
 
-
+from .models import StoreHoverBarChartLogs,StoreHoverPieChartLogs,StoreNextPrevButtonLogs,StoreCritWeightLogs
 class MyUserChangeForm(UserChangeForm):
     class Meta(UserChangeForm.Meta):
         model = User
@@ -40,12 +40,18 @@ class PhoneCriteriaResource(resources.ModelResource):
     class meta:
         model=PhoneCriteria
 
+
+
 class PhoneCriteriaAdmin(ImportExportActionModelAdmin):
     list_display=('id','criteria_name','status','priority','position')
 
 class ExperimentAdmin(admin.ModelAdmin):
     list_display= ('id','custom_exp_id','status','status_code','batches_title',"desc")
 
+
+class SubjectAdmin(admin.ModelAdmin):
+    
+    list_display=("user","exp","block")
 class experiment_featureAdmin(admin.ModelAdmin):
     list_display= ('id','used_in','p_feature','chosen_levels',"default_levels")
 
@@ -129,7 +135,14 @@ class mobilephonesAdmin(ImportExportActionModelAdmin):
 class criteria_catalog_disp_Admin(admin.ModelAdmin):
     list_display=('id','catalog_crit_display_order')  
       
-
+class StoreHoverBarChartLogsAdmin(admin.ModelAdmin):
+    list_display=("id","user","value","phone_name","time")
+class StoreHoverPieChartLogsAdmin(admin.ModelAdmin):
+    list_display=("id","user","value","criteria_name","time")
+class StoreNextPrevButtonLogsAdmin(admin.ModelAdmin):
+    list_display=("id","user","button_name","phone_name","time")
+class StoreCritWeightLogsAdmin(admin.ModelAdmin):
+    list_display=("id","user","value","criteria_name","time")
 
 admin.site.register(User, MyUserAdmin)
 admin.site.register(ExpCriteriaOrder, ExpCriteriaOrderAdmin)
@@ -146,8 +159,8 @@ admin.site.register(userscoreRecord)
 admin.site.register(signup_table)
 admin.site.register(blog)
 
-MobilePhones_Test
-admin.site.register(Subject)
+
+admin.site.register(Subject,SubjectAdmin)
 admin.site.register(Batch)
 admin.site.register(Block)
 admin.site.register(experiment,ExperimentAdmin)
@@ -159,3 +172,8 @@ admin.site.register(exStatusCd,exStatusCdAdmin)
 admin.site.register(experiment_feature,experiment_featureAdmin)
 
 admin.site.register(criteria_catalog_disp, criteria_catalog_disp_Admin)
+
+admin.site.register(StoreHoverBarChartLogs, StoreHoverBarChartLogsAdmin)
+admin.site.register(StoreHoverPieChartLogs, StoreHoverPieChartLogsAdmin)
+admin.site.register(StoreNextPrevButtonLogs, StoreNextPrevButtonLogsAdmin)
+admin.site.register(StoreCritWeightLogs, StoreCritWeightLogsAdmin)

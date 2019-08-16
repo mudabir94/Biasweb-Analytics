@@ -2,14 +2,17 @@
 
 <h5>Active Experiments.. </h5>
 <ul>
-{%for obj in explist%}
-    <li id="{{obj.id}}-li" value="{{obj.id}}" onclick="activate_li_exp($(this))" class="">
+{%for obj in explist%} 
+<!-- <li id="{{obj.id}}-li" value="{{obj.id}}" onclick="activate_li_exp($(this))" class=""> -->
+
+    <li id="{{obj.id}}-li" value="{{obj.id}}" class="active_li">
         {{obj.id}}
     </li>
-{%endfor%}
+ {%endfor%}
 </ul>
 
 <script>
+    
 function activate_li_exp(element){
     $(".active_li").removeClass("active_li");
 

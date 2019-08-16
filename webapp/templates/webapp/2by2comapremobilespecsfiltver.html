@@ -46,6 +46,7 @@
        <link rel="stylesheet" href="{% static 'webapp/css/rslider/rSlider.min.css' %}">
      <!-- chart js -->
      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+
 </head>    
 <body>
         <nav class="navbar navbar-dark bg-dark">
@@ -90,7 +91,7 @@
                         </div>
                        <div class='col-md-5'>
                             <!-- <div id="chartContainer" style="height: 300px; width: 100%;"></div> -->
-                            <div class='row'>
+                            <div class='row' id="barchart_rowdiv">
                                 <div class='col-md-12'>
                                     <canvas id="bar_chart" width="400"height="200" style="background:white"></canvas>
                                 </div>
@@ -101,15 +102,15 @@
                                     <!-- <button onclick="ToggleCriteriaChart()" >Show Weights</button> -->
                                 </div>
                             </div>
-                                <div class='row'>
+                                <div class='row' id="barchart_criteria_rowdiv">
                                     <div class='col-md-12'>
                                         <canvas id="bar_chart_criteria" width="400"height="200" style="background:rgba(158, 193, 248, 0.431)"></canvas>
                                     </div>
                                    <!--Creates the popup body-->
                                 </div>
-                                <div class='row'>
+                                <div class='row revisable_div' id="show_weights_row_div">
                                     <div class="col-md-12">
-                                    <button onclick="showCritTable(this)" 
+                                    <button onclick="showCritTable()" 
                                         style="border: transparent;color: white;background: brown;">
                                         Show Weights
                                     </button>
@@ -159,6 +160,10 @@
    var flag=true;
    var alt_labels_chart=[];
    var crit_labels=[];
+   var interactivity_data=""
+   var reviseability_data=""
+   var Interactivity_On=true
+   var Reviseability_On=true
 
    // temparay lsit
     var checkheader=[];
@@ -171,7 +176,7 @@
 
 
 $(document).ready(function(){
-   
+
     // FOR TETSTING COPYING IN SUCCESS METHOD ----------------------.->>>
     // for (var i in alternatives_list){
     //     if (alternatives_list[i].length>5){
@@ -219,6 +224,26 @@ $(document).ready(function(){
         // the ajax call is sent to subdetails url name in the post function.  
                 url: "{% url 'comparemobilespecsfilt_ver' %}",
                 success: function(data){
+                    interactivity_data=data['interactivity'];
+                    reviseability_data=data['reviseability'];
+                    console.log("interactivity_data",interactivity_data)
+                    console.log("reviseability_data",reviseability_data)
+                    if (interactivity_data=="I.0"){
+                            Interactivity_On=false
+                        }
+                        else if (interactivity_data=="I.1"){
+
+                            Interactivity_On=true
+                        }   
+                    
+                        alert(interactivity_data)
+                        if (reviseability_data=="R.0"){
+                            Reviseability_On=false
+                        }
+                        else if (reviseability_data=="R.1"){
+
+                            Reviseability_On=true
+                        }   
                     // check num of mobiles. 
                     if (data['numofmobiles']===2){
                        allmobile=data['allmobiles'] 
@@ -250,8 +275,15 @@ $(document).ready(function(){
                             
                             for (var ct in criteria_list){
                                 init_weigts.push(0.333);
-                                crit_labels.push(criteria_list[ct][0]+criteria_list[ct][1])
+                                // crit_labels.push(criteria_list[ct][0]+criteria_list[ct][1])
+                                if (criteria_list[ct]==="imagepath1"){
+                                    crit_labels.push("Look and Feel")
+                                }
+                                else{
+                                crit_labels.push(criteria_list[ct])
+                                }
                             }
+                            console.log("crit_labels",crit_labels)
                             test_result_vecs['criteria']=init_weigts
                             let alt_mat= ahpArrayHelper._setUpSquareArray(alternatives_list.length);
                         
@@ -270,12 +302,20 @@ $(document).ready(function(){
                                 flag=false;
                             }
                          }
+                        console.log("all_rank_matrix_dict",all_rank_matrix_dict)
                         crit_combs=k_combinations(criteria_list, 2);
                      // combination pairs for the comparison of alternatives. 
                         alt_combs=k_combinations(alternatives_list, 2);
                         mobiletesting=data['allmobiles'];     
                         processMobileData(dict_lst_comb_keynum);
-                        showchart_criteria();
+                        if (Interactivity_On===true){
+                            showchart_final();
+                            showchart_criteria();
+                        }
+                        else{
+                        console.log("Interactivity off")
+                        }                       
+                    showCritTable();
                     }
                     // right now code only works for 3 mobiles not 2
                     // allmobile=data
@@ -343,14 +383,19 @@ function ahptesting(){
     }
     var finalresult_list=[]
     finalresult_list=product_list_main[0]
+  
+
     for (var w=0;w<product_list_main.length;w++){
         if(product_list_main[w+1]!=undefined){
             finalresult_list = product_list_main[w+1].map((a, i) => a +finalresult_list[i]);
+           
         }
     }
+
     final_result_dict['final']=finalresult_list;
     final_result_dict['criteria']=test_result_vecs['criteria'];
-    
+   
+
 }
 function myrecord(pair,score,criteria){
     let rankmat=    all_rank_matrix_dict[criteria];
@@ -464,40 +509,55 @@ function nextMobilePair(currentKeycombination){
 
         // console.log("prev_compared_mobiles_list_NEXT ",prev_compared_mobiles_list)
         // key num increment
-        var keynum=currentKeycombination+1;
+        var nextkeynum=currentKeycombination+1;
 
         // // dict_contains_listofCombiations will be accessed 
-        // var comb_list_check=dict_contains_listofCombiations[keynum]
+        var comb_list_check=dict_contains_listofCombiations[nextkeynum]
         // // if value would contain null then there would be nothing to compare and no table will be generated
-        // console.log('comb_list_check',comb_list_check)
-        // if (comb_list_check==undefined){
-        //     $('#nextbtn_div').empty();
-        //     console.log("dont process the data")
-        // }
-        // else {
+        console.log('comb_list_check',comb_list_check)
+       
       
       
-            var input_class=document.getElementsByClassName('slider')
-            var temp_slider_id_val_check_list=[];
-            var temp_final_list=[];
-            for (var i=0;i<input_class.length;i++){
-                
-                 temp_slider_id_val_check_list.push(input_class[i].id) 
-                 temp_slider_id_val_check_list.push(input_class[i].value)  
-                 temp_final_list.push(temp_slider_id_val_check_list);
-              
-                 temp_slider_id_val_check_list=[];
-            }
-            if (slider_id_val_check_dict==null){
-                slider_id_val_check_dict={};
-            }
-            slider_id_val_check_dict[dict_contains_listofCombiations[keynum-1]]=temp_final_list;
-            temp_final_list=[]
-            prev_compared_mobiles_list.push(currentKeycombination);
-            $('#tablediv').empty();
+        var input_class=document.getElementsByClassName('slider')
+        var temp_slider_id_val_check_list=[];
+        var temp_final_list=[];
+        for (var i=0;i<input_class.length;i++){
+            
+                temp_slider_id_val_check_list.push(input_class[i].id) 
+                temp_slider_id_val_check_list.push(input_class[i].value)  
+                temp_final_list.push(temp_slider_id_val_check_list);
+            
+                temp_slider_id_val_check_list=[];
+        }
+        if (slider_id_val_check_dict==null){
+            slider_id_val_check_dict={};
+        }
+        if (slider_id_val_check_dict[dict_contains_listofCombiations[currentKeycombination]]===undefined){
+            
+            slider_id_val_check_dict[dict_contains_listofCombiations[currentKeycombination]]=temp_final_list;
+
+        }
+        console.log("slider_id_val_check_dict--NextFunc",slider_id_val_check_dict)
+        temp_final_list=[]
+        prev_compared_mobiles_list.push(currentKeycombination);
+        $('#tablediv').empty();
+        
+
+
+        if (comb_list_check==undefined){
+            $('#nextbtn_div').empty();
+            $("#barchart_rowdiv").show();
+              $("#barchart_criteria_rowdiv").show();
+            showchart_final();
+            showchart_criteria();
+            console.log("dont process the data")
+            
+
+        }else{
             $('#prevbtn_div').empty();
-            processMobileData(keynum);
-            // work under construction
+            processMobileData(nextkeynum);
+        }
+        // work under construction
                                                             // if (currentKeycombination===0 && prev_compared_mobiles_list.length!==0){
                                                             //     prev_compared_mobiles_list.unshift(currentKeycombination);
                                                             //     console.log("prev_compared_mobiles_list----",prev_compared_mobiles_list)
@@ -539,8 +599,7 @@ function nextMobilePair(currentKeycombination){
 
                         // processMobileData(keynum);
            
-        // }
-
+        
 }
 function previousMobilePair(currentKeycombination){
 
@@ -550,8 +609,8 @@ function previousMobilePair(currentKeycombination){
                 if ($('#prevbtn_div').empty()===true){
                     $('#prevbtn_div').empty();
                 }
-                if ($('#nextbtn_div').children().text()==='Submit'){
-                    // alert("Coming in it ")
+                if ($('#nextbtn_div').children().text()==='Proceed-Submit'){
+                    $('.revisable_div').hide();
                     keynum=currentKeycombination;
                     // get current sliders 
                         var input_class=document.getElementsByClassName('slider');
@@ -567,7 +626,10 @@ function previousMobilePair(currentKeycombination){
                     if (slider_id_val_check_dict==null){
                         slider_id_val_check_dict={};
                     }
+                    if (slider_id_val_check_dict[dict_contains_listofCombiations[keynum]]===undefined){
                     slider_id_val_check_dict[dict_contains_listofCombiations[keynum]]=temp_final_list;
+                    }
+                    console.log("slider_id_val_check_dict--PreivousFunc",slider_id_val_check_dict)
                     temp_final_list=[]
                 }
                 // work under construction
@@ -656,7 +718,7 @@ function makeTable(allmobile,keynum){
                 var td=document.createElement('TD');
                 td.setAttribute("align","center")
                 tr.appendChild(td);
-                td.append('Models');
+                td.append('Look and Feel');
                 var td=document.createElement('TD');
                 td.setAttribute("align","center")
                 tr.appendChild(td);
@@ -824,13 +886,19 @@ function makeTable(allmobile,keynum){
     }
 
     // Check for next button generation @TODO:
+    console.log("dict_contains_listofCombiations",dict_contains_listofCombiations)
+    console.log("keyNum",keynum)
+    console.log("dict_contains_listofCombiations[keynum+1]",dict_contains_listofCombiations[keynum+1])
+
          //check if combination dict_contains_listofCombiations[key+1]  undefined for next then don't generate next button.  
     var comb_list_check_maketable=dict_contains_listofCombiations[keynum+1]
     if (comb_list_check_maketable==undefined){
         $('#nextbtn_div').empty();
         var submit_button=document.createElement("BUTTON");
         submit_button.setAttribute("class","btn btn-success");
-        var text = document.createTextNode("Submit");
+        submit_button.setAttribute("onclick","nextMobilePair("+keynum+")");
+
+        var text = document.createTextNode("Proceed-Submit");
         submit_button.appendChild(text);
         $(submit_button).appendTo('#nextbtn_div');
 
@@ -855,16 +923,22 @@ function makeTable(allmobile,keynum){
         $('#prevbtn_div').empty(); 
     }
     else{
-        var prevbutton=document.createElement('button');
-        prevbutton.setAttribute("onclick","previousMobilePair("+keynum+")");
-        prevbutton.setAttribute("class","btn btn-primary");
-        var itag=document.createElement("I")
-        itag.setAttribute("class","fa fa-arrow-circle-left");
-        prevbutton.appendChild(itag);
-        var text = document.createTextNode("Prev ");
-        prevbutton.appendChild(text);
+        if (Reviseability_On===true){
+            var prevbutton=document.createElement('button');
+            prevbutton.setAttribute("onclick","previousMobilePair("+keynum+")");
+            prevbutton.setAttribute("class","btn btn-primary");
+            var itag=document.createElement("I")
+            itag.setAttribute("class","fa fa-arrow-circle-left");
+            prevbutton.appendChild(itag);
+            var text = document.createTextNode("Prev ");
+            prevbutton.appendChild(text);
+        
+            $(prevbutton).appendTo('#prevbtn_div');             
+        }
+        else{
+        console.log("Reviseability_ off")
+        }        
        
-        $(prevbutton).appendTo('#prevbtn_div');
     }
 }
 
@@ -932,9 +1006,19 @@ function showSliderRangeVal(parent_id,value){
     }
     document.getElementById(criteria+'span').innerHTML=val;
     // console.log("final_result_dict",final_result_dict)
-    console.log("slider_id_val_check_dict",slider_id_val_check_dict)
-    showchart_final();
-    // showchart_criteria();
+    // console.log("slider_id_val_check_dict",slider_id_val_check_dict)
+    $("#barchart_rowdiv").hide();
+    $("#barchart_criteria_rowdiv").hide();
+    if (Interactivity_On===true){
+        $("#barchart_rowdiv").show();
+        $("#barchart_criteria_rowdiv").show();
+        showchart_final();
+        showchart_criteria();
+    }
+    else{
+        console.log("Interactivity off")
+    }
+    
    
 }
 var myChart;
@@ -951,12 +1035,12 @@ function showchart_final(){
     var data_per=[];
     for (var t in final_result_dict['final']){
        
-        data_per.push( 100* final_result_dict['final'][t])
+        data_per.push( 100*  final_result_dict['final'][t])
     }
     var data=data_per;
-    console.log("DATA",data)
-    console.log("Criteria list",criteria_list)
-    console.log("criteria_list.length",criteria_list.length)
+    // console.log("DATA",data)
+    // console.log("Criteria list",criteria_list)
+    // console.log("criteria_list.length",criteria_list.length)
     // change color. 
     if (final_backg_col.length===0 && final_bor_col.length===0){
         var red = Math.floor(Math.random() * 255);
@@ -1012,6 +1096,8 @@ function showchart_final(){
             }]
         },
         legend: {
+            onClick: (e) => e.stopPropagation(),
+
             display: true,
             labels: {
                 fontColor: 'rgb(255, 99, 132)',
@@ -1097,11 +1183,11 @@ function showchart_criteria(){
     // convert labels into dynamic list. 
     // get first ele of crit from criteria list. 
 
-     main_data['labels']=['Model','Price',"Resolution","Others"]
+    //  main_data['labels']=['Model','Price',"Resolution","Others"]
     //  'Back_Camera',"Resolution",
     //  "battery","price_in_usd",'Others',
     //  "rating","Weight","Gpu","Dimensions","Cpu"];
-    // main_data['labels']=crit_labels
+    main_data['labels']=crit_labels
     main_data['datasets']=dataset;
     
     if(myChart_crit)
@@ -1126,6 +1212,8 @@ function showchart_criteria(){
         //     }]
         // },
         legend: {
+            onClick: (e) => e.stopPropagation(),
+
             display: true,
             position:'left',
             labels: {
@@ -1146,7 +1234,7 @@ function ToggleCriteriaChart(){
     $("#bar_chart_criteria").toggle();
 }
 var crit_val_check_dict={};
-function showCritTable(element){
+function showCritTable(){
 
 $('#crittable_div').empty();
 $('#crittable_div').dialog({ 
@@ -1277,9 +1365,11 @@ var slider = new rSlider({
                         var calcResults = ahpCalc.calculateResults(all_rank_matrix_dict['criteria']);
                         test_result_vecs['criteria']=calcResults.resultColumn;
                         final_result_dict['criteria']=test_result_vecs['criteria'];
+                        
                         ahptesting();
-                        showchart_criteria();
-                        showchart_final();
+
+                        // showchart_criteria();
+                        // showchart_final();
 
                     }
         });
@@ -1290,6 +1380,31 @@ var slider = new rSlider({
  
 
 }
+
+function Proceed(){
+    $('#tablediv').empty();
+    // $('#prevbtn_div').empty();
+    $("#nextbtn_div").empty();
+    if ($('#nextbtn_div').text()===''){
+                    // alert("Coming in it ")
+        var submit_button=document.createElement("BUTTON");
+        submit_button.setAttribute("class","btn btn-success");
+        submit_button.setAttribute("onclick","Submit()");
+
+        var text = document.createTextNode("Submit");
+        submit_button.appendChild(text);
+        $(submit_button).appendTo('#nextbtn_div');
+                    
+    }
+    if (Interactivity_On===true){
+        showchart_final();
+        showchart_criteria();
+    }
+    else{
+        console.log("Interactivity off")
+    }
+}
+
 
 </script>
 

@@ -55,17 +55,13 @@ from .models import (
                     ExpCriteriaOrder,
                     PhoneCriteria,
                     experiment_feature,
-                    StoreHoverBarChartLogs,
-                    StoreHoverPieChartLogs,
-                    StoreNextPrevButtonLogs,
-                    StoreCritWeightLogs,
                     )
 
 
 from .models import selectedAdminPhones,criteria_catalog_disp,exStatusCd
 from django.views.decorators.cache import never_cache
 
-import datetime
+
 
 #--------------------------------------------------------------------------------------------------
 role=1   #global variable used in adminsetup and globalFunc function. 
@@ -78,8 +74,7 @@ filt_mobiles=None
 exp_under_test=0
 def_featlvl_frm_pf_dict={}
 exp_feat_levels=[]
-storeuserpagelogs={}
-critw_logs_dict={}
+
 
 #-------------------------------------------------------------------------------------------------
 
@@ -89,9 +84,6 @@ critw_logs_dict={}
 class Home(TemplateView):
     template_name='webapp/home.html'
     def get(self,request):
-        global storeuserpagelogs
-        storeuserpagelogs={}
-        print("storeuserpagelogs---",storeuserpagelogs)
         #userobj= User.objects.values_list('role_id_id',flat=True).filter(id=request.user.id)
         
         #**************************************************
@@ -447,75 +439,71 @@ def criteriaWeights(request):
     global crit_list
     global criteria_weights_dict
     global exp_feat_levels
-    global exp_under_test
-    global critw_logs_dict
+
     # No check if block is CDM (C.Full and C.Prune... )
 
     template_name='webapp/criteriaweights.html'
    
     if request.method=="GET":
-        print("storeuserpagelogs",storeuserpagelogs)
+        # if request.is_ajax():
+        #     # 
+        #     # print("AJAX CRITERIA WIETGTHS")
+        #     # userobj=User.objects.get(pk=request.user.id)
+        #     # print("exp_under_test",exp_under_test)
+        #     # exp_obj=exp.objects.get(id=exp_under_test)
+        #     # Sub_obj=Subject.objects.get(user=userobj,exp=exp_obj)
+        #     # print("blocks",Sub_obj.block.levels_set)
+        #     # global exp_feat_levels
+        #     # print("exp_feat_levels",exp_feat_levels)
+        #     # # res1 = [idx for idx in Sub_obj.block.levels_set if idx.startswith("A.")] 
+        #     # res1 = [idx for idx in exp_feat_levels if idx.startswith("A.")] 
+        #     # print("res",res1)
 
-        if "criteriaweights" in storeuserpagelogs:
-            print("storeuserpagelogs",storeuserpagelogs)
-            print("exp_feat_levels",exp_feat_levels)
-            adm = [idx for idx in exp_feat_levels if idx.startswith("A.")] 
-            print("adm",adm)
+        #     # data={
+        #     #     "ADM":res1,
+        #     #     # "ADM":res1[0],
+        #     #     # "criteria_weights_dict":criteria_weights_dict,
+        #     #     }
+        #     return JsonResponse(data)
+        # else:
+        print("NOT AJAX CRITERIA WIETNGTS")
+        # get the criterias set by admin for the exp... 
+        # check if c.full or c.prune in res1
+        
+        res = [idx for idx in exp_feat_levels if idx.startswith("C.")] 
+        res=res[0].lower()
+        exp_obj=exp.objects.get(id=exp_under_test)
+        ExpCriteria_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1,cOrder_id=res)
+        print("ExpCriteria_obj",ExpCriteria_obj)
+        crit_list_obj=ExpCriteria_obj.values_list('pCriteria__criteria_name',flat=True)
+        print("crit_list_obj",crit_list_obj)
+        crit_list=[]
+        crit_list=list(crit_list_obj)
+        crit_list.insert(0,"imagepath1")
+        crit_list.append("Others")
+        userobj=User.objects.get(pk=request.user.id)
+        print("exp_under_test",exp_under_test)
+        exp_obj=exp.objects.get(id=exp_under_test)
+        Sub_obj=Subject.objects.get(user=userobj,exp=exp_obj)
+        print("blocks",Sub_obj.block.levels_set)
+        print("exp_feat_levels",exp_feat_levels)
+        # res1 = [idx for idx in Sub_obj.block.levels_set if idx.startswith("A.")] 
+        res1 = [idx for idx in exp_feat_levels if idx.startswith("A.")] 
+        print("res",res1)
 
-            data={
-                "ADM":adm[0],
-                "pagevisited":"True",
-                'userid':request.user.id,
-                }
-            return render(request,template_name,data)
-        else:
-            storeuserpagelogs["criteriaweights"]=[datetime.datetime.now(),exp_under_test,request.user.id]
-
-            print("NOT AJAX CRITERIA WIETNGTS")
-            # get the criterias set by admin for the exp... 
-            # check if c.full or c.prune in res1
-            print("exp_feat_levels",exp_feat_levels)
+        data={
+            'crit_list':crit_list,
+            "ADM":res1[0],
+            'userid':request.user.id
             
-            res = [idx for idx in exp_feat_levels if idx.startswith("C.")] 
-            res=res[0].lower()
-            exp_obj=exp.objects.get(id=exp_under_test)
-            ExpCriteria_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1,cOrder_id=res)
-            print("ExpCriteria_obj",ExpCriteria_obj)
-            crit_list_obj=ExpCriteria_obj.values_list('pCriteria__criteria_name',flat=True)
-            print("crit_list_obj",crit_list_obj)
-            crit_list=[]
-            crit_list=list(crit_list_obj)
-            crit_list.insert(0,"imagepath1")
-            crit_list.append("Others")
-            userobj=User.objects.get(pk=request.user.id)
-            print("exp_under_test",exp_under_test)
-            exp_obj=exp.objects.get(id=exp_under_test)
-            Sub_obj=Subject.objects.get(user=userobj,exp=exp_obj)
-            print("blocks",Sub_obj.block.levels_set)
-            print("exp_feat_levels",exp_feat_levels)
-            # res1 = [idx for idx in Sub_obj.block.levels_set if idx.startswith("A.")] 
-            adm = [idx for idx in exp_feat_levels if idx.startswith("A.")] 
-            print("adm",adm)
-
-            data={
-                'crit_list':crit_list,
-                "ADM":adm[0],
-                'userid':request.user.id,
-                "pagevisited":"False",
-
-                
-            }
-            return render(request,template_name,data)
+        }
+        return render(request,template_name,data)
     elif request.method=="POST":
         if request.is_ajax:
             critlist_val_dict = request.POST.get('critlist_val_dict')
             critlist_val_dict = json.loads(critlist_val_dict)
-            critw_logs_dict = request.POST.get('critw_logs_dict')
-            critw_logs_dict = json.loads(critw_logs_dict)
-            
             print("critlist_val_dict",critlist_val_dict)
             criteria_weights_dict=critlist_val_dict
-            print("criteria_weights_dict",criteria_weights_dict)
             data={}
             return JsonResponse(data) 
 
@@ -526,14 +514,12 @@ def compareMobileOneByOneDirect(request):
     global comp_mobiles
     global catalogcrit_show_list
     global criteria_weights_dict
-    global exp_under_test
 
 
     if request.method=="GET":
             
 
         if request.is_ajax():
-
             userobj=User.objects.get(pk=request.user.id)
             exp_obj=exp.objects.get(id=exp_under_test)
             Sub_obj=Subject.objects.get(user=userobj,exp=exp_obj)
@@ -544,8 +530,7 @@ def compareMobileOneByOneDirect(request):
             
             reviseability = [idx for idx in exp_feat_levels if idx.startswith("R.")] 
             print("res -- R",reviseability[0])
-            storeuserpagelogs["comparemobile1by1direct"]=[datetime.datetime.now(),exp_under_test,request.user.id]
-
+         
             data={
                 'userid':request.user.id,
                 "interactivity_data":interactivity[0],
@@ -3146,7 +3131,6 @@ def getSpecificMobileData(request):
             {  'mobilephones':specmob_dic}
             )
 catalogcrit_show_list=[]
-
 def getMobiledata(request):
     if request.is_ajax():
         if request.method=="GET":
@@ -3180,8 +3164,6 @@ def getMobiledata(request):
                 exp_obj=exp.objects.get(id=exp_under_test)
                 Sub_obj=Subject.objects.get(user=userobj,exp=exp_obj)
                 print("blocks",Sub_obj.block.levels_set)
-                datetime.datetime.now()
-                storeuserpagelogs["mobile"]=[datetime.datetime.now(),exp_under_test,request.user.id]
                 # res = [idx for idx in Sub_obj.block.levels_set if idx.startswith("P.")]
                 # print("res",res)
                 # if res:
@@ -3501,80 +3483,5 @@ def deleteSelectedAdminPhones(request):
             print("*******************************************************")
             exp_obj=exp.objects.get(id=exp_id)
             selectedAdminPhones.objects.get(exp=exp_obj).delete()
-            data={}
-            return JsonResponse(data)
 
-
-def submitData(request):
-    global critw_logs_dict
-    if request.method=="POST":
-        if request.is_ajax:
-            storehoveronbarlog= request.POST.get('storehoveronbarlog')
-            storehoveronbarlog=json.loads(storehoveronbarlog)
-
-
-            storehoveronpielog= request.POST.get('storehoveronpielog')
-            storehoveronpielog=json.loads(storehoveronpielog)
-
-            alt_crit_logs_dict= request.POST.get('alt_crit_logs_dict')
-            alt_crit_logs_dict=json.loads(alt_crit_logs_dict)
-
-            storenextprevbuttonlogs=request.POST.get('storenextprevbuttonlogs')
-            storenextprevbuttonlogs=json.loads(storenextprevbuttonlogs)
-            # print("storehoveronbarlog",storehoveronbarlog)
-            # print("storehoveronpielog",storehoveronpielog)
-            # print("alt_crit_logs_dict",alt_crit_logs_dict)
-            # print("storenextprevbuttonlogs",storenextprevbuttonlogs)
-
-
-           
-            for key in storehoveronbarlog:
-                print("key",key)
-                print("storehoveronpielog[key][0]",storehoveronbarlog[key][0])
-                print("storehoveronpielog[key][1]",storehoveronbarlog[key][1])
-                print("storehoveronpielog[key][2]",storehoveronbarlog[key][2])
-
-                # userid=storehoveronbarlog[key][0]
-                shbcl_obj=StoreHoverBarChartLogs()
-                shbcl_obj.value=storehoveronbarlog[key][1]
-                shbcl_obj.user=User.objects.get(id=request.user.id)
-                shbcl_obj.phone_name=storehoveronbarlog[key][2]
-                shbcl_obj.time=key
-                shbcl_obj.save()
-            for key in storehoveronpielog:
-                print("key",key)
-                print("storehoveronpielog[key][0]",storehoveronpielog[key][0])
-                print("storehoveronpielog[key][1]",storehoveronpielog[key][1])
-                print("storehoveronpielog[key][2]",storehoveronpielog[key][2])
-
-                # userid=storehoveronbarlog[key][0]
-                shpcl_obj=StoreHoverPieChartLogs()
-                shpcl_obj.value=storehoveronpielog[key][2]
-                shpcl_obj.user=User.objects.get(id=request.user.id)
-                shpcl_obj.criteria_name=storehoveronpielog[key][1]
-                shpcl_obj.time=key
-                shpcl_obj.save()
-            for key in storenextprevbuttonlogs:
-                print("key",key)
-                print("storenextprevbuttonlogs[key][0]",storenextprevbuttonlogs[key][0])
-                print("storenextprevbuttonlogs[key][1]",storenextprevbuttonlogs[key][1])
-                print("storenextprevbuttonlogs[key][2]",storenextprevbuttonlogs[key][2])
-
-                # userid=storehoveronbarlog[key][0]
-                snpbcl_obj=StoreNextPrevButtonLogs()
-                snpbcl_obj.button_name=storenextprevbuttonlogs[key][0]
-                snpbcl_obj.user=User.objects.get(id=request.user.id)
-                snpbcl_obj.phone_name=storenextprevbuttonlogs[key][2]
-                snpbcl_obj.time=key
-                snpbcl_obj.save()
-            print("critw_logs_dict",critw_logs_dict)
-            # for key in critw_logs_dict:
-            #     scwl_obj=StoreCritWeightLogs()
-            #     scwl_obj.value=critw_logs_dict[key][1]
-            #     scwl_obj.user=User.objects.get(id=request.user.id)
-            #     scwl_obj.criteria_name=key
-            #     scwl_obj.time=critw_logs_dict[key][2]
-            #     scwl_obj.save()
-            data={}
-            return JsonResponse(data)
 
