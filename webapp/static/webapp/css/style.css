@@ -171,7 +171,7 @@ button.social-signin.google {
  }
  .margin-b-20 >img
  {
-   width: 125px;
+   width: 100px;
    height: 150px;
    display: block;
    margin: 0 auto;
@@ -184,16 +184,7 @@ button.social-signin.google {
 {
   margin-top: 10px;
 }
-.custom_nav_btn{
-  width:100%;
-  background:lightskyblue;
-  border: none;
-  box-shadow: 0 0 0.5px 0.5px  lightskyblue;
-}
-.active{
-  background:white;
-  box-shadow: 0 0 0.5px 0.5px #ea0000;
-}
+
 .barbutton{
   
   width:100%;
@@ -203,4 +194,22 @@ button.social-signin.google {
     width: 16px;
     height: 16px;
     background: red
+}
+.custom_side_rows {
+  background-color: #5276ff; /* Green background */
+  border: 1px solid #5276ff; /* Green border */
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  width: auto;
+  color: white !important; /* White text */
+  margin: 10px;
+  padding: 10px 10px; /* Some padding */
+  cursor: pointer; /* Pointer/hand icon */
+}
+.custom_side_rows:hover {
+  background-color:  #d4c6fa5e;
+}
+.custom_side_rows span:hover {
+  /* background-color: #d4c6fa5e; */
+  color: #000
 }

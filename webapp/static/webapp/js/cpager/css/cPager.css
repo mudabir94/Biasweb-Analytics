@@ -2,9 +2,11 @@
 .turn-page {
   float: right;
   margin-top: 20px;
-  font-size: 12px;
+  font-size: 15px;
   color: #404040;
   padding-bottom: 20px;
+  font-style: italic;
+
 }
 
 .turn-page .turn-num {

@@ -1,0 +1,228 @@
+{% extends "webapp/newbase.html" %}
+{% block content %}
+{%load static from staticfiles%}
+<div class="container-fluid text-center">    
+    <div class="row content">
+        <div class="col-md-2 sidenav" >
+        </div>
+        <div class=" col-md-8 text-left"  >
+            <div class="row is-flex">
+                <div class="col">
+                    <h1 id="main_heading">Set Criteria Weights</h1>
+                    <ul class="crit_list">
+                        
+                    {%for crit in crit_list%}
+                    <li  rel="{{crit}}" style="padding-top:20px"> 
+                            <span id="{{crit}}_span"></span>
+
+                        <div class="row is-flex">
+                            {%if crit == "imagepath1" %}
+                            <div class="col-md-3">Look and Feel</div>
+                            {%else%}
+                            <div class="col-md-3">{{crit}}</div>
+                            {%endif%}
+                            <div class="col-md-9"><input id="{{crit}}" class="slider"></input></div>
+                        </div>
+                    
+                    
+
+                    </li>
+                    {%endfor%}
+
+                    </ul>
+                </div>
+               
+         </div>              
+
+            
+        </div>
+        
+        <div class="col-md-2 sidenav" >
+                <button id="savebutton" onclick="SaveWeights()">Save</button>
+                <button  onclick="NextPage()">Next</button>
+
+        </div>
+    
+    
+    </div>
+    
+    </div>
+<script>
+    var critlist_val_dict=null
+    var crit_list=[]
+    var ADM='{{ADM}}'
+    var userid='{{userid}}';
+    // dict that stores how many times the user pressed the save button by storing time. 
+    var storesavebuttonlogs={};
+    // list that stores criteria weight logs based on time 
+    var critw_logs_dict={};
+    var pagevisited="{{pagevisited}}"
+
+$(document).ready(function(){ 
+    
+
+    // localStorage.removeItem("critlist_val_dict");
+
+    // GET CRIT LIST and run the slider.... 
+  
+    if (pagevisited!=="True"){
+    $(".crit_list li").each(function(i)
+    {
+         console.log($(this).attr('rel')) // This is your rel value
+         crit_list.push($(this).attr('rel'));
+    });
+  
+    critlist_val_dict=JSON.parse(window.localStorage.getItem("critlist_val_dict")); 
+    if (critlist_val_dict!=null){
+    console.log("critlist_val_dict",critlist_val_dict["criteria_weights"])
+    console.log("crit_list",crit_list)
+    }
+    else{
+    critlist_val_dict={}
+    }
+    
+   
+    for (var c in crit_list){
+        console.log("criteria_list",crit_list[c])
+        var value=[5];
+        if(critlist_val_dict==null){
+            critlist_val_dict={}
+        }
+        if (critlist_val_dict!==undefined){
+            // console.log("CHECK2",critlist_val_dict.criteria_weights)
+            if (critlist_val_dict["criteria_weights"]!=undefined){
+                value=[parseInt(critlist_val_dict["criteria_weights"][c][1])];
+            }
+        }
+        
+        var slider = new rSlider({
+
+        target:crit_list[c] ,
+        values: [1,2,3,4,5,6,7,8,9,10],
+        widget:false,
+        labels:[1,2,3,4,5,6,7,8,9,10],
+        labels:true,
+        set:value,
+        tooltip:true,
+        onChange: function (event) {
+            console.log("EVENT",event)
+            console.log("THIS",this.target)
+            document.getElementById(this.target+'_span').innerHTML=event;
+            if  (critw_logs_dict[this.target]===undefined){
+                critw_logs_dict[this.target]=[]
+            }
+            else{
+                critw_logs_dict[this.target].push([userid,event,new Date($.now())])
+
+            }
+            console.log("critw_logs_dict",critw_logs_dict)
+
+            // if (critlist_val_dict[this.target]===undefined){
+            //     critlist_val_dict[this.target]=[]
+            // }
+            // else{
+            //     critlist_val_dict[this.target]=event;
+            // }
+            // console.log("critlist_val_dict",critlist_val_dict)
+        }
+        });
+
+    }
+   
+    }
+    else{
+        $("#main_heading").empty();
+        $("#main_heading").append("Sorry you can't go back. Please Go to the next page ");
+        $("#savebutton").hide();
+    }
+ }); 
+
+function SaveWeights(){
+    // console.log("Time",new Date($.now()));
+    console.log("critw_logs_dict",critw_logs_dict)
+    countSaveButtonEvents();
+    console.log("storesavebuttonlogs",storesavebuttonlogs);
+    var input_class=document.getElementsByClassName('slider');
+    var temp_slider_id_val_check_list=[];
+    var temp_final_list=[];
+    for (var i=0;i<input_class.length;i++){
+        
+            temp_slider_id_val_check_list.push(input_class[i].id) 
+            temp_slider_id_val_check_list.push(input_class[i].value)  
+            temp_final_list.push(temp_slider_id_val_check_list);
+            temp_slider_id_val_check_list=[];
+    }
+    criteria_weights=["criteria_weights"]
+    if (critlist_val_dict==null){
+        critlist_val_dict={}
+    }
+    critlist_val_dict[criteria_weights[0]]=temp_final_list
+    console.log("critlist_val_dict",critlist_val_dict)
+    $.ajax({
+    type: 'POST',
+    dataType: "json",
+    'data': {
+        "critw_logs_dict":JSON.stringify(critw_logs_dict),
+        'critlist_val_dict':JSON.stringify(critlist_val_dict),
+        'csrfmiddlewaretoken': '{{ csrf_token }}',
+
+    },
+    // the ajax call is sent to subdetails url name in the post function.  
+    url: "{% url 'criteria_weights' %}",
+    success: function(data){
+
+    }
+    
+    });
+}
+function NextPage(){
+
+    alert(ADM)
+    if (ADM=="A.1by1"){
+                window.location="{%url 'comparemobile_1by1_direct'%}"
+
+            }
+            else if  (ADM=="A.2by2"){
+                window.location="{%url 'comparemobile_2by2_direct'%}"
+            }
+    
+    // $.ajax({
+    // type: 'GET',
+    // dataType: "json",
+    // 'data': {
+
+    // },
+    // // the ajax call is sent to subdetails url name in the post function.  
+    // url: "{% url 'criteria_weights' %}",
+    // success: function(data){
+        
+    //         if (data['ADM']=="A.1by1"){
+    //             window.location="{%url 'comparemobile_1by1_direct'%}"
+
+    //         }
+    //         else if  (data['ADM']=="A.2by2"){
+    //             window.location="{%url 'comparemobile_2by2_direct'%}"
+    //         }
+    //     }
+    
+    // });
+    // if 1by1 in block then show 1by1 page other wise show 2by2 page.. 
+
+    // save time when user clicks save button
+    
+   
+
+}
+function  countSaveButtonEvents(){
+    storesavebuttonlogs[new Date($.now())]=[userid]
+    }
+
+</script>
+
+<script>
+        // Warning before leaving the page (back button, or outgoinglink)
+        window.onbeforeunload = function() {
+            window.localStorage.setItem("critlist_val_dict",JSON.stringify( critlist_val_dict));
+        }
+</script>  
+{%endblock%}

@@ -4,22 +4,20 @@
 {% load static from staticfiles%} 
 
 
-<div class="container">
-        <div class="row">
+<div class="container content" id="cont">
+    <div class="row">
         {%for m in singlemob %}
-           <div class="col-xs-4 item-photo">
+           <div class="col item-photo">
                 <img style="max-width:100%;" src="{% static m.imagepath2 %}" />
             </div>
-            <div class="col-xs-5" style="border:0px solid gray">
+            <div class="col" style="border:0px solid gray">
                 <h3>{{m.Mobile_Name}}</h3>    
                 <h5>{{m.Mobile_Companny}}</h5>
     
-                <!-- Precios -->
                 <h6 class="title-price">Price in Rupees</h6>
                 <h3 style="margin-top:0px;" id="ph"></h3>
-                <input type="hidden" id="price-text" value="{{m.price_in_pkr}}" />
+                <input type="hidden" id="price-text" value="{{m.price}}" />
     
-                <!-- Detalles especificos del producto -->
                 <div class="section">
                     <h6 class="title-attr" style="margin-top:15px;" >COLOR</h6>                    
                     <div>
@@ -31,7 +29,7 @@
                     </div>
                 </div>
                 <div class="section">
-                        <h6 class="title-attr" style="margin-top:15px;"></h6>Resolution</h6>                    
+                        <h6 class="title-attr" style="margin-top:15px;">Resolution</h6>            
                         <div>
                            <!-- 
                             <div class="attr" style="width:25px;background:#5a5a5a;"></div>
@@ -41,13 +39,13 @@
                         </div>
                     </div>
                     <div class="section">
-                            <h6 class="title-attr" style="margin-top:15px;"></h6>Size</h6>                    
+                            <h6 class="title-attr" style="margin-top:15px;">Size</h6>                    
                             <div>
                                <!-- 
                                 <div class="attr" style="width:25px;background:#5a5a5a;"></div>
                                 <div class="attr" style="width:25px;background:white;"></div>
                                -->
-                                <h4>{{m.Size}} inches </h4>
+                                <p>{{m.Size}} inches </p>
                             </div>
                         </div>
                     	<div class="rating">
@@ -80,13 +78,13 @@
             -->           
     
                 <!-- Botones de compra -->
-                <div class="section" style="padding-bottom:20px;">
+                <!-- <div class="section" style="padding-bottom:20px;">
                     <button class="btn btn-success"><span style="margin-right:20px" class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span> </button>
                     <h6><a href="#"><span class="glyphicon glyphicon-heart-empty" style="cursor:pointer;"></span> </a></h6>
-                </div>                                        
+                </div>                                         -->
             </div>                              
     
-            <div class="col-xs-9">
+            <div class="col">
                 <ul class="menu-items" id ="ulparaId">
                     <li class="active"  onclick='desFunc("{{m.Whats_new}}")'>Whats New</li>
                     <li onclick='desFunc("{{m.Mobile_Companny}}")'>Mobile Company</li>
@@ -101,7 +99,16 @@
             </div>
         {% endfor %}		
         </div>
-    </div>        
+
+
+    
+    
+
+
+
+    </div>    
+     
+   
 <script>  
 
 var a=  $("#ulparaId li.active");

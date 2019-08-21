@@ -1,0 +1,35 @@
+#list_exp_id_div{
+    float:left;
+    width:initial;
+    overflow-y: auto;
+    height: 200px;
+}
+.extendable:focus {
+    position: absolute;
+    width: 110%;
+    top: -1rem;
+}
+/* #ids_row_div{
+    margin-left: 5px;
+} */
+#main_row_div{
+    margin-left:0px;
+}
+.input_id_cols{
+    width: inherit;
+    /* min-width:1px;
+    max-width: 10px; */
+}
+#status_row_div,#descp_row_div,#save_row_div{
+    margin-top: 5px;
+    width: -webkit-fill-available;
+}
+.custom_row{
+    margin-right: 0px !important;
+    margin-left: 0px !important;
+}
+.active_li{
+    background: #5276ffc2;
+    color: white;
+    box-shadow: 0 0 0.5px 0.5px #05fb3a;
+}

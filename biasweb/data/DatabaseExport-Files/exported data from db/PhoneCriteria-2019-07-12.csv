@@ -1,0 +1,17 @@
+id,criteria_name,status,priority,position
+58,Brand,default,low,0
+52,Ram,default,mendatory,3
+51,Memory,default,mendatory,2
+50,backcam,default,low,15
+49,battery,default,low,14
+48,OS,default,low,13
+47,rating,default,low,12
+46,price,default,mendatory,1
+45,Weight,default,low,9
+44,Size,default,low,8
+43,Resolution,default,low,7
+42,Gpu,default,low,6
+41,Dimensions,default,low,5
+40,Cpu,default,low,4
+39,Colors,default,low,11
+38,Chip,default,low,10

@@ -1,0 +1,345 @@
+.btn-group button {
+    background-color: lightskyblue; 
+    border: 1px solid lightskyblue; 
+    color: white; /* White text */
+    padding: 5px 15px; /* Some padding */
+    cursor: pointer; /* Pointer/hand icon */
+    float: left; /* Float the buttons side by side */
+  }
+  .btn-group button:hover {
+    background-color: #94000f5e;
+  }
+#process_buttons  button {
+    background-color: rgba(0, 0, 0, 0.664); 
+    border: 1px solid rgba(0, 0, 0, 0.664);
+    color: white; /* White text */
+    padding: 5px 10px; /* Some padding */
+    cursor: pointer; /* Pointer/hand icon */
+    float: left; /* Float the buttons side by side */
+  } 
+#save_button button{
+    background-color: rgba(60, 138, 24, 0.863); /* Green background */
+    border: 1px solid rgba(60, 138, 24, 0.863);/* Green border */
+    color: white; /* White text */
+    padding:5px 15px; /* Some padding */
+    cursor: pointer; /* Pointer/hand icon */
+    float: left; /* Float the buttons side by side */
+}
+#SAVE_CO_BTN{
+  background-color: rgba(60, 138, 24, 0.863); /* Green background */
+  border: 1px solid rgba(60, 138, 24, 0.863);/* Green border */
+  color: white; /* White text */
+  padding: 5px 15px; /* Some padding */
+  cursor: pointer; /* Pointer/hand icon */
+  float: left; /* Float the buttons side by side */
+}
+#back_co_btn{
+  background-color: rgba(0, 0, 0, 0.664); 
+  border: 1px solid rgba(0, 0, 0, 0.664);
+  color: white; /* White text */
+  padding: 5px 10px; /* Some padding */
+  cursor: pointer; /* Pointer/hand icon */
+  float: left; /* Float the buttons side by side */
+}
+#back_cdm_btn{
+  background-color: rgba(0, 0, 0, 0.664); 
+  border: 1px solid rgba(0, 0, 0, 0.664);
+  color: white; /* White text */
+  padding: 5px 10px;  /* Some padding */
+  cursor: pointer; /* Pointer/hand icon */
+  float: left; /* Float the buttons side by side */
+}
+#SAVE_CDM_BTN{
+  background-color: rgba(60, 138, 24, 0.863); /* Green background */
+  border: 1px solid rgba(60, 138, 24, 0.863);/* Green border */
+  color: white; /* White text */
+  padding: 5px 15px; /* Some padding */
+  cursor: pointer; /* Pointer/hand icon */
+  float: left; /* Float the buttons side by side */
+}
+#NEXT_CDM_BTN{
+  background-color: rgba(19, 15, 238, 0.87); 
+  border: 1px solid rgba(19, 15, 238, 0.87);
+  color: white; /* White text */
+  padding: 5px 15px; /* Some padding */
+  cursor: pointer; /* Pointer/hand icon */
+  float: left; /* Float the buttons side by side */
+}
+#count_def_btn{
+  background-color: rgba(19, 15, 238, 0.87); 
+  border: 1px solid rgba(19, 15, 238, 0.87);
+  color: white; /* White text */
+  padding:5px 15px; /* Some padding */
+  cursor: pointer; /* Pointer/hand icon */
+  float: left; /* Float the buttons side by side */
+}
+#next_def_btn{
+  background-color: rgba(19, 15, 238, 0.87); 
+  border: 1px solid rgba(19, 15, 238, 0.87);
+  color: white; /* White text */
+  padding: 5px 15px; /* Some padding */
+  cursor: pointer; /* Pointer/hand icon */
+  float: left; /* Float the buttons side by side */
+}
+#back_def_btn{
+  background-color: rgba(0, 0, 0, 0.664); 
+  border: 1px solid rgba(0, 0, 0, 0.664);
+  color: white; /* White text */
+  padding: 5px 15px;
+  cursor: pointer; /* Pointer/hand icon */
+  float: left; /* Float the buttons side by side */
+}
+#SAVE_def_BTN{
+  background-color: rgba(60, 138, 24, 0.863); /* Green background */
+  border: 1px solid rgba(60, 138, 24, 0.863);/* Green border */
+  color: white; /* White text */
+  padding: 5px 15px; /* Some padding */
+  cursor: pointer; /* Pointer/hand icon */
+  float: left; /* Float the buttons side by side */
+}
+.sortable_custom_show_btns{
+  background-color: rgba(0, 102, 255, 0.664); 
+  border: 1px solid  rgba(0, 102, 255, 0.664); 
+  color: white; /* White text */
+  padding: 10px 15px; /* Some padding */
+  cursor: pointer; /* Pointer/hand icon */
+  float: left; /* Float the buttons side by side */
+  width:100%;
+  text-overflow: ellipsis;
+  overflow: hidden; 
+
+}
+
+.sortable_custom_hide_btns{
+  background-color: rgba(0, 0, 0, 0.664); 
+  border: 1px solid rgba(0, 0, 0, 0.664);
+  color: white; /* White text */
+  padding: 10px 15px; /* Some padding */
+  cursor: pointer; /* Pointer/hand icon */
+  float: left; /* Float the buttons side by side */
+  width:100%;
+  text-overflow: ellipsis;
+  overflow: hidden; 
+}
+.custom_nav_btn{
+    width:100%;
+    background:lightskyblue;
+    border: 1px solid  lightskyblue;
+    color: white; /* White text */
+    cursor: pointer;
+    box-shadow: 0 0 0.5px 0.5px  lightskyblue;
+    padding: 5px 15px; /* Some padding */
+    float: left; /* Float the buttons side by side */
+    border-radius:1pc;
+
+}
+.show_hide{
+ 
+  color: white; /* White text */
+  padding: 10px 24px; /* Some padding */
+  cursor: pointer; /* Pointer/hand icon */
+  float: left; /* Float the buttons side by side */
+  width:100%;
+}
+
+  .active{
+    background:white;
+    color: green; /* White text */
+
+    box-shadow: 0 0 0.5px 0.5px #ea0000;
+    border-radius:1pc;
+  }
+  .bdcrumb_active a{
+   
+    background:rgba(197, 69, 69, 0.863);;
+    box-shadow: 0 0 0.5px 0.5px rgba(253, 200, 200, 0.863);
+
+
+  }
+
+#sendfeatlvl_btn{
+    background: rgba(60, 138, 24, 0.863);
+    color: white; /* White text */
+    padding: 10px 20px; /* Some padding */
+    box-shadow: 0 0 0.5px 0.5px rgba(60, 138, 24, 0.863);
+    border: 1px solid rgba(60, 138, 24, 0.863);
+    cursor: pointer;
+    font-size: 13px;
+    border-radius: 2pc;
+
+}
+#grid{
+    cursor: grab;
+}
+#nextbtn_to_batch{
+    background: #105796;
+    color: white; 
+    padding: 10px 10px; /* Some padding */
+    box-shadow: 0 0 0.5px 0.5px #105796;
+    cursor: pointer;
+    border-radius: 8px;
+
+}
+#exp_sel_phones_div{
+  color:palegoldenrod;
+}
+#expphonelist_div{
+  color:palegoldenrod;
+
+}
+#exp_select_phns_h4{
+  font-family: 'Agency FB';
+
+}
+#crit_opt_h4{
+  font-family: 'Agency FB';
+
+}
+.crit_option_sidebar_div{
+  color:palegoldenrod;
+
+}
+#criteria_option_name{
+  padding: 5%;
+}
+.exp_phonelist_span_h{
+  font-family: 'Agency FB';
+  font-size: larger;
+
+}
+/* #create_exp_mobile_catalog{
+  background: black;
+} */
+.edit_href{
+  color:brown   !important;
+  cursor: pointer;
+
+}
+.view_href{
+  color: rgb(74, 116, 89)  !important;
+  cursor: pointer;
+
+
+}
+
+.row.is-flex {
+  display: flex !important;
+  flex-wrap: wrap !important;
+}
+.row.is-flex > [class*='col-'] {
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/*
+* And with max cross-browser enabled.
+* Nobody should ever write this by hand. 
+* Use a preprocesser with autoprefixing.
+*/
+.row.is-flex {
+  display: -webkit-box !important;
+  display: -webkit-flex !important;
+  display: -ms-flexbox !important;
+  display: flex !important;
+  -webkit-flex-wrap: wrap !important;
+  -ms-flex-wrap: wrap !important;
+  flex-wrap: wrap !important;
+}
+
+.row.is-flex > [class*='col-'] {
+  display: -webkit-box !important;
+  display: -webkit-flex !important;
+  display: -ms-flexbox !important;
+  display: flex !important;
+  -webkit-box-orient: vertical !important;
+  -webkit-box-direction: normal !important;
+  -webkit-flex-direction: column !important;
+  -ms-flex-direction: column !important;
+  flex-direction: column !important;
+}
+#h2_feature{
+  background:lightskyblue;
+  border: 1px solid  lightskyblue;
+  color: white; /* White text */
+}
+#feat_lvl_div{
+  margin-top: 5%;
+  margin-right: 8%;
+}
+#main_row_co{
+  margin-top: 5%;
+  margin-right:8%;
+}
+#cdm_main_row_co_def{
+  margin-top: 5%;
+  margin-right:8%;
+}
+#default_criteria_div{
+  margin-top: 5%;
+  margin-right:8%;
+}
+#def_main_row_co_def{
+  margin-top: 5%;
+  margin-right:8%;
+}
+#cdm_co_on_div{
+  margin-top: 5%;
+  margin-right:8%;
+}
+#select_div{
+  width: 200px;
+}
+#sel_options{
+  width: 200px;
+}
+.breadcrumb-item + .breadcrumb-item::before {
+  content: ">" !important;
+
+}
+.modal {
+  display:    none;
+  position:   fixed;
+  z-index:    1000;
+  top:        0;
+  left:       0;
+  height:     100%;
+  width:      100%;
+  /* #464545 */
+  /* rgba( 255, 255, 255, .8 )  */
+   background: rgba( 255, 255, 255, .8 )
+              url('http://i.stack.imgur.com/FhHRx.gif') 
+              50% 50% 
+              no-repeat;
+}
+
+/* When the body has the loading class, we turn
+ the scrollbar off with overflow:hidden */
+body.loading .modal {
+  overflow: hidden;   
+}
+
+/* Anytime the body has the loading class, our
+ modal element will be visible */
+body.loading .modal {
+  display: block;
+}
+.custom_span {
+  font-size: 13px !important;
+    font-weight: 700 !important;
+    color: #4c4d4e !important;
+}
+
+
+#saveDescriptionbtn{
+  background-color: rgba(100, 179, 64, 0.863); /* Green background */
+  border: 1px solid rgba(60, 138, 24, 0.863);/* Green border */
+  color: white; /* White text */
+  padding: 5px 15px; /* Some padding */
+  cursor: pointer; /* Pointer/hand icon */
+  float: left; /* Float the buttons side by side */ 
+  border-radius: 10px;
+}
+#price_slider_div{
+  margin-top:2pc;
+  margin-botton:1pc;
+}
