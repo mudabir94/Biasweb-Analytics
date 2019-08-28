@@ -207,9 +207,16 @@ button.social-signin.google {
   cursor: pointer; /* Pointer/hand icon */
 }
 .custom_side_rows:hover {
-  background-color:  #d4c6fa5e;
+  background-color:  #ffffff !important;
+  /* background: rgba(255,255,255,0.2)!important;  */
+		
+  color: #009688 !important;
+  
+  border-color: #009688;  
 }
-.custom_side_rows span:hover {
-  /* background-color: #d4c6fa5e; */
-  color: #000
+/* .custom_side_rows span:hover {
+  color: #000 !important;
+} */
+.navbar-brand:hover{
+  color:#009688 !important;
 }

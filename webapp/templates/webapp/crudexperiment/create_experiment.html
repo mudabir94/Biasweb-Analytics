@@ -7,7 +7,7 @@
 
     <div class="row is-flex content">
         <!-- 1st SIDEBAR COL DIV -->
-        <div class="col-md-2" style='background:rgb(74, 116, 89)'>
+        <div class="col-md-2" style='background-color:#c6c8ca'>
             <div class='container-fluid'>
               {% with template_sidebar=creat_exp_template_sidebar %}
               {% include template_sidebar %}
@@ -145,7 +145,7 @@
                     <div class='col-md-1' >
                       
                        
-                             <button id="nextbtn_to_batch" onclick='showImportSubdiv()'>NEXT</button>
+                             <button id="nextbtn_to_batch"  class="btn btn-primary" onclick='showImportSubdiv()'>NEXT</button>
 
                             
                     
@@ -535,7 +535,8 @@
                 <div class="turn-page" id="pager"></div>
             </div>
         </div>
-        <div class="col-md-3" style="background: rgb(148, 0, 14);">
+        <!-- "background: rgb(148, 0, 14);" -->
+        <div class="col-md-3" style='background-color:#c6c8ca'>
             <div class='container-fluid'>
                 {% with template_sidebar=creat_exp_template_sidebar2 %}
                 {% include template_sidebar %}
@@ -6117,7 +6118,7 @@ function def_cdm_co_on_HtmlSetup(){
 
         container.append(main_row);
         var col_md_1=document.createElement('div');
-        col_md_1.setAttribute('class','col-md-1 sidenav');
+        col_md_1.setAttribute('class','col-md-1');
         main_row.append(col_md_1);
         var back_to_main_setup_btn=document.createElement('button');
         back_to_main_setup_btn.innerHTML="Back";
@@ -6161,7 +6162,7 @@ function def_cdm_co_on_HtmlSetup(){
         recenthiddenfeat_div.append(h2);
         recenthiddenfeat_div.append(ul_mylist);
         var col_md_1=document.createElement('div');
-        col_md_1.setAttribute('class','col-md-1 sidenav');
+        col_md_1.setAttribute('class','col-md-1');
         main_row.append(col_md_1);
         var save_to_main_setup_btn=document.createElement('button');
         save_to_main_setup_btn.innerHTML="NEXT";
@@ -6342,7 +6343,7 @@ function product_Section(){
         main_row.id="main_row_co";
         container.append(main_row);
         var col_md_1=document.createElement('div');
-        col_md_1.setAttribute('class','col-md-1 sidenav');
+        col_md_1.setAttribute('class','col-md-1 ');
         main_row.append(col_md_1);
 
         var back_to_main_setup_btn=document.createElement('button');
@@ -6385,7 +6386,7 @@ function product_Section(){
         recenthiddenfeat_div.append(h2);
         recenthiddenfeat_div.append(ul_mylist);
         var col_md_1=document.createElement('div');
-        col_md_1.setAttribute('class','col-md-1 sidenav');
+        col_md_1.setAttribute('class','col-md-1');
         main_row.append(col_md_1);
         // if default true
         if(default_active==="true"){
@@ -6829,7 +6830,7 @@ function get_data_Ajax_Co(colist){
 
         container.append(main_row);
         var col_md_1=document.createElement('div');
-        col_md_1.setAttribute('class','col-md-1 sidenav');
+        col_md_1.setAttribute('class','col-md-1');
         main_row.append(col_md_1);
         var back_to_main_setup_btn=document.createElement('button');
         back_to_main_setup_btn.innerHTML="Back";
@@ -6872,7 +6873,7 @@ function get_data_Ajax_Co(colist){
         // recenthiddenfeat_div.append(h2);
         // recenthiddenfeat_div.append(ul_mylist);
         var col_md_1=document.createElement('div');
-        col_md_1.setAttribute('class','col-md-1 sidenav');
+        col_md_1.setAttribute('class','col-md-1');
         main_row.append(col_md_1);
         var continue_btn=document.createElement('button');
         continue_btn.innerHTML="Continue";
@@ -7163,7 +7164,7 @@ function get_data_Ajax_Co(colist){
 
         container.append(main_row);
         var col_md_1=document.createElement('div');
-        col_md_1.setAttribute('class','col-md-1 sidenav');
+        col_md_1.setAttribute('class','col-md-1 ');
         main_row.append(col_md_1);
         var back_to_main_setup_btn=document.createElement('button');
         back_to_main_setup_btn.innerHTML="Back";
@@ -7207,7 +7208,7 @@ function get_data_Ajax_Co(colist){
         recenthiddenfeat_div.append(h2);
         recenthiddenfeat_div.append(ul_mylist);
         var col_md_1=document.createElement('div');
-        col_md_1.setAttribute('class','col-md-1 sidenav');
+        col_md_1.setAttribute('class','col-md-1');
         main_row.append(col_md_1);
         var save_to_main_setup_btn=document.createElement('button');
         save_to_main_setup_btn.innerHTML="Save";
@@ -7453,7 +7454,7 @@ function get_data_Ajax_Co(colist){
 
         container.append(main_row);
         var col_md_1=document.createElement('div');
-        col_md_1.setAttribute('class','col-md-1 sidenav');
+        col_md_1.setAttribute('class','col-md-1 ');
         main_row.append(col_md_1);
         var back_to_main_setup_btn=document.createElement('button');
         back_to_main_setup_btn.innerHTML="Back";
@@ -7496,7 +7497,7 @@ function get_data_Ajax_Co(colist){
         // recenthiddenfeat_div.append(h2);
         // recenthiddenfeat_div.append(ul_mylist);
         var col_md_1=document.createElement('div');
-        col_md_1.setAttribute('class','col-md-1 sidenav');
+        col_md_1.setAttribute('class','col-md-1');
         main_row.append(col_md_1);
         var continue_btn=document.createElement('button');
         continue_btn.innerHTML="Continue";
@@ -7806,7 +7807,7 @@ function get_data_Ajax_Co(colist){
 
         container.append(main_row);
         var col_md_1=document.createElement('div');
-        col_md_1.setAttribute('class','col-md-1 sidenav');
+        col_md_1.setAttribute('class','col-md-1 ');
         main_row.append(col_md_1);
         var back_to_main_setup_btn=document.createElement('button');
         back_to_main_setup_btn.innerHTML="Back";
@@ -7852,7 +7853,7 @@ function get_data_Ajax_Co(colist){
 
 
         var col_md_1=document.createElement('div');
-        col_md_1.setAttribute('class','col-md-1 sidenav');
+        col_md_1.setAttribute('class','col-md-1');
         main_row.append(col_md_1);
         // var next_to_main_setup_btn=document.createElement('button');
         // next_to_main_setup_btn.innerHTML="Next";
@@ -8040,7 +8041,7 @@ function get_data_Ajax_Co(colist){
 
         var main_row=document.getElementById("cdm_main_row_co_def")
         var col_md_1=document.createElement('div');
-        col_md_1.setAttribute('class','col-md-1 sidenav');
+        col_md_1.setAttribute('class','col-md-1');
         main_row.append(col_md_1);
         var back_to_main_setup_btn=document.createElement('button');
         back_to_main_setup_btn.innerHTML="Back";
@@ -8097,7 +8098,7 @@ function get_data_Ajax_Co(colist){
 
 
         var col_md_1=document.createElement('div');
-        col_md_1.setAttribute('class','col-md-1 sidenav');
+        col_md_1.setAttribute('class','col-md-1');
         main_row.append(col_md_1);
         var save_setup_btn=document.createElement('button');
         save_setup_btn.innerHTML="Save";
@@ -8355,7 +8356,7 @@ function get_data_Ajax_Co(colist){
 
         var main_row=document.getElementById("cdm_main_row_co_def")
         var col_md_1=document.createElement('div');
-        col_md_1.setAttribute('class','col-md-1 sidenav');
+        col_md_1.setAttribute('class','col-md-1');
         main_row.append(col_md_1);
         var back_to_main_setup_btn=document.createElement('button');
         back_to_main_setup_btn.innerHTML="Back";
@@ -8399,7 +8400,7 @@ function get_data_Ajax_Co(colist){
         recenthiddenfeat_div.append(h2);
         recenthiddenfeat_div.append(ul_mylist);
         var col_md_1=document.createElement('div');
-        col_md_1.setAttribute('class','col-md-1 sidenav');
+        col_md_1.setAttribute('class','col-md-1');
         main_row.append(col_md_1);
         // var next_to_main_setup_btn=document.createElement('button');
         // next_to_main_setup_btn.innerHTML="Next";
@@ -8479,7 +8480,7 @@ function get_data_Ajax_Co(colist){
 
             var main_row=document.getElementById("cdm_main_row_co_def")
             var col_md_1=document.createElement('div');
-            col_md_1.setAttribute('class','col-md-1 sidenav');
+            col_md_1.setAttribute('class','col-md-1');
             main_row.append(col_md_1);
             var back_to_main_setup_btn=document.createElement('button');
             back_to_main_setup_btn.innerHTML="Back";
@@ -8546,7 +8547,7 @@ function get_data_Ajax_Co(colist){
 
 
             var col_md_1=document.createElement('div');
-            col_md_1.setAttribute('class','col-md-1 sidenav');
+            col_md_1.setAttribute('class','col-md-1');
             main_row.append(col_md_1);
             var save_setup_btn=document.createElement('button');
             save_setup_btn.innerHTML="Save";
@@ -8913,7 +8914,7 @@ function get_data_Ajax_Co(colist){
 
         container.append(main_row);
         var col_md_1=document.createElement('div');
-        col_md_1.setAttribute('class','col-md-1 sidenav');
+        col_md_1.setAttribute('class','col-md-1');
         main_row.append(col_md_1);
         var back_to_main_setup_btn=document.createElement('button');
         back_to_main_setup_btn.innerHTML="Back";
@@ -8940,7 +8941,7 @@ function get_data_Ajax_Co(colist){
         main_row.append(col_md_5_2);
        
         var col_md_1=document.createElement('div');
-        col_md_1.setAttribute('class','col-md-1 sidenav');
+        col_md_1.setAttribute('class','col-md-1');
         main_row.append(col_md_1);
         var continue_btn=document.createElement('button');
         continue_btn.innerHTML="Continue";
@@ -9269,7 +9270,7 @@ function get_data_Ajax_Co(colist){
         container.append(main_row);
         
         var col_md_1=document.createElement('div');
-        col_md_1.setAttribute('class','col-md-1 sidenav');
+        col_md_1.setAttribute('class','col-md-1');
         main_row.append(col_md_1);
 
         var back_to_main_setup_btn=document.createElement('button');
@@ -9312,7 +9313,7 @@ function get_data_Ajax_Co(colist){
         recenthiddenfeat_div.append(h2);
         recenthiddenfeat_div.append(ul_mylist);
         var col_md_1=document.createElement('div');
-        col_md_1.setAttribute('class','col-md-1 sidenav');
+        col_md_1.setAttribute('class','col-md-1 ');
         main_row.append(col_md_1);
     
         var next_to_main_setup_btn=document.createElement('button');
@@ -9499,7 +9500,7 @@ function get_data_Ajax_Co(colist){
         main_row.id="main_row_co";
         container.append(main_row);
         var col_md_1=document.createElement('div');
-        col_md_1.setAttribute('class','col-md-1 sidenav');
+        col_md_1.setAttribute('class','col-md-1');
         main_row.append(col_md_1);
 
         var back_to_main_setup_btn=document.createElement('button');
@@ -9565,7 +9566,7 @@ function get_data_Ajax_Co(colist){
        
        
         var col_md_1=document.createElement('div');
-        col_md_1.setAttribute('class','col-md-1 sidenav');
+        col_md_1.setAttribute('class','col-md-1 ');
         main_row.append(col_md_1);
     
         var next_to_main_setup_btn=document.createElement('button');
@@ -9873,7 +9874,7 @@ function get_data_Ajax_Co(colist){
         main_row.id="main_row_co";
         container.append(main_row);
         var col_md_1=document.createElement('div');
-        col_md_1.setAttribute('class','col-md-1 sidenav');
+        col_md_1.setAttribute('class','col-md-1');
         main_row.append(col_md_1);
 
         var back_to_main_setup_btn=document.createElement('button');
@@ -9915,7 +9916,7 @@ function get_data_Ajax_Co(colist){
         recenthiddenfeat_div.append(h2);
         recenthiddenfeat_div.append(ul_mylist);
         var col_md_1=document.createElement('div');
-        col_md_1.setAttribute('class','col-md-1 sidenav');
+        col_md_1.setAttribute('class','col-md-1');
         main_row.append(col_md_1);
     
         var save_to_main_setup_btn=document.createElement('button');
@@ -10100,6 +10101,7 @@ function get_data_Ajax_Co(colist){
                                     
 
                         cdm_on_co_on_TreeView();
+                        
                         }
                     });
 

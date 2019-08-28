@@ -57,7 +57,7 @@
                             <div class="col-md-4 col-lg-4 col-xs-12 sm-margin-b-50 pull-left">
                                     <div class="margin-b-20" >
                                     <h4></h4>
-                                    <input type="checkbox" value={{mob.id}} id={{mob.id}} name={{mob.id}}-{{mob.Mobile_Name}}  onchange="toggleCheckbox(this)"> 
+                                    <input  class="custom_checkbox"type="checkbox" value={{mob.id}} id={{mob.id}} name={{mob.id}}-{{mob.Mobile_Name}}  onchange="toggleCheckbox(this)"> 
                                     <img class="img-responsive" src="{% static mob.imagepath1 %}"  alt="Latest Products Image"  title=""/>
                                         </div>
                                     <div id="crit">
@@ -112,9 +112,9 @@
                
         </div>
           <div class="col-sm-1 sidenav">
-            <div class=""   id="lc" style="position: fixed">
-                  
-            </div>
+                <div class="row">
+                    <div class=""   id="lc" style="position: fixed"></div>
+                </div>
           </div>
         </div>
       </div>
@@ -185,7 +185,7 @@
                     //     window.location="{%url 'comparemobilespecsfilt_ver'%}"
                     //     }
                         if (response['subject_block'].includes("W.direct")){
-                            alert("W>DIRECT")
+                            alert("W.DIRECT")
                             localStorage.removeItem("slider_id_val_check_dict");
 
                             localStorage.removeItem("critlist_val_dict");
@@ -302,6 +302,8 @@
                                     col_md_4_post.append(margin_b_20);
                                     var input_checkb=document.createElement('input');
                                     input_checkb.type="checkbox";
+                                    input_checkb.setAttribute("class","custom_checkbox")
+
                                    
                                     
                                     input_checkb.value=json_data_mobiles[i]['id'];

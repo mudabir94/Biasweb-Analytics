@@ -59,6 +59,7 @@ from .models import (
                     StoreHoverPieChartLogs,
                     StoreNextPrevButtonLogs,
                     StoreCritWeightLogs,
+                    generalCriteriaData,
                     )
 
 
@@ -66,6 +67,8 @@ from .models import selectedAdminPhones,criteria_catalog_disp,exStatusCd
 from django.views.decorators.cache import never_cache
 
 import datetime
+from functools import reduce
+import operator
 
 #--------------------------------------------------------------------------------------------------
 role=1   #global variable used in adminsetup and globalFunc function. 
@@ -381,14 +384,13 @@ def getSelectedAdminPhones(request):
             })
 
 
-
+# It gets the phones id list and use the ids to exctract from mobilephones model. 
+# through which we extract size(length/Number) of mobiles and store in a global variable.
+# Last thing is to send exp_feat_levels list back to the page in sucess function. 
 def showMob(request):
     if request.method=="POST":
         if request.is_ajax:
-        # print("ajax",request.POST.get('data'))
-            ####print("PST",request.POST.get('d')) 
             mobiledata = request.POST.get('mobiledata')
-        ### print('JSONLOADS',eval(d))
             mobiledata_json = json.loads(mobiledata)
             print("mobiledata_json",mobiledata_json[0])
             query_array=[]
@@ -396,19 +398,19 @@ def showMob(request):
             for key,value in  enumerate(mobiledata_json):
                 print("key",key)
                 print ("val", value)
-                # query_array.append(' '+ 'id'+ '=' + value )
                 query_array.append(value)
-            #query=samsung_phone.objects.filter(id__in=(query_array))
             query=mobilephones.objects.filter(id__in=(query_array))
-                        # old_query = 'SELECT * FROM webapp_samsung_phone WHERE '+ ' or ' .join(query_array)
+          
             global comp_mobiles
             global sizeofmob
             global exp_under_test
-                # mobiles=samsung_phone.objects.raw(query)
+                
             comp_mobiles=query
             size_of_mobile=len(list(comp_mobiles))
             sizeofmob=size_of_mobile
             print(comp_mobiles)
+
+            
             dict = {'size_of_mobile':size_of_mobile}
             print("Uer Id",request.user.id)
             userobj=User.objects.get(pk=request.user.id)
@@ -442,6 +444,20 @@ allmobile=[]
 numofmobiles=[]
 criteria_list=[]
 alternative_list=[]
+
+
+# Functionilty--
+# Two Methods.. 
+# Get and Post
+# GET Called when the page is loaded for first time or without ajax call. 
+#  If this is called for the first time, it'll store the page in logs storeuserpagelogs'
+    # Will Check Criteria Display Method and Alternatives Display Method and Revisablity Features
+    # Based on C. Feature criteria list will be exctracted from the tables that was selected by admin
+    # and will send to criteria_weights.html page. 
+# else 
+# Post is called through ajax request when we want to save the changes made by the user.
+# It saves the criterias values that are set by the user. 
+# The logs as well.  
 
 def criteriaWeights(request):
     global crit_list
@@ -518,7 +534,9 @@ def criteriaWeights(request):
             print("criteria_weights_dict",criteria_weights_dict)
             data={}
             return JsonResponse(data) 
-
+# When the page is loaded  both of its GET and POST functions are called respectively through ajax. 
+# GET Method send back Interactivity and Revisiablity features. 
+# POST Methond sends back  multiple list and dict needed to populate the page. 
 def compareMobileOneByOneDirect(request):
     template_name='webapp/comparemobile1by1direct.html'
       
@@ -1807,8 +1825,18 @@ class showFilter(TemplateView):
         Cpu=['octa-core','quad-core']
         back_camera=['16 MP','13 MP','8 MP','5.0 MP','3.7 MP','2 MP','1.9 MP','VGA']
         battery=['3600 mAh','3300 mAh','3000 mAh','2600 mAh','2400 mAh','2350']
-        return render(request,'webapp/filter_test.html',{'mobiles':mobiles,'Colors':Colors,
-        'os':OS,'size':Size,'feat':feat,'cpu':Cpu,'back_cm':back_camera,'battery':battery})
+        data={ 
+            'mobiles':mobiles,
+            'Colors':Colors,
+            'os':OS,
+            'size':Size,
+            'feat':feat,
+            'cpu':Cpu,
+            'back_cm':back_camera,
+            'battery':battery
+        }
+        data={}
+        return render(request,'webapp/showfilter.html',data)
 filter_features=[]
 class filter(TemplateView):
    
@@ -1816,39 +1844,84 @@ class filter(TemplateView):
         global filter_features
         if request.is_ajax():
             print("IN AJAX REQUEST")
-            all_data_dic={}
-            price=['100000','120000']
-            Size=['5','5.5','5.3','6.5','7']
-            Colors=['black','white','gold']
-            OS=['android v8.0 oreo','android v7.1.1 (nougat)','android v4.4 (kitkat)','android v6.0 (marshmallow)',
-            'android v5.0.2 (lollipop)','android v5.1 (lollipop)','android v4.3 (jelly bean)']
-            # size=['0','1','3','4','4.1','4.2','4.3','4.4','4.5','4.6','4.7','4.8','4.9','5','5.1','5.2','5.3','5.4','5.5','5.6','5.7','5.8','5.9','6','6.1','6.2','6.3','6.4','6.5','6.6','6.7','6.8','6.9','7']
-            Cpu=['octa-core','quad-core']
-            backcam=['16 MP','13 MP','8 MP','5.0 MP','3.7 MP','2 MP','1.9 MP','VGA']
-            battery=['3600 mAh','3300 mAh','3000 mAh','2600 mAh','2400 mAh','2350']
-            mobilecompany=['samsung','I Phone']
-            Chip=['Exynos 9810 Octa','Exynos 8895 Octa','Qualcomm Snapdragon 805','Exynos8890Octa','Quad-core (2 x 2.15 GHz Kryo + 2 x 1.6 GHz Kryo)','Exynos 7885 Octa','QualcommMSM8996Snapdragon820','Exynos7420','Exynos 7420 Octa','Exynos 7880 Octa','QualcommMSM8953Snapdragon625','Mediatek MT6757 Helio P20','Exynos 7870 SoC','Exynos 7870','1.4 GHz Quad-Core Cortex-A53','QualcommMSM816Snapdragon410','QualcommMSM8917Snapdragon425','1.2 GHz Quad-core Cortex-A53','Spreadtrum SC9830','MediatekMT6737T','Exynos3475','Spreadtrum SC9830','Spreadtrum','','']
-            resolution=['720 x 1280','540 x 960','480 x 800','1440 x 2960','1080 x 2220','1080 x 1920']      
-            weight=['163','195','173','174','155','191','157','172','132','0','181','169','179','135','160','170','143','159','146','156','138','131','122','126','153']  
-            dimensions=['147.6 x 68.7 x 8.4 mm','162.5 x 74.6 x 8.5 mm','159.5 x 73.4 x 8.1 mm','151.3 x 82.4 x 8.3 mm','148.9 x 68.1 x 8 mm','159.9 x 75.7 x 8.3 mm','150.9 x 72.6 x 7.7 mm','149.2 x 70.6 x 8.4 mm','143.4 x 70.8 x 6.9 mm','142.1 x 70.1 x 7 mm','153.2 x 76.1 x 7.6 mm','156.8 x 77.6 x 7.9 mm','146.1 x 71.4 x 7.9 mm','152.4 x 74.7 x 7.9 mm','146.8 x 75.3 x 8.9 mm','146.8 x 75.3 x 8.9 mm','156.7 x 78.8 x 8.1 mm','135.4 x 66.2 x 7.9 mm']
-            all_data_dic['price']=price
-            all_data_dic['Size']=Size
-            all_data_dic['Colors']=Colors
-            all_data_dic['OS']=OS
-            all_data_dic['Cpu']=Cpu
-            all_data_dic['backcam']=backcam
-            all_data_dic['battery']=battery
+            all_data_dict={}
+            criterias_in_integer=['price',"Size","Weight"]
+            # price=['100000','120000']
+            # Size=['5','5.5','5.3','6.5','7']
+            # Colors=['black','white','gold']
+            # OS=['android v8.0 oreo','android v7.1.1 (nougat)','android v4.4 (kitkat)','android v6.0 (marshmallow)',
+            # 'android v5.0.2 (lollipop)','android v5.1 (lollipop)','android v4.3 (jelly bean)']
+            # # size=['0','1','3','4','4.1','4.2','4.3','4.4','4.5','4.6','4.7','4.8','4.9','5','5.1','5.2','5.3','5.4','5.5','5.6','5.7','5.8','5.9','6','6.1','6.2','6.3','6.4','6.5','6.6','6.7','6.8','6.9','7']
+            # Cpu=['octa-core','quad-core']
+            # backcam=['16 MP','13 MP','8 MP','5.0 MP','3.7 MP','2 MP','1.9 MP','VGA']
+            # battery=['3600 mAh','3300 mAh','3000 mAh','2600 mAh','2400 mAh','2350']
+            # Brand=['samsung','I Phone']
+            # Chip=['Exynos 9810 Octa','Exynos 8895 Octa','Qualcomm Snapdragon 805','Exynos8890Octa','Quad-core (2 x 2.15 GHz Kryo + 2 x 1.6 GHz Kryo)','Exynos 7885 Octa','QualcommMSM8996Snapdragon820','Exynos7420','Exynos 7420 Octa','Exynos 7880 Octa','QualcommMSM8953Snapdragon625','Mediatek MT6757 Helio P20','Exynos 7870 SoC','Exynos 7870','1.4 GHz Quad-Core Cortex-A53','QualcommMSM816Snapdragon410','QualcommMSM8917Snapdragon425','1.2 GHz Quad-core Cortex-A53','Spreadtrum SC9830','MediatekMT6737T','Exynos3475','Spreadtrum SC9830','Spreadtrum','','']
+            # resolution=['720 x 1280','540 x 960','480 x 800','1440 x 2960','1080 x 2220','1080 x 1920']      
+            # weight=['163','195','173','174','155','191','157','172','132','0','181','169','179','135','160','170','143','159','146','156','138','131','122','126','153']  
+            # dimensions=['147.6 x 68.7 x 8.4 mm','162.5 x 74.6 x 8.5 mm','159.5 x 73.4 x 8.1 mm','151.3 x 82.4 x 8.3 mm','148.9 x 68.1 x 8 mm','159.9 x 75.7 x 8.3 mm','150.9 x 72.6 x 7.7 mm','149.2 x 70.6 x 8.4 mm','143.4 x 70.8 x 6.9 mm','142.1 x 70.1 x 7 mm','153.2 x 76.1 x 7.6 mm','156.8 x 77.6 x 7.9 mm','146.1 x 71.4 x 7.9 mm','152.4 x 74.7 x 7.9 mm','146.8 x 75.3 x 8.9 mm','146.8 x 75.3 x 8.9 mm','156.7 x 78.8 x 8.1 mm','135.4 x 66.2 x 7.9 mm']
+            # all_data_dic['price']=price
+            # all_data_dic['Size']=Size
+            # all_data_dic['Colors']=Colors
+            # all_data_dic['OS']=OS
+            # all_data_dic['Cpu']=Cpu
+            # all_data_dic['backcam']=backcam
+            # all_data_dic['battery']=battery
+            # all_data_dic['Brand']=battery
+            # all_data_dic['Ram']=["1GB","2GB","3GB","4GB"]
+            # all_data_dic['Memory']=["1GB","2GB","3GB","4GB"]
+            print(filter_features)
+            gcritdt_obj=generalCriteriaData.objects.filter(criteria__in=filter_features)
+            gcritdt_obj_list=list(gcritdt_obj.values_list("criteria__criteria_name","valuelist",'inputtype'))
+            # criteria_name=gcritdt_obj_list[0][0]
+            # value_list=gcritdt_obj_list[0][1]
+            # value_list = [ float(x) for x in value_list ]
+            # inputtype=gcritdt_obj_list[0][2]
+            # all_data_dict[criteria_name]=[]
+            # all_data_dict[criteria_name].append(value_list)
+            # all_data_dict[criteria_name].append(inputtype)
+            # min=value_list[0]
+            # max=value_list[-1]
+            # templist=[]
+            # templist.append(min)
+            # templist.append(max)
+            # all_data_dict[criteria_name].append(templist)
 
-            filter_features = list(filter_features.values())
-            print(":filter",filter_features)
-            data_filter_feature={}
-            for i in filter_features:
-                print("i:",i['feature'])
-                data_filter_feature[i['feature']]=all_data_dic[i['feature']]
+
+            # print("criteria_name",criteria_name)
+            # print("value_list",value_list)
+            # print("inputtype",inputtype)
+            for obj in gcritdt_obj_list:
+                criteria_name=obj[0]
+                value_list=obj[1]
+
+                if criteria_name in criterias_in_integer:
+                    value_list = [ float(x) for x in value_list ]
+
+                inputtype=obj[2]
+                if inputtype=="slider":
+                    # get min and max of valuelist. and store in a list. 
+                    min=value_list[0]
+                    max=value_list[-1]
+                    templist=[]
+                    templist.append(min)
+                    templist.append(max)
+                    all_data_dict[criteria_name]=[]
+                    all_data_dict[criteria_name].append(value_list)
+                    all_data_dict[criteria_name].append(inputtype)
+                    all_data_dict[criteria_name].append(templist)
+                else:
+                    all_data_dict[criteria_name]=[]
+                    all_data_dict[criteria_name].append(value_list)
+                    all_data_dict[criteria_name].append(inputtype)
+            print(all_data_dict)
+
+
 
             data={
-                'feat':filter_features,
-                'data_filter_feature':data_filter_feature
+                "all_data_dict":all_data_dict,
+                # 'feat':filter_features,
+                # 'data_filter_feature':data_filter_feature
                 }
             return JsonResponse(data)
         else:
@@ -1861,22 +1934,26 @@ class filter(TemplateView):
             print(role)
             
             if role=='Super_Admin':
-                roles=1
-                filter_features=sort_feature.objects.filter(~Q(sh_hd = 0),roles=roles).order_by('position')
-                # feat=sort_feature.objects.filter(~Q(sh_hd = 0),roles=roles).order_by('position')
-
-                ft=sort_feature.objects.filter(Q(sh_hd = 0),roles=roles).order_by('position')
-                print("In super admin",filter_features)
+                pass
+                # roles=1
+                # filter_features=sort_feature.objects.filter(~Q(sh_hd = 0),roles=roles).order_by('position')
+                # ft=sort_feature.objects.filter(Q(sh_hd = 0),roles=roles).order_by('position')
+                # print("In super admin",filter_features)
             elif role=='Subject':
+                exp_obj=Experiment.objects.get(id=134)
+
+                ExpCritObj=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id="c.pruned",sh_hd=1)
+                pcriteria_list=list(ExpCritObj.values_list("pCriteria",flat=True))
+                filter_features=pcriteria_list
+                
                 # global role
-                roles=2
-                filter_features=sort_feature.objects.filter(~Q(sh_hd = 0),roles=roles).order_by('position')
-                ft=sort_feature.objects.filter(Q(sh_hd = 0),roles=roles).order_by('position')
+                # roles=2
+                # filter_features=sort_feature.objects.filter(~Q(sh_hd = 0),roles=roles).order_by('position')
+                # ft=sort_feature.objects.filter(Q(sh_hd = 0),roles=roles).order_by('position')
             # else:
             #     print("in mobile redirect")
             #     return redirect('/mobileanl/mobile')
-
-            return render(request,'webapp/filter_test.html')
+            return render(request,'webapp/showfilter.html')
     
     def post(self,request):
         # print("ssss",(request.POST['first_choice_value']))
@@ -1916,13 +1993,12 @@ class filter(TemplateView):
         # filter_d={}
         if request.is_ajax():
             count=0
-            d = request.POST.get('filt_opt_sel')
+            element_data_dict = request.POST.get('element_data_dict')
             #print('d',d)
-            filt_opt_sel = json.loads(d)
+            element_data_dict = json.loads(element_data_dict)
             # print("filt_opt_sel",filt_opt_sel)
-            filter_d=filt_opt_sel
+            filter_d=element_data_dict
             # return render(request,'webapp/mobile.html')  
-            data={'success':"success"}
             
 
 
@@ -2011,7 +2087,14 @@ class filter(TemplateView):
                 
                 sizeofmob=len(list(filt_mobiles))
                 print(sizeofmob)
+            print(filt_mobiles)
+        
+            filt_mobiles=filt_mobiles
             print("sizeofmob",sizeofmob)
+            data={
+                'filt_mobiles':"filt_mobiles",
+                }
+
             return JsonResponse(data)
 
             
@@ -2093,20 +2176,25 @@ def filteredMobileView(request):
                 template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
                 return render(request,template_name,{'mobiles':ex_mobile,'template_sidebar':template_sidebar})
             else:
-                # print("mobiles",filt_mobiles)
-                uid = request.user.username
-                print(uid)
-                tuser = User.objects.get(username=uid)
-                exp_list = tuser.subject_set.values_list('exp', flat=True) 
-                exp_active = max(exp_list)                
-                phoneobjs=selectedAdminPhones.objects.filter(exp=exp_active)
+                print("mobiles",filt_mobiles)
+                # uid = request.user.id
+                # print(uid)
+                # tuser = User.objects.get(username=uid)
+                # exp_list = tuser.subject_set.values_list('exp', flat=True) 
+                # exp_active = max(exp_list)    
+                # mobilephones.objects.filter()            
+                # phoneobjs=selectedAdminPhones.objects.filter(exp=134)
                 # print(phoneobjs)
-                plist=[]
-                for pob in phoneobjs:
-                    print(pob)
-                    plist.append(pob.mob.id)
-                # print(plist)
-                filt_mobiles=mobilephones.objects.filter(pk__in=plist)
+                # plist=[]
+                # for pob in phoneobjs:
+                #     print(pob)
+                #     plist.append(pob.mob.id)
+                # # print(plist)
+                # print("SS",filt_mobiles[0].id)
+                mobile_id_list=[]
+                for mobile in filt_mobiles:
+                    mobile_id_list.append(mobile.id)
+                filt_mobiles=mobilephones.objects.filter(pk__in=mobile_id_list)
                 paginator = Paginator(filt_mobiles,9)
                 page = request.GET.get('page')
                 ex_mobile = paginator.get_page(page)

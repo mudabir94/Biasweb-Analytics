@@ -1,0 +1,192 @@
+{% extends "webapp/newbase.html" %}
+{% block content %}
+{%csrf_token%}
+{% load static from staticfiles%}
+
+<!-- 
+<nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>                        
+            </button>
+            <a class="navbar-brand" href="#">Mobile Analytics</a>
+          </div>
+          <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav">
+             
+                        <li><a href="{%url 'mobileview'%}">Home</a></li>
+                        <li><a href="#" >About</a></li>
+                        {% if  user.is_authenticated %}
+                        <li><p id="username">{{ user.get_username }}</p></li>
+                        <li><a href="{% url 'logout'%}">Logout</a></li>   
+                        {% else %}
+                        <li><a href="{% url 'login'%}?next={{request.path}}">Login</a></li>   
+                        {% endif %}  
+                </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+            </ul>
+            
+          </div>
+        </div>
+      </nav>
+         -->
+      <div class="container-fluid text-center">    
+        <div class="row content">
+          <div class="col-sm-2 sidenav" style="background:black">
+                <!-- <ul class="nav nav-pills nav-stacked">
+                      
+                        <li><a href="#section2">User Profile</a></li>
+                </ul><br> -->
+          </div>
+        <div class="col-sm-8 text-left"> 
+            
+            <div class="container latest-product-section"> 
+                <div id="crit_list_filter_div"></div>
+                <button onclick="getSelOptions()">selected options</button>
+                
+              
+            </div>                 
+                            
+               
+          </div>
+          <div class="col-sm-2 sidenav"  style="background:black">
+            <div class="well">
+          
+            </div>
+            <div class="well">
+            
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer class="container-fluid text-center">
+        <p>Footer Text</p>
+      </footer>
+ 
+           
+
+    <script>
+        var element_data_dict={}
+        $(document).ready(function () {
+            $.ajax({
+                                url: "{% url 'filter' %}",
+                                type:'GET',
+                                'data': {
+                                // 'csrfmiddlewaretoken': '{{ csrf_token }}',
+                                },
+                                dataType: "json",
+                                
+                                success: function(data){
+                                    var all_data_dict=data["all_data_dict"];
+                                    console.log("all_data_dict",all_data_dict);
+                                    var ul=$('<ul/>',{id:'crit_list_filter_ul'}).appendTo("#crit_list_filter_div");
+                                    for (var key in all_data_dict){
+                                        console.log("key",key)
+                                        console.log("val",all_data_dict[key])
+                                        value=all_data_dict[key];
+                                        var li=$('<li/>',{'id':key+'-li',"class":"search_filter_li_custom_class"}).appendTo('#crit_list_filter_ul');
+                                        var div_row=$('<div/>',{'class':'row '}).appendTo(li);
+                                          var div_col1=$('<div/>',{'class':'col-md-4'}).appendTo(div_row);
+                                            var label=$('<label/>',{'text':key}).appendTo(div_col1);
+                                        var div_col_md_2=$('<div/>',{'class':'col-md-8'}).appendTo(div_row);
+                                        if (value[1]==="slider"){
+                                          
+                                                var input = $("<input/>",{"type":"text","id":key+"-slider","class":"slider"});
+                                                input.appendTo(div_col_md_2);
+                                                        slider2 = new rSlider({
+                                                            target: key+'-slider',
+                                                            
+                                                            values: value[0],
+                                                            widget:false,
+                                                            labels: value[0],
+                                                            range:true,
+                                                            labels:true,
+                                                            set:value[2],
+                                                            tooltip:true,
+                                                            
+                                                            
+                                                            onChange: function (event) {
+                                                                console.log("event",event);
+                                                                console.log(this.target)
+                                                                var id=this.target
+                                                                var id_list=id.split("-")
+                                                                var key=id_list[0];
+                                                                var templist=[];
+                                                                event=event.split(",");
+                                                                
+                                                                 
+                                                                element_data_dict[key]=event;
+                                                    }
+                                                });
+                                        }
+                                        else if(value[1]==="select"){
+                                          var sel = $('<select />',{'id':key+'-select','class':"form-control"}).appendTo(div_col_md_2);
+                                          $('<option />', {value: "", text: "Blank"}).appendTo(sel);
+                                          for(var val in value[0]) {
+                                              $('<option />', {value: value[0][val], text: value[0][val] }).appendTo(sel);
+                                          }
+
+                                        }
+
+
+
+                                    }
+                            
+
+                           
+                }
+        });
+    });
+
+
+
+function getSelOptions(){
+  $('select[id$="-select"]').each(function () {
+    var id=this.id;
+    var idlist=id.split('-')
+    var key=idlist[0];
+    var selectedoption=$(this).val()
+    console.log("key",key);
+    console.log("selected option",selectedoption)
+    element_data_dict[key]=selectedoption
+
+  });
+  console.log("element_data_dict",element_data_dict)
+           
+            $.ajax({
+                                url: "{% url 'filter' %}",
+                                type:'POST',
+                                'data': {
+                                  'element_data_dict':JSON.stringify(element_data_dict),
+
+                                 'csrfmiddlewaretoken': '{{ csrf_token }}',
+                                },
+                                dataType: "json",
+                                
+                                success: function(data){
+                                  filt_mobiles=data['filt_mobiles']
+                                  console.log("filt_mobiles",filt_mobiles)
+                                     window.location.assign("{%url 'filtered_mobile_view'%}");
+                                   
+                                }
+            });             
+        }
+        
+window.addEventListener( "pageshow", function ( event ) {
+var historyTraversal = event.persisted || 
+( typeof window.performance != "undefined" && 
+window.performance.navigation.type === 2 );
+        if ( historyTraversal ) {
+        window.location.reload();
+    }
+});
+  
+
+</script>
+    
+{% endblock  %}
