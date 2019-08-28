@@ -117,14 +117,15 @@
                 </div>
           </div>
         </div>
-      </div>
-      <footer>
+        <footer>
 		
             <div class="container-fluid" style='margin-left:15px'>
                 <p><a href="#" target="blank">Contact</a> | <a href="#" target="blank">LinkedIn1</a> | <a href="#" target="blank">Twitter</a> | <a href="#" target="blank">Google+</a></p>
             </div>
        </footer>	
 
+      </div>
+      
     <script>
         var arr=[];
        // Because of this code when subject logs in and goes to filter_mobile_view first it loads all mobile 
@@ -248,119 +249,127 @@
                 },
                 dataType: "json",
                 success: function(data){
-                   
-                    $('#mobile_catalog_div').empty();
-                    // $('#pager_div').empty();
-                               
-                                // var json_data_mobiles=data['samsung_phones']
+                    var pagevisited=data['pagevisited'];
+                    if (pagevisited==="true"){
+                        $(".custom_side_rows").hide();
+                        $('#mobile_catalog_div').empty();
+                        $('#mobile_catalog_div').append("<h1>Sorry please go to next page.</h1>")
+
+                    }
+                    else{    
+                        $(".custom_side_rows").show();
+
+                        $('#mobile_catalog_div').empty();
+                        // $('#pager_div').empty();
+                        // var json_data_mobiles=data['samsung_phones']
+                        var json_data_mobiles=data['mobilephones'];
+                        specmobphones=data['mobilephones'];
+                        var catalogcrit_show_list=data['catalogcrit_show_list']
+                        // var row_fluid=document.createElement('div');
+                        // row_fluid.setAttribute('class','row-fluid');
+                        // row_fluid.setAttribute('id','mobile_catalog_div');
+                        row_fluid=$('#mobile_catalog_div');
+                        var row=document.createElement('div');
+                        row_fluid.append(row);
+                        var heading=document.createElement("h4");
+                        heading.innerHTML="Mobile Catalog"
+                        row.append(heading)
+                        row.setAttribute('class','row');
+                        var row=document.createElement('div');
+                        row.setAttribute('class','row');
+                        row_fluid.append(row);
+                        var col_md_12=document.createElement("div");
+                        col_md_12.setAttribute('class','col-md-12');
+                        row.append(col_md_12);
+                        var lps=document.createElement("div");
+                        lps.setAttribute("class",'latest-product-section');
+                        col_md_12.append(lps);
+                        var rtc=document.createElement('DIV');
+                        rtc.setAttribute("class","row text-center");
+                        rtc.id="grid";
+                        lps.append(rtc);
+
+                    
+
+                        for (var i=0;i<json_data_mobiles.length;i++){
+                            
+                        //     if (i%3===0 && i!==0){
+                        //         var hr=document.createElement('hr');
+                        //         lps.append(hr); 
+                        //         var rtc=document.createElement('DIV');
+                        //         rtc.setAttribute("class","row text-center");
+                        //         lps.append(rtc);
                                 
-                                var json_data_mobiles=data['mobilephones'];
-                                specmobphones=data['mobilephones'];
-                                var catalogcrit_show_list=data['catalogcrit_show_list']
-                                // var row_fluid=document.createElement('div');
-                                // row_fluid.setAttribute('class','row-fluid');
-                                // row_fluid.setAttribute('id','mobile_catalog_div');
-                                row_fluid=$('#mobile_catalog_div');
-                                var row=document.createElement('div');
-                                row_fluid.append(row);
-                                var heading=document.createElement("h4");
-                                heading.innerHTML="Mobile Catalog"
-                                row.append(heading)
-                                row.setAttribute('class','row');
-                                var row=document.createElement('div');
-                                row.setAttribute('class','row');
-                                row_fluid.append(row);
-                                var col_md_12=document.createElement("div");
-                                col_md_12.setAttribute('class','col-md-12');
-                                row.append(col_md_12);
-                                var lps=document.createElement("div");
-                                lps.setAttribute("class",'latest-product-section');
-                                col_md_12.append(lps);
-                                var rtc=document.createElement('DIV');
-                                rtc.setAttribute("class","row text-center");
-                                rtc.id="grid";
-                                lps.append(rtc);
+                        //     }
+                            var col_md_4_post=document.createElement('DIV');
+                            col_md_4_post.setAttribute("class","col-md-4 sm-margin-b-50 pull-left post");
+                            col_md_4_post.id=json_data_mobiles[i]['id'];
+                            rtc.append(col_md_4_post);
+                            var margin_b_20=document.createElement('DIV');
+                            margin_b_20.setAttribute("class","margin-b-20");
+                            col_md_4_post.append(margin_b_20);
+                            var input_checkb=document.createElement('input');
+                            input_checkb.type="checkbox";
+                            input_checkb.setAttribute("class","custom_checkbox")
 
                             
+                            
+                            input_checkb.value=json_data_mobiles[i]['id'];
+                            input_checkb.id=json_data_mobiles[i]['id'];
+                            input_checkb.name=json_data_mobiles[i]['id']+"-"+json_data_mobiles[i]['Mobile_Name'];
+                            input_checkb.setAttribute('onchange','toggleCheckbox(this)')
+                            var img=document.createElement('img');
+                            img.setAttribute('class','img-responsive')
+                            // console.log("/static/"+json_data_mobiles[i]['imagepath1'])
+                            img.src="/static/"+json_data_mobiles[i]['imagepath1'];
 
-                                for (var i=0;i<json_data_mobiles.length;i++){
-                                   
-                                //     if (i%3===0 && i!==0){
-                                //         var hr=document.createElement('hr');
-                                //         lps.append(hr); 
-                                //         var rtc=document.createElement('DIV');
-                                //         rtc.setAttribute("class","row text-center");
-                                //         lps.append(rtc);
-                                      
-                                //     }
-                                    var col_md_4_post=document.createElement('DIV');
-                                    col_md_4_post.setAttribute("class","col-md-4 sm-margin-b-50 pull-left post");
-                                    col_md_4_post.id=json_data_mobiles[i]['id'];
-                                    rtc.append(col_md_4_post);
-                                    var margin_b_20=document.createElement('DIV');
-                                    margin_b_20.setAttribute("class","margin-b-20");
-                                    col_md_4_post.append(margin_b_20);
-                                    var input_checkb=document.createElement('input');
-                                    input_checkb.type="checkbox";
-                                    input_checkb.setAttribute("class","custom_checkbox")
+                            margin_b_20.append(input_checkb);
+                            margin_b_20.append(img);
+                            var mobile_name_p=document.createElement('p')
+                            mobile_name_p.innerHTML=json_data_mobiles[i]['Mobile_Name']
+                            col_md_4_post.append(mobile_name_p)         
+                            for (var j in catalogcrit_show_list ){
+                                
+                                var mobile_crit_p=document.createElement('p')
+                                mobile_crit_p.innerHTML=catalogcrit_show_list[j]+":"+json_data_mobiles[i][catalogcrit_show_list[j]]
+                                col_md_4_post.append(mobile_crit_p)
+                            }
+                            // var mobile_name_p=document.createElement('p')
+                            // mobile_name_p.innerHTML=json_data_mobiles[i]['Mobile_Name']
+                            // col_md_4_post.append(mobile_name_p)
+                            // var mobile_price_p=document.createElement('p')
+                            // mobile_price_p.innerHTML=json_data_mobiles[i]['price']
+                            // col_md_4_post.append(mobile_price_p)
+                            var link=document.createElement('a');
+                            link.setAttribute('class','link btn btn-success');
+                            link.target="_blank"
+                            // took alot of time finding this solution...
+                            var url = "{% url 'mobileinfo' id=4  %}".replace("4", json_data_mobiles[i]['id']);
+                            link.href= url;
 
-                                   
-                                    
-                                    input_checkb.value=json_data_mobiles[i]['id'];
-                                    input_checkb.id=json_data_mobiles[i]['id'];
-                                    input_checkb.name=json_data_mobiles[i]['id']+"-"+json_data_mobiles[i]['Mobile_Name'];
-                                    input_checkb.setAttribute('onchange','toggleCheckbox(this)')
-                                    var img=document.createElement('img');
-                                    img.setAttribute('class','img-responsive')
-                                    // console.log("/static/"+json_data_mobiles[i]['imagepath1'])
-                                    img.src="/static/"+json_data_mobiles[i]['imagepath1'];
-
-                                    margin_b_20.append(input_checkb);
-                                    margin_b_20.append(img);
-                                    var mobile_name_p=document.createElement('p')
-                                    mobile_name_p.innerHTML=json_data_mobiles[i]['Mobile_Name']
-                                    col_md_4_post.append(mobile_name_p)         
-                                   for (var j in catalogcrit_show_list ){
-                                        
-                                        var mobile_crit_p=document.createElement('p')
-                                        mobile_crit_p.innerHTML=catalogcrit_show_list[j]+":"+json_data_mobiles[i][catalogcrit_show_list[j]]
-                                        col_md_4_post.append(mobile_crit_p)
-                                    }
-                                    // var mobile_name_p=document.createElement('p')
-                                    // mobile_name_p.innerHTML=json_data_mobiles[i]['Mobile_Name']
-                                    // col_md_4_post.append(mobile_name_p)
-                                    // var mobile_price_p=document.createElement('p')
-                                    // mobile_price_p.innerHTML=json_data_mobiles[i]['price']
-                                    // col_md_4_post.append(mobile_price_p)
-                                    var link=document.createElement('a');
-                                    link.setAttribute('class','link btn btn-success');
-                                    link.target="_blank"
-                                    // took alot of time finding this solution...
-                                    var url = "{% url 'mobileinfo' id=4  %}".replace("4", json_data_mobiles[i]['id']);
-                                    link.href= url;
-
-                                    link.text="READ MORE";
-                                    col_md_4_post.append(link); 
-                                    $('#pager_div').empty();
-                                    var pager_div=document.getElementById('pager_div');
-                                    var pager=document.createElement("div");
-                                    pager.setAttribute('class','turn-page');
-                                    pager.id="pager";
-                                    pager_div.append(pager);
-                                    $("#mobile_catalog_div").cPager({
-                                        // how many items per page
-                                        pageSize:5,
-                                        // container ID
-                                        pageid: "pager",
-                                        // item class
-                                        itemClass: "post",
-                                        pageIndex: 1
-                                        });
-                                        $("#pager").show();
-                                   
-                        } 
-                              
+                            link.text="READ MORE";
+                            col_md_4_post.append(link); 
+                            $('#pager_div').empty();
+                            var pager_div=document.getElementById('pager_div');
+                            var pager=document.createElement("div");
+                            pager.setAttribute('class','turn-page');
+                            pager.id="pager";
+                            pager_div.append(pager);
+                            $("#mobile_catalog_div").cPager({
+                                // how many items per page
+                                pageSize:5,
+                                // container ID
+                                pageid: "pager",
+                                // item class
+                                itemClass: "post",
+                                pageIndex: 1
+                                });
+                                $("#pager").show();
+                            
+                } 
+                        
                     }
+                }    
             });
 
  });

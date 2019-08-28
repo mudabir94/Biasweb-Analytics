@@ -473,14 +473,31 @@ def criteriaWeights(request):
         print("storeuserpagelogs",storeuserpagelogs)
 
         if "criteriaweights" in storeuserpagelogs:
-            print("storeuserpagelogs",storeuserpagelogs)
-            print("exp_feat_levels",exp_feat_levels)
+            flag="true"
+       
             adm = [idx for idx in exp_feat_levels if idx.startswith("A.")] 
-            print("adm",adm)
+            # if revisabilty is on then pagevisited should be false. 
+             
+            reviseability = [idx for idx in exp_feat_levels if idx.startswith("R.")] 
+            print("res -- R",reviseability[0])
+            crit_list=[]
+            if reviseability[0]=="R.1":
+                crit = [idx for idx in exp_feat_levels if idx.startswith("C.")] 
+                crit=crit[0].lower()
+                exp_obj=exp.objects.get(id=exp_under_test)
+                ExpCriteria_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1,cOrder_id=crit)
+                print("ExpCriteria_obj",ExpCriteria_obj)
+                crit_list_obj=ExpCriteria_obj.values_list('pCriteria__criteria_name',flat=True)
+                print("crit_list_obj",crit_list_obj)
+                crit_list=list(crit_list_obj)
+                crit_list.insert(0,"imagepath1")
+                crit_list.append("Others")
+                flag="false"
 
             data={
+                'crit_list':crit_list,
                 "ADM":adm[0],
-                "pagevisited":"True",
+                "pagevisited":flag,
                 'userid':request.user.id,
                 }
             return render(request,template_name,data)
@@ -3246,6 +3263,8 @@ def getMobiledata(request):
             role=userobj.role_id_id
             roleobj=Role.objects.get(pk=role)
             role=roleobj.role_name
+            pagevisited="false"
+
             if role=='Super_Admin':
                 # // This is the default code to retrieve all
                 mobiles_retrieved=mobilephones.objects.all().order_by('-id')
@@ -3253,6 +3272,9 @@ def getMobiledata(request):
                 mobiles_retrieved_list=mobiles_retrieved
                 #///////////////////////
             elif role=='Subject':
+                flag="false"
+                global exp_feat_levels
+
                 exp_list = userobj.subject_set.values_list('exp', flat=True) 
                 # Getting the status codes that are active.
                 exStatusCd_list=exStatusCd.objects.filter(status_code__gte=11)
@@ -3269,7 +3291,17 @@ def getMobiledata(request):
                 Sub_obj=Subject.objects.get(user=userobj,exp=exp_obj)
                 print("blocks",Sub_obj.block.levels_set)
                 datetime.datetime.now()
-                storeuserpagelogs["mobile"]=[datetime.datetime.now(),exp_under_test,request.user.id]
+                if "mobile" in storeuserpagelogs:
+                    flag="true"
+                    reviseability = [idx for idx in exp_feat_levels if idx.startswith("R.")] 
+                    print("res -- R",reviseability[0])
+                    if reviseability[0]=="R.1":
+                        flag="false"
+                        pagevisited=flag
+
+                else:
+                    pagevisited=flag
+                    storeuserpagelogs["mobile"]=[datetime.datetime.now(),exp_under_test,request.user.id]
                 # res = [idx for idx in Sub_obj.block.levels_set if idx.startswith("P.")]
                 # print("res",res)
                 # if res:
@@ -3284,7 +3316,6 @@ def getMobiledata(request):
                 #     mobiles_retrieved_list=mobiles_retrieved
                 phoneobjs=selectedAdminPhones.objects.filter(exp=exp_obj)
 
-                global exp_feat_levels
                 if 'P.All' not in exp_feat_levels:
                     print("pset id not P.All")
                     print(phoneobjs)
@@ -3315,7 +3346,7 @@ def getMobiledata(request):
             cat_obj=criteria_catalog_disp.objects.get(id=1)
             catalogcrit_show_list=cat_obj.catalog_crit_display_order
             return JsonResponse(
-                {
+                {   "pagevisited":pagevisited,
                     'mobilephones':mobiles_retrieved_list,
                     'catalogcrit_show_list':catalogcrit_show_list,
 
