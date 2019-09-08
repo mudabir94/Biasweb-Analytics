@@ -19,8 +19,9 @@ These steps will be same for every user.
     - User Redirected to Home.html page. It'll go to Home Function in Views.py
 2. Users role and then its active experiment id is seen. 
 3. Home.html is rendered, relevant data is passed and now the user can see the home page
-   showing the user the active experiment he is in and two links are shown Mobile Catalog and 
-   Show Filter(Not linked- half implemented)
+   showing  user, the active experiment he is in, and two links are shown 
+   -Mobile Catalog 
+   -Show Filter(Not linked- half implemented)
 4. User presses Mobile Catalog link. mobileCatalog_pageLoader() is called which is defined in (sidebartemp_subject.html). 
 5. In mobile.html user is only shown those Mobile Phones that are set by the admin. 
     They can be default, P.All or P.1 or P.2
@@ -45,7 +46,7 @@ Case 1- Subject id -- 16010087
  -> Feature Set by Admin --> ['I.1', 'R.1', 'W.direct', 'C.pruned']
  -> Feature that are Default --> ['A.1by1','P.All']
 
- 17. In this case Weight Generation Method is W.direct so it'll redirect to "criteria_weights" (criteriaWeights). 
+ 17. In this case Weight Generation Method is W.direct so it'll redirect to "criteria_weights" (criteriaWeights  in Views.py). 
  18. criteriaWeights main functionality in views.py. 
  19. As we're assuming its the first time it'll store page in visited logs(storeuserpagelogs) list.
  20. Check Revisiablity,Weight Generation Method,Alternatives Display Method, and will load the page. 
@@ -84,8 +85,60 @@ Case 1- Subject id -- 16010087
      hovered over the charts. 
    
 
-    
+Case 2- Subject id -- 16010057
+-> Exp No -134
+-> Feature Set by Admin --> ['I.1', 'R.1', 'W.AHP', 'C.pruned']
+-> Feature that are Default --> ['A.2by2','P.All']
+
+  17. In this case Weight Generation Method is W.AHP so it'll redirect to "comparemobilespecsfilt_ver" (compareMobileSpecsFilterVer in Views.py). 
+  18. "2by2comapremobilespecsfiltver.html" will be loaded.
+  19. On Page Load Ajax POST Method call is made and it'll go to "compareMobileSpecsFilterVer" POST Check in Views. 
+  20. Now We retrieve Interactivity and Revisiabilty set for this case. Which is I.1 and R.1.
+  Note-- This work should have been done in get function but for now its fine. (We can change it in future)
+  21. Criteria list is made seeing Criteria Display Method which in our case is C.Pruned.
+  22. After getting these details from views.py in success function of ajax
+     it'll start to make table and graphs. 
+  23. Interactivity checks and Revisiablity checks are implemented. 
+  24. All checks--> I,R, W.AHP, C.Pruned, P.All and A.2by2 all implented.. 
+  25. Bar, pie alternate_criteria range slider, next prev btns, criteria Weights logs are implemented.
+  26. Data is stored in json format. 
+  27. SubmitData() func will get all these logs and other score lists and send an ajax request to save. (Not Done).. 
+  28. Survey Form added.
+  29. Page visit logs are also save but temporarily. 
+
+Case 3- Subject id -- 16010061
+-> Exp No -134
+-> Feature Set by Admin --> ['I.1', 'R.0', 'W.AHP', 'C.full']
+-> Feature that are Default --> ['A.2by2','P.All']
+
+Case 4-  Subject id --  16010058
+-> Exp No -134
+-> Feature Set by Admin -->  ['I.0', 'R.0', 'W.AHP', 'C.full']
+-> Feature that are Default --> ['A.2by2','P.All']
+
+
+Case 5-  Subject id --  16010001
+-> Exp No -134
+-> Feature Set by Admin -->  ['I.0', 'R.1', 'W.AHP', 'C.full']
+-> Feature that are Default --> ['A.2by2','P.All']
+
+
+Case 6-  Subject id --  16010075
+-> Exp No -134
+-> Feature Set by Admin -->  ['I.0', 'R.0', 'W.direct', 'C.pruned']
+-> Feature that are Default --> ['A.1by1','P.All']
+
+
+Case 7-  Subject id --  16010078
+-> Exp No -134
+-> Feature Set by Admin -->  ['I.0', 'R.1', 'W.direct', 'C.pruned']
+-> Feature that are Default --> ['A.1by1','P.All']
+
+Case 8-  Subject id --  16010078
+-> Exp No -134
+-> Feature Set by Admin -->  ['I.0', 'R.1', 'W.direct', 'C.pruned']
+-> Feature that are Default --> ['A.2by2','P.All']
+   -2by2 comaprison matrix is shown. 
+   -No Graphs are implemented as there was confusion in it.
+
  
-
-
-

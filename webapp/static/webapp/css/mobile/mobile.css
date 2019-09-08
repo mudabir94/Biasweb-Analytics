@@ -1,10 +1,10 @@
 #comparebtn_id{
-    background-color:#75575d 
+    background-color:#acacac;
   }
   
   .custom_checkbox{
-    width: 30px; /*Desired width*/
-    height: 30px; /*Desired height*/
+    width: 30px;
+    height: 30px; 
    
   }
   .custom_checkbox:hover{

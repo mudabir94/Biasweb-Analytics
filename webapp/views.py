@@ -502,6 +502,7 @@ def criteriaWeights(request):
                 }
             return render(request,template_name,data)
         else:
+            flag="false"
             storeuserpagelogs["criteriaweights"]=[datetime.datetime.now(),exp_under_test,request.user.id]
 
             print("NOT AJAX CRITERIA WIETNGTS")
@@ -534,7 +535,7 @@ def criteriaWeights(request):
                 'crit_list':crit_list,
                 "ADM":adm[0],
                 'userid':request.user.id,
-                "pagevisited":"False",
+                "pagevisited":flag,
 
                 
             }
@@ -711,6 +712,8 @@ def compareMobileTwoByTwoDirect(request):
 
 def compareMobileSpecsFilterVer(request):
     if request.method=="GET":
+       
+        
         return render(request,'webapp/2by2comapremobilespecsfiltver.html')
     if request.method=="POST":
         if request.is_ajax: 
@@ -720,10 +723,10 @@ def compareMobileSpecsFilterVer(request):
             global comp_mobiles
             global exp_under_test
             alternative_list=[]
-            res = [idx for idx in exp_feat_levels if idx.startswith("C.")] 
-            res=res[0].lower()
+            crit_check = [idx for idx in exp_feat_levels if idx.startswith("C.")] 
+            crit_check=crit_check[0].lower()
             exp_obj=exp.objects.get(id=exp_under_test)
-            ExpCriteria_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1,cOrder_id=res)
+            ExpCriteria_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1,cOrder_id=crit_check)
             print("ExpCriteria_obj",ExpCriteria_obj)
             crit_list=ExpCriteria_obj.values_list('pCriteria__criteria_name',flat=True)
             crit_list=list(crit_list)
@@ -759,7 +762,16 @@ def compareMobileSpecsFilterVer(request):
                 mobile={}
                 print("alternative_list",alternative_list)
                 # features=['price','resolution','size']
+                if "2by2comapremobilespecsfiltver" in storeuserpagelogs:
+                    flag="true"
+                else:
+                    flag="false"
+
+                    storeuserpagelogs["2by2comapremobilespecsfiltver"]=[datetime.datetime.now(),exp_under_test,request.user.id]
+
                 data={
+                    'userid':request.user.id,
+                    "pagevisited":flag,
                     'allmobiles':allmobile,
                     'numofmobiles':numofmobiles,
                     'criteria_list':criteria_list,

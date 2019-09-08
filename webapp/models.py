@@ -3,8 +3,6 @@ from django.db.models import CharField, Model
 from django_mysql.models import ListCharField
 from django.contrib.auth.models import AbstractUser
 from django_mysql.models import ListCharField,ListTextField
-
-
 import datetime
 
 # Create your models here.
@@ -397,7 +395,7 @@ class StoreCritWeightLogs(models.Model):
 class generalCriteriaData(models.Model):
     criteria = models.ForeignKey(PhoneCriteria, on_delete=models.CASCADE,null=True,blank=True)
     valuelist=ListCharField(
-        base_field=CharField(max_length=20),
+        base_field=models.CharField(max_length=20),
         size=10,
         max_length=(10*21),
         null=True,
