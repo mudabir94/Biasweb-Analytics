@@ -41,15 +41,34 @@ from biasweb.utils.assign import Assigner
 from .forms import (NameForm, SignUpForm, blogForm, filterform,
                     sort_filter_form)
 #-----------------------------------------------------------------
-from .models import Role, User, blog
+from webapp.models import experiment as Experiment
 from .models import experiment as exp
-from .models import ( mobilephones, platform_feature,
-                     samsung_phone, sort_feature, userscoreRecord,ExpCriteriaOrder,PhoneCriteria)
+
+from .models import Role, User, blog
+from .models import ( 
+                    mobilephones, 
+                    platform_feature, 
+                    Subject,
+                    samsung_phone,
+                    sort_feature, 
+                    userscoreRecord,
+                    ExpCriteriaOrder,
+                    PhoneCriteria,
+                    experiment_feature,
+                    StoreHoverBarChartLogs,
+                    StoreHoverPieChartLogs,
+                    StoreNextPrevButtonLogs,
+                    StoreCritWeightLogs,
+                    generalCriteriaData,
+                    )
 
 
-from .models import selectedAdminPhones,criteria_catalog_disp
+from .models import selectedAdminPhones,criteria_catalog_disp,exStatusCd
 from django.views.decorators.cache import never_cache
 
+import datetime
+from functools import reduce
+import operator
 
 #--------------------------------------------------------------------------------------------------
 role=1   #global variable used in adminsetup and globalFunc function. 
@@ -59,6 +78,12 @@ mobiles=None
 filter_flag=None
 sizeofmob=0 # global variable assigned in filter class.
 filt_mobiles=None
+exp_under_test=0
+def_featlvl_frm_pf_dict={}
+exp_feat_levels=[]
+storeuserpagelogs={}
+critw_logs_dict={}
+
 #-------------------------------------------------------------------------------------------------
 
             
@@ -67,6 +92,9 @@ filt_mobiles=None
 class Home(TemplateView):
     template_name='webapp/home.html'
     def get(self,request):
+        global storeuserpagelogs
+        storeuserpagelogs={}
+        print("storeuserpagelogs---",storeuserpagelogs)
         #userobj= User.objects.values_list('role_id_id',flat=True).filter(id=request.user.id)
         
         #**************************************************
@@ -83,6 +111,13 @@ class Home(TemplateView):
         if role=='Super_Admin':
             
             template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
+            template_main_homepage="webapp/main_content_temps/homepage_main/superadmin_hp.html"
+            data={
+                'role_id':userobj.role_id_id,
+                'template_sidebar':template_sidebar,
+                'template_main_homepage':template_main_homepage,
+            }
+
             # return redirect('/filtered_mobile_view')
             # return render(request,'webapp/2by2comparemobilespecs.html')
             # return render(request,template_sidebar)
@@ -91,21 +126,99 @@ class Home(TemplateView):
             # role_name=roleobj.role_name
             # print(role_name)
             template_sidebar='webapp/sidebartemplates/sidebartemp_expadm.html'
+            template_main_homepage="webapp/main_content_temps/homepage_main/experimentadmin_hp.html"
+            data={
+                'role_id':userobj.role_id_id,
+                'template_sidebar':template_sidebar,
+                'template_main_homepage':template_main_homepage,
+            }
+
             
         elif role=='Platform_Admin':
             roleobj=Role.objects.get(pk=role)
             role_name=roleobj.role_name
             print(role_name)
             template_sidebar='webapp/sidebartemplates/sidebartemp_pltfadm.html'
+            template_main_homepage="webapp/main_content_temps/homepage_main/platformadmin_hp.html"
+            data={
+                'role_id':userobj.role_id_id,
+                'template_sidebar':template_sidebar,
+                'template_main_homepage':template_main_homepage,
+            }
+
         elif role=='Subject':
             # all other conditions of subjects will be done here. 
+            # Checking the experiments assigned to the Subjects. 
+            exp_list = userobj.subject_set.values_list('exp', flat=True) 
+            # Getting the status codes that are active.
+            # exStatusCd_list=exStatusCd.objects.filter(status_code__gte=11)
+            exStatusCd_list=exStatusCd.objects.filter(status_code__gte=11)
+
+            # Fetching that the experiments who has status code as active for the user/subject. 
+            inner_qs = exp.objects.filter(id__in=list(exp_list),status_code__in=exStatusCd_list)
+            # Using the experiment list for display
+            print("inner_qs",inner_qs)
+            print("inner_qs",list(inner_qs.values('id')))
+            explist=inner_qs.values('id')
+            print("explst",list(explist))
+            # Now we know how many experiments the subject is invovled. 
+            # For now we'll hard code to get one subject having one active exp... 
+            # I have changed from hard coded id to get the exp obj based on first active experiment. 
+            exp_obj=exp.objects.get(id=list(inner_qs.values('id'))[0]['id'])
+            Sub_obj=Subject.objects.get(user=userobj,exp=exp_obj)
+            print(Sub_obj.block)
+            exp_chosenlevel=list(experiment_feature.objects.filter(used_in=exp_obj).values_list('chosen_levels',flat=True))
+            exp_defaultlevel=list(experiment_feature.objects.filter(used_in=exp_obj).values_list('default_levels',flat=True))
+            exp_chosenlevel_list=[]
+            exp_defaultlevel_list=[]
+            global exp_feat_levels
+            exp_feat_levels=[]
+            print("Blocks",Sub_obj.block.levels_set)
+            print("CHOSEN LEVELS",exp_chosenlevel)
+            print("Default LEVELS",exp_defaultlevel)
+            exp_chosenlevel=['' if v is None else v for v in exp_chosenlevel]
+            exp_defaultlevel=['' if v is None else v for v in exp_defaultlevel]
+
+            for blk in Sub_obj.block.levels_set:
+                for chlevl in exp_chosenlevel:
+                    if blk in chlevl:
+                        print("FOund")
+                        index=exp_chosenlevel.index(chlevl)
+                        exp_chosenlevel[index]=blk
+            print("CHOSEN LEVELS",exp_chosenlevel)
+            for i in exp_chosenlevel:
+                if i:
+                    
+                    exp_chosenlevel_list.append(i)
+                    exp_feat_levels.append(i)
+            for i in exp_defaultlevel:
+                if i:
+                    print(i)
+                    exp_defaultlevel_list.append(i[0])
+                    exp_feat_levels.append(i[0])
+            print("exp_feat_levels",exp_feat_levels)
+
+
+            
+
+
+
+
+
+
+
+
             template_sidebar='webapp/sidebartemplates/sidebartemp_subject.html'
-
-            # return render(request,'webapp/2by2comparemobilespecs.html')
-            # return redirect('/filtered_mobile_view')
-
+            template_main_homepage="webapp/main_content_temps/homepage_main/subject_hp.html"
+            data={
+                'role_id':userobj.role_id_id,
+                'template_sidebar':template_sidebar,
+                'template_main_homepage':template_main_homepage,
+                'explist':explist,
+                "exp_id":exp_obj.id
+            }
         #*****************************************************
-        return render(request,self.template_name,{'role_id':userobj.role_id_id,'template_sidebar':template_sidebar})
+        return render(request,self.template_name,data)
     def post(self,request):
         return render(request,self.template_name)
 # IT IS NOT USED ANYWHERE
@@ -271,14 +384,13 @@ def getSelectedAdminPhones(request):
             })
 
 
-
+# It gets the phones id list and use the ids to exctract from mobilephones model. 
+# through which we extract size(length/Number) of mobiles and store in a global variable.
+# Last thing is to send exp_feat_levels list back to the page in sucess function. 
 def showMob(request):
     if request.method=="POST":
         if request.is_ajax:
-        # print("ajax",request.POST.get('data'))
-            ####print("PST",request.POST.get('d')) 
             mobiledata = request.POST.get('mobiledata')
-        ### print('JSONLOADS',eval(d))
             mobiledata_json = json.loads(mobiledata)
             print("mobiledata_json",mobiledata_json[0])
             query_array=[]
@@ -286,20 +398,39 @@ def showMob(request):
             for key,value in  enumerate(mobiledata_json):
                 print("key",key)
                 print ("val", value)
-                # query_array.append(' '+ 'id'+ '=' + value )
                 query_array.append(value)
-            #query=samsung_phone.objects.filter(id__in=(query_array))
             query=mobilephones.objects.filter(id__in=(query_array))
-                        # old_query = 'SELECT * FROM webapp_samsung_phone WHERE '+ ' or ' .join(query_array)
+          
             global comp_mobiles
             global sizeofmob
-                # mobiles=samsung_phone.objects.raw(query)
+            global exp_under_test
+                
             comp_mobiles=query
             size_of_mobile=len(list(comp_mobiles))
             sizeofmob=size_of_mobile
             print(comp_mobiles)
+
+            
             dict = {'size_of_mobile':size_of_mobile}
-    return HttpResponse(json.dumps(dict))
+            print("Uer Id",request.user.id)
+            userobj=User.objects.get(pk=request.user.id)
+
+            exp_obj=exp.objects.get(id=exp_under_test)
+            Sub_obj=Subject.objects.get(user=userobj,exp=exp_obj)
+            print("Sub_obj",Sub_obj)
+           
+
+            global exp_feat_levels
+
+            data={
+                # 'dict':json.dumps(dict),
+                'subject_block':exp_feat_levels,
+
+                # 'subject_block':exp_feat_levels,
+                'data':"success",
+            }
+
+    return JsonResponse(data)
     #return render_to_response(request,'webapp/showmob.html',{'mobiles':mobiles}) 
     '''
     query = 'SELECT * FROM webapp_samsung_phone WHERE id=1 or id=2'
@@ -307,20 +438,312 @@ def showMob(request):
     print(mobiles)
     return render(request,'webapp/showmob.html',{'mobiles':mobiles})
     '''
+crit_list=[]
+criteria_weights_dict={}
+allmobile=[]
+numofmobiles=[]
+criteria_list=[]
+alternative_list=[]
+
+
+# Functionilty--
+# Two Methods.. 
+# Get and Post
+# GET Called when the page is loaded for first time or without ajax call. 
+#  If this is called for the first time, it'll store the page in logs storeuserpagelogs'
+    # Will Check Criteria Display Method and Alternatives Display Method and Revisablity Features
+    # Based on C. Feature criteria list will be exctracted from the tables that was selected by admin
+    # and will send to criteria_weights.html page. 
+# else 
+# Post is called through ajax request when we want to save the changes made by the user.
+# It saves the criterias values that are set by the user. 
+# The logs as well.  
+
+def criteriaWeights(request):
+    global crit_list
+    global criteria_weights_dict
+    global exp_feat_levels
+    global exp_under_test
+    global critw_logs_dict
+    # No check if block is CDM (C.Full and C.Prune... )
+
+    template_name='webapp/criteriaweights.html'
+   
+    if request.method=="GET":
+        print("storeuserpagelogs",storeuserpagelogs)
+
+        if "criteriaweights" in storeuserpagelogs:
+            flag="true"
+       
+            adm = [idx for idx in exp_feat_levels if idx.startswith("A.")] 
+            # if revisabilty is on then pagevisited should be false. 
+             
+            reviseability = [idx for idx in exp_feat_levels if idx.startswith("R.")] 
+            print("res -- R",reviseability[0])
+            crit_list=[]
+            if reviseability[0]=="R.1":
+                crit = [idx for idx in exp_feat_levels if idx.startswith("C.")] 
+                crit=crit[0].lower()
+                exp_obj=exp.objects.get(id=exp_under_test)
+                ExpCriteria_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1,cOrder_id=crit)
+                print("ExpCriteria_obj",ExpCriteria_obj)
+                crit_list_obj=ExpCriteria_obj.values_list('pCriteria__criteria_name',flat=True)
+                print("crit_list_obj",crit_list_obj)
+                crit_list=list(crit_list_obj)
+                crit_list.insert(0,"imagepath1")
+                crit_list.append("Others")
+                flag="false"
+
+            data={
+                'crit_list':crit_list,
+                "ADM":adm[0],
+                "pagevisited":flag,
+                'userid':request.user.id,
+                }
+            return render(request,template_name,data)
+        else:
+            flag="false"
+            storeuserpagelogs["criteriaweights"]=[datetime.datetime.now(),exp_under_test,request.user.id]
+
+            print("NOT AJAX CRITERIA WIETNGTS")
+            # get the criterias set by admin for the exp... 
+            # check if c.full or c.prune in res1
+            print("exp_feat_levels",exp_feat_levels)
+            
+            res = [idx for idx in exp_feat_levels if idx.startswith("C.")] 
+            res=res[0].lower()
+            exp_obj=exp.objects.get(id=exp_under_test)
+            ExpCriteria_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1,cOrder_id=res)
+            print("ExpCriteria_obj",ExpCriteria_obj)
+            crit_list_obj=ExpCriteria_obj.values_list('pCriteria__criteria_name',flat=True)
+            print("crit_list_obj",crit_list_obj)
+            crit_list=[]
+            crit_list=list(crit_list_obj)
+            crit_list.insert(0,"imagepath1")
+            crit_list.append("Others")
+            userobj=User.objects.get(pk=request.user.id)
+            print("exp_under_test",exp_under_test)
+            exp_obj=exp.objects.get(id=exp_under_test)
+            Sub_obj=Subject.objects.get(user=userobj,exp=exp_obj)
+            print("blocks",Sub_obj.block.levels_set)
+            print("exp_feat_levels",exp_feat_levels)
+            # res1 = [idx for idx in Sub_obj.block.levels_set if idx.startswith("A.")] 
+            adm = [idx for idx in exp_feat_levels if idx.startswith("A.")] 
+            print("adm",adm)
+
+            data={
+                'crit_list':crit_list,
+                "ADM":adm[0],
+                'userid':request.user.id,
+                "pagevisited":flag,
+
+                
+            }
+            return render(request,template_name,data)
+    elif request.method=="POST":
+        if request.is_ajax:
+            critlist_val_dict = request.POST.get('critlist_val_dict')
+            critlist_val_dict = json.loads(critlist_val_dict)
+            critw_logs_dict = request.POST.get('critw_logs_dict')
+            critw_logs_dict = json.loads(critw_logs_dict)
+            
+            print("critlist_val_dict",critlist_val_dict)
+            criteria_weights_dict=critlist_val_dict
+            print("criteria_weights_dict",criteria_weights_dict)
+            data={}
+            return JsonResponse(data) 
+# When the page is loaded  both of its GET and POST functions are called respectively through ajax. 
+# GET Method send back Interactivity and Revisiablity features. 
+# POST Methond sends back  multiple list and dict needed to populate the page. 
+def compareMobileOneByOneDirect(request):
+    template_name='webapp/comparemobile1by1direct.html'
+      
+    global crit_list
+    global comp_mobiles
+    global catalogcrit_show_list
+    global criteria_weights_dict
+    global exp_under_test
+
+
+    if request.method=="GET":
+            
+
+        if request.is_ajax():
+
+            userobj=User.objects.get(pk=request.user.id)
+            exp_obj=exp.objects.get(id=exp_under_test)
+            Sub_obj=Subject.objects.get(user=userobj,exp=exp_obj)
+            print("blocks",Sub_obj.block.levels_set)
+            global exp_feat_levels
+            interactivity = [idx for idx in exp_feat_levels if idx.startswith("I.")] 
+            print("res -- I",interactivity[0])
+            
+            reviseability = [idx for idx in exp_feat_levels if idx.startswith("R.")] 
+            print("res -- R",reviseability[0])
+            storeuserpagelogs["comparemobile1by1direct"]=[datetime.datetime.now(),exp_under_test,request.user.id]
+
+            data={
+                'userid':request.user.id,
+                "interactivity_data":interactivity[0],
+                "reviseability_data":reviseability[0]
+            }
+            return JsonResponse(data)
+        else:
+            # userobj=User.objects.get(pk=request.user.id)
+            # exp_obj=exp.objects.get(id=exp_under_test)
+            # Sub_obj=Subject.objects.get(user=userobj,exp=exp_obj)
+            
+            data={}
+            return render(request,template_name,data)
+
+    elif request.method=="POST":
+        print("criteria_weights_dict",criteria_weights_dict)
+        print("POSSSST")
+        mobile={}
+        allmobile={}
+        alternative_list=[]
+        data={}
+        criteria_list=[]
+        # criteria_list=['imagepath1']
+        print("crit_list",crit_list)
+
+        if crit_list:
+            for crit in crit_list:
+                criteria_list.append(crit)
+        test_mobiles = comp_mobiles
+        for m in test_mobiles:
+            print('m objest',m)
+            for crit in criteria_list:
+                if (crit!="Others"):
+                    print("crit",crit)
+                    print(getattr(m, crit))
+                    print("M",m)
+                    mobile[crit]=getattr(m, crit)
+
+            mobile['Others']=m.Mobile_Name
+            print("MOBILE")
+            print(mobile)
+            alternative_list.append(m.Mobile_Name)
+            allmobile[m.Mobile_Name]=mobile
+
+            print("criteria_list",criteria_list)
+            numofmobiles=len(allmobile)
+            mobile={}
+            print("alternative_list",alternative_list)
+            # features=['price','resolution','size']
+            data={
+                'allmobiles':allmobile,
+                'numofmobiles':numofmobiles,
+                'criteria_list':criteria_list,
+                'alternative_list':alternative_list,
+                "criteria_weights_dict":json.dumps(criteria_weights_dict)
+            }
+        return JsonResponse(data)
+
+def compareMobileTwoByTwoDirect(request):
+    # global crit_list
+    # global comp_mobiles
+    # global catalogcrit_show_list
+    # global criteria_weights_dict
+    global exp_under_test
+    template_name='webapp/comparemobile2by2direct.html'
+    if request.method=="GET":
+        if request.is_ajax():
+            userobj=User.objects.get(pk=request.user.id)
+            exp_obj=exp.objects.get(id=exp_under_test)
+            Sub_obj=Subject.objects.get(user=userobj,exp=exp_obj)
+            print("blocks",Sub_obj.block.levels_set)
+            global exp_feat_levels
+            interactivity = [idx for idx in exp_feat_levels if idx.startswith("I.")] 
+            print("res -- I",interactivity[0])
+            
+            reviseability = [idx for idx in exp_feat_levels if idx.startswith("R.")] 
+            print("res -- R",reviseability[0])
+         
+            data={
+                "interactivity_data":interactivity[0],
+                "reviseability_data":reviseability[0]
+            }
+            return JsonResponse(data)
+        else:
+            data={}
+            return render(request,template_name,data)
+    elif request.method=="POST":
+        print("criteria_weights_dict",criteria_weights_dict)
+        mobile={}
+        allmobile={}
+        alternative_list=[]
+        data={}
+        criteria_list=[]
+        print("crit_list",crit_list)
+
+        if crit_list:
+            for crit in crit_list:
+                criteria_list.append(crit)
+        test_mobiles = comp_mobiles
+        for m in test_mobiles:
+            print('m objest',m)
+            for crit in criteria_list:
+                if (crit!="Others"):
+                    print("crit",crit)
+                    print(getattr(m, crit))
+                    print("M",m)
+                    mobile[crit]=getattr(m, crit)
+
+            mobile['Others']=m.Mobile_Name
+            print("MOBILE")
+            print(mobile)
+            alternative_list.append(m.Mobile_Name)
+            allmobile[m.Mobile_Name]=mobile
+
+            print("criteria_list",criteria_list)
+            numofmobiles=len(allmobile)
+            mobile={}
+            print("alternative_list",alternative_list)
+            # features=['price','resolution','size']
+            data={
+                'allmobiles':allmobile,
+                'numofmobiles':numofmobiles,
+                'criteria_list':criteria_list,
+                'alternative_list':alternative_list,
+                "criteria_weights_dict":json.dumps(criteria_weights_dict)
+            }
+        return JsonResponse(data)
+
 def compareMobileSpecsFilterVer(request):
     if request.method=="GET":
+       
+        
         return render(request,'webapp/2by2comapremobilespecsfiltver.html')
     if request.method=="POST":
         if request.is_ajax: 
             mobile={}
             allmobile={}
+            
             global comp_mobiles
+            global exp_under_test
             alternative_list=[]
-            global catalogcrit_show_list
-
+            crit_check = [idx for idx in exp_feat_levels if idx.startswith("C.")] 
+            crit_check=crit_check[0].lower()
+            exp_obj=exp.objects.get(id=exp_under_test)
+            ExpCriteria_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1,cOrder_id=crit_check)
+            print("ExpCriteria_obj",ExpCriteria_obj)
+            crit_list=ExpCriteria_obj.values_list('pCriteria__criteria_name',flat=True)
+            crit_list=list(crit_list)
             criteria_list=['imagepath1']
-            if catalogcrit_show_list:
-                for crit in catalogcrit_show_list:
+            
+           
+            interactivity = [idx for idx in exp_feat_levels if idx.startswith("I.")] 
+            print("res -- I",interactivity[0])
+            
+            reviseability = [idx for idx in exp_feat_levels if idx.startswith("R.")] 
+            print("res -- R",reviseability[0])
+         
+            # if catalogcrit_show_list:
+            #     for crit in catalogcrit_show_list:
+            #         criteria_list.append(crit)
+            if crit_list:
+                for crit in crit_list:
                     criteria_list.append(crit)
             test_mobiles = comp_mobiles
             print("crit_list",criteria_list)
@@ -330,6 +753,7 @@ def compareMobileSpecsFilterVer(request):
                     print(crit)
                     mobile[crit]=getattr(m, crit)
                 mobile['Others']=m.Mobile_Name
+                print("Mobile ",mobile)
 
                 alternative_list.append(m.Mobile_Name)
                 allmobile[m.Mobile_Name]=mobile
@@ -338,16 +762,27 @@ def compareMobileSpecsFilterVer(request):
                 mobile={}
                 print("alternative_list",alternative_list)
                 # features=['price','resolution','size']
+                if "2by2comapremobilespecsfiltver" in storeuserpagelogs:
+                    flag="true"
+                else:
+                    flag="false"
+
+                    storeuserpagelogs["2by2comapremobilespecsfiltver"]=[datetime.datetime.now(),exp_under_test,request.user.id]
+
                 data={
+                    'userid':request.user.id,
+                    "pagevisited":flag,
                     'allmobiles':allmobile,
                     'numofmobiles':numofmobiles,
                     'criteria_list':criteria_list,
-                    'alternative_list':alternative_list
+                    'alternative_list':alternative_list,
+                    'interactivity':interactivity[0],
+                    "reviseability":reviseability[0]
                 }
             # code returns on this one. 
             # if allmobile:
             return JsonResponse(data)
-    
+
      
 def compareMobileSpecs(request):
     
@@ -466,9 +901,6 @@ def updateFeaturePosition(request):
         
         #print ("test", d['color'])
         return render(request, 'webapp/admin_setup.html')
-
-
-
 
 def hideFeature(request):
    
@@ -670,10 +1102,17 @@ class defaultCriteria_Setup(TemplateView):
                 print("postedFLevels",postedFLevels)
                 print("default_crit_show_dict",default_crit_show_dict)
                 print("default_crit_hide_dict",default_crit_hide_dict)
+                final_def_blocks_to_send = request.POST.get('final_def_blocks_to_send')
+                postedDefFLevels=json.loads(final_def_blocks_to_send)
+                print("final_def_blocks_to_send",final_def_blocks_to_send)
                 
                 expCont = getExpController(request)
                 existExpId = expCont.exp.id
                 existCusId=expCont.exp.custom_exp_id
+              
+
+                
+                # thats it. 
                 if postedFLevels:
                     expCont.setFSet(newFLevels=postedFLevels,prompt=False)
                     block_set = expCont.generateBlocks()
@@ -682,6 +1121,13 @@ class defaultCriteria_Setup(TemplateView):
                 else:
                     block_list=""
                 print("block_list",block_list)
+
+                #  1st check to see if postedDefFLevels exsists. 
+                # if it does then 
+                if postedDefFLevels:
+                # call expCont.setDefFSet(newDefFLevels=postedDefFLevels,prompt=False)
+                    expCont.setDefFSet(newDefFLevels=postedDefFLevels,prompt=False)
+                    
                 # save orderset Details in expCriteriaOrder
                 # Check to see if the exp obj already exists in the table. if it does then we need to update position and show_hide prop of  the rows containing the exp id. 
                 # 1. based on the exp obj check if exp exists. if it does then 
@@ -745,7 +1191,6 @@ class defaultCriteria_Setup(TemplateView):
                 }
                 return JsonResponse(data)
 
-               
 class orderCriteria_Setup(TemplateView):
     def get(self,request):
         role_name=['']
@@ -875,12 +1320,28 @@ class orderCriteria_Setup(TemplateView):
                 expCont = getExpController(request)
                 existExpId = expCont.exp.id
                 existCusId=expCont.exp.custom_exp_id
-                expCont.setFSet(newFLevels=postedFLevels,prompt=False)
-                block_set = expCont.generateBlocks()
-                block_list = list(block_set.all().values('serial_no','levels_set'))
-                print('<<<<<<TO DISPLAY ON PAGE>>>>>>')
-                print(block_list)
+               
+                # expCont.setFSet(newFLevels=postedFLevels,prompt=False)
+                # block_set = expCont.generateBlocks()
+                # block_list = list(block_set.all().values('serial_no','levels_set'))
+                # print('<<<<<<TO DISPLAY ON PAGE>>>>>>')
+                # print(block_list)
                 # save orderset Details in expCriteriaOrder
+                if postedFLevels:
+                    expCont.setFSet(newFLevels=postedFLevels,prompt=False)
+                    block_set = expCont.generateBlocks()
+                    block_list = list(block_set.all().values('serial_no','levels_set'))
+                    print('<<<<<<TO DISPLAY ON PAGE>>>>>>')
+                else:
+                    block_list=""
+                print("block_list",block_list)
+
+                #  1st check to see if postedDefFLevels exsists. 
+                # if it does then 
+                if postedDefFLevels:
+                # call expCont.setDefFSet(newDefFLevels=postedDefFLevels,prompt=False)
+                    expCont.setDefFSet(newDefFLevels=postedDefFLevels,prompt=False)
+                
                 exp_obj=Experiment.objects.get(custom_exp_id=existCusId)
                 
                 p_levList=list()
@@ -936,7 +1397,6 @@ class orderCriteria_Setup(TemplateView):
                 }
                 return JsonResponse(data)
 
-
 class Cdm_On_Co_On_CriteriaSetup(TemplateView):
     def get(self,request):
         role_name=['']
@@ -986,6 +1446,10 @@ class Cdm_On_Co_On_CriteriaSetup(TemplateView):
                 crit_hide_dict=json.loads(crit_hide_dict)
                 featlevels_dic=request.POST.get('featlevels_dic')
                 postedFLevels = json.loads(featlevels_dic)
+                cataloglist=request.POST.get('cataloglist')
+                cataloglist = json.loads(cataloglist)
+                criteria_catalog_disp.objects.filter(id=1).update(catalog_crit_display_order=cataloglist)
+
                 print("crit_order_dict",crit_order_dict)
                 print("crit_hide_dict",crit_hide_dict)
                 print("featlevels_dic",featlevels_dic)
@@ -1053,6 +1517,7 @@ class Cdm_On_Co_On_CriteriaSetup(TemplateView):
                 'block_list':block_list
                 }
                 return JsonResponse(data)
+
 class cdmCriteria_Setup(TemplateView):
     def get(self,request):
         flag="true"
@@ -1143,6 +1608,13 @@ class cdmCriteria_Setup(TemplateView):
                 cdm_crit_hide_dict= json.loads(cdm_crit_hide_dict)
                 featlevels_dic=request.POST.get('featlevels_dic')
                 postedFLevels = json.loads(featlevels_dic)
+                cataloglist=request.POST.get('cataloglist')
+                cataloglist = json.loads(cataloglist)
+                criteria_catalog_disp.objects.filter(id=1).update(catalog_crit_display_order=cataloglist)
+                final_def_blocks_to_send = request.POST.get('final_def_blocks_to_send')
+                postedDefFLevels=json.loads(final_def_blocks_to_send)
+                print("final_def_blocks_to_send",final_def_blocks_to_send)
+                
                 print("cdm_crit_show_dict",cdm_crit_show_dict)
                 print("cdm_crit_hide_dict",cdm_crit_hide_dict)
                 
@@ -1150,15 +1622,30 @@ class cdmCriteria_Setup(TemplateView):
                 existExpId = expCont.exp.id
                 existCusId=expCont.exp.custom_exp_id
                 
-                expCont.setFSet(newFLevels=postedFLevels,prompt=False)
-                block_set = expCont.generateBlocks()
-                block_list = list(block_set.all().values('serial_no','levels_set'))
-                print('<<<<<<TO DISPLAY ON PAGE>>>>>>')
-                print(block_list)
+                # expCont.setFSet(newFLevels=postedFLevels,prompt=False)
+                # block_set = expCont.generateBlocks()
+                # block_list = list(block_set.all().values('serial_no','levels_set'))
+                # print('<<<<<<TO DISPLAY ON PAGE>>>>>>')
+                # print(block_list)
                 # save orderset Details in expCriteriaOrder
                 # Check to see if the exp obj already exists in the table. if it does then we need to update position and show_hide prop of  the rows containing the exp id. 
                 # 1. based on the exp obj check if exp exists. if it does then 
                 # 2. With the help of dict see the criteria_name, and fetch that row and update it the new position, sh_hd
+                if postedFLevels:
+                    expCont.setFSet(newFLevels=postedFLevels,prompt=False)
+                    block_set = expCont.generateBlocks()
+                    block_list = list(block_set.all().values('serial_no','levels_set'))
+                    print('<<<<<<TO DISPLAY ON PAGE>>>>>>')
+                else:
+                    block_list=""
+                print("block_list",block_list)
+
+                #  1st check to see if postedDefFLevels exsists. 
+                # if it does then 
+                if postedDefFLevels:
+                # call expCont.setDefFSet(newDefFLevels=postedDefFLevels,prompt=False)
+                    expCont.setDefFSet(newDefFLevels=postedDefFLevels,prompt=False)
+                    
                 print("---------------88888888888888888888888888---------------")
 
                 exp_obj=Experiment.objects.get(custom_exp_id=existCusId)
@@ -1211,7 +1698,8 @@ class cdmCriteria_Setup(TemplateView):
                 'block_list':block_list
                 }
                 return JsonResponse(data)      
-         
+@method_decorator(login_required, name='dispatch')
+       
 class adminSetup(TemplateView):
     # global  role
     global feature_to_display
@@ -1349,6 +1837,7 @@ def signUp(request):
         print("in sign else")
         form = UserCreationForm()
      return render(request,'webapp/signup.html',{'num_visits':num_visits,'form':form})
+@method_decorator(login_required, name='dispatch')
 
 class showFilter(TemplateView):
     def get(self,request):
@@ -1365,8 +1854,18 @@ class showFilter(TemplateView):
         Cpu=['octa-core','quad-core']
         back_camera=['16 MP','13 MP','8 MP','5.0 MP','3.7 MP','2 MP','1.9 MP','VGA']
         battery=['3600 mAh','3300 mAh','3000 mAh','2600 mAh','2400 mAh','2350']
-        return render(request,'webapp/filter_test.html',{'mobiles':mobiles,'Colors':Colors,
-        'os':OS,'size':Size,'feat':feat,'cpu':Cpu,'back_cm':back_camera,'battery':battery})
+        data={ 
+            'mobiles':mobiles,
+            'Colors':Colors,
+            'os':OS,
+            'size':Size,
+            'feat':feat,
+            'cpu':Cpu,
+            'back_cm':back_camera,
+            'battery':battery
+        }
+        data={}
+        return render(request,'webapp/showfilter.html',data)
 filter_features=[]
 class filter(TemplateView):
    
@@ -1374,39 +1873,84 @@ class filter(TemplateView):
         global filter_features
         if request.is_ajax():
             print("IN AJAX REQUEST")
-            all_data_dic={}
-            price=['100000','120000']
-            Size=['5','5.5','5.3','6.5','7']
-            Colors=['black','white','gold']
-            OS=['android v8.0 oreo','android v7.1.1 (nougat)','android v4.4 (kitkat)','android v6.0 (marshmallow)',
-            'android v5.0.2 (lollipop)','android v5.1 (lollipop)','android v4.3 (jelly bean)']
-            # size=['0','1','3','4','4.1','4.2','4.3','4.4','4.5','4.6','4.7','4.8','4.9','5','5.1','5.2','5.3','5.4','5.5','5.6','5.7','5.8','5.9','6','6.1','6.2','6.3','6.4','6.5','6.6','6.7','6.8','6.9','7']
-            Cpu=['octa-core','quad-core']
-            backcam=['16 MP','13 MP','8 MP','5.0 MP','3.7 MP','2 MP','1.9 MP','VGA']
-            battery=['3600 mAh','3300 mAh','3000 mAh','2600 mAh','2400 mAh','2350']
-            mobilecompany=['samsung','I Phone']
-            Chip=['Exynos 9810 Octa','Exynos 8895 Octa','Qualcomm Snapdragon 805','Exynos8890Octa','Quad-core (2 x 2.15 GHz Kryo + 2 x 1.6 GHz Kryo)','Exynos 7885 Octa','QualcommMSM8996Snapdragon820','Exynos7420','Exynos 7420 Octa','Exynos 7880 Octa','QualcommMSM8953Snapdragon625','Mediatek MT6757 Helio P20','Exynos 7870 SoC','Exynos 7870','1.4 GHz Quad-Core Cortex-A53','QualcommMSM816Snapdragon410','QualcommMSM8917Snapdragon425','1.2 GHz Quad-core Cortex-A53','Spreadtrum SC9830','MediatekMT6737T','Exynos3475','Spreadtrum SC9830','Spreadtrum','','']
-            resolution=['720 x 1280','540 x 960','480 x 800','1440 x 2960','1080 x 2220','1080 x 1920']      
-            weight=['163','195','173','174','155','191','157','172','132','0','181','169','179','135','160','170','143','159','146','156','138','131','122','126','153']  
-            dimensions=['147.6 x 68.7 x 8.4 mm','162.5 x 74.6 x 8.5 mm','159.5 x 73.4 x 8.1 mm','151.3 x 82.4 x 8.3 mm','148.9 x 68.1 x 8 mm','159.9 x 75.7 x 8.3 mm','150.9 x 72.6 x 7.7 mm','149.2 x 70.6 x 8.4 mm','143.4 x 70.8 x 6.9 mm','142.1 x 70.1 x 7 mm','153.2 x 76.1 x 7.6 mm','156.8 x 77.6 x 7.9 mm','146.1 x 71.4 x 7.9 mm','152.4 x 74.7 x 7.9 mm','146.8 x 75.3 x 8.9 mm','146.8 x 75.3 x 8.9 mm','156.7 x 78.8 x 8.1 mm','135.4 x 66.2 x 7.9 mm']
-            all_data_dic['price']=price
-            all_data_dic['Size']=Size
-            all_data_dic['Colors']=Colors
-            all_data_dic['OS']=OS
-            all_data_dic['Cpu']=Cpu
-            all_data_dic['backcam']=backcam
-            all_data_dic['battery']=battery
+            all_data_dict={}
+            criterias_in_integer=['price',"Size","Weight"]
+            # price=['100000','120000']
+            # Size=['5','5.5','5.3','6.5','7']
+            # Colors=['black','white','gold']
+            # OS=['android v8.0 oreo','android v7.1.1 (nougat)','android v4.4 (kitkat)','android v6.0 (marshmallow)',
+            # 'android v5.0.2 (lollipop)','android v5.1 (lollipop)','android v4.3 (jelly bean)']
+            # # size=['0','1','3','4','4.1','4.2','4.3','4.4','4.5','4.6','4.7','4.8','4.9','5','5.1','5.2','5.3','5.4','5.5','5.6','5.7','5.8','5.9','6','6.1','6.2','6.3','6.4','6.5','6.6','6.7','6.8','6.9','7']
+            # Cpu=['octa-core','quad-core']
+            # backcam=['16 MP','13 MP','8 MP','5.0 MP','3.7 MP','2 MP','1.9 MP','VGA']
+            # battery=['3600 mAh','3300 mAh','3000 mAh','2600 mAh','2400 mAh','2350']
+            # Brand=['samsung','I Phone']
+            # Chip=['Exynos 9810 Octa','Exynos 8895 Octa','Qualcomm Snapdragon 805','Exynos8890Octa','Quad-core (2 x 2.15 GHz Kryo + 2 x 1.6 GHz Kryo)','Exynos 7885 Octa','QualcommMSM8996Snapdragon820','Exynos7420','Exynos 7420 Octa','Exynos 7880 Octa','QualcommMSM8953Snapdragon625','Mediatek MT6757 Helio P20','Exynos 7870 SoC','Exynos 7870','1.4 GHz Quad-Core Cortex-A53','QualcommMSM816Snapdragon410','QualcommMSM8917Snapdragon425','1.2 GHz Quad-core Cortex-A53','Spreadtrum SC9830','MediatekMT6737T','Exynos3475','Spreadtrum SC9830','Spreadtrum','','']
+            # resolution=['720 x 1280','540 x 960','480 x 800','1440 x 2960','1080 x 2220','1080 x 1920']      
+            # weight=['163','195','173','174','155','191','157','172','132','0','181','169','179','135','160','170','143','159','146','156','138','131','122','126','153']  
+            # dimensions=['147.6 x 68.7 x 8.4 mm','162.5 x 74.6 x 8.5 mm','159.5 x 73.4 x 8.1 mm','151.3 x 82.4 x 8.3 mm','148.9 x 68.1 x 8 mm','159.9 x 75.7 x 8.3 mm','150.9 x 72.6 x 7.7 mm','149.2 x 70.6 x 8.4 mm','143.4 x 70.8 x 6.9 mm','142.1 x 70.1 x 7 mm','153.2 x 76.1 x 7.6 mm','156.8 x 77.6 x 7.9 mm','146.1 x 71.4 x 7.9 mm','152.4 x 74.7 x 7.9 mm','146.8 x 75.3 x 8.9 mm','146.8 x 75.3 x 8.9 mm','156.7 x 78.8 x 8.1 mm','135.4 x 66.2 x 7.9 mm']
+            # all_data_dic['price']=price
+            # all_data_dic['Size']=Size
+            # all_data_dic['Colors']=Colors
+            # all_data_dic['OS']=OS
+            # all_data_dic['Cpu']=Cpu
+            # all_data_dic['backcam']=backcam
+            # all_data_dic['battery']=battery
+            # all_data_dic['Brand']=battery
+            # all_data_dic['Ram']=["1GB","2GB","3GB","4GB"]
+            # all_data_dic['Memory']=["1GB","2GB","3GB","4GB"]
+            print(filter_features)
+            gcritdt_obj=generalCriteriaData.objects.filter(criteria__in=filter_features)
+            gcritdt_obj_list=list(gcritdt_obj.values_list("criteria__criteria_name","valuelist",'inputtype'))
+            # criteria_name=gcritdt_obj_list[0][0]
+            # value_list=gcritdt_obj_list[0][1]
+            # value_list = [ float(x) for x in value_list ]
+            # inputtype=gcritdt_obj_list[0][2]
+            # all_data_dict[criteria_name]=[]
+            # all_data_dict[criteria_name].append(value_list)
+            # all_data_dict[criteria_name].append(inputtype)
+            # min=value_list[0]
+            # max=value_list[-1]
+            # templist=[]
+            # templist.append(min)
+            # templist.append(max)
+            # all_data_dict[criteria_name].append(templist)
 
-            filter_features = list(filter_features.values())
-            print(":filter",filter_features)
-            data_filter_feature={}
-            for i in filter_features:
-                print("i:",i['feature'])
-                data_filter_feature[i['feature']]=all_data_dic[i['feature']]
+
+            # print("criteria_name",criteria_name)
+            # print("value_list",value_list)
+            # print("inputtype",inputtype)
+            for obj in gcritdt_obj_list:
+                criteria_name=obj[0]
+                value_list=obj[1]
+
+                if criteria_name in criterias_in_integer:
+                    value_list = [ float(x) for x in value_list ]
+
+                inputtype=obj[2]
+                if inputtype=="slider":
+                    # get min and max of valuelist. and store in a list. 
+                    min=value_list[0]
+                    max=value_list[-1]
+                    templist=[]
+                    templist.append(min)
+                    templist.append(max)
+                    all_data_dict[criteria_name]=[]
+                    all_data_dict[criteria_name].append(value_list)
+                    all_data_dict[criteria_name].append(inputtype)
+                    all_data_dict[criteria_name].append(templist)
+                else:
+                    all_data_dict[criteria_name]=[]
+                    all_data_dict[criteria_name].append(value_list)
+                    all_data_dict[criteria_name].append(inputtype)
+            print(all_data_dict)
+
+
 
             data={
-                'feat':filter_features,
-                'data_filter_feature':data_filter_feature
+                "all_data_dict":all_data_dict,
+                # 'feat':filter_features,
+                # 'data_filter_feature':data_filter_feature
                 }
             return JsonResponse(data)
         else:
@@ -1419,22 +1963,26 @@ class filter(TemplateView):
             print(role)
             
             if role=='Super_Admin':
-                roles=1
-                filter_features=sort_feature.objects.filter(~Q(sh_hd = 0),roles=roles).order_by('position')
-                # feat=sort_feature.objects.filter(~Q(sh_hd = 0),roles=roles).order_by('position')
-
-                ft=sort_feature.objects.filter(Q(sh_hd = 0),roles=roles).order_by('position')
-                print("In super admin",filter_features)
+                pass
+                # roles=1
+                # filter_features=sort_feature.objects.filter(~Q(sh_hd = 0),roles=roles).order_by('position')
+                # ft=sort_feature.objects.filter(Q(sh_hd = 0),roles=roles).order_by('position')
+                # print("In super admin",filter_features)
             elif role=='Subject':
+                exp_obj=Experiment.objects.get(id=134)
+
+                ExpCritObj=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id="c.pruned",sh_hd=1)
+                pcriteria_list=list(ExpCritObj.values_list("pCriteria",flat=True))
+                filter_features=pcriteria_list
+                
                 # global role
-                roles=2
-                filter_features=sort_feature.objects.filter(~Q(sh_hd = 0),roles=roles).order_by('position')
-                ft=sort_feature.objects.filter(Q(sh_hd = 0),roles=roles).order_by('position')
+                # roles=2
+                # filter_features=sort_feature.objects.filter(~Q(sh_hd = 0),roles=roles).order_by('position')
+                # ft=sort_feature.objects.filter(Q(sh_hd = 0),roles=roles).order_by('position')
             # else:
             #     print("in mobile redirect")
             #     return redirect('/mobileanl/mobile')
-
-            return render(request,'webapp/filter_test.html')
+            return render(request,'webapp/showfilter.html')
     
     def post(self,request):
         # print("ssss",(request.POST['first_choice_value']))
@@ -1474,13 +2022,12 @@ class filter(TemplateView):
         # filter_d={}
         if request.is_ajax():
             count=0
-            d = request.POST.get('filt_opt_sel')
+            element_data_dict = request.POST.get('element_data_dict')
             #print('d',d)
-            filt_opt_sel = json.loads(d)
+            element_data_dict = json.loads(element_data_dict)
             # print("filt_opt_sel",filt_opt_sel)
-            filter_d=filt_opt_sel
+            filter_d=element_data_dict
             # return render(request,'webapp/mobile.html')  
-            data={'success':"success"}
             
 
 
@@ -1569,7 +2116,14 @@ class filter(TemplateView):
                 
                 sizeofmob=len(list(filt_mobiles))
                 print(sizeofmob)
+            print(filt_mobiles)
+        
+            filt_mobiles=filt_mobiles
             print("sizeofmob",sizeofmob)
+            data={
+                'filt_mobiles':"filt_mobiles",
+                }
+
             return JsonResponse(data)
 
             
@@ -1578,6 +2132,7 @@ class filter(TemplateView):
         # return render(request,'webapp/mobile.html',{'mobiles':mobiles})
         # return redirect('/mobile')
 
+@method_decorator(login_required, name='dispatch')
 
 class blogview (TemplateView):
     template_name='webapp/blog.html'
@@ -1650,20 +2205,25 @@ def filteredMobileView(request):
                 template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
                 return render(request,template_name,{'mobiles':ex_mobile,'template_sidebar':template_sidebar})
             else:
-                # print("mobiles",filt_mobiles)
-                uid = request.user.username
-                print(uid)
-                tuser = User.objects.get(username=uid)
-                exp_list = tuser.subject_set.values_list('exp', flat=True) 
-                exp_active = max(exp_list)                
-                phoneobjs=selectedAdminPhones.objects.filter(exp=exp_active)
+                print("mobiles",filt_mobiles)
+                # uid = request.user.id
+                # print(uid)
+                # tuser = User.objects.get(username=uid)
+                # exp_list = tuser.subject_set.values_list('exp', flat=True) 
+                # exp_active = max(exp_list)    
+                # mobilephones.objects.filter()            
+                # phoneobjs=selectedAdminPhones.objects.filter(exp=134)
                 # print(phoneobjs)
-                plist=[]
-                for pob in phoneobjs:
-                    print(pob)
-                    plist.append(pob.mob.id)
-                # print(plist)
-                filt_mobiles=mobilephones.objects.filter(pk__in=plist)
+                # plist=[]
+                # for pob in phoneobjs:
+                #     print(pob)
+                #     plist.append(pob.mob.id)
+                # # print(plist)
+                # print("SS",filt_mobiles[0].id)
+                mobile_id_list=[]
+                for mobile in filt_mobiles:
+                    mobile_id_list.append(mobile.id)
+                filt_mobiles=mobilephones.objects.filter(pk__in=mobile_id_list)
                 paginator = Paginator(filt_mobiles,9)
                 page = request.GET.get('page')
                 ex_mobile = paginator.get_page(page)
@@ -1676,6 +2236,7 @@ def filteredMobileView(request):
 
                 template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
                 return render(request,template_name,{'mobiles':ex_mobile,'template_sidebar':template_sidebar})
+@method_decorator(login_required, name='dispatch')
 
 class mobile_phone_view(TemplateView):
     template_name='webapp/mobile.html'
@@ -1684,18 +2245,15 @@ class mobile_phone_view(TemplateView):
         #form=mobile_phone_form(request.POST)
         querry_array=[]
         querry=''
-        
         userobj=User.objects.get(pk=request.user.id)
         role=userobj.role_id_id
         roleobj=Role.objects.get(pk=role)
         role=roleobj.role_name
         global mobiles
-        
-        
         print("mobiles",mobiles)
         if role=='Super_Admin':
             
-            mobiles= mobilephones.objects.all() 
+            mobiles= mobilephones.objects.all()
             print("mobiles ---<>",mobiles)
             paginator = Paginator(mobiles,9)
             print("paginator",paginator)
@@ -1711,24 +2269,54 @@ class mobile_phone_view(TemplateView):
             })
         elif role=='Subject':
             exp_list = userobj.subject_set.values_list('exp', flat=True) 
-            exp_active = max(exp_list)  
-            print("ExpActive",exp_active)              
-            phoneobjs=selectedAdminPhones.objects.filter(exp=exp_active)
-            print(phoneobjs)
-            plist=[]
-            for pob in phoneobjs:
-                print(pob)
-                plist.append(pob.mob.id)
-            # print(plist)
-            filt_mobiles=mobilephones.objects.filter(pk__in=plist)
-            print("filt_mobiles",filt_mobiles)
-            paginator = Paginator(filt_mobiles,9)
-            page = request.GET.get('page')
-            ex_mobiles = paginator.get_page(page)
-            # mobiles= mobilephones.objects.all() 
-            # paginator = Paginator(mobiles,9)
-            # page = request.GET.get('page')
-            # ex_mobiles = paginator.get_page(page)
+            # Getting the status codes that are active.
+            exStatusCd_list=exStatusCd.objects.filter(status_code__gte=11)
+            # Fetching that the experiments who has status code as active for the user/subject. 
+            inner_qs = exp.objects.filter(id__in=list(exp_list),status_code__in=exStatusCd_list)
+            # Using the experiment list for display
+            print("inner_qs",list(inner_qs.values('id'))[0]['id'])
+            explist=inner_qs.values('id')
+            print("explst",explist)
+            # Now we know how many experiments the subject is invovled. 
+            # For now we'll hard code to get one subject having one active exp... 
+
+            exp_obj=exp.objects.get(id=list(inner_qs.values('id'))[0]['id'])
+            Sub_obj=Subject.objects.get(user=userobj,exp=exp_obj)
+
+            # CHANGE THIS CODE... Changed...
+
+            # exp_list = userobj.subject_set.values_list('exp', flat=True) 
+            # inner_qs = exp.objects.filter(id__in=list(exp_list),status__contains="ACTIVE")
+            # print("inner_qs",inner_qs)
+            # exp_active = max(exp_list)  
+            # print("ExpActive",exp_active)              
+            phoneobjs=selectedAdminPhones.objects.filter(exp=exp_obj)
+            print("pset_id",phoneobjs.values())
+            print("ddd",list(phoneobjs.values_list('pset_id',flat=True)))
+            pset_id=list(phoneobjs.values_list('pset_id',flat=True))
+            global exp_feat_levels
+            # if pset_id!=['P.All']:
+            # if 'P.All' not in exp_feat_levels:
+            #     print("pset id not P.All")
+            #     print(phoneobjs)
+            #     plist=[]
+            #     for pob in phoneobjs:
+            #         print(pob)
+            #         plist.append(pob.mob.id)
+            #     # print(plist)
+            #     filt_mobiles=mobilephones.objects.filter(pk__in=plist)
+            #     print("filt_mobiles",filt_mobiles)
+            #     paginator = Paginator(filt_mobiles,9)
+            #     page = request.GET.get('page')
+            #     ex_mobiles = paginator.get_page(page)
+            # else:
+            #     print("pset id  P.All")
+
+            #     mobiles= mobilephones.objects.all() 
+            #     paginator = Paginator(mobiles,9)
+            #     page = request.GET.get('page')
+            #     ex_mobiles = paginator.get_page(page)
+            ex_mobiles=[]   
             template_sidebar='webapp/sidebartemplates/sidebartemp_subject.html'
             return render(request,self.template_name,{'mobiles':ex_mobiles,'template_sidebar':template_sidebar})
            
@@ -1782,6 +2370,7 @@ def ImportCsv_submit(request):
         return render(request,'webapp/importcsv_submit.html',{'form': form})
 #--------------------------------------------------------------------------------------------------
 # Experiment admin related views.
+@method_decorator(login_required, name='dispatch')
 
 class  BiasTestFeature(TemplateView):
     template_name='webapp/biasfeaturetest.html'
@@ -1819,6 +2408,7 @@ class  BiasTestFeature(TemplateView):
                                                     })
     def post(self,request):
         return render(request,'webapp/biasfeaturetest.html')
+@method_decorator(login_required, name='dispatch')
 
 class ManageShortList(TemplateView):
     def get(self,request):
@@ -2067,8 +2657,12 @@ def deleteAllSubjects(request):
 def getExpController(request):
     try:
         sess_expId = request.session['sess_expId']
+        print("session>>>>>>>>>>>>>>",request.session['sess_expId'])
+
         print('SESSION ID',sess_expId)
     except KeyError:
+        print("session_________")
+
         sess_expId = None
     if sess_expId:
         print("----->>>>>RETRIEVED EXP ID:",sess_expId,"FROM SESSION<<<<<<-----")
@@ -2100,6 +2694,7 @@ def getExpController(request):
             pickleExpController(expCont)
     else: #CREATE
         print('CREATING NEW EXPERIMENT  ')
+        print("request.user.custom_id________",request.user.custom_id)
         expAdminId = request.user.custom_id
         print('expAdminId',expAdminId)
         expCont = ExperimentController(a_id=expAdminId)
@@ -2261,8 +2856,25 @@ def saveExperiment(request):
             }
     return JsonResponse(data)
 @method_decorator(login_required, name='dispatch')
+# >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 class createExperiment(TemplateView): 
+    '''
+    Class Defination/Functionality.
+        1- It has four functions Get,Post,addDesp and getDefaultFLevelsFromPlatformFeature
+        2- Get function has ajax and non ajax condition. 
+            -- Non Ajax Cond- Saves or updates phone criteria in PhoneCriteria
+            -- Ajax Cond- When the page is loaded and ajax(get) call is made which 
+                          is recieved by it.
+                        - It unloads the price range,brand name sent from html. 
+                        - uses the price range and brand name to get all mobile phones and sends the data back to html. 
+        3- Post Function has ajax condition. 
+            -- Unloads feture level dict and default F Levels. 
+            -- getExpController is called
+            -- Then expCont.setFSet is run for Def and Admin Defined F lvls. 
+        4- addDesp func will save desp about exp in exp ob. 
+        5- getDefaultFLevelsFromPlatformFeature Not in use But will save default featLvls in expdefFlvls...   
+    '''
     template_name='webapp/crudexperiment/create_experiment.html'
     
     def get(self,request):  
@@ -2279,6 +2891,7 @@ class createExperiment(TemplateView):
            
                 
             print('Ajax')
+            print(platformfeatobj.values_list('feature_symbol',"feature_levels"))
             price_range_values = request.GET.get('price_range_values')
             brandnames = request.GET.get('brandnames')
 
@@ -2296,10 +2909,10 @@ class createExperiment(TemplateView):
 
             # mobiles_retrieved=samsung_phone.objects.filter(price_in_pkr__range=(price_range_values[0], price_range_values[1]))
             if not brandnames:
-                mobiles_retrieved=mobilephones.objects.filter(price__range=(price_range_values[0], price_range_values[1])).order_by('id') 
+                mobiles_retrieved=mobilephones.objects.filter(price__range=(price_range_values[0], price_range_values[1])).order_by('-id') 
               
             else:
-                mobiles_retrieved=mobilephones.objects.filter(price__range=(price_range_values[0], price_range_values[1]),Mobile_Companny__in=brandnames).order_by('id') 
+                mobiles_retrieved=mobilephones.objects.filter(price__range=(price_range_values[0], price_range_values[1]),Brand__in=brandnames).order_by('id') 
                 
 
             # print(mobiles_retrieved) 
@@ -2321,7 +2934,7 @@ class createExperiment(TemplateView):
             # samsung_phones= samsung_phone.objects.all()
             phonecritlist=[]
 
-            exclfields=['selectedadminphones','id','imagepath1','imagepath2','Whats_new',"Mobile_Name","Mobile_Companny","price_in_usd"]
+            exclfields=['selectedadminphones','id','imagepath1','imagepath2','Whats_new',"Mobile_Name","price_in_usd"]
             # Get the mobile phone fields and then save the fields in phone criteria
             [phonecritlist.append(f.name) for f in mobilephones._meta.get_fields() if f.name not in exclfields]
             print(phonecritlist)
@@ -2384,7 +2997,7 @@ class createExperiment(TemplateView):
                 'sess_expId':sess_expId,
                 'sess_custExpId':sess_custExpId,
                 # 'samsung_phones':samsung_phones
-                                            }
+            }
             )
                                         
                                     
@@ -2394,25 +3007,36 @@ class createExperiment(TemplateView):
             data = {'data':"data"}
 
             if request.is_ajax:
-                d = request.POST.get('dict')
+                d = request.POST.get('block_feat_dict')
                 print(request.POST.get('price_range_values'))
                 #print('d',d)
                 postedFLevels = json.loads(d)
                 print('postedFLevels',postedFLevels)
                 # if postedFLevels is none then remove everything ..... 
                 print('b',type(postedFLevels),postedFLevels)
+
+                final_def_blocks_to_send = request.POST.get('final_def_blocks_to_send')
+                final_def_blocks_to_send=json.loads(final_def_blocks_to_send)
+                print("final_def_blocks_to_send",final_def_blocks_to_send)
                 
                 #CREATE EXPERIMENT CONTROLLER AND INITIALIZE
                 #returns either a controller for new experiment
                 #or for existing one [TODO: CHECK STATUS OF EXPERIMENT AS IN DESIGN_MODE]
                 expCont = getExpController(request)
                 existExpId = expCont.exp.id
-    
+
                 #SET FLEVELS
+                #@Todo: TEST: Add Condition if postedFLevels are empty then newFLevels set to None)
+                if not postedFLevels:
+                    postedFLevels=None
                 expCont.setFSet(newFLevels=postedFLevels,prompt=False)
-                block_set = expCont.generateBlocks()
-                block_list = list(block_set.all().values('serial_no','levels_set'))
-                
+                if postedFLevels is not None:
+                    block_set = expCont.generateBlocks()
+                    block_list = list(block_set.all().values('serial_no','levels_set'))
+                else:
+                    block_list=[]
+
+                    
                 # # blockStr = "\n".join(str(b) for b in expCont.exp.block_set.all())
                 print('<<<<<<TO DISPLAY ON PAGE>>>>>>')
                 print(block_list)
@@ -2423,221 +3047,199 @@ class createExperiment(TemplateView):
                 }
                 return JsonResponse(data) #, safe=False)
         #return render(request,'webapp/crudexperiment/create_experiment.html',data)
-from webapp.models import experiment as Experiment
-def SavePhoneSets(request):
-     if request.method=="POST":
-            if request.is_ajax:
-                phoneset_dic = request.POST.get('phoneset_dic')
-                phoneset_dic=json.loads(phoneset_dic)
-                featlevels_dic=request.POST.get('featlevels_dic')
-                postedFLevels = json.loads(featlevels_dic)
-                expCont = getExpController(request)
-                existExpId = expCont.exp.id
-              
-                print("existExpId",existExpId)
 
-                expCont.setFSet(newFLevels=postedFLevels,prompt=False)
-                block_set = expCont.generateBlocks()
-                block_list = list(block_set.all().values('serial_no','levels_set'))
-                print('<<<<<<TO DISPLAY ON PAGE>>>>>>')
-                print(block_list)
-                p_levList = list()
-                print("PHONESET DICT",phoneset_dic)
-                # exp_obj=Experiment.objects.get(custom_exp_id="ses-007-0266")
-                exp_obj=Experiment.objects.get(custom_exp_id=expCont.exp.custom_exp_id)
-                # Updation check. 
-                if (selectedAdminPhones.objects.filter(exp=exp_obj).exists()):
-                    sap_objs=selectedAdminPhones.objects.filter(exp=exp_obj)
-                    pset_list=set(sap_objs.values_list('pset_id', flat=True))
-                    pset_list=list(pset_list)
-                    # pset_list=['P.1','P.2','P.3']
+    def addDesp(request):
+        # If experiment object exsists then add the descp returned from ajax request. 
+        if request.is_ajax():
+            exp_description= request.POST.get('exp_description')
+            exp_id= request.POST.get('exp_id')
 
-                    print("pset_list",pset_list)
-                    keylist=list(phoneset_dic.keys())
-                    # keylist=['P.1','P.2']
-                    print("keylist",keylist)
-                    if (len(pset_list)>len(keylist)):
-                        diff_list=list(set(pset_list) - set(keylist))
-                        obj=selectedAdminPhones.objects.filter(exp=exp_obj,pset_id__in=diff_list).delete()
-                        print("object",obj)
-                        print('Difflist for db deletion',diff_list)
-                    elif (len(pset_list)<len(keylist)):
-                        diff_list=list(set(keylist) - set(pset_list))
-                        print('Difflist for db updation',diff_list)
-                        
-                        for i in diff_list:
-                            p_set = mobilephones.objects.filter(id__in=phoneset_dic[i])
-
-                            for count, m in enumerate(phoneset_dic[i]):
-                                expPSets = selectedAdminPhones()
-                                expPSets.exp = expCont.exp
-                                expPSets.pset_id= i
-                                expPSets.mob = p_set.get(id=m)
-                                expPSets.p_order = count
-                                expPSets.save()
-                            
-
-                        
-                    dum_dict={}
-                    for sap in sap_objs:
-                        
-                    # after checking if phones for exp under construction exsists
-                    # we have to get each phone obj check its pset_id and phone name/id and update its position.
-                        
-                        for key,s in phoneset_dic.items():
-                            sp=selectedAdminPhones.objects.filter(exp=exp_obj,pset_id=key)
-                            sp_list=list(sp.values_list('mob',flat=True))
-                            print("sp",sp.count())
-                            splen=sp.count()
-                            print("SAP",sap.pset_id)
-                            print("mob",sap.mob.id)
-                            print('key',key)
-                            print("s",s)
-                            print("splen",splen)
-                           
-
-                            if ((sap.mob.id in s) and sap.pset_id==key ):
-                                
-                                print("s.index(sap.mob.id)",s.index(sap.mob.id))
-                                sap.p_order=s.index(sap.mob.id)
-                                sap.save()
-                                if key in dum_dict.keys(): 
-                                    print("sap.mob.id",sap.mob.id)
-                                    print("key",key)
-                                    dum_dict[key].append(sap.mob.id)
-                                    print("DUM_DUCT",dum_dict)
-                                   
-                                else:
-                                    print("SHould Run only once for keys... ")
-                                    dum_dict[key]=[]
-                                    dum_dict[key].append(sap.mob.id)
-                                    
-
-                            elif (sap.mob.id not in s) and (sap.pset_id==key) and (splen>len(s)):
-                                print("length Greater delete")
-                                obj=selectedAdminPhones.objects.filter(exp=exp_obj,pset_id=key,mob=sap.mob.id).delete()
-                            if key in dum_dict.keys(): 
-                                if ((len(dum_dict[key])==splen) and (splen<len(s))  and (sap.pset_id==key)):
-                                    temp_list=[]
-                                    temp_list=dum_dict[key]
-
-                                    diff_list=set(s)-set(temp_list)
-                                    print("UP_DIFF",diff_list)
-                                    for i in diff_list:
-                                        p = mobilephones.objects.get(id=i)
-                                        pos=s.index(i)
-
-                                        expPSets = selectedAdminPhones()
-                                        expPSets.exp = expCont.exp
-                                        expPSets.pset_id= key
-                                        expPSets.mob = p
-                                        expPSets.p_order = pos
-                                        expPSets.save()
-                                        # print("FOR Updation")
-                                        # print("KEY")
-                                        # expPSets=selectedAdminPhones()
-                                        # expPSets.exp = expCont.exp
-                                        # expPSets.pset_id= key
-                                        # expPSets.mob = mobilephones.objects.get(id=sap.mob.id)
-                                        # expPSets.p_order = s.index(sap.mob.id)
-                                        # expPSets.save()
-                            print("dum_dict",dum_dict)
-
-                            print("----------------------------------------------")
-                    print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
-                            
-                    
-                            
-                        
-                            
-
-                                    
-                        
-                            
-                            
-                      
-
-                else:
-                    for key,s in phoneset_dic.items():
-                        print(key,":",s)
-                        p_set = mobilephones.objects.filter(id__in=s)
-                        p_levList.append('P.'+str(key))
-                        for count, i in enumerate(s):
-                            expPSets = selectedAdminPhones()
-                            expPSets.exp = expCont.exp
-                            expPSets.pset_id= key
-                            expPSets.mob = p_set.get(id=i)
-                            expPSets.p_order = count
-                            expPSets.save()
-                # A Check is to be made for updation...
-                    # for key,s in phoneset_dic.items():
-                    #     p_set = mobilephones.objects.filter(id__in=s)
-                    #     print("p_set",p_set)
-                    #     p_levList.append('P.'+str(key))
-                    #     print("key",key)
-                    #     print("s",s)
-                    #     for count, p in enumerate(p_set):
-                    #         print("p",p)
-                    #         print("count",count)
-                    #         expPSets = selectedAdminPhones()
-                    #         expPSets.exp = expCont.exp
-                    #         expPSets.pset_id= key
-                    #         expPSets.mob = p
-                    #         expPSets.p_order = count 
-                    #         expPSets.save()
-                # print(selectedAdminPhones.objects.filter(exp_id = expCont.exp.id))       
-                
-
-
-
-
-                data = {
-                    "data":"data",
-                     'exp_id':existExpId,
-                     'custom_exp_id':expCont.exp.custom_exp_id,
-                     'block_list':block_list
-                }
-                return JsonResponse(data) #, safe=False)
-
-
-
-class editExperiment(TemplateView):
-        def get(self,request):
-            # Get user id. 
-            # check admin status.
-            # fetch all exp created by this admin
-            # get the latest exp .. In future only get the exp which has status=active. 
-            # userid= request.user.id
-            # userobj=user.objects.get(pk=userid)
-            uid=request.user.id
-            print(uid)
-            print(Experiment.objects.filter(owner=uid).values_list('id',flat=True))
-            expList=Experiment.objects.filter(owner=uid).values_list('id',flat=True)
-            expactive=max(expList)
-            print(expactive)
-            request.session['sess_expId'] = expactive
+            print("exp_des")
             expCont = getExpController(request)
             existExpId = expCont.exp.id
-             #SET FLEVELS
-            expCont.setFSet(newFLevels=postedFLevels,prompt=False)
-            block_set = expCont.generateBlocks()
-            block_list = list(block_set.all().values('serial_no','levels_set'))
+            exp.objects.filter(id=existExpId).update(desc=exp_description)
+            print(exp_description)
+
+            return JsonResponse({'data':"success"})
+    def getDefaultFLevelsFromPlatformFeature(request):
+        platformfeatobj=platform_feature.objects.all()
+
+        if request.is_ajax():
+            global def_featlvl_frm_pf_dict
+            def_platf_list=list(platformfeatobj.values_list('feature_symbol',"default_levels"))
+            print(type(def_platf_list))
+            
+            for i in def_platf_list:
+                def_featlvl_frm_pf_dict[i[0]]=i[1]
+            data={
+                'def_featlvl_frm_pf_dict':json.dumps(def_featlvl_frm_pf_dict),
+            }
+            return JsonResponse(data)
+
+
+statusCode_list=[]
+exp_wrt_statuscode={}
+crit_exp_wrt_statuscode={}
+@method_decorator(login_required, name='dispatch')
+
+class ManageExperiment(TemplateView):
+    '''
+    It has two Functions  get and post.. 
+    1- Get Function- 
+    '''
+    
+    template_name='webapp/crudexperiment/manage_experiment.html'
+    template_sidebar="webapp/sidebartemplates/sidebartemp_superadmin.html"
+    
+    
+    def get(self,request):
+        
+        if request.is_ajax():
+            userobj=User.objects.get(pk=request.user.id)
+            role=userobj.role_id_id
+            roleobj=Role.objects.get(pk=role)
+            role=roleobj.role_name
+            if role=='Super_Admin':
+                global statusCode_list
+                global exp_wrt_statuscode
+                statusCode_list=exStatusCd.objects.values_list("status_code","status_name").distinct()
+                statusCode_list=list(statusCode_list)
+                print(statusCode_list)                    
+                exStatusCd_index=exStatusCd.objects.get(status_code=11)
+
+               
+
+                for code in statusCode_list:
+                    foo_dict={}
+                    temp_dict={}
+                    print(code[0])
+                    print(code[1])
+                    # code[0] contains the index and code[1] name of the status
+                    exStatusCd_index=exStatusCd.objects.get(status_code=code[0])
+                    all_exp_list_obj = exp.objects.filter(status_code=exStatusCd_index)
+                    all_exp_list_values=list(all_exp_list_obj.values())
+                    all_exp_id_list_values=list(all_exp_list_obj.values_list("id",flat=True))
+                    print("all_exp_id_list_values",all_exp_id_list_values)
+                    # print("all_exp_list_values",all_exp_list_values)
+                    exp_wrt_statuscode[code[1]]=all_exp_list_values
+                    for bar in all_exp_id_list_values:
+                        print("var",bar)
+                        exp_obj=exp.objects.get(id=bar)
+                        ExpCritObj=ExpCriteriaOrder.objects.filter(exp=exp_obj)
+                        foo_dict[bar]=list(ExpCritObj.values_list("pCriteria","pCriteria__criteria_name","sh_hd"))
+                    print("foo_dict",foo_dict)
+                    crit_exp_wrt_statuscode[code[1]]=foo_dict
+
+
+
+                    print("crit_exp_wrt_statuscode",crit_exp_wrt_statuscode)
+                    
+                    
+
+                # print(exp_wrt_statuscode)
+
+
+            data={
+                "Success":"Sucess",
+                "statusCode_list":statusCode_list,
+                "exp_wrt_statuscode":exp_wrt_statuscode,
+                "crit_exp_wrt_statuscode":crit_exp_wrt_statuscode
+
+            }
+            return JsonResponse(data)
+        else:
+            userobj=User.objects.get(pk=request.user.id)
+            role=userobj.role_id_id
+            roleobj=Role.objects.get(pk=role)
+            role=roleobj.role_name
+            if role=='Super_Admin':
+                exp_wrt_statuscode={}
+                statusCode_list=exStatusCd.objects.values_list("status_code","status_name").distinct()
+                statusCode_list=list(statusCode_list)
+                print(statusCode_list)
+                for code in statusCode_list:
+                    print(code[0])
+                    print(code[1])
+                    exStatusCd_index=exStatusCd.objects.get(status_code=code[0])
+                    all_exp_list = exp.objects.filter(status_code=exStatusCd_index)
+                    exp_wrt_statuscode[code[1]]=all_exp_list
+                print(exp_wrt_statuscode)
+
+               
                 
-                # # blockStr = "\n".join(str(b) for b in expCont.exp.block_set.all())
-            print('<<<<<<TO DISPLAY ON PAGE>>>>>>')
-            print(block_list)
-            data = {
-                    'exp_id':existExpId,
-                    'custom_exp_id':expCont.exp.custom_exp_id,
-                    'block_list':block_list
-                }
-            
+
 
 
             
-            pass
-        def post(self,request):
-            pass
+            data={
+                
+                'template_sidebar':self.template_sidebar,
+            }
+            return render(request,self.template_name,data)
+    def post(self,request):
+        if request.is_ajax():
+            updated_detail_wrt_status=request.POST.get('updated_detail_wrt_status')
+            updated_detail_wrt_status = json.loads(updated_detail_wrt_status)
+            # print(updated_detail_wrt_status)
+            global statusCode_list
+            global exp_wrt_statuscode
+            print("statusCode_list",statusCode_list)
+            for code in statusCode_list:
+                    # print("AAAA",code[1])
+                    for h,m in zip(exp_wrt_statuscode[code[1]],updated_detail_wrt_status[code[1]]):
+                        
+                        
+                        if h['status']!=m['status']:
+                            print(h['status'])
+                            print("--------------")
+                            print(m['status'])
+                            print("status different ")
+                            print("m['status_code_id']",m['status_code_id'])
+                            exStatusCdObj=exStatusCd.objects.get(status_code=m['status_code_id'])
+                            exp.objects.filter(id=h['id']).update(status=m['status'],status_code_id=exStatusCdObj.id,desc=m["desc"])
+                        elif h['desc']!=m['desc']:
+                            print("description different ")
+
+                            print("m['status_code_id']",m['status_code_id'])
+                            exStatusCdObj=exStatusCd.objects.get(status_code=m['status_code_id'])
+                            
+                            exp.objects.filter(id=h['id']).update(status=m['status'],status_code_id=exStatusCdObj.id,desc=m["desc"])
+
+                        # IF J.STATUS CODE, STATUS OR DESCRIPTION IS DIFFERENT FROM THE DICT SEND THROUGH AJAX THEN UPDATE THE J. 
+            
+            
+            # UPDATING crit_exp_wrt_statuscode
+            # 
+            statusCode_list=exStatusCd.objects.values_list("status_code","status_name").distinct()
+            statusCode_list=list(statusCode_list)
+            print(statusCode_list)                    
+            exStatusCd_index=exStatusCd.objects.get(status_code=11)
+
+            
+
+            for code in statusCode_list:
+                foo_dict={}
+                temp_dict={}
+                print(code[0])
+                print(code[1])
+                # code[0] contains the index and code[1] name of the status
+                exStatusCd_index=exStatusCd.objects.get(status_code=code[0])
+                all_exp_list_obj = exp.objects.filter(status_code=exStatusCd_index)
+                all_exp_id_list_values=list(all_exp_list_obj.values_list("id",flat=True))
+                print("all_exp_id_list_values",all_exp_id_list_values)
+                for bar in all_exp_id_list_values:
+                    print("var",bar)
+                    exp_obj=exp.objects.get(id=bar)
+                    ExpCritObj=ExpCriteriaOrder.objects.filter(exp=exp_obj)
+                    foo_dict[bar]=list(ExpCritObj.values_list("pCriteria","pCriteria__criteria_name","sh_hd"))
+                    print("foo_dict",foo_dict)
+                crit_exp_wrt_statuscode[code[1]]=foo_dict
+                print("crit_exp_wrt_statuscode",crit_exp_wrt_statuscode)
+            data={
+                "crit_exp_wrt_statuscode":crit_exp_wrt_statuscode,
+                "Success":"Sucess"
+            }
+        return JsonResponse(data)
 def getSpecificMobileData(request):
     if request.is_ajax():
         if request.method=="POST":
@@ -2661,19 +3263,102 @@ def getSpecificMobileData(request):
             {  'mobilephones':specmob_dic}
             )
 catalogcrit_show_list=[]
+
 def getMobiledata(request):
     if request.is_ajax():
         if request.method=="GET":
             print("GET MOBILE DATA")
-            mobiles_retrieved=mobilephones.objects.all()
-            mobiles_retrieved = list(mobiles_retrieved.values())   
-            mobiles_retrieved_list=mobiles_retrieved
-            # global catalogcrit_show_list
-            # catalogcrit_show_list=["price","OS"]
+            # IF BLOCK HAS P.1/P.0 or P.Default then fetch Mobile data from selected admins.
+            
+            # Assuming P.Default is active
+            userobj=User.objects.get(pk=request.user.id)
+            role=userobj.role_id_id
+            roleobj=Role.objects.get(pk=role)
+            role=roleobj.role_name
+            pagevisited="false"
+
+            if role=='Super_Admin':
+                # // This is the default code to retrieve all
+                mobiles_retrieved=mobilephones.objects.all().order_by('-id')
+                mobiles_retrieved = list(mobiles_retrieved.values())   
+                mobiles_retrieved_list=mobiles_retrieved
+                #///////////////////////
+            elif role=='Subject':
+                flag="false"
+                global exp_feat_levels
+
+                exp_list = userobj.subject_set.values_list('exp', flat=True) 
+                # Getting the status codes that are active.
+                exStatusCd_list=exStatusCd.objects.filter(status_code__gte=11)
+                # Fetching that the experiments who has status code as active for the user/subject. 
+                inner_qs = exp.objects.filter(id__in=list(exp_list),status_code__in=exStatusCd_list)
+                # Using the experiment list for display
+                print("inner_qs",list(inner_qs.values('id'))[0]['id'])
+                explist=inner_qs.values('id')
+                print("explst",explist)
+                # Now we know how many experiments the subject is invovled. 
+                # For now we'll hard code to get one subject having one active exp... 
+                print(exp_under_test)
+                exp_obj=exp.objects.get(id=exp_under_test)
+                Sub_obj=Subject.objects.get(user=userobj,exp=exp_obj)
+                print("blocks",Sub_obj.block.levels_set)
+                datetime.datetime.now()
+                if "mobile" in storeuserpagelogs:
+                    flag="true"
+                    reviseability = [idx for idx in exp_feat_levels if idx.startswith("R.")] 
+                    print("res -- R",reviseability[0])
+                    if reviseability[0]=="R.1":
+                        flag="false"
+                        pagevisited=flag
+
+                else:
+                    pagevisited=flag
+                    storeuserpagelogs["mobile"]=[datetime.datetime.now(),exp_under_test,request.user.id]
+                # res = [idx for idx in Sub_obj.block.levels_set if idx.startswith("P.")]
+                # print("res",res)
+                # if res:
+                #     # seeing the block e.g/ P.default,P.0,P.1,P.2 send the query
+                #     phoneobjs=selectedAdminPhones.objects.filter(exp=exp_obj,pset_id__in=res).order_by("-id")
+                #     mobiles_retrieved = list(phoneobjs.values_list('mob',flat=True))   
+                #     mobiles_retrieved=list(mobilephones.objects.filter(id__in=mobiles_retrieved).values())
+                #     mobiles_retrieved_list=mobiles_retrieved
+                # else:
+                #     mobiles_retrieved=mobilephones.objects.all().order_by('-id')
+                #     mobiles_retrieved = list(mobiles_retrieved.values())   
+                #     mobiles_retrieved_list=mobiles_retrieved
+                phoneobjs=selectedAdminPhones.objects.filter(exp=exp_obj)
+
+                if 'P.All' not in exp_feat_levels:
+                    print("pset id not P.All")
+                    print(phoneobjs)
+                    plist=[]
+                    for pob in phoneobjs:
+                        print(pob)
+                        plist.append(pob.mob.id)
+                    # print(plist)
+                    mobiles_retrieved=mobilephones.objects.filter(pk__in=plist)
+                    mobiles_retrieved = list(mobiles_retrieved.values())   
+                    mobiles_retrieved_list=mobiles_retrieved
+                    print("filt_mobiles",filt_mobiles)
+                  
+                else:
+                    print("pset id  P.All")
+
+                    mobiles_retrieved= mobilephones.objects.all() 
+                    mobiles_retrieved = list(mobiles_retrieved.values())   
+                    mobiles_retrieved_list=mobiles_retrieved
+
+
+                # print(mobiles_retrieved_list)
+            # // This is the default code to retrieve all
+            # mobiles_retrieved=mobilephones.objects.all().order_by('-id')
+            # mobiles_retrieved = list(mobiles_retrieved.values())   
+            # mobiles_retrieved_list=mobiles_retrieved
+            #///////////////////////
             cat_obj=criteria_catalog_disp.objects.get(id=1)
             catalogcrit_show_list=cat_obj.catalog_crit_display_order
             return JsonResponse(
-                {
+                {   "pagevisited":pagevisited,
                     'mobilephones':mobiles_retrieved_list,
                     'catalogcrit_show_list':catalogcrit_show_list,
 
@@ -2694,7 +3379,7 @@ def getReqPhones(request):
             if not brandname:
                 mobiles_retrieved=mobilephones.objects.filter(price__range=(price_range[0], price_range[1])).order_by('id') 
             else:
-                mobiles_retrieved=mobilephones.objects.filter(price__range=(price_range[0], price_range[1]),Mobile_Companny__in=brandname).order_by('id') 
+                mobiles_retrieved=mobilephones.objects.filter(price__range=(price_range[0], price_range[1]),Brand__in=brandname).order_by('id') 
 
             print("MOBILES RETR")
             print(mobiles_retrieved)
@@ -2719,4 +3404,308 @@ def retSpecMobilePhone(request):
             }
             return JsonResponse(data)
 
+def SavePhoneSets_P0(request):
+    if request.method=="POST":
+        if request.is_ajax:
+            print("P0 here")
             
+            expCont = getExpController(request)
+            print("Return from getExpController")
+            existExpId = expCont.exp.id
+            exp_obj=Experiment.objects.get(custom_exp_id=expCont.exp.custom_exp_id)
+
+            if (selectedAdminPhones.objects.filter(exp=exp_obj).exists()):
+                selectedAdminPhones.objects.filter(exp=exp_obj).delete()          
+            
+            expPSets = selectedAdminPhones()
+            expPSets.exp = expCont.exp
+            expPSets.pset_id= "P.All"
+            # expPSets.mob = p_set.get(id=m)
+            expPSets.p_order = 0
+            expPSets.save()
+            data = {
+                    "data":"data",
+                     'exp_id':existExpId,
+                     'custom_exp_id':expCont.exp.custom_exp_id,
+                     
+                }
+            return JsonResponse(data)
+
+def SavePhoneSets(request):
+     if request.method=="POST":
+            if request.is_ajax:
+                phoneset_dic = request.POST.get('phoneset_dic')
+                phoneset_dic=json.loads(phoneset_dic)
+                featlevels_dic=request.POST.get('featlevels_dic')
+                postedFLevels = json.loads(featlevels_dic)
+                expCont = getExpController(request)
+                existExpId = expCont.exp.id
+              
+                print("existExpId",existExpId)
+
+                expCont.setFSet(newFLevels=postedFLevels,prompt=False)
+                block_set = expCont.generateBlocks()
+                block_list = list(block_set.all().values('serial_no','levels_set'))
+                print('<<<<<<TO DISPLAY ON PAGE>>>>>>')
+                print(block_list)
+                p_levList = list()
+                print("P>DEF",phoneset_dic)
+                if 'P.Default' in phoneset_dic.keys():
+                    print("PHONESET DICT--<",phoneset_dic)
+                    exp_obj=Experiment.objects.get(custom_exp_id=expCont.exp.custom_exp_id)
+                    # if (selectedAdminPhones.objects.filter(exp=exp_obj).exists()):
+                    #     selectedAdminPhones.objects.filter(exp=exp_obj).delete()
+                    
+                    for key,s in phoneset_dic.items():
+                        print(key,":",s)
+                        p_set = mobilephones.objects.filter(id__in=s)
+                        p_levList.append('P.'+str(key))
+                        for count, i in enumerate(s):
+                            expPSets = selectedAdminPhones()
+                            expPSets.exp = expCont.exp
+                            expPSets.pset_id= key
+                            expPSets.mob = p_set.get(id=i)
+                            expPSets.p_order = count
+                            expPSets.save()
+
+                else:
+                    exp_obj=Experiment.objects.get(custom_exp_id=expCont.exp.custom_exp_id)
+                    # Updation check. 
+                    if (selectedAdminPhones.objects.filter(exp=exp_obj).exists()):
+                        sap_objs=selectedAdminPhones.objects.filter(exp=exp_obj)
+                        pset_list=set(sap_objs.values_list('pset_id', flat=True))
+                        pset_list=list(pset_list)
+                        # pset_list=['P.1','P.2','P.3']
+
+                        print("pset_list",pset_list)
+                        keylist=list(phoneset_dic.keys())
+                        # keylist=['P.1','P.2']
+                        print("keylist",keylist)
+                        if (len(pset_list)>len(keylist)):
+                            diff_list=list(set(pset_list) - set(keylist))
+                            obj=selectedAdminPhones.objects.filter(exp=exp_obj,pset_id__in=diff_list).delete()
+                            print("object",obj)
+                            print('Difflist for db deletion',diff_list)
+                        elif (len(pset_list)<len(keylist)):
+                            diff_list=list(set(keylist) - set(pset_list))
+                            print('Difflist for db updation',diff_list)
+                            
+                            for i in diff_list:
+                                p_set = mobilephones.objects.filter(id__in=phoneset_dic[i])
+
+                                for count, m in enumerate(phoneset_dic[i]):
+                                    expPSets = selectedAdminPhones()
+                                    expPSets.exp = expCont.exp
+                                    expPSets.pset_id= i
+                                    expPSets.mob = p_set.get(id=m)
+                                    expPSets.p_order = count
+                                    expPSets.save()
+                                
+
+                            
+                        dum_dict={}
+                        for sap in sap_objs:
+                            
+                        # after checking if phones for exp under construction exsists
+                        # we have to get each phone obj check its pset_id and phone name/id and update its position.
+                            
+                            for key,s in phoneset_dic.items():
+                                sp=selectedAdminPhones.objects.filter(exp=exp_obj,pset_id=key)
+                                sp_list=list(sp.values_list('mob',flat=True))
+                                print("sp",sp.count())
+                                splen=sp.count()
+                                print("SAP",sap.pset_id)
+                                print("mob",sap.mob.id)
+                                print('key',key)
+                                print("s",s)
+                                print("splen",splen)
+                            
+
+                                if ((sap.mob.id in s) and sap.pset_id==key ):
+                                    
+                                    print("s.index(sap.mob.id)",s.index(sap.mob.id))
+                                    sap.p_order=s.index(sap.mob.id)
+                                    sap.save()
+                                    if key in dum_dict.keys(): 
+                                        print("sap.mob.id",sap.mob.id)
+                                        print("key",key)
+                                        dum_dict[key].append(sap.mob.id)
+                                        print("DUM_DUCT",dum_dict)
+                                    
+                                    else:
+                                        print("SHould Run only once for keys... ")
+                                        dum_dict[key]=[]
+                                        dum_dict[key].append(sap.mob.id)
+                                        
+
+                                elif (sap.mob.id not in s) and (sap.pset_id==key) and (splen>len(s)):
+                                    print("length Greater delete")
+                                    obj=selectedAdminPhones.objects.filter(exp=exp_obj,pset_id=key,mob=sap.mob.id).delete()
+                                if key in dum_dict.keys(): 
+                                    if ((len(dum_dict[key])==splen) and (splen<len(s))  and (sap.pset_id==key)):
+                                        temp_list=[]
+                                        temp_list=dum_dict[key]
+
+                                        diff_list=set(s)-set(temp_list)
+                                        print("UP_DIFF",diff_list)
+                                        for i in diff_list:
+                                            p = mobilephones.objects.get(id=i)
+                                            pos=s.index(i)
+
+                                            expPSets = selectedAdminPhones()
+                                            expPSets.exp = expCont.exp
+                                            expPSets.pset_id= key
+                                            expPSets.mob = p
+                                            expPSets.p_order = pos
+                                            expPSets.save()
+                                            # print("FOR Updation")
+                                            # print("KEY")
+                                            # expPSets=selectedAdminPhones()
+                                            # expPSets.exp = expCont.exp
+                                            # expPSets.pset_id= key
+                                            # expPSets.mob = mobilephones.objects.get(id=sap.mob.id)
+                                            # expPSets.p_order = s.index(sap.mob.id)
+                                            # expPSets.save()
+                                print("dum_dict",dum_dict)
+
+                                print("----------------------------------------------")
+                        print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+                                
+                    else:
+                        for key,s in phoneset_dic.items():
+                            print(key,":",s)
+                            p_set = mobilephones.objects.filter(id__in=s)
+                            p_levList.append('P.'+str(key))
+                            for count, i in enumerate(s):
+                                expPSets = selectedAdminPhones()
+                                expPSets.exp = expCont.exp
+                                expPSets.pset_id= key
+                                expPSets.mob = p_set.get(id=i)
+                                expPSets.p_order = count
+                                expPSets.save()
+                    # A Check is to be made for updation...
+                        # for key,s in phoneset_dic.items():
+                        #     p_set = mobilephones.objects.filter(id__in=s)
+                        #     print("p_set",p_set)
+                        #     p_levList.append('P.'+str(key))
+                        #     print("key",key)
+                        #     print("s",s)
+                        #     for count, p in enumerate(p_set):
+                        #         print("p",p)
+                        #         print("count",count)
+                        #         expPSets = selectedAdminPhones()
+                        #         expPSets.exp = expCont.exp
+                        #         expPSets.pset_id= key
+                        #         expPSets.mob = p
+                        #         expPSets.p_order = count 
+                        #         expPSets.save()
+                    # print(selectedAdminPhones.objects.filter(exp_id = expCont.exp.id))       
+                    
+
+
+
+
+                data = {
+                    "data":"data",
+                     'exp_id':existExpId,
+                     'custom_exp_id':expCont.exp.custom_exp_id,
+                     'block_list':block_list
+                }
+                return JsonResponse(data) #, safe=False)
+
+def SaveCurrentSubjExp(request):
+    if request.method=="POST":
+        if request.is_ajax:
+            global exp_under_test
+            exp_under_test= request.POST.get('exp_num')
+            exp_under_test=json.loads(exp_under_test)
+            print("exp_under_test",exp_under_test)
+            data={"success":"success"}
+            return JsonResponse(data)
+
+def deleteSelectedAdminPhones(request):
+     if request.method=="POST":
+        if request.is_ajax:
+            exp_id= request.POST.get('exp_id')
+            print("*******************************************************")
+            print("eEXPID",exp_id)
+            print("*******************************************************")
+            exp_obj=exp.objects.get(id=exp_id)
+            selectedAdminPhones.objects.get(exp=exp_obj).delete()
+            data={}
+            return JsonResponse(data)
+
+
+def submitData(request):
+    global critw_logs_dict
+    if request.method=="POST":
+        if request.is_ajax:
+            storehoveronbarlog= request.POST.get('storehoveronbarlog')
+            storehoveronbarlog=json.loads(storehoveronbarlog)
+
+
+            storehoveronpielog= request.POST.get('storehoveronpielog')
+            storehoveronpielog=json.loads(storehoveronpielog)
+
+            alt_crit_logs_dict= request.POST.get('alt_crit_logs_dict')
+            alt_crit_logs_dict=json.loads(alt_crit_logs_dict)
+
+            storenextprevbuttonlogs=request.POST.get('storenextprevbuttonlogs')
+            storenextprevbuttonlogs=json.loads(storenextprevbuttonlogs)
+            # print("storehoveronbarlog",storehoveronbarlog)
+            # print("storehoveronpielog",storehoveronpielog)
+            # print("alt_crit_logs_dict",alt_crit_logs_dict)
+            # print("storenextprevbuttonlogs",storenextprevbuttonlogs)
+
+
+           
+            for key in storehoveronbarlog:
+                print("key",key)
+                print("storehoveronpielog[key][0]",storehoveronbarlog[key][0])
+                print("storehoveronpielog[key][1]",storehoveronbarlog[key][1])
+                print("storehoveronpielog[key][2]",storehoveronbarlog[key][2])
+
+                # userid=storehoveronbarlog[key][0]
+                shbcl_obj=StoreHoverBarChartLogs()
+                shbcl_obj.value=storehoveronbarlog[key][1]
+                shbcl_obj.user=User.objects.get(id=request.user.id)
+                shbcl_obj.phone_name=storehoveronbarlog[key][2]
+                shbcl_obj.time=key
+                shbcl_obj.save()
+            for key in storehoveronpielog:
+                print("key",key)
+                print("storehoveronpielog[key][0]",storehoveronpielog[key][0])
+                print("storehoveronpielog[key][1]",storehoveronpielog[key][1])
+                print("storehoveronpielog[key][2]",storehoveronpielog[key][2])
+
+                # userid=storehoveronbarlog[key][0]
+                shpcl_obj=StoreHoverPieChartLogs()
+                shpcl_obj.value=storehoveronpielog[key][2]
+                shpcl_obj.user=User.objects.get(id=request.user.id)
+                shpcl_obj.criteria_name=storehoveronpielog[key][1]
+                shpcl_obj.time=key
+                shpcl_obj.save()
+            for key in storenextprevbuttonlogs:
+                print("key",key)
+                print("storenextprevbuttonlogs[key][0]",storenextprevbuttonlogs[key][0])
+                print("storenextprevbuttonlogs[key][1]",storenextprevbuttonlogs[key][1])
+                print("storenextprevbuttonlogs[key][2]",storenextprevbuttonlogs[key][2])
+
+                # userid=storehoveronbarlog[key][0]
+                snpbcl_obj=StoreNextPrevButtonLogs()
+                snpbcl_obj.button_name=storenextprevbuttonlogs[key][0]
+                snpbcl_obj.user=User.objects.get(id=request.user.id)
+                snpbcl_obj.phone_name=storenextprevbuttonlogs[key][2]
+                snpbcl_obj.time=key
+                snpbcl_obj.save()
+            print("critw_logs_dict",critw_logs_dict)
+            # for key in critw_logs_dict:
+            #     scwl_obj=StoreCritWeightLogs()
+            #     scwl_obj.value=critw_logs_dict[key][1]
+            #     scwl_obj.user=User.objects.get(id=request.user.id)
+            #     scwl_obj.criteria_name=key
+            #     scwl_obj.time=critw_logs_dict[key][2]
+            #     scwl_obj.save()
+            data={}
+            return JsonResponse(data)
+

@@ -1,0 +1,27 @@
+1. MobilePhones
+2. PhoneCriteria
+3. ExpCriteriaOrders
+
+
+These three models circle around info of criteria. 
+
+PhoneCriteria and ExpCriteriaOrder have (<< one to many relationship>>)
+ExpCriteriaOrder uses PhoneCriteria key as a foriegn key. Which tells us that Whatever criteria name we'll set in 
+PhoneCrtieria will be used by ExpCriteriaOrder.
+
+But there is a major issue here. 
+
+MobilePhones Model has criteria names which are set when we created this Model.
+E.g 
+Price
+Memory
+Ram
+Cpu
+Gpu 
+battery
+
+When we have to add any thing to PhoneCriteria we have see MobilePhones Model. 
+We can add a criteria name of our own. 
+E.g 
+User Add a criteria "Battery" but in MobilePhones it is "battery". 
+So it'll cost us a major conflict in our design workflow... 

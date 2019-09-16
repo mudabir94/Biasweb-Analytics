@@ -2,7 +2,7 @@ from django.conf.urls import url, include
 from django.urls import path
 from . import views 
 urlpatterns = [
-   url(r'^index_ahp/',views.indexAhp, name='index_ahp'),   
+    url(r'^index_ahp/',views.indexAhp, name='index_ahp'),   
    
    
    
@@ -29,7 +29,13 @@ urlpatterns = [
     url(r'^comparemobile_specs/',views.compareMobileSpecs, name='comparemobile_specs'),
     url(r'^comparemobilespecsfilt_ver/',views.compareMobileSpecsFilterVer, name='comparemobilespecsfilt_ver'),
     url(r'^filtered_mobile_view/',views.filteredMobileView,name='filtered_mobile_view'),
+    url(r'^criteria_weights/',views.criteriaWeights,name='criteria_weights'),
+    url(r'^comparemobile_1by1_direct/',views.compareMobileOneByOneDirect,name='comparemobile_1by1_direct'),
+    url(r'^comparemobile_2by2_direct/',views.compareMobileTwoByTwoDirect,name='comparemobile_2by2_direct'),
+    url(r'^delete_selected_adminphones/',views.deleteSelectedAdminPhones,name='delete_selected_adminphones'),
 
+
+    url(r'^save_current_subj_exp/',views.SaveCurrentSubjExp, name='save_current_subj_exp'),
 
     url(r'^showmob/',views.showMob, name='showmobile'),
     url(r'^showScore/',views.showScore, name='showscore'),
@@ -42,7 +48,11 @@ urlpatterns = [
     url(r'^biastestfeatures/',views.BiasTestFeature.as_view(), name='select_biasfeature'),
     url(r'^manageshortlist/',views.ManageShortList.as_view(), name='manage_shortlisting'),
     url(r'^createexp/',views.createExperiment.as_view(), name='createexp'),
-    url(r'^editexp/',views.editExperiment.as_view(), name='editexp'),
+    url(r'^addexpdiscp/',views.createExperiment.addDesp, name='addexpdiscp'),
+    url(r'^get_default_f_levels_from_platform_feature/',views.createExperiment.getDefaultFLevelsFromPlatformFeature, name='get_default_f_levels_from_platform_feature'),
+
+
+    url(r'^manageexp/',views.ManageExperiment.as_view(), name='manageexp'),
     url(r'^subdetails/',views.subDetails, name='subdetails'),
     url(r'^uploadsamplefile/',views.uploadSampleFile, name='uploadsamplefile'),
     url(r'^postexp/',views.postExp, name='postexp'),
@@ -65,6 +75,8 @@ urlpatterns = [
     url(r'^retspecmobilephone/',views.retSpecMobilePhone, name='retspecmobilephone'),
     url(r'^get_specificmobile_data/',views.getSpecificMobileData,name='get_specificmobile_data'),
     url(r'^savephonesets/',views.SavePhoneSets,name='savephonesets'),
+    url(r'^savephonesets_p0/',views.SavePhoneSets_P0,name='savephonesets_p0'),
+
     url(r'^ordercriteriasetup/' , views.orderCriteria_Setup.as_view() , name='ordercriteriasetup') ,
     url(r'^defaultcriteriasetup/' , views.defaultCriteria_Setup.as_view() , name='defaultcriteriasetup') ,
     url(r'^cdmcriteriasetup/' , views.cdmCriteria_Setup.as_view() , name='cdmcriteriasetup') ,
@@ -83,4 +95,7 @@ urlpatterns = [
     #url(r'^$', views.signUp, name='signup'), 
 
 #---------------------------------------------------------------------------------------------
+# Temprary...
+    url(r'^submit_data/' , views.submitData , name='submit_data') ,
+
 ]

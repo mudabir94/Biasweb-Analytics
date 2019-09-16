@@ -1,0 +1,144 @@
+Workflow- Subject workflow will circle around the follwing checks. 
+
+- Checks to be considered
+1	Interactivity	                I | I.0 | I.1 |
+2	Revisiablity	                R	| R.0 | R.1 |  R.2|
+3	Weight Generation Method	    W	| W.direct |  W.AHP  |  W.direct |
+4	Alternatives Display Method	  A	| A.all | A.1by1 | A.2by2 | A.user |
+5	Criteria Display Method	      C	| C.full | C.pruned | Cdm.Def |
+6	Phone Set	                    P	| P.0  | P.1 | P.All | P.Default |
+7	Criteria Ordering             CO| CO.1 | C0.2 | CO.Def |
+
+
+This workflow will be explained by going through different cases. 
+It will cover from the start, when the Subject logs in till he/she finishes the experiment. 
+
+In all cases User role is Subject.
+These steps will be same for every user. 
+1. User logs in.
+    - User Redirected to Home.html page. It'll go to Home Function in Views.py
+2. Users role and then its active experiment id is seen. 
+3. Home.html is rendered, relevant data is passed and now the user can see the home page
+   showing  user, the active experiment he is in, and two links are shown 
+   -Mobile Catalog 
+   -Show Filter(Not linked- half implemented)
+4. User presses Mobile Catalog link. mobileCatalog_pageLoader() is called which is defined in (sidebartemp_subject.html). 
+5. In mobile.html user is only shown those Mobile Phones that are set by the admin. 
+    They can be default, P.All or P.1 or P.2
+6. mobile_phone_view loads the mobile.html page without seeing any Feature Check (which is P.) here. 
+7. Mobile.html on document.load sends an ajax request to get_mobile_data (getMobiledata in Views.py) 
+    In this Function- 
+    2 Main things are done. 
+    1. Phonset Feature is checked through "exp_feat_levels".
+    2. Page visited Log is saved in (storeuserpagelogs).
+8. Based on the PhoneSet Features Mobile Phones are extracted and are send back to the mobile.html page. 
+9. The Mobiles can now be seen by the user. 
+10. Now, User is shown the mobile phones catalog. 
+11. For testing Purposes user has to select atleast and atmost 3 phones for comparison (For Now!!).
+12. Once the user selects the phones, comparison button appears. 
+13. On clicking the comparison button. myFunc (name is to changed) in mobile.html is called. 
+14. It gets the MobilePhones -id that are selected by user and sends an ajax Request to showMob Function in Views.py 
+15. showMob functionality is written in comments above the function name. 
+16. After Recieving exp_feat_levels, Weight Generation Method is checked. 
+
+Case 1- Subject id -- 16010087
+ -> Exp No -134
+ -> Feature Set by Admin --> ['I.1', 'R.1', 'W.direct', 'C.pruned']
+ -> Feature that are Default --> ['A.1by1','P.All']
+
+ 17. In this case Weight Generation Method is W.direct so it'll redirect to "criteria_weights" (criteriaWeights  in Views.py). 
+ 18. criteriaWeights main functionality in views.py. 
+ 19. As we're assuming its the first time it'll store page in visited logs(storeuserpagelogs) list.
+ 20. Check Revisiablity,Weight Generation Method,Alternatives Display Method, and will load the page. 
+ 21. Once the user sets the criteria weights he'll press the save button and an ajax POST method request will be made. 
+ 22. This will save everything in the memory. As seen in the function.
+ -- It can be seen that  W.direct, C.pruned, P.All have been implemented. 
+ 23. User Presses Next Button. Here Alternatives Display Method is checked. As it is A.1by1
+    it'll redirect to comparemobile_1by1_direct page. (compareMobileOneByOneDirect) function in views.. 
+ 24. On loading this page, we'll get the Interactivity and Revisiablity features. Due to which 
+    we'll switch on and off the buttons and graphs.
+ 25. In Our Case both Revisiablity and Interactivity is on. So the User can see the graphs and can go
+    back and forth.
+ 26. This Revisiabilty check will be on each page from mobile.html to comparemobile_1by1_direct. 
+ 27. We will constantly check if the user has permission to see the page again. 
+ 28. The check to see if the user has already visited the page is stored in storeuserpagelogs. 
+ -- This includes all of the workflow and some of the events that are directly linked with the workflow..
+ -- Special Events that are performed in  comparemobile_1by1_direct,criteriaWeights... 
+   -->comparemobile_1by1_direct
+   1. <<MakeTable and Rslider (Main Population of page, through these functions.)>>
+    - In ajax POST Method's success function, makeTable function(which is used to make Comparison Table)
+    - rSlider function is called, Whose onChange function will run recursively untill all the 
+    sliders and loaded. (whenever the table is made this onChange Function will run on its own)
+    - Later when the user will change the slider, onChange function will run, which will store the logs
+    and perform other calculations that required. 
+    - It'll also change the Values of Bar and Pie charts. As everything is linked. 
+    - When ((--show_FinalChart(), showchart_criteria()--))  are about to run Interactivity will be checked if false we'll not show the chart  
+    - In our case Interactivity is on so we'll these functions.
+   2. <<Pressing Next Button>>
+    -will run nextMobile() function, that will first store logs about pressing 
+      Next or Prev button (storenextprevbuttonlogs).
+    - it'll load the next mobile in Dictionary... 
+   3. <<Bar and Pie charts>>
+    - ((--show_FinalChart(), showchart_criteria()--)) both contains a Function Chart() which is also 
+   a plug in like rSlider. 
+    - Chart Function has certain call back options that allow us to store information if user
+     hovered over the charts. 
+   
+
+Case 2- Subject id -- 16010057
+-> Exp No -134
+-> Feature Set by Admin --> ['I.1', 'R.1', 'W.AHP', 'C.pruned']
+-> Feature that are Default --> ['A.2by2','P.All']
+
+  17. In this case Weight Generation Method is W.AHP so it'll redirect to "comparemobilespecsfilt_ver" (compareMobileSpecsFilterVer in Views.py). 
+  18. "2by2comapremobilespecsfiltver.html" will be loaded.
+  19. On Page Load Ajax POST Method call is made and it'll go to "compareMobileSpecsFilterVer" POST Check in Views. 
+  20. Now We retrieve Interactivity and Revisiabilty set for this case. Which is I.1 and R.1.
+  Note-- This work should have been done in get function but for now its fine. (We can change it in future)
+  21. Criteria list is made seeing Criteria Display Method which in our case is C.Pruned.
+  22. After getting these details from views.py in success function of ajax
+     it'll start to make table and graphs. 
+  23. Interactivity checks and Revisiablity checks are implemented. 
+  24. All checks--> I,R, W.AHP, C.Pruned, P.All and A.2by2 all implented.. 
+  25. Bar, pie alternate_criteria range slider, next prev btns, criteria Weights logs are implemented.
+  26. Data is stored in json format. 
+  27. SubmitData() func will get all these logs and other score lists and send an ajax request to save. (Not Done).. 
+  28. Survey Form added.
+  29. Page visit logs are also save but temporarily. 
+
+Case 3- Subject id -- 16010061
+-> Exp No -134
+-> Feature Set by Admin --> ['I.1', 'R.0', 'W.AHP', 'C.full']
+-> Feature that are Default --> ['A.2by2','P.All']
+
+Case 4-  Subject id --  16010058
+-> Exp No -134
+-> Feature Set by Admin -->  ['I.0', 'R.0', 'W.AHP', 'C.full']
+-> Feature that are Default --> ['A.2by2','P.All']
+
+
+Case 5-  Subject id --  16010001
+-> Exp No -134
+-> Feature Set by Admin -->  ['I.0', 'R.1', 'W.AHP', 'C.full']
+-> Feature that are Default --> ['A.2by2','P.All']
+
+
+Case 6-  Subject id --  16010075
+-> Exp No -134
+-> Feature Set by Admin -->  ['I.0', 'R.0', 'W.direct', 'C.pruned']
+-> Feature that are Default --> ['A.1by1','P.All']
+
+
+Case 7-  Subject id --  16010078
+-> Exp No -134
+-> Feature Set by Admin -->  ['I.0', 'R.1', 'W.direct', 'C.pruned']
+-> Feature that are Default --> ['A.1by1','P.All']
+
+Case 8-  Subject id --  16010078
+-> Exp No -134
+-> Feature Set by Admin -->  ['I.0', 'R.1', 'W.direct', 'C.pruned']
+-> Feature that are Default --> ['A.2by2','P.All']
+   -2by2 comaprison matrix is shown. 
+   -No Graphs are implemented as there was confusion in it.
+
+ 

@@ -3,8 +3,6 @@ from django.db.models import CharField, Model
 from django_mysql.models import ListCharField
 from django.contrib.auth.models import AbstractUser
 from django_mysql.models import ListCharField,ListTextField
-
-
 import datetime
 
 # Create your models here.
@@ -43,6 +41,13 @@ class platform_feature(models.Model):
         null=True,
         blank=True
     )
+    default_levels=ListCharField(
+        base_field=models.CharField(max_length=20),
+        size=6,
+        max_length=(6 * 21), # 6 * 10 character nominals, plus commas
+        null=True,
+        blank=True
+    )
 
     #feature_levels=models
     def __str__(self):
@@ -50,9 +55,20 @@ class platform_feature(models.Model):
     class Meta:
         verbose_name_plural="platform_feature"
         ordering = ['pk']
-
+class exStatusCd(models.Model):
+    status_name=models.CharField(max_length=100,null=True,blank=True)
+    status_code=models.IntegerField()
+    s_description=models.TextField(null=True,blank=True)
+    def __str__(self):
+        return self.status_name
+    class Meta:
+        verbose_name_plural="ExpStatusCode"
+        ordering = ['pk']
+DEFAULT_EXAM_ID=1
 class  experiment(models.Model):
+
     status = models.CharField(max_length=100,default='DESIGN_MODE')
+    status_code=models.ForeignKey(exStatusCd,on_delete=models.CASCADE,default=DEFAULT_EXAM_ID)
     """
     STATUS LEVELS:
      DESIGN_MODE = Under Construction
@@ -67,7 +83,7 @@ class  experiment(models.Model):
      ANALYZED = Analysis Reports
      HOLD = Not accepting Subjects - non-design - experiment admin issue 
     """
-    custom_exp_id=models.CharField(max_length=100,null=True,blank=True,unique=True)
+    custom_exp_id=models.CharField(max_length=100,null=True,blank=True)
     batches_title=models.CharField(max_length=100, null=True, blank=True)
     # subj_id_field=models.CharField(max_length=100, null=True, blank=True)
     # subj_email_field=models.CharField(max_length=100, null=True, blank=True)
@@ -91,7 +107,9 @@ class  experiment(models.Model):
     class Meta:
         verbose_name_plural="experiment"
         ordering = ['pk']
-    
+
+
+
 class Batch(models.Model):
      exp = models.ForeignKey(experiment, on_delete=models.CASCADE)
      batch_label= models.CharField(max_length=100, null=True, blank=True)
@@ -124,19 +142,42 @@ class Subject(models.Model):
     def __str__(self):
         return str(self.user.custom_id)
 
+class exp_fdefaults(models.Model):
+    used_in = models.ForeignKey(experiment, on_delete=models.CASCADE)
+    d_feature = models.ForeignKey(platform_feature, on_delete=models.CASCADE)
+    default_level = models.CharField(max_length=20)
+    def __str__(self):
+        fName = self.p_feature.feature_name
+        return fName
+    class Meta:
+        verbose_name_plural="Exp Default Feature"
+
+
 class experiment_feature(models.Model):
     used_in = models.ForeignKey(experiment, on_delete=models.CASCADE)
     p_feature = models.ForeignKey(platform_feature, on_delete=models.CASCADE)
     chosen_levels = ListCharField(
-         base_field=models.CharField(max_length=20),
-         size=6,
-         max_length=(6 * 21) # 6 * 10 character nominals, plus commas
+        base_field=models.CharField(max_length=20),
+        size=6,
+        max_length=(6 * 21), # 6 * 10 character nominals, plus commas
+        null=True,
+        blank=True,
     )
+    default_levels= ListCharField(
+        base_field=models.CharField(max_length=20),
+        size=6,
+        max_length=(6 * 21), # 6 * 10 character nominals, plus commas
+        null=True,
+        blank=True,
+   )
+    # default_levels=models.CharField(max_length=50,null=True,blank=True)
+
     def __str__(self):
         fName = self.p_feature.feature_name
         return fName
     
 class exp_fLevel(models.Model):
+    used_in = models.ForeignKey(experiment, on_delete=models.CASCADE,null=True,blank=True)
     e_feature = models.ForeignKey(experiment_feature, on_delete=models.CASCADE)
     chosen_level = models.CharField(max_length=100)
     def __str__(self):
@@ -159,6 +200,41 @@ class blog(models.Model):
 
         
 class mobilephones(models.Model):
+    Brand= models.CharField(max_length=200, null= True)
+    Mobile_Name= models.CharField(max_length=300, null= True)
+    Whats_new= models.TextField( null= True)
+    price=models.FloatField( null= True,blank=True)
+    Memory=models.CharField(max_length=500, null= True,blank=True)
+    Ram=models.CharField(max_length=500, null= True,blank=True)
+    Cpu=models.CharField(max_length=500, null= True)
+    Dimensions=models.CharField(max_length=300, null= True)
+    Gpu=models.CharField(max_length=500, null= True)
+    Resolution=models.CharField(max_length=500, null= True)
+    Size=models.FloatField(null=True)
+    Weight=models.IntegerField(null= True)
+    Chip=models.CharField(max_length=500, null= True)  
+    Colors=models.CharField(max_length=300, null= True) 
+    # changed from price_in_pkr
+   
+    price_in_usd=models.IntegerField( null= True)
+    rating=models.FloatField(null= True)
+    OS=models.CharField(max_length=300, null= True)
+    # imagepath1 = models.ImageField(null=True, blank=True, upload_to="webapp/img/sampleimages/")
+    # imagepath2=  models.ImageField(null=True, blank=True, upload_to="webapp/img/sampleimages/")
+    imagepath1=models.CharField(max_length=300,null=True,blank=True)
+    imagepath2=models.CharField(max_length=300,null=True,blank=True)
+    
+    # changed from back_camera
+    battery=models.CharField(max_length=400,null=True)
+    backcam=models.CharField(max_length=400,null=True)
+ 
+    
+    def __str__(self):
+        return self.Mobile_Name
+    
+    class Meta:
+        verbose_name_plural="mobilephones"
+class MobilePhones_Test(models.Model):
     Mobile_Companny= models.CharField(max_length=200, null= True)
     Mobile_Name= models.CharField(max_length=300, null= True)
     Whats_new= models.TextField( null= True)
@@ -191,11 +267,11 @@ class mobilephones(models.Model):
         return self.Mobile_Name
     
     class Meta:
-        verbose_name_plural="mobilephones"
-    
+        verbose_name_plural="Mobile Phones Test"
+
 class criteria_catalog_disp(models.Model):
     
-       catalog_crit_display_order=ListCharField(
+        catalog_crit_display_order=ListCharField(
         base_field=CharField(max_length=20),
         size=10,
         max_length=(10*21),
@@ -229,6 +305,7 @@ class samsung_phone(models.Model):
         return self.name
     class Meta:
         verbose_name_plural="samsungphone"
+# This Model is not used anywhere now. 
 class sort_feature(models.Model):
     f_id=models.IntegerField(null=True)
     feature=models.CharField(max_length=200,null=True)
@@ -242,6 +319,7 @@ class sort_feature(models.Model):
         return self.feature
     class Meta:
         verbose_name_plural="Sort Feature"
+
 
 class userscoreRecord (models.Model):
     column_id=models.IntegerField(null=True)
@@ -262,12 +340,12 @@ class userroles(models.Model):
     userrole=models.CharField(max_length=200,null=True)
 
 class selectedAdminPhones(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE,null=True)
-    exp = models.ForeignKey(experiment, on_delete=models.CASCADE,null=True)
-    block = models.ForeignKey(Block, on_delete=models.CASCADE, null=True)
-    pset_id = models.CharField(max_length=10,null=True)
-    mob = models.ForeignKey(mobilephones, on_delete=models.CASCADE,null=True)
-    p_order = models.IntegerField(null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True)
+    exp = models.ForeignKey(experiment, on_delete=models.CASCADE,null=True,blank=True)
+    block = models.ForeignKey(Block, on_delete=models.CASCADE, null=True,blank=True)
+    pset_id = models.CharField(max_length=10,null=True,blank=True)
+    mob = models.ForeignKey(mobilephones, on_delete=models.CASCADE,null=True,blank=True)
+    p_order = models.IntegerField(null=True,blank=True)
 
 class PhoneCriteria(models.Model):
     criteria_name=models.CharField(max_length=20,null=True)
@@ -282,9 +360,9 @@ class PhoneCriteria(models.Model):
 
 class ExpCriteriaOrder(models.Model):
     exp = models.ForeignKey(experiment, on_delete=models.CASCADE,null=True)
-    block = models.ForeignKey(Block, on_delete=models.CASCADE,null=True)
+    block = models.ForeignKey(Block, on_delete=models.CASCADE,null=True,blank=True)
     cOrder_id = models.CharField(max_length=10,null=True)
-    fvp=models.CharField(max_length=10,null=True)
+    fvp=models.CharField(max_length=25,null=True)
     #NEED TO KEEP A RECORD OF THE EXISTING SET OF AVAILABLE CRITERIA IN THE MOBILE PHONES TABLE
     pCriteria = models.ForeignKey(PhoneCriteria, on_delete=models.CASCADE,null=True)
 
@@ -292,3 +370,35 @@ class ExpCriteriaOrder(models.Model):
     position = models.IntegerField(null=True)
 
     sh_hd=models.IntegerField(null=True)
+class StoreHoverBarChartLogs(models.Model):
+    user= models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    value=models.FloatField(null=True,blank=True)
+    phone_name=models.CharField(max_length=45,null=True,blank=True)
+    time=models.CharField(max_length=100,null=True,blank=True)
+class StoreHoverPieChartLogs(models.Model):
+    user=models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    value=models.FloatField(null=True,blank=True)
+    criteria_name=models.CharField(max_length=45,null=True,blank=True)
+    time=models.CharField(max_length=100,null=True,blank=True)
+class StoreNextPrevButtonLogs(models.Model):
+    user=models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    button_name=models.CharField(max_length=45,null=True,blank=True)
+    time=models.CharField(max_length=100,null=True,blank=True)
+    phone_name=models.CharField(max_length=45,null=True,blank=True)
+
+class StoreCritWeightLogs(models.Model):
+    user=models.ForeignKey(User, on_delete=models.CASCADE,null=True)
+    value=models.FloatField(null=True,blank=True)
+    criteria_name=models.CharField(max_length=45,null=True,blank=True)
+    time=models.CharField(max_length=100,null=True,blank=True)
+
+class generalCriteriaData(models.Model):
+    criteria = models.ForeignKey(PhoneCriteria, on_delete=models.CASCADE,null=True,blank=True)
+    valuelist=ListCharField(
+        base_field=models.CharField(max_length=20),
+        size=10,
+        max_length=(10*21),
+        null=True,
+        blank=True
+    )
+    inputtype=models.CharField(max_length=20,default="-")

@@ -42,6 +42,14 @@
                                                 <input type="checkbox" name="Oppo_check" value="Oppo" onchange="brandCheck_box(this)" >
                                         </div>
                         </div>
+                        <div class="row">
+                                <div class="col-md-6">
+                                        <p>Apple</p>
+                                </div>
+                                <div class="col-md-6">
+                                        <input type="checkbox" name="Apple_check" value="Apple" onchange="brandCheck_box(this)" >
+                                </div>
+                </div>
 
                 </div>
                
@@ -56,4 +64,18 @@
         <div class="col-md-4">
                 <button id="HUAWEI" onclick="retBrandMobs($(this))" >HUAWEI</button>
         </div> -->
+</div>
+<div class="row" id="exp_description_div">
+        <div class="row-fluid">
+                <h5>Exp Description</h5>
+        </div>
+        <div class="row-fluid">
+                <textarea class="form-control" id="text_area_desp"></textarea>
+        </div>
+
+        <div class="row-fluid">
+                <button  id="saveDescriptionbtn" onclick="submitDescription()">Submit</button>
+        </div>
+
+        
 </div>

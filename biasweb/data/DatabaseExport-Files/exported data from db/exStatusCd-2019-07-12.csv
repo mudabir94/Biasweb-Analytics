@@ -1,0 +1,11 @@
+id,status_name,status_code,s_description
+1,DESIGN_MODE,0,Under Construction
+2,UNASSIGNED,1,Design/BLock structure complete - No Subjects Assigned yet
+3,READY,2,Design complete + Subjects List Assigned
+4,CLOSED,3,No longer accepting Subjects - awaiting analysis
+5,SUSPENDED,4,Not accepting Subjects - could be reopened - some design changes allowed
+6,CANCELLED,5,Abandoned - not accepting subjects ever
+7,ANALYZED,6,Analysis Reports generated after CLOSED
+8,HOLD,7,Admin temporarily closes experiment (non design issue - coordinating multiple experiments)
+9,OPEN,10,READY + login shared w/ Subjects
+10,ACTIVE,11,Subject(s) are undergoing experiment

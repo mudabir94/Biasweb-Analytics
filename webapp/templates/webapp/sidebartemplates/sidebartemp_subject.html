@@ -1,17 +1,36 @@
 
 <div class='row'>
-        <div class="col-md-12 sidenav_testing">
-                <div class="custom_side_rows">
-                        <a href="{%url 'mobileview' %}">
-                                Mobile Phones   
-                        </a>
-                </div>
-                <div class="custom_side_rows">
-                                <a href="{%url 'showfilter' %}">
-                                              ShowFilter                      
-                                </a>
-                        </div>
-               
-                    
-         </div>
+        <div class="col-md-12 sidenav_testing">        
+         <!-- <a href="{%url 'mobileview' %}" class="custom_side_rows"> -->
+                <a href="#" onclick="mobileCatalog_pageLoader()" class="custom_side_rows">
+
+                        Mobile Catalog  
+                    </a>
+        <a href="{%url 'filter' %}" class="custom_side_rows">ShowFilter</a>          
+        </div>
 </div>
+<script>
+        var exp_id='{{exp_id}}'
+        // It first sends an Ajax Call to SaveCurrentSubjExp Function in View. 
+        // On succes it send request to mobile_phone_view (Views.py)  to open mobile.html page. 
+        function mobileCatalog_pageLoader(){
+                //  var exp_num=$(".active_li").attr("value")
+                var exp_num= exp_id
+                $.ajax({
+                type: 'POST',
+                dataType: "json",
+                'data': {
+                "exp_num":exp_num,
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                },
+                url: "{% url 'save_current_subj_exp' %}",
+                success: function(data){
+                        window.location="{%url 'mobileview' %}"
+
+                }
+                });
+                // make ajax call to save the exp the user wants to continue with. 
+                // and run the mobile catalog page. 
+                
+        }
+</script>

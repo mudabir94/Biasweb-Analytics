@@ -12,8 +12,10 @@ from biasweb.utils.assign import Assigner
 from webapp.models import experiment as Experiment
 from webapp.models import Block
 from webapp.models import experiment_feature as ExpFeature
+from webapp.models import exp_fdefaults as exp_fdefaults
+
 from webapp.models import platform_feature as PFeature
-from webapp.models import User, Subject
+from webapp.models import User, Subject,exStatusCd, Role
 from webapp.forms import SubjectCreationForm as scf
 
 # WHERE SAVED FILES WILL BE STORED
@@ -21,10 +23,10 @@ OUT_PATH="biasweb/data/output/"
 
 #    STATUS LEVELS:
 DESIGN_MODE = 'DESIGN_MODE' #Under Construction
+INACTIVE = 'INACTIVE' #Partially completed but no Subjects
 READY = 'READY' #Design complete + Subjects List attached
 OPEN = 'OPEN' #READY + login shared w/ Subjects
 ACTIVE = 'ACTIVE' #Subject(s) are undergoing experiment
-INACTIVE = 'INACTIVE' #Partially completed but no Subjects
 CLOSED = 'CLOSED' #No longer accepting Subjects - awaiting analysis
 SUSPENDED = 'SUSPENDED' #Not accepting Subjects - could be reopened - some design changes allowed
 CANCELLED = 'CANCELLED' #Abandoned - not accepting subjects ever
@@ -33,32 +35,53 @@ ANALYZED = 'ANALYZED' #Analysis Reports
 class ExperimentController:
     def __init__(self, a_id, e_id = None, cap = 100):
         self.exp = Experiment()
-        self.fLevels = {}
+        self.fLevels = {}  #ONLY FEATURES TO BE ADDED TO BLOCKS
         self.subjData = pd.DataFrame()
         self.subjects = Subject()
         self.idField = None
         self.assigner = Assigner()
+        self.defFlevels={}
+
         # check is to be made if the user wants to save the current exp so that its status changes from design mode to active and the previous exps status changes to inactive.
         if e_id:
             self.exp = Experiment.objects.get(id=e_id)
             self.fSet = self.exp.experiment_feature_set.select_related('p_feature')
             self.fLevels = self.retrieveFLevels()
+            self.defFSet = self.exp.experiment_feature_set.select_related('p_feature')  #ONLY FEATURES TO BE KEPT OUT OF BLOCKS AND IN DEFAULTS
+
+            #self.defFSet = self.exp.exp_defaults_set.select_related('p_feature')
+            #TODO: SEPARATE THE DEFAULTS FROM THE BLOCK LEVELS
+            # populate self.defFLevels & self.fLevels
+            #TODO: CREATE setDefFSet() and getDefFSet()
         else:
             print("In else")
             self.exp.status = DESIGN_MODE
+            self.exp.status_code=exStatusCd.objects.get(id=1)
+            print("exp.status_code",self.exp.status_code)
             self.exp.owner = User.objects.get(custom_id=a_id)      #TODO@MUDABIR - NEED TO MODIFY EXPERIMENT ADMIN IMPLEMENTATION
             print(" self.exp.owner", self.exp.owner)
+            print("A_ID***********",a_id)
+
             self.exp.custom_exp_id = 'TBA' #can only be created after Experient table assigns an id
+            print("self.exp.custom_exp_id",self.exp.custom_exp_id)
             self.exp.capacity = cap            #Capacity to budget for experiment
+            print("Capacity")
             self.saveExperiment()
+
             self.exp.custom_exp_id = a_id
+            print(" self.exp.custom_exp_id***********", self.exp.custom_exp_id)
+
             #print('self.exp.custom_exp_id',self.exp.custom_exp_id)
             exp_id = self.exp.id
             #print(exp_id)
             exp_id = '-' + str(exp_id).zfill(4)  #ensuring the id is now a 4 digit numeric string
             self.exp.custom_exp_id += exp_id
-           
             self.fSet = self.exp.experiment_feature_set
+            self.defFSet =self.exp.experiment_feature_set
+
+            print("self.exp.experiment_feature_set",self.exp.experiment_feature_set)
+            # self.defFSet = self.exp.exp_defaults_set  #TODO TO BE TESTED!!
+
             self.saveExperiment()
 
     def saveExperiment(self):
@@ -90,6 +113,32 @@ class ExperimentController:
     Inputs: Either newFSet (list of feature_symbols for features to be set)
             OR newFLevels (dictionary with symbols as key pointing to chosen list of levels)
     """
+
+
+    def setDefFSet(self,newDefSet=None, newDefFLevels=None, prompt = False):
+        if not self.defFSet:
+            # self.defFSet=self.exp.....
+            # self.fSet = self.exp.experiment_feature_set
+            pass
+        if newDefFLevels:
+            newDefSet = list(newDefFLevels.keys())
+            print("newDefSet--setDefFSet",newDefSet)
+
+        if  newDefSet is not None:
+            for f in newDefSet:
+                nLev = None
+                if newDefFLevels:
+                    nLev = newDefFLevels[f]
+                self.addDefFeature(DefFSymbol=f, newDefLevList=nLev, byPrompt=prompt)
+            curDefFSet = list(self.defFSet.values_list('p_feature__feature_symbol', flat=True))
+            dropDefFList = list(set(curDefFSet)-set(newDefSet))
+            #3. delete any features not required
+            # for d in dropDefFList:
+            #     self.delDefFeature(d)
+
+        
+    
+        
     def setFSet(self, newFSet=None, newFLevels=None, prompt = False):
         if not self.fSet:
             self.fSet = self.exp.experiment_feature_set
@@ -99,26 +148,56 @@ class ExperimentController:
             newFSet = list(newFLevels.keys())
         #3 things
         #1. add all features (incl existing) in newFSet along with any new LevList
-        for f in newFSet:
-            nLev = None
-            if newFLevels:
-                nLev = newFLevels[f]
-            self.addFeature(fSymbol=f, newLevList=nLev, byPrompt=prompt)
+        print("newFSet",newFSet)
+        if  newFSet is not None:
+            for f in newFSet:
+                nLev = None
+                if newFLevels:
+                    nLev = newFLevels[f]
+                self.addFeature(fSymbol=f, newLevList=nLev, byPrompt=prompt)
         #2. compare the existing fSet with proposed, and identify diffs
-        curFSet = list(self.fSet.values_list('p_feature__feature_symbol', flat=True))
-        dropFList = list(set(curFSet)-set(newFSet))
-        #3. delete any features not required
-        for d in dropFList:
-            self.delFeature(d)
+            curFSet = list(self.fSet.values_list('p_feature__feature_symbol', flat=True))
+            dropFList = list(set(curFSet)-set(newFSet))
+            #3. delete any features not required
+            # for d in dropFList:
+            #     self.delFeature(d)
         #self.fSet.bulk_create(self.fInSet)
 
-    
+    def addDefFeature(self, DefFSymbol, newDefLevList = None, byPrompt = False):
+        pf = PFeature.objects.filter(feature_symbol=DefFSymbol)[0]
+        if newDefLevList:
+            self.defFlevels[DefFSymbol] = newDefLevList
+        elif DefFSymbol not in self.defFlevels:
+            self.defFlevels[DefFSymbol] = pf.default_levels
+        expF = self.defFSet.filter(p_feature__feature_symbol=DefFSymbol)
+        if expF.exists():
+            if newDefLevList:
+                expF.update(default_levels = newDefLevList)
+                print(expF[0].default_levels)
+            return expF[0]
+        else:
+            if not newDefLevList and byPrompt and len(self.defFlevels[DefFSymbol])>2:
+                enq = [DefFSymbol]
+                fList = self.clarifyFeature(enq)
+                print(fList)
+                self.fLevels[fSymbol] = fList
+            newEF = self.exp.experiment_feature_set.create(
+                    p_feature = pf,
+                    default_levels = self.defFlevels[DefFSymbol]          
+            )
+            return newEF
+
+
     def addFeature(self, fSymbol, newLevList = None, byPrompt = False):
+        #ADD EXTRA ATTRIBUTE OF "DEFAULT"
         pf = PFeature.objects.filter(feature_symbol=fSymbol)[0]
         if newLevList:
+            #EDIT TASK: A new list is given for an existing feature in fSet
             print("New Levels for ",fSymbol," are: ",newLevList)
             self.fLevels[fSymbol] = newLevList
         elif fSymbol not in self.fLevels:
+            #CREATE TASK: New fSymbol added to fLevels and its default features
+            #picked from platform features table (user can later add/drop)
             self.fLevels[fSymbol] = pf.feature_levels
         #check if feature already exists, else create
         expF = self.fSet.filter(p_feature__feature_symbol=fSymbol)
@@ -139,7 +218,15 @@ class ExperimentController:
                     chosen_levels = self.fLevels[fSymbol]          
             )
             return newEF
-    
+    def delDefFeature(self,DefFSymbol):
+        expF = self.getDefFeature(DefFSymbol)
+        if expF:
+            fName = expF.p_feature.feature_name
+            expF.delete()
+            del self.defFlevels[DefFSymbol]
+            print("DELETED",fName)
+
+
     def delFeature(self,fSymbol):
         expF = self.getFeature(fSymbol)
         if expF:
@@ -147,6 +234,15 @@ class ExperimentController:
             expF.delete()
             del self.fLevels[fSymbol]
             print("DELETED",fName)
+
+    def getDefFeature(self,DefFSymbol):
+        expF = self.defFSet.filter(p_feature__feature_symbol=DefFSymbol)
+        if expF.exists():
+
+            return expF[0]
+        else:
+            return None
+
 
     def getFeature(self,fSymbol):
         expF = self.fSet.filter(p_feature__feature_symbol=fSymbol)
@@ -170,6 +266,13 @@ class ExperimentController:
                     flevList.pop(eval(levToPop))
                     print(flevList)
             return flevList
+
+
+    def retrieveDefFLevels(self):
+        for f in self.defFSet.all():
+            self.defFlevels[f.p_feature.feature_symbol] = f.default_levels
+        return self.fLevels
+
 
     def retrieveFLevels(self):
     #only for setting fLevels afresh by unpacking QuerySet
@@ -211,6 +314,7 @@ class ExperimentController:
         self.blocks = list(
             itertools.product(
                 *self.fLevels.values()
+                #TODO: SUBSTITUTE fLevels with blockFLevels
             )
         )
         self.saveBlocks()
@@ -391,6 +495,7 @@ class ExperimentController:
         
         
     def saveSubjects(self, dSub=None, writeXL=False, fName=None):
+        roleSubj_id = Role.objects.get(role_name="Subject").id
         if isinstance(dSub,pd.DataFrame):
             self.subjData = dSub
         #WRITE TO DATABASE
@@ -411,6 +516,7 @@ class ExperimentController:
                     subjUser = scf().save(commit=False, pwd=c_id)
                     subjUser.username = c_id
                     subjUser.custom_id = c_id
+                    subjUser.role_id = roleSubj_id
                     subjUser.save()
                     subj_id = subjUser.id
                 #TODO@SHAZIB: CHECK IF SUBJECT USER EXISTS IN EXPERIMENT

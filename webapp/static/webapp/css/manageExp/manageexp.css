@@ -1,0 +1,78 @@
+#list_exp_id_div{
+    float:left;
+    width:initial;
+    overflow-y: auto;
+    height: 200px;
+}
+.extendable:focus {
+    position: absolute;
+    width: 110%;
+    top: -1rem;
+}
+/* #ids_row_div{
+    margin-left: 5px;
+} */
+#main_row_div{
+    margin-left:0px;
+}
+.custom_form_control{
+    width: inherit;
+    display: block;
+    width: 100%;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color .15s 
+    /* min-width:1px;
+    max-width: 10px; */
+}
+
+#status_row_div,#descp_row_div,#save_row_div{
+    margin-top: 5px;
+    width: -webkit-fill-available;
+}
+.custom_row{
+    margin-right: 0px !important;
+    margin-left: 0px !important;
+}
+#list_n_button_div{
+    background: lightgray;
+}
+.active_li{
+    background: #5276ffc2;
+    color: white;
+    box-shadow: 0 0 0.5px 0.5px #009688;
+}
+li{
+    display: block !important;
+}
+.active_btn{
+    background:white !important;
+    color: #009688 !important; /* White text */
+
+    box-shadow: 0 0 0.5px 0.5px #009688 !important ;
+    border-radius:1pc !important;
+  }
+  #save_button_manage{
+    border: solid;
+    background:cornflowerblue;
+    border-radius: 2px;
+    position: relative;
+    padding: 8px 30px;
+    margin: 10px 1px;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0;
+    will-change: box-shadow, transform;
+  }
+  #save_button_manage:hover{
+    background:rgb(236, 239, 245);
+
+  }
+  

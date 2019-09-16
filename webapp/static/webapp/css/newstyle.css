@@ -36,13 +36,13 @@ h1 > a, h2 > a, h3 > a, h4 > a, h5 > a, h6 > a {
     margin-bottom: 40px !important;
 }
  a:hover {
-    color: #999caa;
+    color: #000 !important;
     text-decoration: none;
 }
 span {
     font-size: 14px;
     font-weight: 400;
-    color: #bfc1c7;
+    color: #f1f3f8;
 }
 a:active, a:focus, a:hover {
     color: #999caa;
