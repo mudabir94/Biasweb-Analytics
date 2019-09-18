@@ -402,3 +402,8 @@ class generalCriteriaData(models.Model):
         blank=True
     )
     inputtype=models.CharField(max_length=20,default="-")
+class customExpSessionTable(models.Model):
+    expid=models.IntegerField(null=True,blank=True)
+    cusexpid=models.CharField(null=True,blank=True,max_length=100)
+    status=models.CharField(null=True,blank=True,max_length=20)
+

@@ -141,4 +141,53 @@ Case 8-  Subject id --  16010078
    -2by2 comaprison matrix is shown. 
    -No Graphs are implemented as there was confusion in it.
 
- 
+Case 9- Subject id -- 16010075
+-> Exp No -167
+-> Feature Set by Admin -->  ['I.1', 'R.0','C.full','P.2']
+-> Feature that are Default --> ['A.1by1','W.direct']
+-> Phone Sets      
+   - p.1-- Three Samsung phones. 
+   - P.2-- Three Apple phones. 
+
+Case 10- Subject id -- 16010057
+-> Exp No -167
+-> Feature Set by Admin -->  ['I.1', 'R.0', 'C.pruned', 'P.2']
+-> Feature that are Default --> ['A.1by1','W.direct']
+-> Phone Sets   
+   - p.1-- Three Samsung phones. 
+   - P.2-- Three Apple phones. 
+
+Case 11- Subject id -- 16010078
+-> Exp No -167
+-> Feature Set by Admin -->   ['I.0', 'R.0', 'C.full', 'P.1']
+-> Feature that are Default --> ['A.1by1','W.direct']
+-> Phone Sets   
+   - p.1-- Three Samsung phones. 
+   - P.2-- Three Apple phones. 
+
+
+Case 11- Subject id -- 16010061
+-> Exp No -167
+-> Feature Set by Admin -->   ['I.0', 'R.1', 'C.pruned', 'P.2']
+-> Feature that are Default --> ['A.1by1','W.direct']
+-> Phone Sets   
+   - p.1-- Three Samsung phones. 
+   - P.2-- Three Apple phones. 
+
+Case 12- Subject id -- 16010075
+-> Exp No -168
+-> Feature Set by Admin -->    ['I.1', 'R.1', 'W.AHP', 'C.full', 'P.1']
+-> Feature that are Default --> ['A.2by2']
+-> Phone Sets   
+   - p.1-- Three Samsung phones. 
+   - P.2-- Three Apple phones. 
+
+Case 12- Subject id -- 16010057
+-> Exp No -168
+-> Feature Set by Admin -->     ['I.0', 'R.0', 'W.AHP', 'C.full', 'P.2']
+-> Feature that are Default --> ['A.2by2']
+-> Phone Sets   
+   - p.1-- Three Samsung phones. 
+   - P.2-- Three Apple phones. 
+
+

@@ -60,6 +60,7 @@ from .models import (
                     StoreNextPrevButtonLogs,
                     StoreCritWeightLogs,
                     generalCriteriaData,
+                    customExpSessionTable,
                     )
 
 
@@ -69,6 +70,7 @@ from django.views.decorators.cache import never_cache
 import datetime
 from functools import reduce
 import operator
+from django.db.models import Max
 
 #--------------------------------------------------------------------------------------------------
 role=1   #global variable used in adminsetup and globalFunc function. 
@@ -2656,10 +2658,14 @@ def deleteAllSubjects(request):
 
 def getExpController(request):
     try:
-        sess_expId = request.session['sess_expId']
-        print("session>>>>>>>>>>>>>>",request.session['sess_expId'])
+        cest_obj=customExpSessionTable.objects.aggregate(Max('expid'))
+        print("ssss",cest_obj)
+        print("qqqqqqqq",cest_obj['expid__max'])
+        sess_expId=cest_obj['expid__max']
+        # sess_expId = request.session['sess_expId']
+        # print("session>>>>>>>>>>>>>>",request.session['sess_expId'])
 
-        print('SESSION ID',sess_expId)
+        # print('SESSION ID',sess_expId)
     except KeyError:
         print("session_________")
 
@@ -2699,8 +2705,12 @@ def getExpController(request):
         print('expAdminId',expAdminId)
         expCont = ExperimentController(a_id=expAdminId)
         print('NEW Exp id',expCont.exp.id)
-        request.session['sess_expId'] = expCont.exp.id
-        request.session['sess_custExpId'] = expCont.exp.custom_exp_id
+        cest_obj=customExpSessionTable()
+        cest_obj.expid=expCont.exp.id
+        cest_obj.cusexpid=expCont.exp.custom_exp_id
+        cest_obj.save()
+        # request.session['sess_expId'] = expCont.exp.id
+        # request.session['sess_custExpId'] = expCont.exp.custom_exp_id
         print('request.session',request.session['sess_custExpId'] )
         print("SAVED NEW EXPERIMENT TO SESSION---->>>>>>")
 
@@ -3314,32 +3324,33 @@ def getMobiledata(request):
                 else:
                     pagevisited=flag
                     storeuserpagelogs["mobile"]=[datetime.datetime.now(),exp_under_test,request.user.id]
-                # res = [idx for idx in Sub_obj.block.levels_set if idx.startswith("P.")]
-                # print("res",res)
-                # if res:
-                #     # seeing the block e.g/ P.default,P.0,P.1,P.2 send the query
-                #     phoneobjs=selectedAdminPhones.objects.filter(exp=exp_obj,pset_id__in=res).order_by("-id")
-                #     mobiles_retrieved = list(phoneobjs.values_list('mob',flat=True))   
-                #     mobiles_retrieved=list(mobilephones.objects.filter(id__in=mobiles_retrieved).values())
-                #     mobiles_retrieved_list=mobiles_retrieved
-                # else:
-                #     mobiles_retrieved=mobilephones.objects.all().order_by('-id')
-                #     mobiles_retrieved = list(mobiles_retrieved.values())   
-                #     mobiles_retrieved_list=mobiles_retrieved
-                phoneobjs=selectedAdminPhones.objects.filter(exp=exp_obj)
+                
+                # phoneobjs=selectedAdminPhones.objects.filter(exp=exp_obj)
 
                 if 'P.All' not in exp_feat_levels:
                     print("pset id not P.All")
-                    print(phoneobjs)
-                    plist=[]
-                    for pob in phoneobjs:
-                        print(pob)
-                        plist.append(pob.mob.id)
-                    # print(plist)
-                    mobiles_retrieved=mobilephones.objects.filter(pk__in=plist)
-                    mobiles_retrieved = list(mobiles_retrieved.values())   
-                    mobiles_retrieved_list=mobiles_retrieved
-                    print("filt_mobiles",filt_mobiles)
+                    # print(phoneobjs)
+                    # plist=[]
+                    # for pob in phoneobjs:
+                    #     print(pob)
+                    #     plist.append(pob.mob.id)
+                    # # print(plist)
+                    # mobiles_retrieved=mobilephones.objects.filter(pk__in=plist)
+                    # mobiles_retrieved = list(mobiles_retrieved.values())   
+                    # mobiles_retrieved_list=mobiles_retrieved
+                    # print("filt_mobiles",filt_mobiles)
+                    res = [idx for idx in Sub_obj.block.levels_set if idx.startswith("P.")]
+                    print("res",res)
+                    if res:
+                        # seeing the block e.g/ P.default,P.0,P.1,P.2 send the query
+                        phoneobjs=selectedAdminPhones.objects.filter(exp=exp_obj,pset_id__in=res).order_by("-id")
+                        mobiles_retrieved = list(phoneobjs.values_list('mob',flat=True))   
+                        mobiles_retrieved=list(mobilephones.objects.filter(id__in=mobiles_retrieved).values())
+                        mobiles_retrieved_list=mobiles_retrieved
+                    else:
+                        mobiles_retrieved=mobilephones.objects.all().order_by('-id')
+                        mobiles_retrieved = list(mobiles_retrieved.values())   
+                        mobiles_retrieved_list=mobiles_retrieved
                   
                 else:
                     print("pset id  P.All")

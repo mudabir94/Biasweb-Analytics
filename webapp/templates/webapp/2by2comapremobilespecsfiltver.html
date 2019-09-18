@@ -1520,7 +1520,8 @@ function submitData(){
     var json = { pages: [
             {questions: [
                 { type: "matrix", name: "Quality", title: "Please indicate if you agree or disagree with the following statements",
-                    columns: [{ value: 1, text: "Strongly Disagree" }, 
+                    columns: [
+                            { value: 1, text: "Strongly Disagree" }, 
                             { value: 2, text: "Disagree" }, 
                             { value: 3, text: "Neutral" }, 
                             { value: 4, text: "Agree" }, 
@@ -1560,7 +1561,7 @@ function submitData(){
 
     survey.onComplete.add(function(result) {
         document.querySelector('#surveyResult').textContent =
-            "Result JSON:\n" + JSON.stringify(result.data, null, 3);
+            "Result JSON:\n" + JSON.stringify(result.data, null, 4);
     });
 
 
