@@ -620,7 +620,7 @@ $('#price_slider').hide();
 $('#phones_main_button_div').hide();
 $("#exp_sel_phones_div").hide();
 $("#searchfilter_head_div").hide();
-
+$("#exp_description_div").hide();
 $('#feat_lvl_div').show();
 
 
@@ -684,7 +684,7 @@ if(exp_id===""){
 
      }
      else{
-         
+        $("#exp_description_div").show();
         showExpWIP();
         // TO BE IMPLEMENTED
         // Check through an ajax call if anything related to dict,blocklist etc
@@ -1362,7 +1362,7 @@ function showBatchManagement(){
 
     $("#phones_main_button_div").hide(); 
     $('#importSubdiv').slideDown();
-    $("#exp_description_div").show();
+    // $("#exp_description_div").show();
 
     $('#pager').hide();
 
@@ -1437,7 +1437,7 @@ function showBlockManagement(){
     $('#brand_check_div').hide();
 
     $("#phones_main_button_div").hide(); 
-    $("#exp_description_div").show();
+    // $("#exp_description_div").show();
 
     $('#block_assign_row_div').show();
     // $('#blkoutputsDiv').show();
@@ -3658,6 +3658,8 @@ if (block_feat_dict['C']===undefined && block_feat_dict['CO']===undefined){
                                 window.localStorage.setItem("blockList", JSON.stringify(blockList));
                     
                             }
+
+                            $('#exp_description_div').show();
                         }
                     }); 
             return;
@@ -4285,7 +4287,7 @@ function mobileCatalog(){
         row.setAttribute('class','row');
         phoneset_button_div.append(row);
         var col_md_8=document.createElement('div');
-        col_md_8.setAttribute('class','col-md-9 btn-group');
+        col_md_8.setAttribute('class','col-md-8 btn-group');
         col_md_8.id="set_buttons"
         row.append(col_md_8);
         var col_md_2=document.createElement('div');
@@ -7787,7 +7789,7 @@ function get_data_Ajax_Co(colist){
         toggle_btn_row_div.setAttribute("class","row");
         container.append(toggle_btn_row_div);
         var col_md_12=document.createElement('div');
-        col_md_12.setAttribute('class','col-md-9 btn-group');
+        col_md_12.setAttribute('class','col-md-8 btn-group');
         col_md_12.id="set_buttons_cdm"
         toggle_btn_row_div.append(col_md_12);
         cmd_set_list=["C.FULL","C.PRUNE"];
@@ -9246,7 +9248,7 @@ function get_data_Ajax_Co(colist){
         toggle_btn_row_div.setAttribute("class","row");
         cdm_co_on_cfull_cprune_btn_div.append(toggle_btn_row_div);
         var col_md_12=document.createElement('div');
-        col_md_12.setAttribute('class','col-md-9 btn-group');
+        col_md_12.setAttribute('class','col-md-8 btn-group');
         col_md_12.id="cdm_co_on_set_buttons"
         toggle_btn_row_div.append(col_md_12);
         cdm_co_on_set_list=["C.FULL","C.PRUNE"];
@@ -9479,7 +9481,7 @@ function get_data_Ajax_Co(colist){
             toggle_btn_row_div.setAttribute("class","row");
             cdm_co_on_cfull_cprune_btn_div.append(toggle_btn_row_div);
             var col_md_12=document.createElement('div');
-            col_md_12.setAttribute('class','col-md-9 btn-group');
+            col_md_12.setAttribute('class','col-md-8 btn-group');
             col_md_12.id="cdm_co_on_set_buttons"
             toggle_btn_row_div.append(col_md_12);
             cdm_co_on_set_list=["C.FULL","C.PRUNE"];
@@ -9855,7 +9857,7 @@ function get_data_Ajax_Co(colist){
         toggle_btn_row_div.setAttribute("class","row");
         container.append(toggle_btn_row_div);
         var col_md_12=document.createElement('div');
-        col_md_12.setAttribute('class','col-md-9 btn-group');
+        col_md_12.setAttribute('class','col-md-8 btn-group');
         col_md_12.id="set_buttons_cdm_co"
         toggle_btn_row_div.append(col_md_12);
         cmd_set_list_co=["C.Full","C.Prune"];
@@ -11841,7 +11843,6 @@ function get_data_Ajax_Co(colist){
 
                         }
                 });
-            alert("Unchecked");
 
         }
       

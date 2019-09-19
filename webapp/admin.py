@@ -13,6 +13,7 @@ from .models import Subject,experiment_feature,Batch,Block,ExpCriteriaOrder,crit
 
 from .models import StoreHoverBarChartLogs,StoreHoverPieChartLogs,StoreNextPrevButtonLogs,StoreCritWeightLogs
 from .models import customExpSessionTable
+from .models import surveyForm
 class MyUserChangeForm(UserChangeForm):
     class Meta(UserChangeForm.Meta):
         model = User
@@ -149,6 +150,10 @@ class generalCriteriaDataAdmin(admin.ModelAdmin):
 class customExpSessionTableAdmin(admin.ModelAdmin):
     list_display=("id","expid","cusexpid","status")
 
+class surveyFormAdmin(admin.ModelAdmin):
+    list_display=('id',"exp","surveydata")
+
+
 admin.site.register(User, MyUserAdmin)
 admin.site.register(ExpCriteriaOrder, ExpCriteriaOrderAdmin)
 admin.site.register(selectedAdminPhones, selectedAdminPhones_Admin)
@@ -185,3 +190,4 @@ admin.site.register(StoreCritWeightLogs, StoreCritWeightLogsAdmin)
 admin.site.register(generalCriteriaData, generalCriteriaDataAdmin)
 
 admin.site.register(customExpSessionTable, customExpSessionTableAdmin)
+admin.site.register(surveyForm, surveyFormAdmin)

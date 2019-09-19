@@ -34,7 +34,7 @@ from pandas.compat import StringIO
 from biasweb.experiment.controller import ExperimentController,SubjCont
 from biasweb.pythonscripts.experiment_admin import Experiment_Admin
 from biasweb.pythonscripts.getdata import get
-from biasweb.pythonscripts.insertcsvfiletotable import populate_Table
+# from biasweb.pythonscripts.insertcsvfiletotable import populate_Table
 from biasweb.utils.assign import Assigner
 
 #loading forms from forms.py file. 
@@ -61,6 +61,7 @@ from .models import (
                     StoreCritWeightLogs,
                     generalCriteriaData,
                     customExpSessionTable,
+                    surveyForm,
                     )
 
 
@@ -565,6 +566,7 @@ def compareMobileOneByOneDirect(request):
     global catalogcrit_show_list
     global criteria_weights_dict
     global exp_under_test
+    global exp_feat_levels
 
 
     if request.method=="GET":
@@ -576,7 +578,6 @@ def compareMobileOneByOneDirect(request):
             exp_obj=exp.objects.get(id=exp_under_test)
             Sub_obj=Subject.objects.get(user=userobj,exp=exp_obj)
             print("blocks",Sub_obj.block.levels_set)
-            global exp_feat_levels
             interactivity = [idx for idx in exp_feat_levels if idx.startswith("I.")] 
             print("res -- I",interactivity[0])
             
@@ -606,12 +607,27 @@ def compareMobileOneByOneDirect(request):
         alternative_list=[]
         data={}
         criteria_list=[]
+    
         # criteria_list=['imagepath1']
         print("crit_list",crit_list)
 
         if crit_list:
             for crit in crit_list:
                 criteria_list.append(crit)
+        else:
+            crit = [idx for idx in exp_feat_levels if idx.startswith("C.")] 
+            crit=crit[0].lower()
+            exp_obj=exp.objects.get(id=exp_under_test)
+            ExpCriteria_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1,cOrder_id=crit)
+            print("ExpCriteria_obj",ExpCriteria_obj)
+            crit_list_obj=ExpCriteria_obj.values_list('pCriteria__criteria_name',flat=True)
+            print("crit_list_obj",crit_list_obj)
+            crit_list=list(crit_list_obj)
+            crit_list.insert(0,"imagepath1")
+            crit_list.append("Others")
+            for crit in crit_list:
+                criteria_list.append(crit)
+
         test_mobiles = comp_mobiles
         for m in test_mobiles:
             print('m objest',m)
@@ -714,20 +730,29 @@ def compareMobileTwoByTwoDirect(request):
 
 def compareMobileSpecsFilterVer(request):
     if request.method=="GET":
-       
+        
         
         return render(request,'webapp/2by2comapremobilespecsfiltver.html')
     if request.method=="POST":
+       
         if request.is_ajax: 
+            survey_obj=surveyForm.objects.get(exp=expobj)
+            # survey_obj=surveyForm.objects.get(id=2)
+            surveydata=survey_obj.surveydata
+
             mobile={}
             allmobile={}
             
             global comp_mobiles
             global exp_under_test
+            exp_obj=exp.objects.get(id=exp_under_test)
+            # survey_obj=surveyForm.objects.get(exp=expobj)
+            survey_obj=surveyForm.objects.get(id=2)
+            surveydata=survey_obj.surveydata
+
             alternative_list=[]
             crit_check = [idx for idx in exp_feat_levels if idx.startswith("C.")] 
             crit_check=crit_check[0].lower()
-            exp_obj=exp.objects.get(id=exp_under_test)
             ExpCriteria_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1,cOrder_id=crit_check)
             print("ExpCriteria_obj",ExpCriteria_obj)
             crit_list=ExpCriteria_obj.values_list('pCriteria__criteria_name',flat=True)
@@ -779,7 +804,8 @@ def compareMobileSpecsFilterVer(request):
                     'criteria_list':criteria_list,
                     'alternative_list':alternative_list,
                     'interactivity':interactivity[0],
-                    "reviseability":reviseability[0]
+                    "reviseability":reviseability[0],
+                    "surveydata":surveydata,
                 }
             # code returns on this one. 
             # if allmobile:
@@ -2705,10 +2731,12 @@ def getExpController(request):
         print('expAdminId',expAdminId)
         expCont = ExperimentController(a_id=expAdminId)
         print('NEW Exp id',expCont.exp.id)
+        # Default Session Maintenance
         cest_obj=customExpSessionTable()
         cest_obj.expid=expCont.exp.id
         cest_obj.cusexpid=expCont.exp.custom_exp_id
         cest_obj.save()
+        # Default Session Maintenance
         # request.session['sess_expId'] = expCont.exp.id
         # request.session['sess_custExpId'] = expCont.exp.custom_exp_id
         print('request.session',request.session['sess_custExpId'] )
@@ -2822,16 +2850,25 @@ def assignToBlocks(request):
         #create to_json dictionary of blocks (by batches, ie. index-wise, then row-wise)
         return JsonResponse(data, safe=False)
 def removeSessionObj(request):
-    try:
-        filepath = Path("C:/biasweb/expCont4.p")
-    except FileNotFoundError:
-        filepath=None
-    else:
-        if filepath.exists():
-            os.remove('C:/biasweb/expCont4.p')
-        if request.session['sess_expId']:
-            del request.session['sess_expId']
-        return HttpResponse()
+    #Custom Session Maintenance 
+
+    cest_obj=customExpSessionTable.objects.aggregate(Max('expid'))
+    print("cest_obj",cest_obj)
+    sess_expId=cest_obj['expid__max']
+    obj=customExpSessionTable.objects.get(expid=sess_expId)
+    obj.delete()
+
+    # Default/Old session maintainance
+    # try:
+    #     filepath = Path("C:/biasweb/expCont4.p")
+    # except FileNotFoundError:
+    #     filepath=None
+    # else:
+    #     if filepath.exists():
+    #         os.remove('C:/biasweb/expCont4.p')
+    #     if request.session['sess_expId']:
+    #         del request.session['sess_expId']
+    #     return HttpResponse()
 
 
 def importExcel(request):
@@ -2990,15 +3027,29 @@ class createExperiment(TemplateView):
                 creat_exp_template_sidebar='webapp/sidebartemplates/createExpSideBars/crtExpsidebartemp_exp.html'
             elif role=='Platform_Admin':
                 pass
+            # Custom exp session maintenance
             try:
-                sess_expId = request.session['sess_expId']
-                print("sesid",sess_expId)
-            except KeyError:
+                cest_obj=customExpSessionTable.objects.aggregate(Max('expid'))
+                print("cest_obj",cest_obj)
+                sess_expId=cest_obj['expid__max']
+                obj=customExpSessionTable.objects.get(expid=sess_expId)
+                sess_custExpId=obj.cusexpid
+            except:
                 sess_expId = ""
-            try:
-                sess_custExpId = request.session['sess_custExpId']
-            except KeyError:
                 sess_custExpId = "123"
+
+
+
+            # Defualt exp session maintenance
+            # try:
+            #     sess_expId = request.session['sess_expId']
+            #     print("sesid",sess_expId)
+            # except KeyError:
+            #     sess_expId = ""
+            # try:
+            #     sess_custExpId = request.session['sess_custExpId']
+            # except KeyError:
+            #     sess_custExpId = "123"
             
             return render(request,self.template_name,
             {  'creat_exp_template_sidebar':creat_exp_template_sidebar,
@@ -3313,12 +3364,12 @@ def getMobiledata(request):
                 Sub_obj=Subject.objects.get(user=userobj,exp=exp_obj)
                 print("blocks",Sub_obj.block.levels_set)
                 datetime.datetime.now()
+                print("storeuserpagelogs",storeuserpagelogs)
                 if "mobile" in storeuserpagelogs:
-                    flag="true"
                     reviseability = [idx for idx in exp_feat_levels if idx.startswith("R.")] 
                     print("res -- R",reviseability[0])
-                    if reviseability[0]=="R.1":
-                        flag="false"
+                    if reviseability[0]=="R.0":
+                        flag="true"
                         pagevisited=flag
 
                 else:
@@ -3720,3 +3771,32 @@ def submitData(request):
             data={}
             return JsonResponse(data)
 
+
+
+
+class createSurveyForm(TemplateView):
+    template_name='webapp/crudexperiment/survey_form.html'
+    def get(self,request):
+        data={}
+        return render(request,self.template_name,data)
+
+    def post(self,request):
+        pass
+class saveSurveyForm(TemplateView):
+    def get(self,request):
+        data={}
+        pass
+    def post(self,request):
+        if request.method=='POST':
+            main_dict=request.POST.get('main_dict')
+            main_dict=json.loads(main_dict)
+            print("main_dict",main_dict)
+
+            survey_obj=surveyForm()
+            print("ssss")
+            survey_obj.surveydata=json.dumps(main_dict)
+            survey_obj.save()
+        data={}
+        return JsonResponse(data)
+
+    

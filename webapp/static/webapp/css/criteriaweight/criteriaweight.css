@@ -2,3 +2,17 @@
 
 }
 #next_button{}
+.maincontentblur{
+    filter: blur(10px);
+}
+.crit_list{
+    border:dotted;
+}
+.crit_labels{
+    font-size: 18px;
+    font-weight: bold;
+    color:#009688;    
+}
+#main-critw-div{
+    padding-top: 20px
+}
