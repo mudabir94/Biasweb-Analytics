@@ -12,6 +12,7 @@ from .models import selectedAdminPhones,PhoneCriteria,exStatusCd,exp_fdefaults
 from .models import Subject,experiment_feature,Batch,Block,ExpCriteriaOrder,criteria_catalog_disp,generalCriteriaData
 
 from .models import StoreHoverBarChartLogs,StoreHoverPieChartLogs,StoreNextPrevButtonLogs,StoreCritWeightLogs
+from .models import surveyForm
 class MyUserChangeForm(UserChangeForm):
     class Meta(UserChangeForm.Meta):
         model = User
@@ -146,6 +147,10 @@ class StoreCritWeightLogsAdmin(admin.ModelAdmin):
 class generalCriteriaDataAdmin(admin.ModelAdmin):
     list_display=("id","criteria","valuelist","inputtype")
 
+class surveyFormAdmin(admin.ModelAdmin):
+    list_display=('id',"exp","surveydata")
+
+
 admin.site.register(User, MyUserAdmin)
 admin.site.register(ExpCriteriaOrder, ExpCriteriaOrderAdmin)
 admin.site.register(selectedAdminPhones, selectedAdminPhones_Admin)
@@ -181,3 +186,4 @@ admin.site.register(StoreNextPrevButtonLogs, StoreNextPrevButtonLogsAdmin)
 admin.site.register(StoreCritWeightLogs, StoreCritWeightLogsAdmin)
 admin.site.register(generalCriteriaData, generalCriteriaDataAdmin)
 
+admin.site.register(surveyForm, surveyFormAdmin)

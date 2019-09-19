@@ -34,7 +34,7 @@ from pandas.compat import StringIO
 from biasweb.experiment.controller import ExperimentController,SubjCont
 from biasweb.pythonscripts.experiment_admin import Experiment_Admin
 from biasweb.pythonscripts.getdata import get
-from biasweb.pythonscripts.insertcsvfiletotable import populate_Table
+# from biasweb.pythonscripts.insertcsvfiletotable import populate_Table
 from biasweb.utils.assign import Assigner
 
 #loading forms from forms.py file. 
@@ -60,6 +60,7 @@ from .models import (
                     StoreNextPrevButtonLogs,
                     StoreCritWeightLogs,
                     generalCriteriaData,
+                    surveyForm,
                     )
 
 
@@ -712,20 +713,29 @@ def compareMobileTwoByTwoDirect(request):
 
 def compareMobileSpecsFilterVer(request):
     if request.method=="GET":
-       
+        
         
         return render(request,'webapp/2by2comapremobilespecsfiltver.html')
     if request.method=="POST":
+       
         if request.is_ajax: 
+            survey_obj=surveyForm.objects.get(exp=expobj)
+            # survey_obj=surveyForm.objects.get(id=2)
+            surveydata=survey_obj.surveydata
+
             mobile={}
             allmobile={}
             
             global comp_mobiles
             global exp_under_test
+            exp_obj=exp.objects.get(id=exp_under_test)
+            # survey_obj=surveyForm.objects.get(exp=expobj)
+            survey_obj=surveyForm.objects.get(id=2)
+            surveydata=survey_obj.surveydata
+
             alternative_list=[]
             crit_check = [idx for idx in exp_feat_levels if idx.startswith("C.")] 
             crit_check=crit_check[0].lower()
-            exp_obj=exp.objects.get(id=exp_under_test)
             ExpCriteria_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1,cOrder_id=crit_check)
             print("ExpCriteria_obj",ExpCriteria_obj)
             crit_list=ExpCriteria_obj.values_list('pCriteria__criteria_name',flat=True)
@@ -777,7 +787,8 @@ def compareMobileSpecsFilterVer(request):
                     'criteria_list':criteria_list,
                     'alternative_list':alternative_list,
                     'interactivity':interactivity[0],
-                    "reviseability":reviseability[0]
+                    "reviseability":reviseability[0],
+                    "surveydata":surveydata,
                 }
             # code returns on this one. 
             # if allmobile:
@@ -3709,3 +3720,32 @@ def submitData(request):
             data={}
             return JsonResponse(data)
 
+
+
+
+class createSurveyForm(TemplateView):
+    template_name='webapp/crudexperiment/survey_form.html'
+    def get(self,request):
+        data={}
+        return render(request,self.template_name,data)
+
+    def post(self,request):
+        pass
+class saveSurveyForm(TemplateView):
+    def get(self,request):
+        data={}
+        pass
+    def post(self,request):
+        if request.method=='POST':
+            main_dict=request.POST.get('main_dict')
+            main_dict=json.loads(main_dict)
+            print("main_dict",main_dict)
+
+            survey_obj=surveyForm()
+            print("ssss")
+            survey_obj.surveydata=json.dumps(main_dict)
+            survey_obj.save()
+        data={}
+        return JsonResponse(data)
+
+    

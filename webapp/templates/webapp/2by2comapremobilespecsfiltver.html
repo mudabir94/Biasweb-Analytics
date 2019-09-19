@@ -196,7 +196,7 @@
     var input_range_id_list=[];
     var input_range_val_list=[];
     var show_crit_weight_div_btn_list=[]
-
+    var surveydata;
 $(document).ready(function(){
 
     // FOR TETSTING COPYING IN SUCCESS METHOD ----------------------.->>>
@@ -252,6 +252,8 @@ $(document).ready(function(){
                     console.log("reviseability_data",reviseability_data)
                     userid=data['userid'];
                     var pagevisited=data['pagevisited'];
+                    surveydata=JSON.parse(data['surveydata']);
+                    console.log("surveydata",surveydata)
                     // if (pagevisited==="true"){
                     //     $(".custom_side_rows").hide();
                     //     $('#comparison_table').empty();
@@ -1517,29 +1519,57 @@ function submitData(){
 
 
 
-    var json = { pages: [
-            {questions: [
-                { type: "matrix", name: "Quality", title: "Please indicate if you agree or disagree with the following statements",
-                    columns: [{ value: 1, text: "Strongly Disagree" }, 
-                            { value: 2, text: "Disagree" }, 
-                            { value: 3, text: "Neutral" }, 
-                            { value: 4, text: "Agree" }, 
-                            { value: 5, text: "Strongly Agree" }],
-                    rows: [{ value: "affordable", text: "Product is affordable" }, 
-                        { value: "does what it claims", text: "Product does what it claims" },
-                        { value: "better then others", text: "Product is better than other products on the market" }, 
-                        { value: "easy to use", text: "Product is easy to use" }]},
-                { type: "rating", name: "satisfaction", title: "How satisfied are you with the Product?", 
-                    mininumRateDescription: "Not Satisfied", maximumRateDescription: "Completely satisfied" },
-                { type: "rating", name: "recommend friends", visibleIf: "{satisfaction} > 3", 
-                    title: "How likely are you to recommend the Product to a friend or co-worker?", 
-                    mininumRateDescription: "Will not recommend", maximumRateDescription: "I will recommend" },
-                { type: "comment", name: "suggestions", title:"What would make you more satisfied with the Product?", }
-            ]},
+    var json = { 
+            pages: [
+                {
+                questions: 
+                        [
+                            { 
+                                type: "matrix", 
+                                name: "Quality", 
+                                title: "Please indicate if you agree or disagree with the following statements",
+                                columns: [{ value: 1, text: "Strongly Disagree" }, 
+                                        { value: 2, text: "Disagree" }, 
+                                        { value: 3, text: "Neutral" }, 
+                                        { value: 4, text: "Agree" }, 
+                                        { value: 5, text: "Strongly Agree" }],
+                                rows: [
+                                    { value: "affordable", text: "Product is affordable" }, 
+                                    { value: "does what it claims", text: "Product does what it claims" },
+                                    { value: "better then others", text: "Product is better than other products on the market" }, 
+                                    { value: "easy to use", text: "Product is easy to use" }]
+                            },
+                            { 
+                                type: "rating", 
+                                name: "satisfaction",
+                                title: "How satisfied are you with the Product?", 
+                                mininumRateDescription: 
+                                "Not Satisfied", 
+                                maximumRateDescription: "Completely satisfied" 
+                            },
+                            { 
+                                type: "rating",
+                                name: "recommend friends", 
+                                visibleIf: "{satisfaction} > 3", 
+                                title: "How likely are you to recommend the Product to a friend or co-worker?", 
+                                mininumRateDescription: "Will not recommend",
+                                maximumRateDescription: "I will recommend" 
+                            },
+                            { 
+                                type: "comment", 
+                                name: "suggestions", 
+                                title:"What would make you more satisfied with the Product?", 
+                            }
+                        ]
+        },
             {questions: [
                 { type: "radiogroup", name: "price to competitors", 
                     title: "Compared to our competitors, do you feel the Product is",
-                    choices: ["Less expensive", "Priced about the same", "More expensive", "Not sure"]},
+                    choices: ["Less expensive",
+                            "Priced about the same",
+                            "More expensive",
+                            "Not sure"
+                        ]},
                 { type: "radiogroup", name: "price", title: "Do you feel our current price is merited by our product?",
                     choices: ["correct|Yes, the price is about right", 
                             "low|No, the price is too low for your product", 
@@ -1555,6 +1585,8 @@ function submitData(){
         ]
     };
 
+    var json= surveydata
+    
     window.survey = new Survey.Model(json);
 
 

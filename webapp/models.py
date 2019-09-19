@@ -402,3 +402,12 @@ class generalCriteriaData(models.Model):
         blank=True
     )
     inputtype=models.CharField(max_length=20,default="-")
+class surveyForm(models.Model):
+    exp = models.ForeignKey(experiment, on_delete=models.CASCADE,null=True,blank=True)
+    surveydata=ListCharField(
+        base_field=models.CharField(max_length=30),
+        size=10,
+        max_length=(10*40),
+        null=True,
+        blank=True
+    )
