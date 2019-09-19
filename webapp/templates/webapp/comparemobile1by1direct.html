@@ -61,6 +61,7 @@
     var userid=''
     var slider2=""
     var pagevisited="{{pagevisited}}"
+    var surveydata=[];
 $(document).ready(function(){
     $('#checkdiv_np').hide();
     if (pagevisited!=="True"){
@@ -71,7 +72,7 @@ $(document).ready(function(){
                     },
                     url: "{% url 'comparemobile_1by1_direct' %}",
                     success: function(data){
-                        alert("WW")
+
                         if (data['pagevisited']==="True"){
                             alert("SS")
                             console.log("Sorry you can't go back. ")
@@ -107,6 +108,8 @@ $(document).ready(function(){
                     },
                     url: "{% url 'comparemobile_1by1_direct' %}",
                     success: function(data){
+                        surveydata=JSON.parse(data['surveydata']);
+
                         criteria_weights_dict=JSON.parse(data['criteria_weights_dict'])
                     
                         allmobile=data['allmobiles'] 
@@ -852,7 +855,7 @@ var json = { pages: [
             ]}
     ]
 };
-
+json=surveydata;
 window.survey = new Survey.Model(json);
 
 

@@ -607,6 +607,9 @@ def compareMobileOneByOneDirect(request):
         alternative_list=[]
         data={}
         criteria_list=[]
+        # survey_obj=surveyForm.objects.get(exp=expobj)
+        survey_obj=surveyForm.objects.get(id=1)
+        surveydata=survey_obj.surveydata    
     
         # criteria_list=['imagepath1']
         print("crit_list",crit_list)
@@ -654,7 +657,8 @@ def compareMobileOneByOneDirect(request):
                 'numofmobiles':numofmobiles,
                 'criteria_list':criteria_list,
                 'alternative_list':alternative_list,
-                "criteria_weights_dict":json.dumps(criteria_weights_dict)
+                "criteria_weights_dict":json.dumps(criteria_weights_dict),
+                "surveydata":surveydata,
             }
         return JsonResponse(data)
 
@@ -736,8 +740,8 @@ def compareMobileSpecsFilterVer(request):
     if request.method=="POST":
        
         if request.is_ajax: 
-            survey_obj=surveyForm.objects.get(exp=expobj)
-            # survey_obj=surveyForm.objects.get(id=2)
+            # survey_obj=surveyForm.objects.get(exp=expobj)
+            survey_obj=surveyForm.objects.get(id=2)
             surveydata=survey_obj.surveydata
 
             mobile={}

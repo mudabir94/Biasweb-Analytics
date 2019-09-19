@@ -3,6 +3,8 @@
 {%load static from staticfiles%}
 
 
+
+
 <div class="container-fluid text-center "> 
     <!-- MAIN ROW CONTENT DIV  -->
 
@@ -11,18 +13,25 @@
         <div class="col-md-1" style='background-color:#c6c8ca'>
         </div>
 
-        <div class="col-md-10 text-center"  > 
+        <div class="col-md-9 text-center"  > 
             <div class="row">
                 <div class='col-md-12'>
-                    <h2 id="">Create Survey Form</h2>
+                    <h2 id=""><strong>Create Survey Form</strong></h2>
                 </div>
             </div>
+            <div class="row" id= "instructions">
+                <div class='col-md-12'>
+                </br></br></br></br>
+                    <h4 id="">To Add questions to the survey , please press the Add New Question button on the right panel !!!</h4>
+                </div>
+            </div>
+
             <div class='allquestions' >
             </div>
         </div>
-        <div class="col-md-1" style='background-color:#c6c8ca'>
-            <button type="button" onclick="saveQuestion()">Save</button>
-            <button type="button" onclick="addQuestion()">Add New Ques</button>
+        <div class="col-md-2" style='background-color:#c6c8ca'>
+            <button type="button" class="btn" style="padding: 6px; border-radius: 4px; color: #fff;background-color: #337ab7; border-color: #2e6da4;" onclick="addQuestion()">Add New Question</button>
+            <button type="button" class="btn btn-success" style="padding: 6px; margin: auto; border-radius: 4px; color: #fff;background-color: #5cb85c; border-color: #4cae4c;" onclick="saveQuestion()">Save & Preview</button>
         </div>  
     </div>
 </div>
@@ -52,10 +61,10 @@
                     colmd1=$("<div class='col-md-3'></div>")
                     colmd2=$("<div class='col-md-4'></div>")
 
-                    quest_name_label=$("<label for='quest_name_tag' class='custom_label_css'>Question Tag</label>");
+                    quest_name_label=$("<label for='quest_name_tag' class='custom_label_css textcolor' >Question Tag</label>");
                     colmd1.append(quest_name_label)
 
-                    quest_name_input=$("<input class='form-control' id='quest_name_input' class='custom_input_css'>")
+                    quest_name_input=$("<input class='input_field' id='quest_name_input' class='custom_input_css'>")
                     colmd2.append(quest_name_input)
 
                 row__col_one__row_div_one.append(colmd1);
@@ -71,9 +80,9 @@
                     colmd1=$("<div class='col-md-3'></div>")
                     colmd2=$("<div class='col-md-8'></div>")
 
-                    quest_title_label=$("<label class='custom_label_css'>Title</label>");
+                    quest_title_label=$("<label class='custom_label_css textcolor'>Title</label>");
                     colmd1.append(quest_title_label);
-                    quest_title_input=$("<input class='form-control custom_input_css' id='quest_title_input'></input>")
+                    quest_title_input=$("<input class='input_field custom_input_css' id='quest_title_input'></input>")
                     colmd2.append(quest_title_input);
 
                 row__col_one__row_div_two.append(colmd1)
@@ -91,13 +100,13 @@
                     var row__col_one__row_div_three=$("<div class='row'></div>");
                         colmd1=$("<div class='col-md-3'></div>")
                         colmd2=$("<div class='col-md-1'></div>")
-                        colmd3=$("<div class='col-md-8'></div>")
+                        colmd3=$("<div class='col-md-6'></div>")
 
-                        No_of_col_label=$("<label class='custom_label_css'>Number of Columns</label>");
+                        No_of_col_label=$("<label class='custom_label_css textcolor'>Number of Columns</label>");
                         colmd1.append(No_of_col_label);
-                        No_of_col_input=$("<input class='form-control custom_input_css' id='noofcol__"+great_grandfather_id+"'></input>")
+                        No_of_col_input=$("<input class='input_field custom_input_css' id='noofcol__"+great_grandfather_id+"'></input>")
                         colmd2.append(No_of_col_input);
-                        no_of_col_button=$("<button type='button' id='submitcol__"+great_grandfather_id+"' class= 'btn btn-secondary' onclick='genColButton($(this))'>enter</button>")
+                        no_of_col_button=$("<button type='button' style='padding: 6px; border-radius: 4px; color: #fff;background-color: #27a69a; border-color: #2e6da4;' id='submitcol__"+great_grandfather_id+"' class= 'btn btn-secondary' onclick='genColButton($(this))'>Generate</button>")
                         colmd3.append(no_of_col_button);
 
                     row__col_one__row_div_three.append(colmd1)
@@ -117,13 +126,13 @@
                     var row__col_one__row_div_four=$("<div class='row'></div>");
                         colmd1=$("<div class='col-md-3'></div>")
                         colmd2=$("<div class='col-md-1'></div>")
-                        colmd3=$("<div class='col-md-8'></div>")
+                        colmd3=$("<div class='col-md-6'></div>")
 
-                        No_of_row_label=$("<label class='custom_label_css'>Number of Rows</label>");
+                        No_of_row_label=$("<label class='custom_label_css textcolor'>Number of Rows</label>");
                         colmd1.append(No_of_row_label);
-                        No_of_row_input=$("<input class='form-control custom_input_css' id='noofrows__"+great_grandfather_id+"'></input>")
+                        No_of_row_input=$("<input class='input_field custom_input_css' id='noofrows__"+great_grandfather_id+"'></input>")
                         colmd2.append(No_of_row_input);
-                        no_of_row_button=$("<button type='button' id='submitrow__"+great_grandfather_id+"' class= 'btn btn-secondary' onclick='genRowButton($(this))'>enter</button>")
+                        no_of_row_button=$("<button type='button' style='padding: 6px; border-radius: 4px; color: #fff;background-color: #27a69a; border-color: #2e6da4;' id='submitrow__"+great_grandfather_id+"' class= 'btn btn-secondary' onclick='genRowButton($(this))'>Generate</button>")
                         colmd3.append(no_of_row_button);
 
                     row__col_one__row_div_four.append(colmd1)
@@ -162,10 +171,10 @@
                     colmd1=$("<div class='col-md-3'></div>")
                     colmd2=$("<div class='col-md-4'></div>")
 
-                    quest_name_label=$("<label for='quest_name_tag' class='custom_label_css'>Question Tag</label>");
+                    quest_name_label=$("<label for='quest_name_tag' class='custom_label_css textcolor'>Question Tag</label>");
                     colmd1.append(quest_name_label)
 
-                    quest_name_input=$("<input class='form-control' id='quest_name_input' class='custom_input_css'>")
+                    quest_name_input=$("<input class='input_field' id='quest_name_input' class='custom_input_css'>")
                     colmd2.append(quest_name_input)
 
                 row__col_one__row_div_one.append(colmd1);
@@ -181,9 +190,9 @@
                     colmd1=$("<div class='col-md-3'></div>")
                     colmd2=$("<div class='col-md-8'></div>")
 
-                    quest_title_label=$("<label class='custom_label_css'>Title</label>");
+                    quest_title_label=$("<label class='custom_label_css textcolor'>Title</label>");
                     colmd1.append(quest_title_label);
-                    quest_title_input=$("<input class='form-control custom_input_css' id='quest_title_input'></input>")
+                    quest_title_input=$("<input class='input_field custom_input_css' id='quest_title_input'></input>")
                     colmd2.append(quest_title_input);
 
                 row__col_one__row_div_two.append(colmd1)
@@ -199,9 +208,9 @@
                     colmd1=$("<div class='col-md-6'></div>")
                     colmd2=$("<div class='col-md-4'></div>")
 
-                    rate_descrip_label=$("<label class='custom_label_css'>Minimum Rate Description</label>");
+                    rate_descrip_label=$("<label class='custom_label_css textcolor'>Minimum Rate Description</label>");
                     colmd1.append(rate_descrip_label);
-                    rate_descrip_input=$("<input class='form-control custom_input_css' id='min_rate_descrip_input'></input>")
+                    rate_descrip_input=$("<input class='input_field custom_input_css' id='min_rate_descrip_input'></input>")
                     colmd2.append(rate_descrip_input);
 
                 row__col_one__row_div_three.append(colmd1)
@@ -215,9 +224,9 @@
                     colmd1=$("<div class='col-md-6'></div>")
                     colmd2=$("<div class='col-md-4'></div>")
 
-                    max_rate_descrip_label=$("<label class='custom_label_css'>Maximum Rate Description</label>");
+                    max_rate_descrip_label=$("<label class='custom_label_css textcolor'>Maximum Rate Description</label>");
                     colmd1.append(max_rate_descrip_label);
-                    max_rate_descrip_input=$("<input class='form-control custom_input_css' id='max_rate_descrip_input'></input>")
+                    max_rate_descrip_input=$("<input class='input_field custom_input_css' id='max_rate_descrip_input'></input>")
                     colmd2.append(max_rate_descrip_input);
 
                 row__col_two__row_div_three.append(colmd1)
@@ -251,10 +260,10 @@
                     colmd1=$("<div class='col-md-3'></div>")
                     colmd2=$("<div class='col-md-4'></div>")
 
-                    quest_name_label=$("<label for='quest_name_tag' class='custom_label_css'>Question Tag</label>");
+                    quest_name_label=$("<label for='quest_name_tag' class='custom_label_css textcolor'>Question Tag</label>");
                     colmd1.append(quest_name_label)
 
-                    quest_name_input=$("<input class='form-control' id='quest_name_input' class='custom_input_css'>")
+                    quest_name_input=$("<input class='input_field' id='quest_name_input' class='custom_input_css'>")
                     colmd2.append(quest_name_input)
 
                 row__col_one__row_div_one.append(colmd1);
@@ -270,9 +279,9 @@
                     colmd1=$("<div class='col-md-3'></div>")
                     colmd2=$("<div class='col-md-8'></div>")
 
-                    quest_title_label=$("<label class='custom_label_css'>Title</label>");
+                    quest_title_label=$("<label class='custom_label_css textcolor'>Title</label>");
                     colmd1.append(quest_title_label);
-                    quest_title_input=$("<input class='form-control custom_input_css' id='quest_title_input'></input>")
+                    quest_title_input=$("<input class='input_field custom_input_css ' id='quest_title_input'></input>")
                     colmd2.append(quest_title_input);
 
                 row__col_one__row_div_two.append(colmd1)
@@ -303,10 +312,10 @@
                         colmd1=$("<div class='col-md-3'></div>")
                         colmd2=$("<div class='col-md-4'></div>")
 
-                        quest_name_label=$("<label for='quest_name_tag' class='custom_label_css'>Question Tag</label>");
+                        quest_name_label=$("<label for='quest_name_tag' class='custom_label_css textcolor'>Question Tag</label>");
                         colmd1.append(quest_name_label)
 
-                        quest_name_input=$("<input class='form-control' id='quest_name_input' class='custom_input_css'>")
+                        quest_name_input=$("<input class='input_field' id='quest_name_input' class='custom_input_css'>")
                         colmd2.append(quest_name_input)
 
                     row__col_one__row_div_one.append(colmd1);
@@ -322,9 +331,9 @@
                         colmd1=$("<div class='col-md-3'></div>")
                         colmd2=$("<div class='col-md-8'></div>")
 
-                        quest_title_label=$("<label class='custom_label_css'>Title</label>");
+                        quest_title_label=$("<label class='custom_label_css textcolor'>Title</label>");
                         colmd1.append(quest_title_label);
-                        quest_title_input=$("<input class='form-control custom_input_css' id='quest_title_input'></input>")
+                        quest_title_input=$("<input class='input_field custom_input_css' id='quest_title_input'></input>")
                         colmd2.append(quest_title_input);
 
                     row__col_one__row_div_two.append(colmd1)
@@ -341,13 +350,13 @@
                     var row__col_one__row_div_three=$("<div class='row'></div>");
                         colmd1=$("<div class='col-md-3'></div>")
                         colmd2=$("<div class='col-md-1'></div>")
-                        colmd3=$("<div class='col-md-8'></div>")
+                        colmd3=$("<div class='col-md-6'></div>")
 
-                        No_of_col_label=$("<label class='custom_label_css'>Number of Choices</label>");
+                        No_of_col_label=$("<label class='custom_label_css textcolor'>Number of Choices</label>");
                         colmd1.append(No_of_col_label);
-                        No_of_col_input=$("<input class='form-control custom_input_css' id='noofchoices__"+great_grandfather_id+"'></input>")
+                        No_of_col_input=$("<input class='input_field custom_input_css' id='noofchoices__"+great_grandfather_id+"'></input>")
                         colmd2.append(No_of_col_input);
-                        no_of_col_button=$("<button type='button' id='submitchoices__"+great_grandfather_id+"' class= 'btn btn-secondary' onclick='genChoiceButton($(this))'>Generate</button>")
+                        no_of_col_button=$("<button type='button' style='padding: 6px; border-radius: 4px; color: #fff;background-color: #27a69a; border-color: #2e6da4;' id='submitchoices__"+great_grandfather_id+"' class= 'btn btn-secondary' onclick='genChoiceButton($(this))'>Generate</button>")
                         colmd3.append(no_of_col_button);
 
                     row__col_one__row_div_three.append(colmd1)
@@ -384,10 +393,10 @@
                         colmd1=$("<div class='col-md-3'></div>")
                         colmd2=$("<div class='col-md-4'></div>")
 
-                        quest_name_label=$("<label for='quest_name_tag' class='custom_label_css'>Question Tag</label>");
+                        quest_name_label=$("<label for='quest_name_tag' class='custom_label_css textcolor'>Question Tag</label>");
                         colmd1.append(quest_name_label)
 
-                        quest_name_input=$("<input class='form-control' id='quest_name_input' class='custom_input_css'>")
+                        quest_name_input=$("<input class='input_field' id='quest_name_input' class='custom_input_css'>")
                         colmd2.append(quest_name_input)
 
                     row__col_one__row_div_one.append(colmd1);
@@ -403,9 +412,9 @@
                         colmd1=$("<div class='col-md-3'></div>")
                         colmd2=$("<div class='col-md-8'></div>")
 
-                        quest_title_label=$("<label class='custom_label_css'>Title</label>");
+                        quest_title_label=$("<label class='custom_label_css textcolor'>Title</label>");
                         colmd1.append(quest_title_label);
-                        quest_title_input=$("<input class='form-control custom_input_css' id='quest_title_input'></input>")
+                        quest_title_input=$("<input class='input_field custom_input_css' id='quest_title_input'></input>")
                         colmd2.append(quest_title_input);
 
                     row__col_one__row_div_two.append(colmd1)
@@ -435,10 +444,10 @@
                         colmd1=$("<div class='col-md-3'></div>")
                         colmd2=$("<div class='col-md-4'></div>")
 
-                        quest_name_label=$("<label for='quest_name_tag' class='custom_label_css'>Question Tag</label>");
+                        quest_name_label=$("<label for='quest_name_tag' class='custom_label_css textcolor'>Question Tag</label>");
                         colmd1.append(quest_name_label)
 
-                        quest_name_input=$("<input class='form-control' id='quest_name_input' class='custom_input_css'>")
+                        quest_name_input=$("<input class='input_field' id='quest_name_input' class='custom_input_css'>")
                         colmd2.append(quest_name_input)
 
                     row__col_one__row_div_one.append(colmd1);
@@ -454,9 +463,9 @@
                         colmd1=$("<div class='col-md-3'></div>")
                         colmd2=$("<div class='col-md-8'></div>")
 
-                        quest_title_label=$("<label class='custom_label_css'>Title</label>");
+                        quest_title_label=$("<label class='custom_label_css textcolor'>Title</label>");
                         colmd1.append(quest_title_label);
-                        quest_title_input=$("<input class='form-control custom_input_css' id='quest_title_input'></input>")
+                        quest_title_input=$("<input class='input_field custom_input_css textcolor' id='quest_title_input'></input>")
                         colmd2.append(quest_title_input);
 
                     row__col_one__row_div_two.append(colmd1)
@@ -488,9 +497,9 @@
 
         for (i=0;i<columninput;i++){
                     var row=$('<div class="row"></div>');
-                        var colmd12=$("<div class='col-md-12'></div>");
-                            var label=$('<label>Column '+(i+1)+'</label>')
-                            var input=$("<input id='col_"+(i+1)+"_input'></input>")
+                        var colmd12=$("<div class='col-md-10'></div>");
+                            var label=$('<label class="textcolor" style= "padding: inherit">Column '+(i+1)+'</label>')
+                            var input=$("<input class ='generate_input' id='col_"+(i+1)+"_input'></input>")
                         colmd12.append(label);
                         colmd12.append(input);
                     row.append(colmd12);
@@ -511,9 +520,9 @@
 
         for (i=0;i<rowinput;i++){
                     var row=$('<div class="row"></div>');
-                        var colmd12=$("<div class='col-md-12'></div>");
-                            var label=$('<label>Row '+(i+1)+'</label>')
-                            var input=$("<input id='row_"+(i+1)+"_input'></input>")
+                        var colmd12=$("<div class='col-md-10'></div>");
+                            var label=$('<label class="textcolor" style= "padding: inherit">Row '+(i+1)+'</label>')
+                            var input=$("<input class = 'generate_input' id='row_"+(i+1)+"_input'></input>")
                         colmd12.append(label);
                         colmd12.append(input);
                     row.append(colmd12);
@@ -538,9 +547,9 @@
 
         for (i=0;i<choicesinput;i++){
                     var row=$('<div class="row"></div>');
-                        var colmd12=$("<div class='col-md-12'></div>");
-                            var label=$('<label>Choice '+(i+1)+'</label>')
-                            var input=$("<input id='choice_"+(i+1)+"_input'></input>")
+                        var colmd12=$("<div class='col-md-10'></div>");
+                            var label=$('<label class="textcolor" style= "padding: inherit">Choice '+(i+1)+'</label>')
+                            var input=$("<input class= 'generate_input'id='choice_"+(i+1)+"_input'></input>")
                         colmd12.append(label);
                         colmd12.append(input);
                     row.append(colmd12);
@@ -576,7 +585,7 @@
                     arr=id.split("_")
                     value=arr[1]
                     text=$(this).val();
-                    temp_dict['value']=value;
+                    temp_dict['value']=text;
                     temp_dict['text']=text;
 
                     column_list.push(temp_dict)
@@ -591,7 +600,7 @@
                     arr=id.split("_")
                     value=arr[1]
                     text=$(this).val();
-                    temp_dict['value']='affordable';
+                    temp_dict['value']=text;
                     temp_dict['text']=text;
                     row_list.push(temp_dict)
                     console.log("colsss",$(this).val());
@@ -722,15 +731,17 @@
 var questioncount=0
 function addQuestion(){
     questioncount++;
+    $('#instructions').remove()
+
     var allquestions=$(".allquestions");
         var row_question_class=$("<div class='row questionClass'>")
             var col_md_12=$("<div class='col-md-12' id='ques_"+questioncount+"'>")
                 var row=$('<div class="row">')
                     var col_md_3=$("<div class='col-md-3'>");
-                        var label=$("<label>Select Question Type</label>")
+                        var label=$("<label class= 'textcolor'>Select Question Type</label>")
                     col_md_3.append(label);
                     var col_md_1=$("<div class='col-md-2'>");
-                        var select=$('<select  id="selectbox_'+questioncount+'" onchange="selectFunc($(this))">')
+                        var select=$('<select style="text-align-last:center;" class="input_select" id="selectbox_'+questioncount+'" onchange="selectFunc($(this))">')
                             var option1=$('<option value="--">--</option>')
                             var option2=$('<option value="matrix">Matrix</option>')
                             var option3=$('<option value="rating">Rating</option>')
@@ -747,12 +758,14 @@ function addQuestion(){
                         select.append(option7);
                     col_md_1.append(select);
                     var col_md=$("<div class='col-md-3'>");
-                        var button=$("<button onclick='removeQuestion($(this))'>remove</button>")
-                    col_md.append(button);
+                        var removebutton=$("<button class='btn btn-danger' style='margin-top:0px; padding: 6px; border-radius: 4px; color: #fff; background-color: #d9534f; border-color: #d43f3a;' onclick='removeQuestion($(this))'>remove</button>")
+                    col_md.append(removebutton);
                     
                 row.append(col_md_3);
                 row.append(col_md_1);
-                row.append(col_md);        
+                row.append(col_md);
+                // row.append(col_md1);        
+        
             col_md_12.append(row);
         row_question_class.append(col_md_12);
     allquestions.append(row_question_class);
