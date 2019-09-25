@@ -468,7 +468,7 @@ def criteriaWeights(request):
     global exp_feat_levels
     global exp_under_test
     global critw_logs_dict
-    # No check if block is CDM (C.Full and C.Prune... )
+    # No check if block is CR (C.Full and C.Prune... )
 
     template_name='webapp/criteriaweights.html'
    
@@ -1127,6 +1127,7 @@ class defaultCriteria_Setup(TemplateView):
                 postedFLevels = json.loads(featlevels_dic)
                 cataloglist=request.POST.get('cataloglist')
                 cataloglist = json.loads(cataloglist)
+                
                 criteria_catalog_disp.objects.filter(id=1).update(catalog_crit_display_order=cataloglist)
                 # global catalogcrit_show_list
 
@@ -1134,6 +1135,7 @@ class defaultCriteria_Setup(TemplateView):
                 print("postedFLevels",postedFLevels)
                 print("default_crit_show_dict",default_crit_show_dict)
                 print("default_crit_hide_dict",default_crit_hide_dict)
+                
                 final_def_blocks_to_send = request.POST.get('final_def_blocks_to_send')
                 postedDefFLevels=json.loads(final_def_blocks_to_send)
                 print("final_def_blocks_to_send",final_def_blocks_to_send)
@@ -1251,8 +1253,8 @@ class orderCriteria_Setup(TemplateView):
             co_set_hide_dict={}
             # try:
             #     exp_obj=Experiment.objects.get(custom_exp_id=existCusId)
-            #     if (ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_Cdm.Def").exists()):
-            #         co_obj_list=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_Cdm.Def")
+            #     if (ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_Cr.Def").exists()):
+            #         co_obj_list=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_Cr.Def")
             #         co_obj_list =co_obj_list.values_list("cOrder_id").distinct()
             #         co_obj_list = [item[0].split("_") for item in co_obj_list]
             #         co_obj_list = [item[0] for item in co_obj_list]
@@ -1261,18 +1263,18 @@ class orderCriteria_Setup(TemplateView):
             #         if len(co_set_list)>1:
                         
             #             for co in co_set_list:
-            #                 ECO_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains=co+"_Cdm.Def",sh_hd=1,pCriteria_id__status="default",pCriteria_id__priority="mendatory").order_by("id")
+            #                 ECO_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains=co+"_Cr.Def",sh_hd=1,pCriteria_id__status="default",pCriteria_id__priority="mendatory").order_by("id")
             #                 print("ECO_KNE",ECO_obj)
             #                 mandatory=list(ECO_obj.values_list("pCriteria_id__criteria_name",flat=True))
             #                 print("Man",mandatory)
             #                 # print("ExpCrtOrd",ExpCrtOrd.values_list("pCriteria_id__criteria_name",flat=True))
-            #                 ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains=co+"_Cdm.Def",sh_hd=0,pCriteria_id__status="default").order_by("id")
+            #                 ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains=co+"_Cr.Def",sh_hd=0,pCriteria_id__status="default").order_by("id")
             #                 feature_to_hide=list(ExpCrtOrd.values_list("pCriteria_id__criteria_name",flat=True))
             #                 # list comprehension
             #                 feature_to_hide = [item[0] for item in feature_to_hide]
             #                 co_set_hide_dict[co]=feature_to_hide
             #                 print("hide",feature_to_hide)
-            #                 ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains=co+"_Cdm.Def",sh_hd=1,pCriteria_id__status="default").order_by("id")
+            #                 ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains=co+"_Cr.Def",sh_hd=1,pCriteria_id__status="default").order_by("id")
             #                 feature_to_display=list(ExpCrtOrd.values_list("pCriteria_id__criteria_name","position"))
             #                 feature_to_display = [item[0] for item in feature_to_display]
             #                 co_set_show_dict[co]=feature_to_display
@@ -1284,15 +1286,15 @@ class orderCriteria_Setup(TemplateView):
             #                 flag="true"
 
             #         else:
-            #             ECO_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_Cdm.Def",sh_hd=1,pCriteria_id__status="default",pCriteria_id__priority="mendatory").order_by("id")
+            #             ECO_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_Cr.Def",sh_hd=1,pCriteria_id__status="default",pCriteria_id__priority="mendatory").order_by("id")
             #             print("ECO_KNE",ECO_obj)
             #             mandatory=list(ECO_obj.values_list("pCriteria_id__criteria_name",flat=True))
             #             print("Man",mandatory)
             #             # print("ExpCrtOrd",ExpCrtOrd.values_list("pCriteria_id__criteria_name",flat=True))
-            #             ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_Cdm.Def",sh_hd=0,pCriteria_id__status="default").order_by("id")
+            #             ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_Cr.Def",sh_hd=0,pCriteria_id__status="default").order_by("id")
             #             feature_to_hide=list(ExpCrtOrd.values_list("pCriteria_id__criteria_name",flat=True))
             #             print("hide",feature_to_hide)
-            #             ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_Cdm.Def",sh_hd=1,pCriteria_id__status="default").order_by("id")
+            #             ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_Cr.Def",sh_hd=1,pCriteria_id__status="default").order_by("id")
             #             feature_to_display=list(ExpCrtOrd.values_list("pCriteria_id__criteria_name","position"))
             #             feature_to_display = [item[0] for item in feature_to_display]
             #             print("display",feature_to_display)
@@ -1429,7 +1431,7 @@ class orderCriteria_Setup(TemplateView):
                 }
                 return JsonResponse(data)
 
-class Cdm_On_Co_On_CriteriaSetup(TemplateView):
+class Cr_On_Co_On_CriteriaSetup(TemplateView):
     def get(self,request):
         role_name=['']
         print(request.user.id)
@@ -1480,20 +1482,39 @@ class Cdm_On_Co_On_CriteriaSetup(TemplateView):
                 postedFLevels = json.loads(featlevels_dic)
                 cataloglist=request.POST.get('cataloglist')
                 cataloglist = json.loads(cataloglist)
-                criteria_catalog_disp.objects.filter(id=1).update(catalog_crit_display_order=cataloglist)
 
+
+                criteria_catalog_disp.objects.filter(id=1).update(catalog_crit_display_order=cataloglist)
+                
+                print("postedFLevels",postedFLevels)
                 print("crit_order_dict",crit_order_dict)
                 print("crit_hide_dict",crit_hide_dict)
-                print("featlevels_dic",featlevels_dic)
+
+
+                final_def_blocks_to_send = request.POST.get('final_def_blocks_to_send')
+                postedDefFLevels=json.loads(final_def_blocks_to_send)
+                print("final_def_blocks_to_send",final_def_blocks_to_send)
+
 
                 expCont = getExpController(request)
                 existExpId = expCont.exp.id
                 existCusId=expCont.exp.custom_exp_id
-                expCont.setFSet(newFLevels=postedFLevels,prompt=False)
-                block_set = expCont.generateBlocks()
-                block_list = list(block_set.all().values('serial_no','levels_set'))
-                print('<<<<<<TO DISPLAY ON PAGE>>>>>>')
-                print(block_list)
+
+                if postedFLevels:
+                    expCont.setFSet(newFLevels=postedFLevels,prompt=False)
+                    block_set = expCont.generateBlocks()
+                    block_list = list(block_set.all().values('serial_no','levels_set'))
+                    print('<<<<<<TO DISPLAY ON PAGE>>>>>>')
+                else:
+                    block_list=""
+                print("block_list",block_list)
+                if postedDefFLevels:
+                # call expCont.setDefFSet(newDefFLevels=postedDefFLevels,prompt=False)
+                    expCont.setDefFSet(newDefFLevels=postedDefFLevels,prompt=False)
+                    
+
+
+              
                 # save orderset Details in expCriteriaOrder
                 exp_obj=Experiment.objects.get(custom_exp_id=existCusId)
                 
@@ -1550,7 +1571,7 @@ class Cdm_On_Co_On_CriteriaSetup(TemplateView):
                 }
                 return JsonResponse(data)
 
-class cdmCriteria_Setup(TemplateView):
+class CrCriteriaSetup(TemplateView):
     def get(self,request):
         flag="true"
         role_name=['']
@@ -1575,24 +1596,24 @@ class cdmCriteria_Setup(TemplateView):
             # try:
             #     exp_obj=Experiment.objects.get(custom_exp_id=existCusId)            
             #     print("exp_obj",exp_obj)
-            #     if (ExpCriteriaOrder.objects.filter(exp=exp_obj,fvp__contains="Cdm.Active").exists()):
-            #         print("CDM Active")
+            #     if (ExpCriteriaOrder.objects.filter(exp=exp_obj,fvp__contains="Cr.Active").exists()):
+            #         print("CR Active")
 
-            #         ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1,fvp__contains="Cdm.Active",pCriteria_id__status="default",pCriteria_id__priority="mendatory").order_by("id")
+            #         ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1,fvp__contains="Cr.Active",pCriteria_id__status="default",pCriteria_id__priority="mendatory").order_by("id")
             #         mandatory=list(ExpCrtOrd.values_list("pCriteria_id__criteria_name",flat=True))
             #         print("Man",mandatory)
             #         # print("ExpCrtOrd",ExpCrtOrd.values_list("pCriteria_id__criteria_name",flat=True))
-            #         ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=0,fvp__contains="Cdm.Active",pCriteria_id__status="default").order_by("id")
+            #         ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=0,fvp__contains="Cr.Active",pCriteria_id__status="default").order_by("id")
             #         feature_to_hide=list(ExpCrtOrd.values_list("pCriteria_id__criteria_name",flat=True))
             #         # feature_to_hide = [item[0] for item in feature_to_hide]
             #         print("hide",feature_to_hide)
-            #         ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1,fvp__contains="Cdm.Active",pCriteria_id__status="default").order_by("id")
+            #         ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1,fvp__contains="Cr.Active",pCriteria_id__status="default").order_by("id")
             #         feature_to_display=list(ExpCrtOrd.values_list("pCriteria_id__criteria_name","position"))
             #         feature_to_display = [item[0] for item in feature_to_display]
             #         print("display",feature_to_display)
             #         flag="true"
             #     else:
-            #         print("CDM Else")
+            #         print("CR Else")
 
             #         feature_mand=PhoneCriteria.objects.filter(status="default",priority="mendatory").order_by('id')
             #         mandatory=list(feature_mand.values_list("criteria_name",flat=True))
@@ -1605,7 +1626,7 @@ class cdmCriteria_Setup(TemplateView):
             #         feature_to_hide=list()
             #         flag="true"
             # except:
-            print("CDM Exception")
+            print("CR Exception")
             feature_mand=PhoneCriteria.objects.filter(status="default",priority="mendatory").order_by('id')
             mandatory=list(feature_mand.values_list("criteria_name",flat=True))
             feature_to_display=PhoneCriteria.objects.filter(status="default").order_by('id')
@@ -1634,10 +1655,10 @@ class cdmCriteria_Setup(TemplateView):
             return JsonResponse(data)
     def post(self,request): 
            if request.is_ajax:
-                cdm_crit_show_dict = request.POST.get('cdm_crit_show_dict')
-                cdm_crit_show_dict= json.loads(cdm_crit_show_dict)
-                cdm_crit_hide_dict = request.POST.get('cdm_crit_hide_dict')
-                cdm_crit_hide_dict= json.loads(cdm_crit_hide_dict)
+                cr_crit_show_dict = request.POST.get('cr_crit_show_dict')
+                cr_crit_show_dict= json.loads(cr_crit_show_dict)
+                cr_crit_hide_dict = request.POST.get('cr_crit_hide_dict')
+                cr_crit_hide_dict= json.loads(cr_crit_hide_dict)
                 featlevels_dic=request.POST.get('featlevels_dic')
                 postedFLevels = json.loads(featlevels_dic)
                 cataloglist=request.POST.get('cataloglist')
@@ -1647,18 +1668,14 @@ class cdmCriteria_Setup(TemplateView):
                 postedDefFLevels=json.loads(final_def_blocks_to_send)
                 print("final_def_blocks_to_send",final_def_blocks_to_send)
                 
-                print("cdm_crit_show_dict",cdm_crit_show_dict)
-                print("cdm_crit_hide_dict",cdm_crit_hide_dict)
+                print("cr_crit_show_dict",cr_crit_show_dict)
+                print("cr_crit_hide_dict",cr_crit_hide_dict)
                 
                 expCont = getExpController(request)
                 existExpId = expCont.exp.id
                 existCusId=expCont.exp.custom_exp_id
                 
-                # expCont.setFSet(newFLevels=postedFLevels,prompt=False)
-                # block_set = expCont.generateBlocks()
-                # block_list = list(block_set.all().values('serial_no','levels_set'))
-                # print('<<<<<<TO DISPLAY ON PAGE>>>>>>')
-                # print(block_list)
+                
                 # save orderset Details in expCriteriaOrder
                 # Check to see if the exp obj already exists in the table. if it does then we need to update position and show_hide prop of  the rows containing the exp id. 
                 # 1. based on the exp obj check if exp exists. if it does then 
@@ -1687,7 +1704,7 @@ class cdmCriteria_Setup(TemplateView):
                 else:
                     pass
                 p_levList=list()
-                for key,s in cdm_crit_show_dict.items():
+                for key,s in cr_crit_show_dict.items():
                         print(key,":",s)
                         for count, i in enumerate(s):
                             print("count",count)
@@ -1699,13 +1716,13 @@ class cdmCriteria_Setup(TemplateView):
                                 expOSets.exp=expCont.exp
                                 expOSets.cOrder_id=key
                                 expOSets.pCriteria=pCObj
-                                expOSets.fvp="Cdm.Active_"+str(key)
+                                expOSets.fvp="Cr.Active_"+str(key)
                                 expOSets.position=count+1
                                 expOSets.sh_hd=1
                                 expOSets.save()
                             except (PhoneCriteria.DoesNotExist):
                                 pass
-                for key,s in cdm_crit_hide_dict.items():
+                for key,s in cr_crit_hide_dict.items():
                         print(key,":",s)
                         for count, i in enumerate(s):
                             try:
@@ -1713,7 +1730,7 @@ class cdmCriteria_Setup(TemplateView):
                                 expOSets=ExpCriteriaOrder()
                                 expOSets.exp=expCont.exp
                                 expOSets.cOrder_id=key
-                                expOSets.fvp="Cdm.Active_"+str(key)
+                                expOSets.fvp="Cr.Active_"+str(key)
                                 expOSets.pCriteria=pCObj
                                 expOSets.position=0
                                 expOSets.sh_hd=0
@@ -2740,10 +2757,12 @@ def getExpController(request):
         cest_obj.expid=expCont.exp.id
         cest_obj.cusexpid=expCont.exp.custom_exp_id
         cest_obj.save()
+        print("cest_obj",cest_obj)
+        print("CEST Obj expid",cest_obj.expid)
         # Default Session Maintenance
         # request.session['sess_expId'] = expCont.exp.id
         # request.session['sess_custExpId'] = expCont.exp.custom_exp_id
-        print('request.session',request.session['sess_custExpId'] )
+        # print('request.session',request.session['sess_custExpId'] )
         print("SAVED NEW EXPERIMENT TO SESSION---->>>>>>")
 
     return expCont
@@ -2765,7 +2784,7 @@ def checkExpController(request):
 
 
 def pickleExpController(expCont):
-    pickle.dump(expCont, open('expCont4.p','wb'))
+    pickle.dump(expCont, open("expCont4.p",'wb'))
 
 def getSavedSubjectDataExpCont(request):
     if request.method == 'POST':
@@ -2777,7 +2796,6 @@ def getSavedSubjectDataExpCont(request):
                 'subject_data':subject_data
             }
             return JsonResponse(data)
-
 def importSubjects(request):
     expCont = getExpController(request)
     if request.is_ajax:
@@ -2855,12 +2873,17 @@ def assignToBlocks(request):
         return JsonResponse(data, safe=False)
 def removeSessionObj(request):
     #Custom Session Maintenance 
+    try:
 
-    cest_obj=customExpSessionTable.objects.aggregate(Max('expid'))
-    print("cest_obj",cest_obj)
-    sess_expId=cest_obj['expid__max']
-    obj=customExpSessionTable.objects.get(expid=sess_expId)
-    obj.delete()
+        cest_obj=customExpSessionTable.objects.aggregate(Max('expid'))
+        print("cest_obj",cest_obj)
+        sess_expId=cest_obj['expid__max']
+        obj=customExpSessionTable.objects.get(expid=sess_expId)
+        obj.delete()
+    except: 
+        print("Nothing Found")
+    data={}
+    return JsonResponse(data)
 
     # Default/Old session maintainance
     # try:
@@ -3506,7 +3529,11 @@ def SavePhoneSets(request):
                 postedFLevels = json.loads(featlevels_dic)
                 expCont = getExpController(request)
                 existExpId = expCont.exp.id
-              
+                try:
+                    obj=selectedAdminPhones.objects.filter(exp=exp_obj,pset_id="P.All")
+                    obj.delete()
+                except:
+                    print("sss")
                 print("existExpId",existExpId)
 
                 expCont.setFSet(newFLevels=postedFLevels,prompt=False)
@@ -3537,7 +3564,13 @@ def SavePhoneSets(request):
                 else:
                     exp_obj=Experiment.objects.get(custom_exp_id=expCont.exp.custom_exp_id)
                     # Updation check. 
+                    sap_obj=selectedAdminPhones.objects.get(exp=exp_obj)
+
+                    if sap_obj.pset_id=='P.All':
+                        sap_obj.delete()
                     if (selectedAdminPhones.objects.filter(exp=exp_obj).exists()):
+                        
+                            
                         sap_objs=selectedAdminPhones.objects.filter(exp=exp_obj)
                         pset_list=set(sap_objs.values_list('pset_id', flat=True))
                         pset_list=list(pset_list)

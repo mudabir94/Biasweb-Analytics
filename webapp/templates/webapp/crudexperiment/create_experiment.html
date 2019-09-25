@@ -59,18 +59,18 @@
              <div class="row-fluid" id="order_criteria_div">
 
             </div>
-             <!-- CDM DIV  -->
-             <div class="row-fluid" id="cdm_criteria_div">
+             <!-- CR DIV  -->
+             <div class="row-fluid" id="cr_criteria_div">
 
             </div>
-             <!-- CDM ON CO ON DIV  -->
-            <div class="row-fluid" id="cdm_co_on_show_Option">
+             <!-- CR ON CO ON DIV  -->
+            <div class="row-fluid" id="cr_co_on_show_Option">
 
             </div>
-            <div class="row-fluid" id="cdm_co_on_cfull_cprune_btn_div">
+            <div class="row-fluid" id="cr_co_on_cfull_cprune_btn_div">
 
             </div>
-             <div class="row-fluid" id="cdm_co_on_div">
+             <div class="row-fluid" id="cr_co_on_div">
 
             </div>
         
@@ -1316,8 +1316,8 @@ function showFeatureLvls(){
     $("#ol3").hide();
     $("#ol4").hide();
 
-    $("#cdm_co_on_show_Option").hide();
-    $("#cdm_co_on_cfull_cprune_btn_div").empty();
+    $("#cr_co_on_show_Option").hide();
+    $("#cr_co_on_cfull_cprune_btn_div").empty();
     $("#catalog_crit_sel").hide();
     $('#importSubdiv').hide();
     $('#block_assign_row_div').hide();
@@ -1336,8 +1336,8 @@ function showFeatureLvls(){
     $('#blkoutputsDiv').hide();
     $('#order_criteria_div').hide();
     $('#default_criteria_div').hide();
-    $('#cdm_co_on_div').hide();
-    $("#cdm_criteria_div").hide();
+    $('#cr_co_on_div').hide();
+    $("#cr_criteria_div").hide();
 
 
 
@@ -1371,11 +1371,11 @@ function showBatchManagement(){
 
     $("#default_criteria_main_div").hide();
     $("#order_criteria_div").hide();
-    $("#cdm_criteria_div").hide();
-    $("#cdm_co_on_cfull_cprune_btn_div").empty();
+    $("#cr_criteria_div").hide();
+    $("#cr_co_on_cfull_cprune_btn_div").empty();
 
-    $("#cdm_co_on_show_Option").hide();
-    $("#cdm_co_on_div").hide();
+    $("#cr_co_on_show_Option").hide();
+    $("#cr_co_on_div").hide();
     $("#ol1").hide();
     $("#ol2").hide();
     $("#ol3").hide();
@@ -1443,11 +1443,11 @@ function showBlockManagement(){
     // $('#blkoutputsDiv').show();
     $("#default_criteria_main_div").hide();
     $("#order_criteria_div").hide();
-    $("#cdm_criteria_div").hide();
-    $("#cdm_co_on_show_Option").hide();
-    $("#cdm_co_on_cfull_cprune_btn_div").empty();
+    $("#cr_criteria_div").hide();
+    $("#cr_co_on_show_Option").hide();
+    $("#cr_co_on_cfull_cprune_btn_div").empty();
 
-    $("#cdm_co_on_div").hide();
+    $("#cr_co_on_div").hide();
     $("#ol1").hide();
     $("#ol2").hide();
     $("#ol3").hide();
@@ -1474,7 +1474,7 @@ function showCritrtia(){
 
 
     HideALL();
-    if (CO_CDM_COMB==="CDM_off_CO_off"){
+    if (CO_CR_COMB==="CR_off_CO_off"){
         $("#ol1").show();
         $("#default_tree_view_div").show();
         $("#default_criteria_div").show();
@@ -1486,54 +1486,54 @@ function showCritrtia(){
         //     defualtCriteriaHtmlSetup();
         // }
     }
-    else if (CO_CDM_COMB==="CDM_on_CO_off"){
+    else if (CO_CR_COMB==="CR_on_CO_off"){
         $('#ol2').show();
-        $('#cdm_criteria_div').show();
+        $('#cr_criteria_div').show();
         // if ($('.breadcrumb li').length>0 && $('.breadcrumb li').length===1 ){
-        //     cdm_defaultCriteriaOrderHTMLSetup();
+        //     cr_defaultCriteriaOrderHTMLSetup();
         // }else{
-        //     CdmCriteriaHTMLSetup();
+        //     CrCriteriaHTMLSetup();
         // }
 
     }
-    else if (CO_CDM_COMB==="CDM_off_CO_on"){
+    else if (CO_CR_COMB==="CR_off_CO_on"){
         $("#ol4").show();
         $("#order_criteria_div").show();
         // if ($('.breadcrumb li').length>0 && $('.breadcrumb li').length===1 ){
-        //     def_cdm_co_on_HtmlSetup();
+        //     def_cr_co_on_HtmlSetup();
         // }else{
         //     orderCriteriaHtmlSetup("CO",block_feat_dict["CO"],default_active);
         // }
 
 
     }
-    else if (CO_CDM_COMB==="CDM_on_CO_on"){
+    else if (CO_CR_COMB==="CR_on_CO_on"){
         $("#ol3").show();
-        $('#cdm_co_on_div').show();
+        $('#cr_co_on_div').show();
         // if ($('.breadcrumb li').length>0 && $('.breadcrumb li').length===1 ){
-        //     cdm_crit_order_on_flag="true";
-        //     $("#cdm_co_on_show_Option").show();
+        //     cr_crit_order_on_flag="true";
+        //     $("#cr_co_on_show_Option").show();
 
 
-        //     cdm_on_co_on_DefaultCriteriaHtmlSetup();
+        //     cr_on_co_on_DefaultCriteriaHtmlSetup();
         // }else if  ($('.breadcrumb li').length>1 && $('.breadcrumb li').length===2 ) {
-        //     cdm_crit_order_on_flag="false";
-        //     $("#cdm_co_on_show_Option").show();
+        //     cr_crit_order_on_flag="false";
+        //     $("#cr_co_on_show_Option").show();
 
-        //     cdm_On_Full_Co_HtmlSetup();
+        //     cr_On_Full_Co_HtmlSetup();
         // }
         // else if  ($('.breadcrumb li').length>2 && $('.breadcrumb li').length===3 ) {
-        //     cdm_crit_order_on_flag="false";
+        //     cr_crit_order_on_flag="false";
         //     request_from_full="false";
-        //     $("#cdm_co_on_show_Option").show();
+        //     $("#cr_co_on_show_Option").show();
 
-        //     cdm_On_Prune_Co_HtmlSetup();
+        //     cr_On_Prune_Co_HtmlSetup();
         // }
         // else if  ($('.breadcrumb li').length>3 && $('.breadcrumb li').length===4 ) {
-        //     cdm_crit_order_on_flag="true";
-        //     $("#cdm_co_on_show_Option").show();
+        //     cr_crit_order_on_flag="true";
+        //     $("#cr_co_on_show_Option").show();
 
-        //     cdm_Order_On_Co_HtmlSetup();
+        //     cr_Order_On_Co_HtmlSetup();
         // }
 
 
@@ -2977,7 +2977,7 @@ if (outerckbox.is(':checked')) {
         row_d2.append(col_md)
 
         var p_text=document.createElement('p');
-        p_text.innerHTML="Default CDM will be activated if you save!!"
+        p_text.innerHTML="Default CR will be activated if you save!!"
         col_md.append(p_text)
 
 
@@ -3077,17 +3077,17 @@ if (outerckbox.is(':checked')) {
             
         }
         if (outercheckval==="CO"){
-            cdm_crit_order_on_flag="false";
+            cr_crit_order_on_flag="false";
 
         }
         else if (outercheckval==="C"){
-            console.log("default_crit_show_dict['cdm']",default_crit_show_dict['cdm'])
-            console.log("default_crit_hide_dict['cdm']",default_crit_hide_dict['cdm'])
+            console.log("default_crit_show_dict['cr']",default_crit_show_dict['cr'])
+            console.log("default_crit_hide_dict['cr']",default_crit_hide_dict['cr'])
 
-            delete default_crit_show_dict['cdm'];
-            delete default_crit_hide_dict['cdm'];
-            console.log("default_crit_show_dict['cdm']",default_crit_show_dict['cdm'])
-            console.log("default_crit_hide_dict['cdm']",default_crit_hide_dict['cdm'])
+            delete default_crit_show_dict['cr'];
+            delete default_crit_hide_dict['cr'];
+            console.log("default_crit_show_dict['cr']",default_crit_show_dict['cr'])
+            console.log("default_crit_hide_dict['cr']",default_crit_hide_dict['cr'])
 
         }
         console.log("phoneset_dic--",phoneset_dic)
@@ -3337,8 +3337,8 @@ for (var o in data){
    
      console.log('All innercheck boxid added to checkbox dict',checkbox_id_dict);
 }
-var cdm_full_btn_on="false"; var default_active="false";
-var CO_CDM_COMB="";
+var cr_full_btn_on="false"; var default_active="false";
+var CO_CR_COMB="";
 var status_report_dictionary={}
 var block_feat_dict_def={}
 var final_def_blocks_to_send={}
@@ -3394,7 +3394,7 @@ function dummysendFeatureLevels(){
                     console.log("A",block_feat_dict_def)
 
                 }
-            else if ($(this).val()==="C"){
+            else if ($(this).val()==="CR"){
                     feat_key=$(this).val();
                     if (temp_block_feat_dict_def[feat_key]===undefined){
                          temp_block_feat_dict_def[feat_key]=block_feat_dict_def[feat_key];
@@ -3450,8 +3450,8 @@ function dummysendFeatureLevels(){
         $(row_div).append(featlevels);
         $("#defaultfeatLevel_tablediv").append(row_div);
     }
-        // default cdm full and co. and Select P.O 
-        cdm_crit_show_dict['c.full']; 
+        // default cr full and co. and Select P.O 
+        cr_crit_show_dict['c.full']; 
         console.log("all_unchecked",all_unchecked)
         console.log("temp_block_feat_dict_def",temp_block_feat_dict_def)
         final_def_blocks_to_send=temp_block_feat_dict_def;
@@ -3460,14 +3460,14 @@ function dummysendFeatureLevels(){
 
         // if all unchecked then populate the Status Report Default with all defualts features. 
 
-        // get default cdm, CO 
+        // get default cr, CO 
         // Get 
         // saveDefaultCriteriaSet
         // 'default_crit_show_dict': JSON.stringify(default_crit_show_dict,undefined,''),
         //  'default_crit_hide_dict': JSON.stringify(default_crit_hide_dict,undefined,''),
-        // saveCdmCriteriaHTMLSetup
-        // 'cdm_crit_show_dict': JSON.stringify(cdm_crit_show_dict,undefined,''),
-        // 'cdm_crit_hide_dict': JSON.stringify(cdm_crit_hide_dict,undefined,''),
+        // saveCrCriteriaHTMLSetup
+        // 'cr_crit_show_dict': JSON.stringify(cr_crit_show_dict,undefined,''),
+        // 'cr_crit_hide_dict': JSON.stringify(cr_crit_hide_dict,undefined,''),
         // saveOrderSet
         // 'crit_order_dict':JSON.stringify(crit_order_dict),
         // 'crit_hide_dict':JSON.stringify(crit_hide_dict),
@@ -3481,28 +3481,31 @@ function dummysendFeatureLevels(){
 
 function sendFeatureLevels(){ 
     dict_not_empty_flag="false";
+    // Hiding all the tree Views and breadCrumbs 
     $("#default_tree_view_div").empty();
     $("#default_tree_view_div").hide();
 
-    $("#cdm_on_co_off_tree_view_div").empty();
-    $("#cdm_on_co_off_tree_view_div").hide();
+    $("#cr_on_co_off_tree_view_div").empty();
+    $("#cr_on_co_off_tree_view_div").hide();
 
     
-    $("#cdm_off_co_on_tree_view_div").empty();
-    $("#cdm_off_co_on_tree_view_div").hide();
+    $("#cr_off_co_on_tree_view_div").empty();
+    $("#cr_off_co_on_tree_view_div").hide();
 
 
-    $("#cdm_on_co_on_tree_view_div").empty();
-    $("#cdm_on_co_on_tree_view_div").hide();
+    $("#cr_on_co_on_tree_view_div").empty();
+    $("#cr_on_co_on_tree_view_div").hide();
 
     $("#ol1").empty();
     $("#ol2").empty();
     $("#ol3").empty();
     $("#ol4").empty();
   
-if (block_feat_dict['C']===undefined && block_feat_dict['CO']===undefined){
-    CO_CDM_COMB="CDM_off_CO_off";
-    if (current_save_state===CO_CDM_COMB){
+if (block_feat_dict['CR']===undefined && block_feat_dict['CO']===undefined){
+    // Criteria Range and Criteria Order both are off. 
+    // So Removing everything if present in related dictionaries. 
+    CO_CR_COMB="CR_off_CO_off";
+    if (current_save_state===CO_CR_COMB){
         console.log("Doing Nothing")
     }
     else{
@@ -3515,14 +3518,14 @@ if (block_feat_dict['C']===undefined && block_feat_dict['CO']===undefined){
     if (default_crit_show_dict['default']!==undefined){
         delete default_crit_show_dict['default'];
     }
-    if (default_crit_show_dict['Cdm.Def']!==undefined){
-        delete default_crit_show_dict['Cdm.Def'];
+    if (default_crit_show_dict['Cr.Def']!==undefined){
+        delete default_crit_show_dict['Cr.Def'];
 
     }
-    if (default_crit_show_dict['cdm']!==undefined){
-        delete default_crit_show_dict['cdm'];
-        if (cdm_crit_show_dict['c.full']){
-        delete cdm_crit_show_dict['c.full'];
+    if (default_crit_show_dict['cr']!==undefined){
+        delete default_crit_show_dict['cr'];
+        if (cr_crit_show_dict['c.full']){
+        delete cr_crit_show_dict['c.full'];
         }
 
     }
@@ -3540,19 +3543,18 @@ if (block_feat_dict['C']===undefined && block_feat_dict['CO']===undefined){
         delete default_crit_hide_dict['default'];
 
     }
-    if (default_crit_hide_dict['Cdm.Def']!==undefined){
-        delete default_crit_hide_dict['Cdm.Def'];
+    if (default_crit_hide_dict['Cr.Def']!==undefined){
+        delete default_crit_hide_dict['Cr.Def'];
 
     }
-    if (default_crit_hide_dict['cdm']!==undefined){
-        delete default_crit_hide_dict['cdm'];
-        if (cdm_crit_hide_dict['c.full']!==undefined){
-        delete cdm_crit_hide_dict['c.full'];
+    if (default_crit_hide_dict['cr']!==undefined){
+        delete default_crit_hide_dict['cr'];
+        if (cr_crit_hide_dict['c.full']!==undefined){
+        delete cr_crit_hide_dict['c.full'];
         }
 
 
     }
-    console.log("default_crit_show_dict!!!",default_crit_show_dict);
     if (default_crit_show_dict['default']===undefined || default_crit_hide_dict['default']===undefined ){
         $('#defualt_criteria_popup').empty();
         $('#defualt_criteria_popup').dialog({ 
@@ -3618,7 +3620,7 @@ if (block_feat_dict['C']===undefined && block_feat_dict['CO']===undefined){
                 // input.id='inputset_num_co';
                 // col_md_12_div2.append(input);
                 $("#criteria_option_name").empty();
-                $("#criteria_option_name").append("<h4> Default CDM and Default CO</h4>");
+                $("#criteria_option_name").append("<h4> Default CR and Default CO</h4>");
                 
                 return;
     }
@@ -3678,10 +3680,10 @@ if (block_feat_dict['C']===undefined && block_feat_dict['CO']===undefined){
     */ 
     
 }
-else if (block_feat_dict['C']!==undefined && block_feat_dict['CO']===undefined){
+else if (block_feat_dict['CR']!==undefined && block_feat_dict['CO']===undefined){
 
-    CO_CDM_COMB="CDM_on_CO_off";
-    if (current_save_state===CO_CDM_COMB){
+    CO_CR_COMB="CR_on_CO_off";
+    if (current_save_state===CO_CR_COMB){
         console.log("Doing Nothing")
     }
     else{
@@ -3700,12 +3702,12 @@ else if (block_feat_dict['C']!==undefined && block_feat_dict['CO']===undefined){
             delete default_crit_show_dict['default'];
 
         }
-        if (default_crit_show_dict['Cdm.Def']!==undefined){
-            delete default_crit_show_dict['Cdm.Def'];
+        if (default_crit_show_dict['Cr.Def']!==undefined){
+            delete default_crit_show_dict['Cr.Def'];
 
         }
-        if (default_crit_show_dict['cdm']!==undefined){
-            delete default_crit_show_dict['cdm'];
+        if (default_crit_show_dict['cr']!==undefined){
+            delete default_crit_show_dict['cr'];
         }
         if (default_crit_hide_dict["C.Full"]!==undefined){
             delete default_crit_hide_dict["C.Full"];
@@ -3719,17 +3721,17 @@ else if (block_feat_dict['C']!==undefined && block_feat_dict['CO']===undefined){
             delete default_crit_hide_dict['default'];
 
         }
-        if (default_crit_hide_dict['Cdm.Def']!==undefined){
-            delete default_crit_hide_dict['Cdm.Def'];
+        if (default_crit_hide_dict['Cr.Def']!==undefined){
+            delete default_crit_hide_dict['Cr.Def'];
 
         }
-        if (default_crit_hide_dict['cdm']!==undefined){
-            delete default_crit_hide_dict['cdm'];
+        if (default_crit_hide_dict['cr']!==undefined){
+            delete default_crit_hide_dict['cr'];
             
 
         }
-        cdm_crit_hide_dict={};
-        cdm_crit_show_dict={};
+        cr_crit_hide_dict={};
+        cr_crit_show_dict={};
     
 
 
@@ -3737,17 +3739,17 @@ else if (block_feat_dict['C']!==undefined && block_feat_dict['CO']===undefined){
         HideALL();
         enableCriteriaButton();
         
-        $("#cdm_on_co_off_tree_view_div").empty();
-        $("#cdm_on_co_off_tree_view_div").show();
+        $("#cr_on_co_off_tree_view_div").empty();
+        $("#cr_on_co_off_tree_view_div").show();
         prune_empty_flag="true"
         
-        cdm_defaultCriteriaOrderHTMLSetup();
-        // CdmCriteriaHTMLSetup();
+        cr_defaultCriteriaOrderHTMLSetup();
+        // CrCriteriaHTMLSetup();
         var current=$(".active");
         current.prop('class',current.attr('class').replace('active',""));
         $('#def_crit_list_btn').prop('class', 'custom_nav_btn active');
         $("#criteria_option_name").empty();
-        $("#criteria_option_name").append("<h4> Active CDM and Default CO</h4>");
+        $("#criteria_option_name").append("<h4> Active CR and Default CO</h4>");
                     
         return;
     }
@@ -3762,13 +3764,13 @@ else if (block_feat_dict['C']!==undefined && block_feat_dict['CO']===undefined){
         // CFID: Default
     */
 }
-else if (block_feat_dict['C']===undefined && block_feat_dict['CO']!==undefined){
+else if (block_feat_dict['CR']===undefined && block_feat_dict['CO']!==undefined){
 
     default_active="true"
     crit_order_dict={};
     crit_hide_dict={};
-    CO_CDM_COMB="CDM_off_CO_on"
-    if (current_save_state===CO_CDM_COMB){
+    CO_CR_COMB="CR_off_CO_on"
+    if (current_save_state===CO_CR_COMB){
         console.log("Doing Nothing")
     }
     else{
@@ -3785,8 +3787,8 @@ else if (block_feat_dict['C']===undefined && block_feat_dict['CO']!==undefined){
             delete default_crit_show_dict['default'];
 
         }
-        if (default_crit_show_dict['Cdm.Def']!==undefined){
-            delete default_crit_show_dict['Cdm.Def'];
+        if (default_crit_show_dict['Cr.Def']!==undefined){
+            delete default_crit_show_dict['Cr.Def'];
 
         }
         if (default_crit_hide_dict["C.Full"]!==undefined){
@@ -3801,8 +3803,8 @@ else if (block_feat_dict['C']===undefined && block_feat_dict['CO']!==undefined){
             delete default_crit_hide_dict['default'];
 
         }
-        if (default_crit_hide_dict['Cdm.Def']!==undefined){
-            delete default_crit_hide_dict['Cdm.Def'];
+        if (default_crit_hide_dict['Cr.Def']!==undefined){
+            delete default_crit_hide_dict['Cr.Def'];
 
         }
 
@@ -3811,13 +3813,13 @@ else if (block_feat_dict['C']===undefined && block_feat_dict['CO']!==undefined){
         HideALL();
         $("#ol4").empty();
 
-        $("#cdm_off_co_on_tree_view_div").empty();
+        $("#cr_off_co_on_tree_view_div").empty();
 
-        $("#cdm_off_co_on_tree_view_div").show();
+        $("#cr_off_co_on_tree_view_div").show();
         $("#catalog_crit_sel").show();
 
         dict_not_empty_flag="false";
-        def_cdm_co_on_HtmlSetup();
+        def_cr_co_on_HtmlSetup();
         enableCriteriaButton();
 
         // orderCriteriaHtmlSetup("CO",dict["CO"],default_active);
@@ -3836,41 +3838,41 @@ else if (block_feat_dict['C']===undefined && block_feat_dict['CO']!==undefined){
     
     */
 }
-else if (block_feat_dict['C']!==undefined && block_feat_dict['CO']!==undefined){
+else if (block_feat_dict['CR']!==undefined && block_feat_dict['CO']!==undefined){
     // orderCriteriaHtmlSetup("CO",block_feat_dict["CO"],default_active);
     alert("4")
 
     crit_order_dict={};
     crit_hide_dict={};
-    // delete default_crit_show_dict["cdm"];
+    // delete default_crit_show_dict["cr"];
     // delete default_crit_show_dict['default'];
-    // delete default_crit_show_dict['Cdm.Def'];
+    // delete default_crit_show_dict['Cr.Def'];
     
-    // delete default_crit_hide_dict["cdm"];
+    // delete default_crit_hide_dict["cr"];
     // delete default_crit_hide_dict['default'];
-    // delete default_crit_hide_dict['Cdm.Def'];
+    // delete default_crit_hide_dict['Cr.Def'];
     
-    CO_CDM_COMB="CDM_on_CO_on";
-    if (current_save_state===CO_CDM_COMB){
+    CO_CR_COMB="CR_on_CO_on";
+    if (current_save_state===CO_CR_COMB){
         console.log("Doing Nothing")
     }
     else{
-        cdm_crit_order_on_flag="false";
+        cr_crit_order_on_flag="false";
 
         
         HideALL();
 
-        // cdm_On_Full_Co_HtmlSetup();
-        $("#cdm_on_co_on_tree_view_div").empty();
-        $("#cdm_on_co_on_tree_view_div").show();
-        $("#cdm_co_on_show_Option").show();
-        cdm_on_co_on_DefaultCriteriaHtmlSetup();
+        // cr_On_Full_Co_HtmlSetup();
+        $("#cr_on_co_on_tree_view_div").empty();
+        $("#cr_on_co_on_tree_view_div").show();
+        $("#cr_co_on_show_Option").show();
+        cr_on_co_on_DefaultCriteriaHtmlSetup();
         enableCriteriaButton();
         var current=$(".active");
         current.prop('class',current.attr('class').replace('active',""));
         $('#def_crit_list_btn').prop('class', 'custom_nav_btn active');
         $("#criteria_option_name").empty();
-        $("#criteria_option_name").append("<h4> Default CDM and Active CO</h4>");
+        $("#criteria_option_name").append("<h4> Default CR and Active CO</h4>");
                     
         return;
     } 
@@ -4085,9 +4087,9 @@ function mobileCatalog(){
         $('#blkoutputsDiv').hide();
         $("#default_criteria_main_div").hide();
         $("#order_criteria_div").hide();
-        $("#cdm_criteria_div").hide();
-        $("#cdm_co_on_show_Option").hide();
-        $("#cdm_co_on_div").hide();
+        $("#cr_criteria_div").hide();
+        $("#cr_co_on_show_Option").hide();
+        $("#cr_co_on_div").hide();
         $("#ol1").hide();
         $("#ol2").hide();
         $("#ol3").hide();
@@ -5974,25 +5976,25 @@ function toggleCheckbox(element){
     var co_pruned_empty_flag="true";
     var co_feature_active="C.Full";
     var co_feature_active_button="C.Full"
-    var cdm_crit_show_dict={};
-    var cdm_crit_hide_dict={};
+    var cr_crit_show_dict={};
+    var cr_crit_hide_dict={};
     prune_empty_flag="true";
-    cdm_full_btn_on="true";
+    cr_full_btn_on="true";
     var static_default_crit_show_dict={};
     var static_default_crit_hide_dict={};
-    var def_cdm_passed="false";
+    var def_cr_passed="false";
     var current_save_state=""
     ///////////////////////////////////////////////////////////
     var cataloglist=[];
-function saveCatalogCrit_cdm_on_co_off(){
+function saveCatalogCrit_cr_on_co_off(){
     var num=$('#input_num_field_catalog_crit').val();
    
    var ul=document.createElement("ul")
    cataloglist=[];
    for (i=0;i<num;i++){
-       cataloglist.push(default_crit_show_dict['cdm'][i]);
+       cataloglist.push(default_crit_show_dict['cr'][i]);
        var li=document.createElement("li");
-       li.innerHTML=default_crit_show_dict['cdm'][i]
+       li.innerHTML=default_crit_show_dict['cr'][i]
        ul.append(li)
    }
    console.log("Catalog List",cataloglist)
@@ -6000,14 +6002,14 @@ function saveCatalogCrit_cdm_on_co_off(){
 
    $("#catalog_crit_disp_col").append(ul);
 }
-function saveCatalogCrit_cdm_off_co_on(){
+function saveCatalogCrit_cr_off_co_on(){
    var num=$('#input_num_field_catalog_crit').val();
    var ul=document.createElement("ul")
    cataloglist=[];
    for (i=0;i<num;i++){
-       cataloglist.push(crit_order_dict["CO.1_Cdm.Def"][i]);
+       cataloglist.push(crit_order_dict["CO.1_Cr.Def"][i]);
        var li=document.createElement("li");
-       li.innerHTML=crit_order_dict["CO.1_Cdm.Def"][i]
+       li.innerHTML=crit_order_dict["CO.1_Cr.Def"][i]
        ul.append(li)
    }
    console.log("Catalog List",cataloglist)
@@ -6015,7 +6017,7 @@ function saveCatalogCrit_cdm_off_co_on(){
 
    $("#catalog_crit_disp_col").append(ul);
 }
-function saveCatalogCrit_cdm_on_co_on(){
+function saveCatalogCrit_cr_on_co_on(){
     var num=$('#input_num_field_catalog_crit').val();
    
    var ul=document.createElement("ul")
@@ -6047,7 +6049,7 @@ function saveCatalogCrit(){
     $("#catalog_crit_disp_col").append(ul);
 
 }
-function def_cdm_co_on_HtmlSetup(){
+function def_cr_co_on_HtmlSetup(){
 
         $("#ol4").show();
         if (dict_not_empty_flag==="false"){
@@ -6062,9 +6064,9 @@ function def_cdm_co_on_HtmlSetup(){
                     breadcrumb_ol.append(lit);
                     var a=document.createElement("a");
                     a.setAttribute("href","#");
-                    a.setAttribute("onclick","def_cdm_co_on_BreadCrumbActivateFunc($(this).parent())");
+                    a.setAttribute("onclick","def_cr_co_on_BreadCrumbActivateFunc($(this).parent())");
                     a.setAttribute("style","color:white")
-                    a.innerHTML="Set Default CDM";
+                    a.innerHTML="Set Default CR";
                     lit.append(a);  
             }
         }
@@ -6072,8 +6074,8 @@ function def_cdm_co_on_HtmlSetup(){
 
         $("#default_criteria_div").empty();
         $("#order_criteria_div").empty();
-        $("#cdm_criteria_div").empty();
-        $("#cdm_co_on_div").empty();
+        $("#cr_criteria_div").empty();
+        $("#cr_co_on_div").empty();
         $("#order_criteria_div").show();
 
         $("#catalog_crit_sel").empty();
@@ -6098,7 +6100,7 @@ function def_cdm_co_on_HtmlSetup(){
         col.append(input_num_field_catalog_crit);
         var  save_btn_catalog_crit=document.createElement("button")
         save_btn_catalog_crit.setAttribute("id","save_btn_catalog_crit")
-        save_btn_catalog_crit.setAttribute("onclick","saveCatalogCrit_cdm_off_co_on()")
+        save_btn_catalog_crit.setAttribute("onclick","saveCatalogCrit_cr_off_co_on()")
         save_btn_catalog_crit.innerHTML="Save"
         col.append(save_btn_catalog_crit);
         var col=document.createElement("div");
@@ -6115,7 +6117,7 @@ function def_cdm_co_on_HtmlSetup(){
         heading_row_div.setAttribute("class","row")
         container.append(heading_row_div);
         var heading_content=document.createElement("H4");
-        heading_content.innerHTML="Default CDM";
+        heading_content.innerHTML="Default CR";
           
         
         heading_row_div.append(heading_content);
@@ -6181,19 +6183,19 @@ function def_cdm_co_on_HtmlSetup(){
             var shw_disp=[];
             var hide_disp=[];
            
-            var feat_dsp=crit_order_dict["CO.1_Cdm.Def"]
+            var feat_dsp=crit_order_dict["CO.1_Cr.Def"]
 
             feat_to_disp=feat_dsp;
             var flg="true"
           
-            var feat_hide=crit_hide_dict["CO.1_Cdm.Def"]
+            var feat_hide=crit_hide_dict["CO.1_Cr.Def"]
             feat_to_hide=feat_hide;
-            cdm_crit_order_on_flag="false";
+            cr_crit_order_on_flag="false";
             var colist=block_feat_dict['CO'];
             data=htmlF(shw_disp,hide_disp,mandatory_list,feat_dsp,feat_hide,flg);
             // for (var co in colist){
-            //     crit_order_dict[colist[co]+"_Cdm.Def"]=data['shw_disp'];
-            //     crit_hide_dict[colist[co]+"_Cdm.Def"]=data['hide_disp'];
+            //     crit_order_dict[colist[co]+"_Cr.Def"]=data['shw_disp'];
+            //     crit_hide_dict[colist[co]+"_Cr.Def"]=data['hide_disp'];
             //     }
             
         }
@@ -6217,13 +6219,13 @@ function def_cdm_co_on_HtmlSetup(){
                                 mandatory_list=mand;
                                 var feat_hide=data['feature_to_hide'];
                                 feat_to_hide=feat_hide;
-                                cdm_crit_order_on_flag="false";
+                                cr_crit_order_on_flag="false";
                                 var colist=block_feat_dict['CO'];
                                 data=htmlF(shw_disp,hide_disp,mandatory_list,feat_dsp,feat_hide,flg);
                               
                                 for (var co in colist){
-                                crit_order_dict[colist[co]+"_Cdm.Def"]=data['shw_disp'];
-                                crit_hide_dict[colist[co]+"_Cdm.Def"]=data['hide_disp'];
+                                crit_order_dict[colist[co]+"_Cr.Def"]=data['shw_disp'];
+                                crit_hide_dict[colist[co]+"_Cr.Def"]=data['hide_disp'];
                                 }
                                   
 
@@ -6239,22 +6241,22 @@ function def_cdm_co_on_HtmlSetup(){
         // data_obj_show=JSON.parse(JSON.stringify(default_crit_show_dict['default']));
         // data_obj_show2=JSON.parse(JSON.stringify(default_crit_show_dict['default']));
 
-        // crit_order_dict["CO.1_Cdm.Def"]=data_obj_show;
-        // crit_order_dict["CO.2_Cdm.Def"]=data_obj_show2;
+        // crit_order_dict["CO.1_Cr.Def"]=data_obj_show;
+        // crit_order_dict["CO.2_Cr.Def"]=data_obj_show2;
         // data_obj_hide=JSON.parse(JSON.stringify(default_crit_hide_dict['default']));
         // data_obj_hide2=JSON.parse(JSON.stringify(default_crit_hide_dict['default']));
-        // crit_hide_dict["CO.1_Cdm.Def"]=data_obj_hide;
-        // crit_hide_dict["CO.2_Cdm.Def"]=data_obj_hide2;
+        // crit_hide_dict["CO.1_Cr.Def"]=data_obj_hide;
+        // crit_hide_dict["CO.2_Cr.Def"]=data_obj_hide2;
 
         // orderCriteriaHtmlSetup("CO",dict["CO"],"true");
 
 
 }
 function orderCriteriaHtmlSetup_Next(){
-    def_cdm_passed="true";
+    def_cr_passed="true";
 
     orderCriteriaHtmlSetup("CO",block_feat_dict["CO"],"true");
-    cdm_off_co_on_TreeView();
+    cr_off_co_on_TreeView();
 }
 function orderCriteriaHtmlSetup(CO,CO_list,default_active){
         $("#ol4").show();
@@ -6284,14 +6286,14 @@ function orderCriteriaHtmlSetup(CO,CO_list,default_active){
 
         }
         
-        cdm_crit_order_on_flag="true"
+        cr_crit_order_on_flag="true"
         // setting no of co sets. 
         var colist=CO_list;
         /* emptying and showing order criteria div */
         $("#default_criteria_div").empty();
         $("#order_criteria_div").empty();
-        $("#cdm_criteria_div").empty();
-        $("#cdm_co_on_div").empty();
+        $("#cr_criteria_div").empty();
+        $("#cr_co_on_div").empty();
         // CREATING HTML LAYOUT <-->
         var order_criteria_div=document.getElementById("order_criteria_div");
         var container=document.createElement("div");
@@ -6326,7 +6328,7 @@ function orderCriteriaHtmlSetup(CO,CO_list,default_active){
         select_div.setAttribute('style', 'display: inline-block;');
 
         col_2.append(select_div);
-        var div_cdm=document.createElement("div")
+        var div_cr=document.createElement("div")
         if (default_active==="true"){
             console.log("DEFAULT")
         }
@@ -6413,8 +6415,8 @@ function product_Section(){
 function get_data_Ajax_Co(colist){
         // ajax call to get feature_to_display, feature_to_hide
         colist=block_feat_dict["CO"]
-        // if (default_crit_show_dict["Cdm.Def"]!==undefined && default_crit_hide_dict["Cdm.Def"]!==undefined){
-          if (def_cdm_passed==="true")  {
+        // if (default_crit_show_dict["Cr.Def"]!==undefined && default_crit_hide_dict["Cr.Def"]!==undefined){
+          if (def_cr_passed==="true")  {
             $('#select_div').empty();
             var select_div=document.getElementById('select_div');
             var toggle_btn_row_div=document.createElement('div');
@@ -6422,7 +6424,7 @@ function get_data_Ajax_Co(colist){
             select_div.append(toggle_btn_row_div);
             var col_md_12=document.createElement('div');
             col_md_12.setAttribute('class','col-md-9 btn-group');
-            col_md_12.id="set_button_cdm_off_co_on"
+            col_md_12.id="set_button_cr_off_co_on"
             toggle_btn_row_div.append(col_md_12);
             colist=block_feat_dict["CO"];
             for (var i=0;i<colist.length;i++){
@@ -6434,7 +6436,7 @@ function get_data_Ajax_Co(colist){
                 if (i===0){
                     var active_b=button
                 }
-                $('#set_button_cdm_off_co_on').append(button)
+                $('#set_button_cr_off_co_on').append(button)
             }
             document.getElementById("CO.1btn").style.backgroundColor = "#94000e"
 
@@ -6467,10 +6469,10 @@ function get_data_Ajax_Co(colist){
             // $('#select_div').append(select);   
             var shw_disp=[];
             var hide_disp=[];
-            var feat_dsp=crit_order_dict["CO.1_Cdm.Def"];
+            var feat_dsp=crit_order_dict["CO.1_Cr.Def"];
             console.log("feat_dsp",feat_dsp)
             feat_to_disp=feat_dsp;
-            var feat_hide=crit_hide_dict["CO.1_Cdm.Def"];
+            var feat_hide=crit_hide_dict["CO.1_Cr.Def"];
             console.log("feat_hide",feat_hide);
             var flg="true";
             data=htmlF(shw_disp,hide_disp,mandatory_list,feat_dsp,feat_hide,flg)
@@ -6491,23 +6493,23 @@ function get_data_Ajax_Co(colist){
 
                         // $('span').text(data);
                         if (default_active==="true"){
-                            if (crit_order_dict[active_co+"_Cdm.Def"]===undefined){
-                            crit_order_dict[active_co+"_Cdm.Def"]=[]
+                            if (crit_order_dict[active_co+"_Cr.Def"]===undefined){
+                            crit_order_dict[active_co+"_Cr.Def"]=[]
                             }
                             else{
-                                crit_order_dict[active_co+"_Cdm.Def"]=arr;
-                                crit_hide_dict[active_co+"_Cdm.Def"]=hide_disp;
+                                crit_order_dict[active_co+"_Cr.Def"]=arr;
+                                crit_hide_dict[active_co+"_Cr.Def"]=hide_disp;
                                 
                                 console.log("crit_order_dict-",crit_order_dict)
                                 console.log("crit_hide_dict-",crit_hide_dict);
                             }
                         }
                         
-                        cdm_off_co_on_TreeView();
+                        cr_off_co_on_TreeView();
 
                         }
                     });
-                    cdm_off_co_on_TreeView();
+                    cr_off_co_on_TreeView();
 
         }   
         else {
@@ -6548,13 +6550,13 @@ function get_data_Ajax_Co(colist){
                         default_crit_hide_disp=data['feature_to_hide'];
                         
                         mandatory_list=mand;
-                        default_crit_show_dict['Cdm.Def']=default_crit_show_disp;
-                        default_crit_hide_dict["Cdm.Def"]=default_crit_hide_disp;
+                        default_crit_show_dict['Cr.Def']=default_crit_show_disp;
+                        default_crit_hide_dict["Cr.Def"]=default_crit_hide_disp;
                         data=htmlF(shw_disp,hide_disp,mand,feat_dsp,feat_hide,flg)
                         if(default_active==="true"){
                             for (var co in colist){
-                            crit_order_dict[colist[co]+"_Cdm.Def"]=data['shw_disp'];
-                            crit_hide_dict[colist[co]+"_Cdm.Def"]=data['hide_disp'];
+                            crit_order_dict[colist[co]+"_Cr.Def"]=data['shw_disp'];
+                            crit_hide_dict[colist[co]+"_Cr.Def"]=data['hide_disp'];
                             }
                         }
                     }
@@ -6573,15 +6575,15 @@ function get_data_Ajax_Co(colist){
                         default_crit_hide_disp=feat_to_hide;
                         
                         mandatory_list=mand;
-                        default_crit_show_dict['Cdm.Def']=default_crit_show_disp;
-                        default_crit_hide_dict["Cdm.Def"]=default_crit_hide_disp;
+                        default_crit_show_dict['Cr.Def']=default_crit_show_disp;
+                        default_crit_hide_dict["Cr.Def"]=default_crit_hide_disp;
                         data=htmlF(shw_disp,hide_disp,mand,feat_dsp,feat_hide,flg)
                        
                             for (var co in colist){
                             console.log("CCCC",colist[co])
                             console.log("****",co_set_show_dict["CO.1"])
-                            crit_order_dict[colist[co]+"_Cdm.Def"]=co_set_show_dict[colist[co]];
-                            crit_hide_dict[colist[co]+"_Cdm.Def"]=co_set_hide_dict[colist[co]];
+                            crit_order_dict[colist[co]+"_Cr.Def"]=co_set_show_dict[colist[co]];
+                            crit_hide_dict[colist[co]+"_Cr.Def"]=co_set_hide_dict[colist[co]];
                             }
                     }
                    
@@ -6614,12 +6616,12 @@ function get_data_Ajax_Co(colist){
 
                         // $('span').text(data);
                         if (default_active==="true"){
-                            if (crit_order_dict[active_co+"_Cdm.Def"]===undefined){
-                            crit_order_dict[active_co+"_Cdm.Def"]=[]
+                            if (crit_order_dict[active_co+"_Cr.Def"]===undefined){
+                            crit_order_dict[active_co+"_Cr.Def"]=[]
                             }
                             else{
-                                crit_order_dict[active_co+"_Cdm.Def"]=arr;
-                                crit_hide_dict[active_co+"_Cdm.Def"]=hide_disp;
+                                crit_order_dict[active_co+"_Cr.Def"]=arr;
+                                crit_hide_dict[active_co+"_Cr.Def"]=hide_disp;
                                 
                                 console.log("crit_order_dict-",crit_order_dict)
                                 console.log("crit_hide_dict-",crit_hide_dict);
@@ -6627,7 +6629,7 @@ function get_data_Ajax_Co(colist){
                         }
                         
                   
-                        cdm_off_co_on_TreeView();
+                        cr_off_co_on_TreeView();
                         }
                     });
                     
@@ -6635,15 +6637,15 @@ function get_data_Ajax_Co(colist){
                 }
 
             });
-    $("#cdm_off_co_on_tree_view_div").empty();
-    cdm_off_co_on_TreeView();
+    $("#cr_off_co_on_tree_view_div").empty();
+    cr_off_co_on_TreeView();
         }
         
     }
     function saveOrderSet(){
         console.log("crit_order_dict",crit_order_dict);
         console.log("crit_hide_dict",crit_hide_dict);
-        current_save_state="CDM_off_CO_on"
+        current_save_state="CR_off_CO_on"
         // make an ajax call that will send the two dicts to server. 
         dummysendFeatureLevels();
         $.ajax({
@@ -6697,7 +6699,7 @@ function get_data_Ajax_Co(colist){
         current.prop('class',current.attr('class').replace('breadcrumb-item bdcrumb_active',"breadcrumb-item"));
         $(prev_element).prop('class', 'breadcrumb-item bdcrumb_active');
         dict_not_empty_flag="true";
-        def_cdm_co_on_HtmlSetup();
+        def_cr_co_on_HtmlSetup();
 
 
     }
@@ -6710,7 +6712,7 @@ function get_data_Ajax_Co(colist){
 
     }
     var dict_not_empty_flag="false";
-    function def_cdm_co_on_BreadCrumbActivateFunc(li_element){
+    function def_cr_co_on_BreadCrumbActivateFunc(li_element){
         console.log("li_ele",li_element);
         var current= $('.breadcrumb').find('li.bdcrumb_active')
 
@@ -6726,7 +6728,7 @@ function get_data_Ajax_Co(colist){
             // current.remove();
             dict_not_empty_flag="true";
 
-            def_cdm_co_on_HtmlSetup();
+            def_cr_co_on_HtmlSetup();
 
         }
         else{
@@ -6786,8 +6788,8 @@ function get_data_Ajax_Co(colist){
         }
         $("#default_criteria_div").empty();
         $("#order_criteria_div").empty();
-        $("#cdm_criteria_div").empty();
-        $("#cdm_co_on_div").empty();
+        $("#cr_criteria_div").empty();
+        $("#cr_co_on_div").empty();
         $("#default_criteria_div").show();
         $("#catalog_crit_sel").empty();
         
@@ -6888,14 +6890,14 @@ function get_data_Ajax_Co(colist){
         continue_btn.setAttribute('onclick',"defualtCriteriaHtmlSetup()");
         col_md_1.append(continue_btn);
         // if (default_crit_show_dict["default"]!==undefined && default_crit_hide_dict["default"]!==undefined){
-        //        // alert(cdm_crit_order_on_flag)
+        //        // alert(cr_crit_order_on_flag)
         //     var shw_disp=[];
         //     var hide_disp=[];
         //     var feat_dsp=default_crit_show_dict["default"];
         //     feat_to_disp=feat_dsp;
         //     var feat_hide=default_crit_hide_dict["default"];
         //     var flg="true";
-        //     cdm_crit_order_on_flag="true";
+        //     cr_crit_order_on_flag="true";
 
         //     data=htmlF(shw_disp,hide_disp,mandatory_list,feat_dsp,feat_hide,flg)
 
@@ -6909,7 +6911,7 @@ function get_data_Ajax_Co(colist){
                     feat_to_disp=feat_dsp;
                     var feat_hide=[];
                     var flg="true";
-                    cdm_crit_order_on_flag="true";
+                    cr_crit_order_on_flag="true";
 
                     data=htmlF(shw_disp,hide_disp,mandatory_list,feat_dsp,feat_hide,flg)
                     data_obj_show=JSON.parse(JSON.stringify(data['shw_disp']));
@@ -7005,7 +7007,7 @@ function get_data_Ajax_Co(colist){
                                 mandatory_list=mand;
                                 var feat_hide=data['feature_to_hide'];
                                 feat_to_hide=feat_hide;
-                                cdm_crit_order_on_flag="true";
+                                cr_crit_order_on_flag="true";
                                 data=htmlF(shw_disp,hide_disp,mandatory_list,feat_dsp,feat_hide,flg);
                                 data_obj_show=JSON.parse(JSON.stringify(data['shw_disp']));
                                 data_obj_hide=JSON.parse(JSON.stringify(data['hide_disp']));
@@ -7149,8 +7151,8 @@ function get_data_Ajax_Co(colist){
         /* emptying and showing order criteria div */
         $("#default_criteria_div").empty();
         $("#order_criteria_div").empty();
-        $("#cdm_criteria_div").empty();
-        $("#cdm_co_on_div").empty();
+        $("#cr_criteria_div").empty();
+        $("#cr_co_on_div").empty();
         $("#default_criteria_div").show();
         // CREATING HTML <-->
         var default_criteria_div=document.getElementById("default_criteria_div");
@@ -7161,7 +7163,7 @@ function get_data_Ajax_Co(colist){
         heading_row_div.setAttribute("class","row")
         container.append(heading_row_div);
         var heading_content=document.createElement("H4");
-        heading_content.innerHTML="Default CDM";
+        heading_content.innerHTML="Default CR";
           
         
         heading_row_div.append(heading_content);
@@ -7177,7 +7179,7 @@ function get_data_Ajax_Co(colist){
         back_to_main_setup_btn.innerHTML="Back";
         back_to_main_setup_btn.id="back_def_btn";
 
-        back_to_main_setup_btn.setAttribute('onclick','showDef_CDM_CO()')
+        back_to_main_setup_btn.setAttribute('onclick','showDef_CR_CO()')
         col_md_1.append(back_to_main_setup_btn);
         var col_md_5=document.createElement('div');
         col_md_5.setAttribute('class','col-md-5 text-left');
@@ -7232,7 +7234,7 @@ function get_data_Ajax_Co(colist){
             feat_to_disp=feat_dsp;
             var feat_hide=default_crit_hide_dict["default"];
             var flg="true";
-            cdm_crit_order_on_flag="false";
+            cr_crit_order_on_flag="false";
 
             data=htmlF(shw_disp,hide_disp,mandatory_list,feat_dsp,feat_hide,flg)
 
@@ -7281,7 +7283,7 @@ function get_data_Ajax_Co(colist){
     function saveDefaultCriteriaSet(){
             // dict['C']=['C.full'];
             // console.log("DICTO",dict);
-            current_save_state="CDM_off_CO_off"
+            current_save_state="CR_off_CO_off"
           // make an ajax call that will send full criterias that will be enabled for the experiment. 
           dummysendFeatureLevels();
           console.log("final_def_blocks_to_send",final_def_blocks_to_send)
@@ -7328,7 +7330,7 @@ function get_data_Ajax_Co(colist){
           });
           hide_show_order_display_Default_TreeView(); 
     }
-    function showDef_CDM_CO(){
+    function showDef_CR_CO(){
 
     var current= $('.breadcrumb').find('li.bdcrumb_active');
     var current_index=$( ".breadcrumb li" ).index( current );
@@ -7348,12 +7350,12 @@ function get_data_Ajax_Co(colist){
 
 
     }
-    function Cdm_on_CO_off_BreadCrumbActivateFunc(li_element){
+    function Cr_on_CO_off_BreadCrumbActivateFunc(li_element){
         console.log("li_ele",li_element);
-        // delete cdm_crit_show_dict['c.full'];
-        // delete cdm_crit_hide_dict['c.full'];
-        // delete cdm_crit_show_dict['c.prune'];
-        // delete cdm_crit_hide_dict['c.prune'];
+        // delete cr_crit_show_dict['c.full'];
+        // delete cr_crit_hide_dict['c.full'];
+        // delete cr_crit_show_dict['c.prune'];
+        // delete cr_crit_hide_dict['c.prune'];
 
 
 
@@ -7364,13 +7366,13 @@ function get_data_Ajax_Co(colist){
            
                     
                         // current.remove();
-                        $("#cdm_on_co_off_tree_view_div").empty();
+                        $("#cr_on_co_off_tree_view_div").empty();
                         dict_not_empty_flag="true"
-                        cdm_defaultCriteriaOrderHTMLSetup();
+                        cr_defaultCriteriaOrderHTMLSetup();
 
                     }
                     else{
-                        CdmCriteriaHTMLSetup();
+                        CrCriteriaHTMLSetup();
 
                     }
             
@@ -7381,10 +7383,10 @@ function get_data_Ajax_Co(colist){
         current.prop('class',current.attr('class').replace('breadcrumb-item bdcrumb_active',"breadcrumb-item"));
         $(li_element).prop('class', 'breadcrumb-item bdcrumb_active');
     }
-    function cdm_defaultCriteriaOrderHTMLSetup(){
-        if (default_crit_show_dict['cdm']!==undefined){
-            delete default_crit_show_dict['cdm'];
-            delete default_crit_hide_dict['cdm'];
+    function cr_defaultCriteriaOrderHTMLSetup(){
+        if (default_crit_show_dict['cr']!==undefined){
+            delete default_crit_show_dict['cr'];
+            delete default_crit_hide_dict['cr'];
         }
         $("#ol2").show();
          // $('#ol2').empty();
@@ -7397,16 +7399,16 @@ function get_data_Ajax_Co(colist){
             breadcrumb_ol.append(lit);
             var a=document.createElement("a");
             a.setAttribute("href","#");
-            a.setAttribute("onclick","Cdm_on_CO_off_BreadCrumbActivateFunc($(this).parent())");
+            a.setAttribute("onclick","Cr_on_CO_off_BreadCrumbActivateFunc($(this).parent())");
             a.setAttribute("style","color:white")
             a.innerHTML="Set Default Criteria Order";
             lit.append(a);
         }
-        $("#cdm_criteria_div").empty();
+        $("#cr_criteria_div").empty();
         $("#order_criteria_div").empty();
-        $("#cdm_criteria_div").empty();
-        $("#cdm_co_on_div").empty();
-        $("#cdm_criteria_div").show();
+        $("#cr_criteria_div").empty();
+        $("#cr_co_on_div").empty();
+        $("#cr_criteria_div").show();
 
 
         $("#catalog_crit_sel").empty();
@@ -7430,7 +7432,7 @@ function get_data_Ajax_Co(colist){
         col.append(input_num_field_catalog_crit);
         var  save_btn_catalog_crit=document.createElement("button")
         save_btn_catalog_crit.setAttribute("id","save_btn_catalog_crit")
-        save_btn_catalog_crit.setAttribute("onclick","saveCatalogCrit_cdm_on_co_off()")
+        save_btn_catalog_crit.setAttribute("onclick","saveCatalogCrit_cr_on_co_off()")
         save_btn_catalog_crit.innerHTML="Save"
         col.append(save_btn_catalog_crit);
         var col=document.createElement("div");
@@ -7444,10 +7446,10 @@ function get_data_Ajax_Co(colist){
 
 
 
-        var cdm_criteria_div=document.getElementById("cdm_criteria_div");
+        var cr_criteria_div=document.getElementById("cr_criteria_div");
         var container=document.createElement("div");
         container.setAttribute('class','container-fluid text-center');
-        cdm_criteria_div.append(container);
+        cr_criteria_div.append(container);
         var heading_row_div=document.createElement("div");
         heading_row_div.setAttribute("class","row");
         container.append(heading_row_div);
@@ -7467,7 +7469,7 @@ function get_data_Ajax_Co(colist){
         back_to_main_setup_btn.innerHTML="Back";
         back_to_main_setup_btn.id="back_def_btn";
 
-        back_to_main_setup_btn.setAttribute('onclick','showFeatureLvls_cdm_co()')
+        back_to_main_setup_btn.setAttribute('onclick','showFeatureLvls_cr_co()')
         col_md_1.append(back_to_main_setup_btn);
         var col_md_5=document.createElement('div');
         col_md_5.setAttribute('class','col-md-5 text-left');
@@ -7509,31 +7511,31 @@ function get_data_Ajax_Co(colist){
         var continue_btn=document.createElement('button');
         continue_btn.innerHTML="Continue";
         continue_btn.id="count_def_btn";
-        continue_btn.setAttribute('onclick',"Continue_CdmCriteriaHTMLSetup()");
+        continue_btn.setAttribute('onclick',"Continue_CrCriteriaHTMLSetup()");
         col_md_1.append(continue_btn);
       
         if (dict_not_empty_flag==="true"){
             var shw_disp=[];
             var hide_disp=[]
-            console.log("Cdm_Crit_show",cdm_crit_show_dict)
-            var feat_dsp=cdm_crit_show_dict['c.full'];
+            console.log("Cr_Crit_show",cr_crit_show_dict)
+            var feat_dsp=cr_crit_show_dict['c.full'];
             feat_to_disp=feat_dsp;
             console.log("FEATODISPLAY",feat_dsp)
             var flg="true";
             var feat_hide=[]
             feat_to_hide=feat_hide;
-            cdm_crit_order_on_flag="true";
+            cr_crit_order_on_flag="true";
             console.log("feat_to_disp",feat_to_disp);
 
             data=htmlF(shw_disp,hide_disp,mandatory_list,feat_dsp,feat_hide,flg);
             data_obj_show=JSON.parse(JSON.stringify(data['shw_disp']));
             data_obj_hide=JSON.parse(JSON.stringify(data['hide_disp']));
-            default_crit_show_dict['cdm']=data_obj_show;
-            // default_crit_hide_dict['cdm']=data_obj_hide;
+            default_crit_show_dict['cr']=data_obj_show;
+            // default_crit_hide_dict['cr']=data_obj_hide;
             data_obj_show_1=JSON.parse(JSON.stringify(data_obj_show));
             // data_obj_hide_2=JSON.parse(JSON.stringify(data_obj_hide));
-            static_default_crit_show_dict['cdm']=data_obj_show_1;
-            // static_default_crit_hide_dict['cdm']=data_obj_hide_2;
+            static_default_crit_show_dict['cr']=data_obj_show_1;
+            // static_default_crit_hide_dict['cr']=data_obj_hide_2;
            
                 $('ul').sortable({
                 axis: 'y',
@@ -7546,29 +7548,29 @@ function get_data_Ajax_Co(colist){
                         }
                                 
                         // $('span').text(data);
-                        default_crit_show_dict["cdm"]=arr;
+                        default_crit_show_dict["cr"]=arr;
                         console.log("default_crit_show_dict",default_crit_show_dict);
                         arr_2=JSON.parse(JSON.stringify(arr));
-                        static_default_crit_show_dict['cdm']=arr_2;
-                        if(cdm_crit_show_dict['c.full']!==undefined){
+                        static_default_crit_show_dict['cr']=arr_2;
+                        if(cr_crit_show_dict['c.full']!==undefined){
 
-                        cdm_crit_show_dict['c.full']=arr_2;
+                        cr_crit_show_dict['c.full']=arr_2;
                         }
-                        $("#cdm_on_co_off_tree_view_div").empty();
+                        $("#cr_on_co_off_tree_view_div").empty();
                         // var main_treeview_list=[];
                         // var main_treeview_dict={};
 
-                        // main_treeview_dict['name']="Cdm On CO Off Criteria Tree View";
+                        // main_treeview_dict['name']="Cr On CO Off Criteria Tree View";
                         // mainchildlist=[];
                         // var defaut_criteria_order_dict={};
                         // defaut_criteria_order_dict_childlist=[];
                         // defaut_criteria_order_dict['name']='Defaut criteria order';
 
-                        // for (var i in default_crit_show_dict['cdm'])
+                        // for (var i in default_crit_show_dict['cr'])
                         // {
                             
                         //     var defaut_criteria_order_child_dict={};
-                        //     defaut_criteria_order_child_dict['name']=default_crit_show_dict['cdm'][i];
+                        //     defaut_criteria_order_child_dict['name']=default_crit_show_dict['cr'][i];
                         //     defaut_criteria_order_child_dict['childern']=[];
                         //     defaut_criteria_order_dict_childlist.push(defaut_criteria_order_child_dict);
 
@@ -7583,29 +7585,29 @@ function get_data_Ajax_Co(colist){
                         //
                         // Create tree
                         //
-                        // var t = new TreeView(tree, 'cdm_on_co_off_tree_view_div');
+                        // var t = new TreeView(tree, 'cr_on_co_off_tree_view_div');
                         // t.expandAll(); 
-                        def_crit_cdm_on_co_off_TreeView();
+                        def_crit_cr_on_co_off_TreeView();
                     }
                 });    
                 $( "#sortable" ).enableSelection();
-                $("#cdm_on_co_off_tree_view_div").empty();
-                def_crit_cdm_on_co_off_TreeView();
+                $("#cr_on_co_off_tree_view_div").empty();
+                def_crit_cr_on_co_off_TreeView();
 
                 // var main_treeview_list=[];
                 // var main_treeview_dict={};
 
-                // main_treeview_dict['name']="Cdm On CO Off Criteria Tree View";
+                // main_treeview_dict['name']="Cr On CO Off Criteria Tree View";
                 // mainchildlist=[];
                 // var defaut_criteria_order_dict={};
                 // defaut_criteria_order_dict_childlist=[];
                 // defaut_criteria_order_dict['name']='Defaut criteria order';
 
-                // for (var i in default_crit_show_dict['cdm'])
+                // for (var i in default_crit_show_dict['cr'])
                 //         {
                             
                 //             var defaut_criteria_order_child_dict={};
-                //             defaut_criteria_order_child_dict['name']=default_crit_show_dict['cdm'][i];
+                //             defaut_criteria_order_child_dict['name']=default_crit_show_dict['cr'][i];
                 //             defaut_criteria_order_child_dict['childern']=[];
                 //             defaut_criteria_order_dict_childlist.push(defaut_criteria_order_child_dict);
 
@@ -7620,13 +7622,13 @@ function get_data_Ajax_Co(colist){
                     //
                     // Create tree
                     //
-                    // var t = new TreeView(tree, 'cdm_on_co_off_tree_view_div');
+                    // var t = new TreeView(tree, 'cr_on_co_off_tree_view_div');
                     // t.expandAll(); 
         }
 
         else{
                 $.ajax({
-                                url: "{% url 'cdmcriteriasetup' %}",
+                                url: "{% url 'cr_criteriasetup' %}",
                                 type:'GET',
                                 'data': {
                                 'csrfmiddlewaretoken': '{{ csrf_token }}',
@@ -7645,18 +7647,18 @@ function get_data_Ajax_Co(colist){
                                 mandatory_list=mand;
                                 var feat_hide=data['feature_to_hide'];
                                 feat_to_hide=feat_hide;
-                                cdm_crit_order_on_flag="true";
+                                cr_crit_order_on_flag="true";
                                 console.log("feat_to_disp",feat_to_disp);
 
                                 data=htmlF(shw_disp,hide_disp,mandatory_list,feat_dsp,feat_hide,flg);
                                 data_obj_show=JSON.parse(JSON.stringify(data['shw_disp']));
                                 data_obj_hide=JSON.parse(JSON.stringify(data['hide_disp']));
-                                default_crit_show_dict['cdm']=data_obj_show;
-                                default_crit_hide_dict['cdm']=data_obj_hide;
+                                default_crit_show_dict['cr']=data_obj_show;
+                                default_crit_hide_dict['cr']=data_obj_hide;
                                 data_obj_show_1=JSON.parse(JSON.stringify(data_obj_show));
                                 data_obj_hide_2=JSON.parse(JSON.stringify(data_obj_hide));
-                                static_default_crit_show_dict['cdm']=data_obj_show_1;
-                                static_default_crit_hide_dict['cdm']=data_obj_hide_2;
+                                static_default_crit_show_dict['cr']=data_obj_show_1;
+                                static_default_crit_hide_dict['cr']=data_obj_hide_2;
 
                                 $('ul').sortable({
                                 axis: 'y',
@@ -7672,25 +7674,25 @@ function get_data_Ajax_Co(colist){
                                 console.log("jason string",JSON.stringify(arr));
 
                                 // $('span').text(data);
-                                default_crit_show_dict["cdm"]=arr;
+                                default_crit_show_dict["cr"]=arr;
                                 console.log("default_crit_show_dict",default_crit_show_dict);
                                 arr_2=JSON.parse(JSON.stringify(arr));
-                                static_default_crit_show_dict['cdm']=arr_2;
-                                $("#cdm_on_co_off_tree_view_div").empty();
+                                static_default_crit_show_dict['cr']=arr_2;
+                                $("#cr_on_co_off_tree_view_div").empty();
                                 var main_treeview_list=[];
                                 var main_treeview_dict={};
 
-                                main_treeview_dict['name']="Cdm On CO Off Criteria Tree View";
+                                main_treeview_dict['name']="Cr On CO Off Criteria Tree View";
                                 mainchildlist=[];
                                 var defaut_criteria_order_dict={};
                                 defaut_criteria_order_dict_childlist=[];
                                 defaut_criteria_order_dict['name']='Defaut criteria order';
 
-                                        for (var i in default_crit_show_dict['cdm'])
+                                        for (var i in default_crit_show_dict['cr'])
                                         {
                                             
                                             var defaut_criteria_order_child_dict={};
-                                            defaut_criteria_order_child_dict['name']=default_crit_show_dict['cdm'][i];
+                                            defaut_criteria_order_child_dict['name']=default_crit_show_dict['cr'][i];
                                             defaut_criteria_order_child_dict['childern']=[];
                                             defaut_criteria_order_dict_childlist.push(defaut_criteria_order_child_dict);
 
@@ -7705,26 +7707,26 @@ function get_data_Ajax_Co(colist){
                                 //
                                 // Create tree
                                 //
-                                var t = new TreeView(tree, 'cdm_on_co_off_tree_view_div');
+                                var t = new TreeView(tree, 'cr_on_co_off_tree_view_div');
                                 t.expandAll(); 
                                 }
                                 });    
                                 $( "#sortable" ).enableSelection()
-                                $("#cdm_on_co_off_tree_view_div").empty();
+                                $("#cr_on_co_off_tree_view_div").empty();
                                 var main_treeview_list=[];
                                 var main_treeview_dict={};
 
-                                main_treeview_dict['name']="Cdm On CO Off Criteria Tree View";
+                                main_treeview_dict['name']="Cr On CO Off Criteria Tree View";
                                 mainchildlist=[];
                                 var defaut_criteria_order_dict={};
                                 defaut_criteria_order_dict_childlist=[];
                                 defaut_criteria_order_dict['name']='Defaut criteria order';
 
-                                for (var i in default_crit_show_dict['cdm'])
+                                for (var i in default_crit_show_dict['cr'])
                                         {
                                             
                                             var defaut_criteria_order_child_dict={};
-                                            defaut_criteria_order_child_dict['name']=default_crit_show_dict['cdm'][i];
+                                            defaut_criteria_order_child_dict['name']=default_crit_show_dict['cr'][i];
                                             defaut_criteria_order_child_dict['childern']=[];
                                             defaut_criteria_order_dict_childlist.push(defaut_criteria_order_child_dict);
 
@@ -7739,7 +7741,7 @@ function get_data_Ajax_Co(colist){
                                 //
                                 // Create tree
                                 //
-                                var t = new TreeView(tree, 'cdm_on_co_off_tree_view_div');
+                                var t = new TreeView(tree, 'cr_on_co_off_tree_view_div');
                                 t.expandAll(); 
                             }
 
@@ -7747,7 +7749,7 @@ function get_data_Ajax_Co(colist){
         }
 
     }
-    function CdmCriteriaHTMLSetup(){
+    function CrCriteriaHTMLSetup(){
         $("#ol2").show();
 
         if (dict_not_empty_flag==="false"){
@@ -7760,7 +7762,7 @@ function get_data_Ajax_Co(colist){
                     breadcrumb_ol.append(li);
                     var a=document.createElement("a");
                     a.setAttribute("href","#");
-                    a.setAttribute("onclick","Cdm_on_CO_off_BreadCrumbActivateFunc($(this).parent())");
+                    a.setAttribute("onclick","Cr_on_CO_off_BreadCrumbActivateFunc($(this).parent())");
                     a.setAttribute("style","color:white");
 
                     a.innerHTML="Set C.Full and Prune Criteria ";
@@ -7773,35 +7775,35 @@ function get_data_Ajax_Co(colist){
         /* emptying and showing order criteria div */
         $("#default_criteria_div").empty();
         $("#order_criteria_div").empty();
-        $("#cdm_criteria_div").empty();
-        $("#cdm_co_on_div").empty();
-        $("#cdm_criteria_div").show();
+        $("#cr_criteria_div").empty();
+        $("#cr_co_on_div").empty();
+        $("#cr_criteria_div").show();
         // CREATING HTML <-->
-        cdm_full_btn_on="true";
-        cdm_crit_order_on_flag="false";
+        cr_full_btn_on="true";
+        cr_crit_order_on_flag="false";
 
-        var cdm_criteria_div=document.getElementById("cdm_criteria_div");
+        var cr_criteria_div=document.getElementById("cr_criteria_div");
         var container=document.createElement("div");
         container.setAttribute('class','container-fluid text-center');
-        cdm_criteria_div.append(container);
+        cr_criteria_div.append(container);
       
         var toggle_btn_row_div=document.createElement('div');
         toggle_btn_row_div.setAttribute("class","row");
         container.append(toggle_btn_row_div);
         var col_md_12=document.createElement('div');
         col_md_12.setAttribute('class','col-md-8 btn-group');
-        col_md_12.id="set_buttons_cdm"
+        col_md_12.id="set_buttons_cr"
         toggle_btn_row_div.append(col_md_12);
         cmd_set_list=["C.FULL","C.PRUNE"];
         for (var i=0;i<cmd_set_list.length;i++){
             var button=document.createElement('button')
             button.id=cmd_set_list[i]+"btn"
             button.innerHTML=cmd_set_list[i];
-            button.setAttribute("onclick","cdm_btn_func($(this))")
+            button.setAttribute("onclick","cr_btn_func($(this))")
             if (i===0){
                 var active_b=button
             }
-            $('#set_buttons_cdm').append(button)
+            $('#set_buttons_cr').append(button)
         }
         document.getElementById("C.FULLbtn").style.backgroundColor = "#94000e"
 
@@ -7810,7 +7812,7 @@ function get_data_Ajax_Co(colist){
 
         var main_row=document.createElement('div');
         main_row.setAttribute('class','row content');
-        main_row.id="cdm_main_row_co_def";
+        main_row.id="cr_main_row_co_def";
 
         container.append(main_row);
         var col_md_1=document.createElement('div');
@@ -7818,8 +7820,8 @@ function get_data_Ajax_Co(colist){
         main_row.append(col_md_1);
         var back_to_main_setup_btn=document.createElement('button');
         back_to_main_setup_btn.innerHTML="Back";
-        back_to_main_setup_btn.setAttribute('onclick','showSetDefCritOrd_Cdm()')
-        back_to_main_setup_btn.id="back_cdm_btn";
+        back_to_main_setup_btn.setAttribute('onclick','showSetDefCritOrd_Cr()')
+        back_to_main_setup_btn.id="back_cr_btn";
         col_md_1.append(back_to_main_setup_btn);
         var col_md_5=document.createElement('div');
         col_md_5.setAttribute('class','col-md-5 text-left');
@@ -7864,52 +7866,52 @@ function get_data_Ajax_Co(colist){
         main_row.append(col_md_1);
         // var next_to_main_setup_btn=document.createElement('button');
         // next_to_main_setup_btn.innerHTML="Next";
-        // next_to_main_setup_btn.id="NEXT_CDM_BTN";
-        // next_to_main_setup_btn.setAttribute('onclick',"nextStepCdmCriteriaHTMLSetup()");
+        // next_to_main_setup_btn.id="NEXT_CR_BTN";
+        // next_to_main_setup_btn.setAttribute('onclick',"nextStepCrCriteriaHTMLSetup()");
         // col_md_1.append(next_to_main_setup_btn);
         // if flag for c.full is active that retrieve info 
-        // from cdm_crit_dict[c.full]
-        if (cdm_crit_show_dict['c.full']!==undefined ){
+        // from cr_crit_dict[c.full]
+        if (cr_crit_show_dict['c.full']!==undefined ){
             alert("FIRSt1 if")
             var shw_disp=[];var hide_disp=[];
-            console.log("cdm_crit_show_dict['c.full']*************",cdm_crit_show_dict['c.full'])
+            console.log("cr_crit_show_dict['c.full']*************",cr_crit_show_dict['c.full'])
 
-            var feat_dsp=cdm_crit_show_dict['c.full'];
-            var feat_hide=cdm_crit_hide_dict['c.full'];
+            var feat_dsp=cr_crit_show_dict['c.full'];
+            var feat_hide=cr_crit_hide_dict['c.full'];
             var flg="true";
             data=htmlF(shw_disp,hide_disp,mandatory_list,feat_dsp,feat_hide,flg);
             data_obj_show=JSON.parse(JSON.stringify(data['shw_disp']));
             data_obj_hide=JSON.parse(JSON.stringify(data['hide_disp']));
-            if ((cdm_crit_show_dict["c.full"]!==undefined || cdm_crit_hide_dict["c.full"]!==undefined)||(cdm_crit_show_dict["c.full"]!==undefined || cdm_crit_hide_dict["c.full"]!==undefined)){
+            if ((cr_crit_show_dict["c.full"]!==undefined || cr_crit_hide_dict["c.full"]!==undefined)||(cr_crit_show_dict["c.full"]!==undefined || cr_crit_hide_dict["c.full"]!==undefined)){
                 $("#full_crit_selected").show();
             }  
-            default_crit_show_dict["cdm"]=data_obj_show
-            default_crit_hide_dict["cdm"]=data_obj_hide
+            default_crit_show_dict["cr"]=data_obj_show
+            default_crit_hide_dict["cr"]=data_obj_hide
         }
         else{
           
 
         if (prune_empty_flag==="true" ){
-            console.log("default_crit_show_dict['cdm']*************",default_crit_show_dict["cdm"])
-            if (default_crit_show_dict["cdm"]!==undefined || default_crit_hide_dict["cdm"]!==undefined) {
+            console.log("default_crit_show_dict['cr']*************",default_crit_show_dict["cr"])
+            if (default_crit_show_dict["cr"]!==undefined || default_crit_hide_dict["cr"]!==undefined) {
 
                     var shw_disp=[];
                     var hide_disp=[];
-                    var feat_dsp=default_crit_show_dict["cdm"];
+                    var feat_dsp=default_crit_show_dict["cr"];
                     feat_to_disp=feat_dsp;
-                    var feat_hide=default_crit_hide_dict["cdm"];
+                    var feat_hide=default_crit_hide_dict["cr"];
                     var flg="true";
-                    cdm_crit_order_on_flag="false";
+                    cr_crit_order_on_flag="false";
 
                     data=htmlF(shw_disp,hide_disp,mandatory_list,feat_dsp,feat_hide,flg)
                     data_obj_show=JSON.parse(JSON.stringify(data['shw_disp']));
                     data_obj_hide=JSON.parse(JSON.stringify(data['hide_disp']));
                     
-                    cdm_crit_show_dict["c.full"]=data_obj_show;
-                    cdm_crit_hide_dict["c.full"]=data_obj_hide;
+                    cr_crit_show_dict["c.full"]=data_obj_show;
+                    cr_crit_hide_dict["c.full"]=data_obj_hide;
 
-                    default_crit_show_dict['cdm']=feat_to_disp;
-                    default_crit_hide_dict["cdm"]=feat_to_hide;
+                    default_crit_show_dict['cr']=feat_to_disp;
+                    default_crit_hide_dict["cr"]=feat_to_hide;
                                 
 
             }
@@ -7917,7 +7919,7 @@ function get_data_Ajax_Co(colist){
 
                 
                 $.ajax({
-                                url: "{% url 'cdmcriteriasetup' %}",
+                                url: "{% url 'cr_criteriasetup' %}",
                                 type:'GET',
                                 'data': {
                                 'csrfmiddlewaretoken': '{{ csrf_token }}',
@@ -7943,11 +7945,11 @@ function get_data_Ajax_Co(colist){
                                 data_obj_hide=JSON.parse(JSON.stringify(data['hide_disp']));
                                 
                             
-                                cdm_crit_show_dict["c.full"]=data_obj_show;
-                                cdm_crit_hide_dict["c.full"]=data_obj_hide;
+                                cr_crit_show_dict["c.full"]=data_obj_show;
+                                cr_crit_hide_dict["c.full"]=data_obj_hide;
 
-                                default_crit_show_dict['cdm']=feat_to_disp;
-                                default_crit_hide_dict["cdm"]=feat_to_hide;
+                                default_crit_show_dict['cr']=feat_to_disp;
+                                default_crit_hide_dict["cr"]=feat_to_hide;
                                
                                 console.log("default_crit_show_dict",default_crit_show_dict)
 
@@ -7961,20 +7963,20 @@ function get_data_Ajax_Co(colist){
             }
         }
 
-        else if (prune_empty_flag==="false" || default_crit_show_dict["cdm"]!==undefined && default_crit_hide_dict["cdm"]!==undefined ) {
+        else if (prune_empty_flag==="false" || default_crit_show_dict["cr"]!==undefined && default_crit_hide_dict["cr"]!==undefined ) {
             alert("prune flag");
             alert(prune_empty_flag);
             alert("else if1")
 
             var shw_disp=[];var hide_disp=[];
-            var feat_dsp=cdm_crit_show_dict['c.full'];
-            var feat_hide=cdm_crit_hide_dict['c.full'];
+            var feat_dsp=cr_crit_show_dict['c.full'];
+            var feat_hide=cr_crit_hide_dict['c.full'];
             var flg="true";
             data=htmlF(shw_disp,hide_disp,mandatory_list,feat_dsp,feat_hide,flg);
             console.log("C>PURNE",shw_disp)
             data_obj_show=JSON.parse(JSON.stringify(data['shw_disp']));
             data_obj_hide=JSON.parse(JSON.stringify(data['hide_disp']));
-            if ((cdm_crit_show_dict["c.full"]!==undefined || cdm_crit_hide_dict["c.full"]!==undefined)||(cdm_crit_show_dict["c.full"]!==undefined || cdm_crit_hide_dict["c.full"]!==undefined)){
+            if ((cr_crit_show_dict["c.full"]!==undefined || cr_crit_hide_dict["c.full"]!==undefined)||(cr_crit_show_dict["c.full"]!==undefined || cr_crit_hide_dict["c.full"]!==undefined)){
                 alert("NO NEW INSERTION iN PRune")
                 $("#full_crit_selected").show();
             }  
@@ -7984,11 +7986,11 @@ function get_data_Ajax_Co(colist){
         }
     
     
-    def_crit_cdm_on_co_off_TreeView();
+    def_crit_cr_on_co_off_TreeView();
 }
-    function saveCdmCriteriaHTMLSetup(){  
+    function saveCrCriteriaHTMLSetup(){  
          // make an ajax call that will send full criterias that will be enabled for the experiment. 
-         current_save_state="CDM_on_CO_off";
+         current_save_state="CR_on_CO_off";
          dummysendFeatureLevels();
           $.ajax({
                                 
@@ -7996,14 +7998,14 @@ function get_data_Ajax_Co(colist){
                                 dataType: "json",
                                 'data': {
                                 'featlevels_dic': JSON.stringify(block_feat_dict,undefined,''),
-                                'cdm_crit_show_dict': JSON.stringify(cdm_crit_show_dict,undefined,''),
-                                'cdm_crit_hide_dict': JSON.stringify(cdm_crit_hide_dict,undefined,''),
+                                'cr_crit_show_dict': JSON.stringify(cr_crit_show_dict,undefined,''),
+                                'cr_crit_hide_dict': JSON.stringify(cr_crit_hide_dict,undefined,''),
                                 'cataloglist':JSON.stringify(cataloglist),
                                 "final_def_blocks_to_send":JSON.stringify(final_def_blocks_to_send),
        
                                 'csrfmiddlewaretoken': '{{ csrf_token }}',
                                 },
-                                url: "{% url 'cdmcriteriasetup' %}",
+                                url: "{% url 'cr_criteriasetup' %}",
                                 success: function(data){
                                     // checkbox_id_dict[5]=['0-innercheckbox-5'];
                                     // showcheckboxes_stored();
@@ -8031,12 +8033,12 @@ function get_data_Ajax_Co(colist){
                                             
                                 }
           });
-        //   cdm_full_btn_on="true";
-        //   CdmCriteriaHTMLSetup();
+        //   cr_full_btn_on="true";
+        //   CrCriteriaHTMLSetup();
 
     }
-    function nextStepCdmCriteriaHTMLSetup(){
-        cdm_full_btn_on="false";
+    function nextStepCrCriteriaHTMLSetup(){
+        cr_full_btn_on="false";
         prune_empty_flag="false";
       
 
@@ -8044,16 +8046,16 @@ function get_data_Ajax_Co(colist){
         document.getElementById("C.PRUNEbtn").style.backgroundColor = "#94000e"
         document.getElementById("C.FULLbtn").style.backgroundColor = ""
 
-        $("#cdm_main_row_co_def").empty();
+        $("#cr_main_row_co_def").empty();
 
-        var main_row=document.getElementById("cdm_main_row_co_def")
+        var main_row=document.getElementById("cr_main_row_co_def")
         var col_md_1=document.createElement('div');
         col_md_1.setAttribute('class','col-md-1');
         main_row.append(col_md_1);
         var back_to_main_setup_btn=document.createElement('button');
         back_to_main_setup_btn.innerHTML="Back";
-        back_to_main_setup_btn.id="back_cdm_btn";
-        back_to_main_setup_btn.setAttribute('onclick','CdmCriteriaHTMLSetup()')
+        back_to_main_setup_btn.id="back_cr_btn";
+        back_to_main_setup_btn.setAttribute('onclick','CrCriteriaHTMLSetup()')
         col_md_1.append(back_to_main_setup_btn);
         var col_md_5=document.createElement('div');
         col_md_5.setAttribute('class','col-md-5 text-left');
@@ -8109,14 +8111,14 @@ function get_data_Ajax_Co(colist){
         main_row.append(col_md_1);
         var save_setup_btn=document.createElement('button');
         save_setup_btn.innerHTML="Save";
-        save_setup_btn.id="SAVE_CDM_BTN";
-        save_setup_btn.setAttribute('onclick',"saveCdmCriteriaHTMLSetup()");
+        save_setup_btn.id="SAVE_CR_BTN";
+        save_setup_btn.setAttribute('onclick',"saveCrCriteriaHTMLSetup()");
         col_md_1.append(save_setup_btn);
         // if flag for c.full is active that retrieve info 
-        // from cdm_crit_dict[c.full]
-        if (cdm_full_btn_on==="true"){
+        // from cr_crit_dict[c.full]
+        if (cr_full_btn_on==="true"){
         $.ajax({
-                                url: "{% url 'cdmcriteriasetup' %}",
+                                url: "{% url 'cr_criteriasetup' %}",
                                 type:'GET',
                                 'data': {
                                 'csrfmiddlewaretoken': '{{ csrf_token }}',
@@ -8188,7 +8190,7 @@ function get_data_Ajax_Co(colist){
                                 else {
                                     var btn_show_hide=document.createElement('button');
                                     btn_show_hide.setAttribute("class","show_hide");
-                                    btn_show_hide.setAttribute("onclick","hideFromDisplay_CDM($(this).parent().parent().parent().attr('id'))");
+                                    btn_show_hide.setAttribute("onclick","hideFromDisplay_CR($(this).parent().parent().parent().attr('id'))");
                                     btn_show_hide.innerHTML="Hide";
                                     div_col_md_6_2.appendChild(btn_show_hide);
                                     
@@ -8246,7 +8248,7 @@ function get_data_Ajax_Co(colist){
                                     div_col_md_6_1.append(btn_btn_primary);
                                     var btn_show_hide=document.createElement('button');
                                     btn_show_hide.setAttribute('class','show_hide');
-                                    btn_show_hide.setAttribute('onclick','showToDisplay_CDM($(this).parent().parent().parent().attr("id"))');
+                                    btn_show_hide.setAttribute('onclick','showToDisplay_CR($(this).parent().parent().parent().attr("id"))');
                                     btn_show_hide.innerHTML="show";
                                     div_col_md_6_2.append(btn_show_hide);
                                     // hide_disp.push(feat_hide[i].feature)
@@ -8260,11 +8262,11 @@ function get_data_Ajax_Co(colist){
                                
                                 }
                                 /// add the show_disp and hide_disp to default_crit_disp....
-                                cdm_crit_show_dict['c.full']=shw_disp
-                                cdm_crit_hide_dict['c.full']=hide_disp
+                                cr_crit_show_dict['c.full']=shw_disp
+                                cr_crit_hide_dict['c.full']=hide_disp
 
-                                console.log("cdm_crit_show_dict-->",cdm_crit_show_dict);
-                                console.log("cdm_crit_hide_dict-->",cdm_crit_hide_dict);
+                                console.log("cr_crit_show_dict-->",cr_crit_show_dict);
+                                console.log("cr_crit_hide_dict-->",cr_crit_hide_dict);
 
                                 $('ul').sortable({
                                     axis: 'y',
@@ -8276,15 +8278,15 @@ function get_data_Ajax_Co(colist){
                                         arr.push(data[key].split("=")[0].replace('[]',''));
                                     }
                                     // $('span').text(data);
-                                    if (cdm_crit_show_dict['c.full']===undefined){
-                                        cdm_crit_show_dict['c.full']=[]
+                                    if (cr_crit_show_dict['c.full']===undefined){
+                                        cr_crit_show_dict['c.full']=[]
                                     }
                                     else{
-                                    // add the arrays to new dictionary cdm_crit_show_dict
-                                    cdm_crit_show_dict['c.full']=arr;
-                                    cdm_crit_hide_dict['c.full']=hide_disp;
-                                    console.log("cdm_crit_show_dict",cdm_crit_show_dict);
-                                    console.log("cdm_crit_show_dict",cdm_crit_show_dict);
+                                    // add the arrays to new dictionary cr_crit_show_dict
+                                    cr_crit_show_dict['c.full']=arr;
+                                    cr_crit_hide_dict['c.full']=hide_disp;
+                                    console.log("cr_crit_show_dict",cr_crit_show_dict);
+                                    console.log("cr_crit_show_dict",cr_crit_show_dict);
 
                                     }
                                     }
@@ -8297,16 +8299,16 @@ function get_data_Ajax_Co(colist){
         }
         else {
             var shw_disp=[];var hide_disp=[];
-            var feat_dsp=cdm_crit_show_dict['c.full'];
+            var feat_dsp=cr_crit_show_dict['c.full'];
             var feat_hide=[];
             var flg="true";
             data=htmlF(shw_disp,hide_disp,mandatory_list,feat_dsp,feat_hide,flg);
             data_obj_show=JSON.parse(JSON.stringify(data['shw_disp']));
             data_obj_hide=JSON.parse(JSON.stringify(data['hide_disp']));
-            cdm_crit_show_dict['c.pruned']=shw_disp;
-            cdm_crit_hide_dict['c.pruned']=[];
-            console.log("cdm_crit_show_dict",cdm_crit_show_dict);
-            console.log("cdm_crit_hide_dict",cdm_crit_hide_dict);            
+            cr_crit_show_dict['c.pruned']=shw_disp;
+            cr_crit_hide_dict['c.pruned']=[];
+            console.log("cr_crit_show_dict",cr_crit_show_dict);
+            console.log("cr_crit_hide_dict",cr_crit_hide_dict);            
             var full_crit_sel_inner_div=document.getElementById('full_crit_sel_inner_div');
             var ul_cfull_crit=document.createElement('ul');
             ul_cfull_crit.setAttribute("id","cfull_crit");
@@ -8331,10 +8333,10 @@ function get_data_Ajax_Co(colist){
                             // div_col_md_6_1.append(btn_btn_primary);
                         
                         }  
-            def_crit_cdm_on_co_off_TreeView();         
+            def_crit_cr_on_co_off_TreeView();         
         }
     }
-    function Continue_CdmCriteriaHTMLSetup (){
+    function Continue_CrCriteriaHTMLSetup (){
         if (dict_not_empty_flag==="true"){
             var current= $('.breadcrumb').find('li.bdcrumb_active');
             var current_index=$( ".breadcrumb li" ).index( current );
@@ -8343,11 +8345,11 @@ function get_data_Ajax_Co(colist){
             current.prop('class',current.attr('class').replace('breadcrumb-item bdcrumb_active',"breadcrumb-item"));
             $(prev_element).prop('class', 'breadcrumb-item bdcrumb_active');
         }
-        CdmCriteriaHTMLSetup();
+        CrCriteriaHTMLSetup();
 
     }
 
-    function cdm_btn_func(elementid){
+    function cr_btn_func(elementid){
         console.log(typeof(elementid))
       
         var element_os=$(elementid).attr('id');
@@ -8357,19 +8359,19 @@ function get_data_Ajax_Co(colist){
         if(element_os==="C.FULLbtn"){
             document.getElementById("C.FULLbtn").style.backgroundColor = "#94000e"
             document.getElementById("C.PRUNEbtn").style.backgroundColor = ""
-            cdm_full_btn_on="true"
+            cr_full_btn_on="true"
             
-        $("#cdm_main_row_co_def").empty();
+        $("#cr_main_row_co_def").empty();
 
-        var main_row=document.getElementById("cdm_main_row_co_def")
+        var main_row=document.getElementById("cr_main_row_co_def")
         var col_md_1=document.createElement('div');
         col_md_1.setAttribute('class','col-md-1');
         main_row.append(col_md_1);
         var back_to_main_setup_btn=document.createElement('button');
         back_to_main_setup_btn.innerHTML="Back";
-        back_to_main_setup_btn.id="back_cdm_btn";
+        back_to_main_setup_btn.id="back_cr_btn";
 
-        back_to_main_setup_btn.setAttribute('onclick','showSetDefCritOrd_Cdm()')
+        back_to_main_setup_btn.setAttribute('onclick','showSetDefCritOrd_Cr()')
         col_md_1.append(back_to_main_setup_btn);
         var col_md_5=document.createElement('div');
         col_md_5.setAttribute('class','col-md-5 text-left');
@@ -8411,16 +8413,16 @@ function get_data_Ajax_Co(colist){
         main_row.append(col_md_1);
         // var next_to_main_setup_btn=document.createElement('button');
         // next_to_main_setup_btn.innerHTML="Next";
-        // next_to_main_setup_btn.id="NEXT_CDM_BTN";
-        // next_to_main_setup_btn.setAttribute('onclick',"nextStepCdmCriteriaHTMLSetup()");
+        // next_to_main_setup_btn.id="NEXT_CR_BTN";
+        // next_to_main_setup_btn.setAttribute('onclick',"nextStepCrCriteriaHTMLSetup()");
         // col_md_1.append(next_to_main_setup_btn);
 
         var shw_disp=[];var hide_disp=[];
-        var feat_dsp=cdm_crit_show_dict['c.full'];
-        var feat_hide=cdm_crit_hide_dict['c.full'];
+        var feat_dsp=cr_crit_show_dict['c.full'];
+        var feat_hide=cr_crit_hide_dict['c.full'];
         var flg="true"
         data=htmlF(shw_disp,hide_disp,mandatory_list,feat_dsp,feat_hide,flg);
-        def_crit_cdm_on_co_off_TreeView();
+        def_crit_cr_on_co_off_TreeView();
 
 
                     
@@ -8429,22 +8431,22 @@ function get_data_Ajax_Co(colist){
 
         }
         else if(element_os==="C.PRUNEbtn"){
-                if (cdm_crit_show_dict['c.pruned']!==undefined){
-                    prune_list_show=cdm_crit_show_dict['c.pruned'];
-                    prune_list_hide=cdm_crit_hide_dict['c.pruned'];
+                if (cr_crit_show_dict['c.pruned']!==undefined){
+                    prune_list_show=cr_crit_show_dict['c.pruned'];
+                    prune_list_hide=cr_crit_hide_dict['c.pruned'];
                     temp_list=[];
                     temp_list2=[];
-                    for (var i in cdm_crit_show_dict['c.full']){
-                        if(prune_list_show.includes(cdm_crit_show_dict['c.full'][i])){
-                            temp_list.push(cdm_crit_show_dict['c.full'][i])
+                    for (var i in cr_crit_show_dict['c.full']){
+                        if(prune_list_show.includes(cr_crit_show_dict['c.full'][i])){
+                            temp_list.push(cr_crit_show_dict['c.full'][i])
                         }
-                        else if (prune_list_hide.includes(cdm_crit_show_dict['c.full'][i])){
-                            // temp_list.push(cdm_crit_show_dict['c.full'][i])
+                        else if (prune_list_hide.includes(cr_crit_show_dict['c.full'][i])){
+                            // temp_list.push(cr_crit_show_dict['c.full'][i])
                         }
                         else{
-                            temp_list2.push(cdm_crit_show_dict['c.full'][i])
+                            temp_list2.push(cr_crit_show_dict['c.full'][i])
                         }  
-                        // cdm_crit_show_dict['c.full'].indexOf(cdm_crit_show_dict['c.full'][i])
+                        // cr_crit_show_dict['c.full'].indexOf(cr_crit_show_dict['c.full'][i])
                         
                     }
                     console.log("temp_list2",temp_list2)
@@ -8454,25 +8456,25 @@ function get_data_Ajax_Co(colist){
 
                         }
                     }
-                    cdm_crit_show_dict['c.pruned']=temp_list;
-                    for (  var i in cdm_crit_hide_dict['c.full']){
-                        if (prune_list_hide.includes(cdm_crit_hide_dict['c.full'][i])){
-                            var ind=prune_list_hide.indexOf(cdm_crit_hide_dict['c.full'][i]);
+                    cr_crit_show_dict['c.pruned']=temp_list;
+                    for (  var i in cr_crit_hide_dict['c.full']){
+                        if (prune_list_hide.includes(cr_crit_hide_dict['c.full'][i])){
+                            var ind=prune_list_hide.indexOf(cr_crit_hide_dict['c.full'][i]);
                             prune_list_hide.splice(ind,1)
-                            // temp_list.push(cdm_crit_show_dict['c.full'][i])
+                            // temp_list.push(cr_crit_show_dict['c.full'][i])
                         }
                     }
-                    cdm_crit_hide_dict['c.pruned']=prune_list_hide;
-                    // if (cdm_crit_show_dict['c.full'].length!==cdm_crit_show_dict['c.prune'].length){
+                    cr_crit_hide_dict['c.pruned']=prune_list_hide;
+                    // if (cr_crit_show_dict['c.full'].length!==cr_crit_show_dict['c.prune'].length){
                     // alert("Please press NEXT TO set Pruned Criterias")
                     // return;
                     // }
-                    // data_obj_show=JSON.parse(JSON.stringify(cdm_crit_show_dict['c.full']));
+                    // data_obj_show=JSON.parse(JSON.stringify(cr_crit_show_dict['c.full']));
 
-                    // cdm_crit_show_dict['c.prune']=data_obj_show;
+                    // cr_crit_show_dict['c.prune']=data_obj_show;
                 }
                 else{
-                    nextStepCdmCriteriaHTMLSetup();
+                    nextStepCrCriteriaHTMLSetup();
                     // alert("Please first press NEXT TO set Pruned Criterias")
                     // return; 
                 }
@@ -8482,17 +8484,17 @@ function get_data_Ajax_Co(colist){
             document.getElementById("C.PRUNEbtn").style.backgroundColor = "#94000e"
             document.getElementById("C.FULLbtn").style.backgroundColor = ""
 
-            cdm_full_btn_on="false"
-            $("#cdm_main_row_co_def").empty();
+            cr_full_btn_on="false"
+            $("#cr_main_row_co_def").empty();
 
-            var main_row=document.getElementById("cdm_main_row_co_def")
+            var main_row=document.getElementById("cr_main_row_co_def")
             var col_md_1=document.createElement('div');
             col_md_1.setAttribute('class','col-md-1');
             main_row.append(col_md_1);
             var back_to_main_setup_btn=document.createElement('button');
             back_to_main_setup_btn.innerHTML="Back";
-            back_to_main_setup_btn.id="back_cdm_btn";
-            back_to_main_setup_btn.setAttribute('onclick','showSetDefCritOrd_Cdm()')
+            back_to_main_setup_btn.id="back_cr_btn";
+            back_to_main_setup_btn.setAttribute('onclick','showSetDefCritOrd_Cr()')
             col_md_1.append(back_to_main_setup_btn);
             var col_md_5=document.createElement('div');
             col_md_5.setAttribute('class','col-md-5 text-left');
@@ -8558,23 +8560,23 @@ function get_data_Ajax_Co(colist){
             main_row.append(col_md_1);
             var save_setup_btn=document.createElement('button');
             save_setup_btn.innerHTML="Save";
-            save_setup_btn.setAttribute('onclick',"saveCdmCriteriaHTMLSetup()");
-            save_setup_btn.id="SAVE_CDM_BTN";
+            save_setup_btn.setAttribute('onclick',"saveCrCriteriaHTMLSetup()");
+            save_setup_btn.id="SAVE_CR_BTN";
             col_md_1.append(save_setup_btn);
-        console.log("cdm_crit_show_diCT%%%%%%",cdm_crit_show_dict)
-        console.log("cdm_crit_hide_diCT%%%%%%",cdm_crit_hide_dict)
+        console.log("cr_crit_show_diCT%%%%%%",cr_crit_show_dict)
+        console.log("cr_crit_hide_diCT%%%%%%",cr_crit_hide_dict)
 
         var shw_disp=[];var hide_disp=[];
         
-        var feat_dsp=cdm_crit_show_dict['c.pruned'];
-        var feat_hide=cdm_crit_hide_dict['c.pruned'];
+        var feat_dsp=cr_crit_show_dict['c.pruned'];
+        var feat_hide=cr_crit_hide_dict['c.pruned'];
         var flg="true";
         data=htmlF(shw_disp,hide_disp,mandatory_list,feat_dsp,feat_hide,flg);
         // var full_crit_sel_inner_div=document.getElementById('full_crit_sel_inner_div');
         //     var ul_cfull_crit=document.createElement('ul');
         //     ul_cfull_crit.setAttribute("id","cfull_crit");
         //     full_crit_sel_inner_div.append(ul_cfull_crit);
-        //     var crit_full_list=cdm_crit_show_dict['c.full'];
+        //     var crit_full_list=cr_crit_show_dict['c.full'];
         //                 for (var i in crit_full_list ){
 
         //                     var li_cfull_crit=document.createElement('li');
@@ -8591,7 +8593,7 @@ function get_data_Ajax_Co(colist){
             var ul_cfull_crit=document.createElement('ul');
             ul_cfull_crit.setAttribute("id","cfull_crit_hidden");
             full_crit_hid_inner_div.append(ul_cfull_crit);
-            var crit_full_list=cdm_crit_hide_dict['c.full'];
+            var crit_full_list=cr_crit_hide_dict['c.full'];
                         for (var i in crit_full_list ){
                             var li_cfull_crit=document.createElement('li');
                             // li_cfull_crit.innerHTML=crit_full_list[i];
@@ -8603,57 +8605,57 @@ function get_data_Ajax_Co(colist){
                             li_cfull_crit.append(btn_btn_primary);
                         
                         }  
-        def_crit_cdm_on_co_off_TreeView();
+        def_crit_cr_on_co_off_TreeView();
 
         }
 
     }
-    var cdm_co_on_toggle_btn_active_status=""
-    function cdm_co_on_btn_func(elementid){
+    var cr_co_on_toggle_btn_active_status=""
+    function cr_co_on_btn_func(elementid){
         var element_os=$(elementid).attr('id');
         if(element_os==="C.FULLbtn"){
 
             // document.getElementById("C.FULLbtn").style.backgroundColor = "#94000e"
             // document.getElementById("C.PRUNEbtn").style.backgroundColor = ""   
-            if (cdm_co_on_toggle_btn_active_status==="C.FULLbtn"){
+            if (cr_co_on_toggle_btn_active_status==="C.FULLbtn"){
                 return;
             }else{
-                cdm_On_Full_Co_HtmlSetup_back_req_from_Prune();
+                cr_On_Full_Co_HtmlSetup_back_req_from_Prune();
 
-            $("#cdm_co_on_show_Option").empty();
+            $("#cr_co_on_show_Option").empty();
 
-            $("#cdm_co_on_show_Option").append("<h5>Full Criteria </h5>");
-            cdm_co_on_toggle_btn_active_status="C.FULLbtn"
+            $("#cr_co_on_show_Option").append("<h5>Full Criteria </h5>");
+            cr_co_on_toggle_btn_active_status="C.FULLbtn"
 
             }
         }
         else if(element_os==="C.PRUNEbtn"){
             // document.getElementById("C.FULLbtn").style.backgroundColor = ""
             console.log("color",$("#C.PRUNEbtn").prop("style"))
-            if (cdm_co_on_toggle_btn_active_status==="C.PRUNEbtn"){
+            if (cr_co_on_toggle_btn_active_status==="C.PRUNEbtn"){
                 return;
 
             }else{
-            // cdm_On_Prune_Co_HtmlSetup();
-            showSetPrunCrit_Cdm_Co_Next();
-            $("#cdm_co_on_show_Option").empty();
-            $("#cdm_co_on_show_Option").append("<h5>Pruned Criteria </h5>");
+            // cr_On_Prune_Co_HtmlSetup();
+            showSetPrunCrit_Cr_Co_Next();
+            $("#cr_co_on_show_Option").empty();
+            $("#cr_co_on_show_Option").append("<h5>Pruned Criteria </h5>");
 
-            cdm_co_on_toggle_btn_active_status="C.PRUNEbtn"
+            cr_co_on_toggle_btn_active_status="C.PRUNEbtn"
             }
 
             
         }
     }
-    function showFeatureLvls_Cdm(){
+    function showFeatureLvls_Cr(){
         showFeatureLvls();
         $("#ol2").hide();
-        $('#cdm_criteria_div').hide();
+        $('#cr_criteria_div').hide();
         var current=$(".active");
         current.prop('class',current.attr('class').replace('active',""));
         $('#ftlvl').prop('class', 'custom_nav_btn active');
     }
-    function showSetDefCritOrd_Cdm(){
+    function showSetDefCritOrd_Cr(){
 
         var current= $('.breadcrumb').find('li.bdcrumb_active');
         var current_index=$( ".breadcrumb li" ).index( current );
@@ -8663,31 +8665,31 @@ function get_data_Ajax_Co(colist){
         $(prev_element).prop('class', 'breadcrumb-item bdcrumb_active');
         dict_not_empty_flag="true";
 
-        cdm_defaultCriteriaOrderHTMLSetup();
+        cr_defaultCriteriaOrderHTMLSetup();
     }
     /*
         // First HTML For C.full will be created here(having next button). 
         // crit_order_dict will be used. 
         // key will be C.Full_CO.1 and C.Full_C0.2.
         // Same values will be stored in both keys. 
-        // On pressing next cdm_On_Prune_Co_HtmlSetup will run. 
+        // On pressing next cr_On_Prune_Co_HtmlSetup will run. 
         // itll simply save the values from the full keys to new keys
         // C.Prune_CO.1 and C.Prune_CO.2
         // once this user presses save now
-        // Last function will be called ... Cdm_Order_ON_CO_HtmlSetup
+        // Last function will be called ... Cr_Order_ON_CO_HtmlSetup
         // This will take colist to create selection options. 
         // based on active button Such as C.FULL or C.Prune. . .
         // value from key will be populated
-        // Now if user changes the selector E.g. CO.2 then selection_CDM_CO_Changer() will be called. 
+        // Now if user changes the selector E.g. CO.2 then selection_CR_CO_Changer() will be called. 
         // which will get the active_co and check active button. e.g. C.Full 
         // on the basis of it the data from crit_order_dict will be exctracted and populted 
         // any changes to the order will be changed in the values of keys present in crit_order_dict.....
         // 
     */
-    function showSetCritOrder_Cdm_Co_Next(){
+    function showSetCritOrder_Cr_Co_Next(){
         var TESXT= $('.breadcrumb').find('li').find('a').text().split("  ");
-        $('#cdm_co_on_cfull_cprune_btn_div').empty();
-        // $("#cdm_co_on_show_Option").empty();
+        $('#cr_co_on_cfull_cprune_btn_div').empty();
+        // $("#cr_co_on_show_Option").empty();
 
         if (TESXT.includes("Set Criteria Order")){
             dict_not_empty_flag="true";
@@ -8697,18 +8699,18 @@ function get_data_Ajax_Co(colist){
                 var prev_element= $( ".breadcrumb li" ).get( prev_element_index )
                 current.prop('class',current.attr('class').replace('breadcrumb-item bdcrumb_active',"breadcrumb-item"));
                 $(prev_element).prop('class', 'breadcrumb-item bdcrumb_active');
-                cdm_Order_On_Co_HtmlSetup();
+                cr_Order_On_Co_HtmlSetup();
         }
         else{
 
             dict_not_empty_flag="false";
-            cdm_Order_On_Co_HtmlSetup()
+            cr_Order_On_Co_HtmlSetup()
 
         }
          
     }
     
-    function showSetPrunCrit_Cdm_Co_Next(){
+    function showSetPrunCrit_Cr_Co_Next(){
         var TESXT= $('.breadcrumb').find('li').find('a').text().split("  ");
 
              if (TESXT.includes("Set Prune Criteria")){
@@ -8719,7 +8721,7 @@ function get_data_Ajax_Co(colist){
 
             }
             if (dict_not_empty_flag==="false"){
-                cdm_On_Prune_Co_HtmlSetup();
+                cr_On_Prune_Co_HtmlSetup();
 
             }
             else{
@@ -8729,19 +8731,19 @@ function get_data_Ajax_Co(colist){
                 var prev_element= $( ".breadcrumb li" ).get( prev_element_index )
                 current.prop('class',current.attr('class').replace('breadcrumb-item bdcrumb_active',"breadcrumb-item"));
                 $(prev_element).prop('class', 'breadcrumb-item bdcrumb_active');
-                cdm_On_Prune_Co_HtmlSetup();
+                cr_On_Prune_Co_HtmlSetup();
             }
-            $("#cdm_co_on_show_Option").empty();
-            $("#cdm_co_on_show_Option").append("<h5>Pruned Criteria</h5>");
+            $("#cr_co_on_show_Option").empty();
+            $("#cr_co_on_show_Option").append("<h5>Pruned Criteria</h5>");
 
             document.getElementById("C.FULLbtn").style.backgroundColor = ""
             document.getElementById("C.PRUNEbtn").style.backgroundColor = "#94000e"      
 
       
     }
-    function showSetFullCrit_Cdm_Co_continue(){
+    function showSetFullCrit_Cr_Co_continue(){
             if (dict_not_empty_flag==="false"){
-                cdm_On_Full_Co_HtmlSetup();
+                cr_On_Full_Co_HtmlSetup();
 
                 }
             else{
@@ -8751,13 +8753,13 @@ function get_data_Ajax_Co(colist){
                 var prev_element= $( ".breadcrumb li" ).get( prev_element_index )
                 current.prop('class',current.attr('class').replace('breadcrumb-item bdcrumb_active',"breadcrumb-item"));
                 $(prev_element).prop('class', 'breadcrumb-item bdcrumb_active');
-                cdm_On_Full_Co_HtmlSetup();
+                cr_On_Full_Co_HtmlSetup();
             }
       
 
     }
-    function showSetDefCritOrd_Cdm_Co(){
-        $('#cdm_co_on_cfull_cprune_btn_div').empty();
+    function showSetDefCritOrd_Cr_Co(){
+        $('#cr_co_on_cfull_cprune_btn_div').empty();
         var current= $('.breadcrumb').find('li.bdcrumb_active');
         var current_index=$( ".breadcrumb li" ).index( current );
         var prev_element_index=current_index-1;
@@ -8765,9 +8767,9 @@ function get_data_Ajax_Co(colist){
         current.prop('class',current.attr('class').replace('breadcrumb-item bdcrumb_active',"breadcrumb-item"));
         $(prev_element).prop('class', 'breadcrumb-item bdcrumb_active');
         dict_not_empty_flag="true";
-        cdm_on_co_on_DefaultCriteriaHtmlSetup();
+        cr_on_co_on_DefaultCriteriaHtmlSetup();
     }
-    function showFeatureLvls_cdm_co(){
+    function showFeatureLvls_cr_co(){
         $("#ol3").hide();
         showFeatureLvls();
         var current=$(".active");
@@ -8776,10 +8778,10 @@ function get_data_Ajax_Co(colist){
 
 
     }
-    var  cdm_crit_order_on_flag="false";
+    var  cr_crit_order_on_flag="false";
     var request_from_full="true";
     request_from_set_def_criteria="true";
-    function Cdm_on_CO_on_BreadCrumbActivateFunc(li_element){
+    function Cr_on_CO_on_BreadCrumbActivateFunc(li_element){
         console.log("li_ele",li_element);
         var current= $('.breadcrumb').find('li.bdcrumb_active')
     
@@ -8796,20 +8798,20 @@ function get_data_Ajax_Co(colist){
             // delete default_crit_hide_dict['C.Full'];
             // delete default_crit_hide_dict['C.Prune'];
             dict_not_empty_flag="true";
-            $("#cdm_co_on_show_Option").empty();
-            $("#cdm_co_on_cfull_cprune_btn_div").empty();
+            $("#cr_co_on_show_Option").empty();
+            $("#cr_co_on_cfull_cprune_btn_div").empty();
 
-            cdm_on_co_on_DefaultCriteriaHtmlSetup();
+            cr_on_co_on_DefaultCriteriaHtmlSetup();
         }
         else if ($( ".breadcrumb li" ).index( li_element )===1){
             if($( ".breadcrumb li" ).index( li_element )===$( ".breadcrumb li").index(current)){
                 return;
             }
             dict_not_empty_flag="true";
-            $("#cdm_co_on_show_Option").empty();
-            $("#cdm_co_on_cfull_cprune_btn_div").empty();
+            $("#cr_co_on_show_Option").empty();
+            $("#cr_co_on_cfull_cprune_btn_div").empty();
 
-            cdm_On_Full_Co_HtmlSetup();
+            cr_On_Full_Co_HtmlSetup();
             // $( li_element ).nextAll().remove();
         }
         else if ($( ".breadcrumb li" ).index( li_element )===2){
@@ -8820,10 +8822,10 @@ function get_data_Ajax_Co(colist){
                 request_from_full="false";
             }
             dict_not_empty_flag="true";
-            $("#cdm_co_on_show_Option").empty();
-            $("#cdm_co_on_cfull_cprune_btn_div").empty();
+            $("#cr_co_on_show_Option").empty();
+            $("#cr_co_on_cfull_cprune_btn_div").empty();
 
-            cdm_On_Prune_Co_HtmlSetup();
+            cr_On_Prune_Co_HtmlSetup();
             // $( li_element ).nextAll().remove();
 
         }
@@ -8831,10 +8833,10 @@ function get_data_Ajax_Co(colist){
             if($( ".breadcrumb li" ).index( li_element )===$( ".breadcrumb li").index(current)){
                 return;
             }
-            $("#cdm_co_on_show_Option").empty();
-            $("#cdm_co_on_cfull_cprune_btn_div").empty();
+            $("#cr_co_on_show_Option").empty();
+            $("#cr_co_on_cfull_cprune_btn_div").empty();
 
-            cdm_Order_On_Co_HtmlSetup();
+            cr_Order_On_Co_HtmlSetup();
         }
             
         
@@ -8845,7 +8847,7 @@ function get_data_Ajax_Co(colist){
 
 
     }
-    function cdm_on_co_on_DefaultCriteriaHtmlSetup(){
+    function cr_on_co_on_DefaultCriteriaHtmlSetup(){
         $("#ol3").show();
         prune_empty_flag="true";
         request_from_set_def_criteria="true";
@@ -8861,17 +8863,17 @@ function get_data_Ajax_Co(colist){
             breadcrumb_ol.append(lit);
             var a=document.createElement("a");
             a.setAttribute("href","#");
-            a.setAttribute("onclick","Cdm_on_CO_on_BreadCrumbActivateFunc($(this).parent())");
+            a.setAttribute("onclick","Cr_on_CO_on_BreadCrumbActivateFunc($(this).parent())");
             a.setAttribute("style","color:white")
             a.innerHTML="Set Default Criteria Order  ";
             lit.append(a);
         }
             $("#default_criteria_div").empty();
             $("#order_criteria_div").empty();
-            $("#cdm_criteria_div").empty();
-            $("#cdm_co_on_div").empty();
-            $("#cdm_co_on_div").show();
-            $("#cdm_co_on_show_Option").empty();
+            $("#cr_criteria_div").empty();
+            $("#cr_co_on_div").empty();
+            $("#cr_co_on_div").show();
+            $("#cr_co_on_show_Option").empty();
             $("#catalog_crit_sel").empty();
         
             var catalog_crit_sel=document.getElementById("catalog_crit_sel")
@@ -8894,7 +8896,7 @@ function get_data_Ajax_Co(colist){
             col.append(input_num_field_catalog_crit);
             var  save_btn_catalog_crit=document.createElement("button")
             save_btn_catalog_crit.setAttribute("id","save_btn_catalog_crit")
-            save_btn_catalog_crit.setAttribute("onclick","saveCatalogCrit_cdm_on_co_on()")
+            save_btn_catalog_crit.setAttribute("onclick","saveCatalogCrit_cr_on_co_on()")
             save_btn_catalog_crit.innerHTML="Save"
             col.append(save_btn_catalog_crit);
             var col=document.createElement("div");
@@ -8904,10 +8906,10 @@ function get_data_Ajax_Co(colist){
             catalog_crit_sel_row_div.append(col);
 
 
-        var cdm_co_on_div=document.getElementById("cdm_co_on_div");
+        var cr_co_on_div=document.getElementById("cr_co_on_div");
         var container=document.createElement("div");
         container.setAttribute('class','container-fluid text-center');
-        cdm_co_on_div.append(container);
+        cr_co_on_div.append(container);
         var heading_row_div=document.createElement("div");
         heading_row_div.setAttribute("class","row");
         container.append(heading_row_div);
@@ -8927,7 +8929,7 @@ function get_data_Ajax_Co(colist){
         back_to_main_setup_btn.innerHTML="Back";
         back_to_main_setup_btn.id="back_def_btn";
 
-        back_to_main_setup_btn.setAttribute('onclick','showFeatureLvls_cdm_co()')
+        back_to_main_setup_btn.setAttribute('onclick','showFeatureLvls_cr_co()')
         col_md_1.append(back_to_main_setup_btn);
         var col_md_5=document.createElement('div');
         col_md_5.setAttribute('class','col-md-5 text-left');
@@ -8953,7 +8955,7 @@ function get_data_Ajax_Co(colist){
         var continue_btn=document.createElement('button');
         continue_btn.innerHTML="Continue";
         continue_btn.id="count_def_btn";
-        continue_btn.setAttribute('onclick',"showSetFullCrit_Cdm_Co_continue()");
+        continue_btn.setAttribute('onclick',"showSetFullCrit_Cr_Co_continue()");
         col_md_1.append(continue_btn);
       
         if (dict_not_empty_flag==="true"){
@@ -8967,7 +8969,7 @@ function get_data_Ajax_Co(colist){
             var flg="true";
             var feat_hide=[]
             feat_to_hide=feat_hide;
-            cdm_crit_order_on_flag="true";
+            cr_crit_order_on_flag="true";
             data=htmlF(shw_disp,hide_disp,mandatory_list,feat_dsp,feat_hide,flg);
             data_obj_show=JSON.parse(JSON.stringify(loook));
             data_obj_hide=JSON.parse(JSON.stringify(crit_hide_dict["CO.1_C.Full"]));
@@ -9009,14 +9011,14 @@ function get_data_Ajax_Co(colist){
                                 console.log("crid_order_dict",crit_order_dict)        
                                 // console.log("crid_hide_dict",crit_hide_dict)        
                                
-                                $("#cdm_on_co_on_tree_view_div").empty();
-                                cdm_on_co_on_TreeView();
+                                $("#cr_on_co_on_tree_view_div").empty();
+                                cr_on_co_on_TreeView();
 
 
                                 // var main_treeview_list=[];
                                 // var main_treeview_dict={};
 
-                                // main_treeview_dict['name']="CDM On CO ON Criteria Tree View";
+                                // main_treeview_dict['name']="CR On CO ON Criteria Tree View";
                                 // mainchildlist=[];
                                 // var defaut_criteria_order_dict={};
                                 // defaut_criteria_order_dict_childlist=[];
@@ -9041,7 +9043,7 @@ function get_data_Ajax_Co(colist){
                                 // //
                                 // // Create tree
                                 // //
-                                // var t = new TreeView(tree, 'cdm_on_co_on_tree_view_div');
+                                // var t = new TreeView(tree, 'cr_on_co_on_tree_view_div');
                                 // t.expandAll(); 
                                 
                                 
@@ -9049,8 +9051,8 @@ function get_data_Ajax_Co(colist){
                         });    
 
                         $( "#sortable" ).enableSelection();
-                    $("#cdm_on_co_on_tree_view_div").empty();
-                    cdm_on_co_on_TreeView();
+                    $("#cr_on_co_on_tree_view_div").empty();
+                    cr_on_co_on_TreeView();
 
 
                 
@@ -9077,7 +9079,7 @@ function get_data_Ajax_Co(colist){
                                     mandatory_list=mand;
                                     var feat_hide=data['feature_to_hide'];
                                     feat_to_hide=feat_hide;
-                                    cdm_crit_order_on_flag="true";
+                                    cr_crit_order_on_flag="true";
                                     data=htmlF(shw_disp,hide_disp,mandatory_list,feat_dsp,feat_hide,flg);
                                     data_obj_show=JSON.parse(JSON.stringify(data['shw_disp']));
                                     data_obj_hide=JSON.parse(JSON.stringify(data['hide_disp']));
@@ -9108,13 +9110,13 @@ function get_data_Ajax_Co(colist){
                                     arr_2=JSON.parse(JSON.stringify(arr));
 
                                     static_default_crit_show_dict['C.Full']=arr_2;
-                                    $("#cdm_on_co_on_tree_view_div").empty();
+                                    $("#cr_on_co_on_tree_view_div").empty();
 
 
                                     // var main_treeview_list=[];
                                     // var main_treeview_dict={};
 
-                                    // main_treeview_dict['name']="CDM On CO ON Criteria Tree View";
+                                    // main_treeview_dict['name']="CR On CO ON Criteria Tree View";
                                     // mainchildlist=[];
                                     // var defaut_criteria_order_dict={};
                                     // defaut_criteria_order_dict_childlist=[];
@@ -9139,9 +9141,9 @@ function get_data_Ajax_Co(colist){
                                     // //
                                     // // Create tree
                                     // //
-                                    // var t = new TreeView(tree, 'cdm_on_co_on_tree_view_div');
+                                    // var t = new TreeView(tree, 'cr_on_co_on_tree_view_div');
                                     // t.expandAll(); 
-                                    cdm_on_co_on_TreeView();
+                                    cr_on_co_on_TreeView();
 
 
                                 
@@ -9150,11 +9152,11 @@ function get_data_Ajax_Co(colist){
                             });    
 
                                     $( "#sortable" ).enableSelection();
-                                    $("#cdm_on_co_on_tree_view_div").empty();
+                                    $("#cr_on_co_on_tree_view_div").empty();
                                     // var main_treeview_list=[];
                                     // var main_treeview_dict={};
 
-                                    // main_treeview_dict['name']="CDM On CO Off Tree View";
+                                    // main_treeview_dict['name']="CR On CO Off Tree View";
                                     // mainchildlist=[];
                                     // var defaut_criteria_order_dict={};
                                     // defaut_criteria_order_dict_childlist=[];
@@ -9182,7 +9184,7 @@ function get_data_Ajax_Co(colist){
                                     // var t = new TreeView(tree, 'default_tree_view_div');
                                     // t.expandAll(); 
 
-                                    cdm_on_co_on_TreeView();
+                                    cr_on_co_on_TreeView();
 
 
                             
@@ -9191,24 +9193,24 @@ function get_data_Ajax_Co(colist){
             }       
 
     }
-    function btn_Cdm_Co_On_Func2(element){
+    function btn_Cr_Co_On_Func2(element){
         alert($(element).attr("id"));
         co_feature_active=$(element).attr("id");
         if(co_feature_active==="C.Full"){
             document.getElementById("C.Full").style.backgroundColor = "#94000e"
             document.getElementById("C.Prune").style.backgroundColor = ""
-            cdm_On_Full_Co_HtmlSetup();
+            cr_On_Full_Co_HtmlSetup();
         }else{
             document.getElementById("C.Prune").style.backgroundColor = "#94000e"
             document.getElementById("C.Full").style.backgroundColor = "";
-            cdm_On_Prune_Co_HtmlSetup();
+            cr_On_Prune_Co_HtmlSetup();
         }
     }
-    function cdm_On_Full_Co_HtmlSetup(){
+    function cr_On_Full_Co_HtmlSetup(){
         
         request_from_full="true";
         co_feature_active="C.Full";
-        cdm_crit_order_on_flag="false";
+        cr_crit_order_on_flag="false";
         $("#ol1").empty();
         $("#ol2").empty();
         $("#ol4").empty();
@@ -9222,7 +9224,7 @@ function get_data_Ajax_Co(colist){
             breadcrumb_ol.append(li);
             var a=document.createElement("a");
             a.setAttribute("href","#");
-            a.setAttribute("onclick","Cdm_on_CO_on_BreadCrumbActivateFunc($(this).parent())");
+            a.setAttribute("onclick","Cr_on_CO_on_BreadCrumbActivateFunc($(this).parent())");
             a.setAttribute("style","color:white")
 
             a.innerHTML="Set Full Criteria  ";
@@ -9234,41 +9236,41 @@ function get_data_Ajax_Co(colist){
         
         $("#default_criteria_div").empty();
         $("#order_criteria_div").empty();
-        $("#cdm_criteria_div").empty();
-        $("#cdm_co_on_div").empty();
-        $("#cdm_co_on_div").show();
-        // $("#cdm_co_on_show_Option").empty();
-        // $("#cdm_co_on_show_Option").show();
+        $("#cr_criteria_div").empty();
+        $("#cr_co_on_div").empty();
+        $("#cr_co_on_div").show();
+        // $("#cr_co_on_show_Option").empty();
+        // $("#cr_co_on_show_Option").show();
 
        
-        if ( $('#cdm_co_on_cfull_cprune_btn_div').children().length == 0 ) {
-        $("#cdm_co_on_show_Option").append("<h5>Full Criteria </h5>");
-        var cdm_co_on_cfull_cprune_btn_div=document.getElementById("cdm_co_on_cfull_cprune_btn_div");
+        if ( $('#cr_co_on_cfull_cprune_btn_div').children().length == 0 ) {
+        $("#cr_co_on_show_Option").append("<h5>Full Criteria </h5>");
+        var cr_co_on_cfull_cprune_btn_div=document.getElementById("cr_co_on_cfull_cprune_btn_div");
         var toggle_btn_row_div=document.createElement('div');
         toggle_btn_row_div.setAttribute("class","row");
-        cdm_co_on_cfull_cprune_btn_div.append(toggle_btn_row_div);
+        cr_co_on_cfull_cprune_btn_div.append(toggle_btn_row_div);
         var col_md_12=document.createElement('div');
         col_md_12.setAttribute('class','col-md-8 btn-group');
-        col_md_12.id="cdm_co_on_set_buttons"
+        col_md_12.id="cr_co_on_set_buttons"
         toggle_btn_row_div.append(col_md_12);
-        cdm_co_on_set_list=["C.FULL","C.PRUNE"];
-        for (var i=0;i<cdm_co_on_set_list.length;i++){
+        cr_co_on_set_list=["C.FULL","C.PRUNE"];
+        for (var i=0;i<cr_co_on_set_list.length;i++){
             var button=document.createElement('button')
-            button.id=cdm_co_on_set_list[i]+"btn"
-            button.innerHTML=cdm_co_on_set_list[i];
-            button.setAttribute("onclick","cdm_co_on_btn_func($(this))")
+            button.id=cr_co_on_set_list[i]+"btn"
+            button.innerHTML=cr_co_on_set_list[i];
+            button.setAttribute("onclick","cr_co_on_btn_func($(this))")
             if (i===0){
                 var active_b=button
             }
-            $('#cdm_co_on_set_buttons').append(button)
+            $('#cr_co_on_set_buttons').append(button)
         }
         document.getElementById("C.FULLbtn").style.backgroundColor = "#94000e"
         }
 
-        cdm_co_on_div=document.getElementById("cdm_co_on_div");
+        cr_co_on_div=document.getElementById("cr_co_on_div");
         var container=document.createElement("container");
-        container.setAttribute("class","cdm_co_cont");
-        cdm_co_on_div.append(container);
+        container.setAttribute("class","cr_co_cont");
+        cr_co_on_div.append(container);
 
 
         var main_row=document.createElement('div');
@@ -9282,9 +9284,9 @@ function get_data_Ajax_Co(colist){
 
         var back_to_main_setup_btn=document.createElement('button');
         back_to_main_setup_btn.innerHTML="Back";
-        back_to_main_setup_btn.id="back_cdm_btn";
+        back_to_main_setup_btn.id="back_cr_btn";
     
-        back_to_main_setup_btn.setAttribute('onclick','showSetDefCritOrd_Cdm_Co()')
+        back_to_main_setup_btn.setAttribute('onclick','showSetDefCritOrd_Cr_Co()')
         col_md_1.append(back_to_main_setup_btn);
         var col_md_5=document.createElement('div');
         col_md_5.setAttribute('class','col-md-5 text-left');
@@ -9325,8 +9327,8 @@ function get_data_Ajax_Co(colist){
     
         var next_to_main_setup_btn=document.createElement('button');
         next_to_main_setup_btn.innerHTML="Next";
-        next_to_main_setup_btn.id="NEXT_CDM_BTN";
-        next_to_main_setup_btn.setAttribute('onclick',"showSetPrunCrit_Cdm_Co_Next()");
+        next_to_main_setup_btn.id="NEXT_CR_BTN";
+        next_to_main_setup_btn.setAttribute('onclick',"showSetPrunCrit_Cr_Co_Next()");
         col_md_1.append(next_to_main_setup_btn);
       
        
@@ -9403,7 +9405,7 @@ function get_data_Ajax_Co(colist){
                                     
              }
             //  $.ajax({
-            //                     url: "{% url 'cdm_on_co_on_criteriasetup' %}",
+            //                     url: "{% url 'cr_on_co_on_criteriasetup' %}",
             //                     type:'GET',
             //                     'data': {
             //                     'csrfmiddlewaretoken': '{{ csrf_token }}',
@@ -9463,45 +9465,45 @@ function get_data_Ajax_Co(colist){
        
                           
         }
-        cdm_on_co_on_TreeView();
+        cr_on_co_on_TreeView();
         request_from_set_def_criteria="false";
 
     }
-    function cdm_On_Prune_Co_HtmlSetup(){
-        cdm_crit_order_on_flag="false";
+    function cr_On_Prune_Co_HtmlSetup(){
+        cr_crit_order_on_flag="false";
 
           
-        $("#cdm_co_on_div").empty();
-        // $("#cdm_co_on_show_Option").empty();
-        if ( $('#cdm_co_on_cfull_cprune_btn_div').children().length == 0 ) {
-            $("#cdm_co_on_show_Option").empty();
-            $("#cdm_co_on_show_Option").append("<h5>Pruned Criteria</h5>");
-            var cdm_co_on_cfull_cprune_btn_div=document.getElementById("cdm_co_on_cfull_cprune_btn_div");
+        $("#cr_co_on_div").empty();
+        // $("#cr_co_on_show_Option").empty();
+        if ( $('#cr_co_on_cfull_cprune_btn_div').children().length == 0 ) {
+            $("#cr_co_on_show_Option").empty();
+            $("#cr_co_on_show_Option").append("<h5>Pruned Criteria</h5>");
+            var cr_co_on_cfull_cprune_btn_div=document.getElementById("cr_co_on_cfull_cprune_btn_div");
             var toggle_btn_row_div=document.createElement('div');
             toggle_btn_row_div.setAttribute("class","row");
-            cdm_co_on_cfull_cprune_btn_div.append(toggle_btn_row_div);
+            cr_co_on_cfull_cprune_btn_div.append(toggle_btn_row_div);
             var col_md_12=document.createElement('div');
             col_md_12.setAttribute('class','col-md-8 btn-group');
-            col_md_12.id="cdm_co_on_set_buttons"
+            col_md_12.id="cr_co_on_set_buttons"
             toggle_btn_row_div.append(col_md_12);
-            cdm_co_on_set_list=["C.FULL","C.PRUNE"];
-            for (var i=0;i<cdm_co_on_set_list.length;i++){
+            cr_co_on_set_list=["C.FULL","C.PRUNE"];
+            for (var i=0;i<cr_co_on_set_list.length;i++){
                 var button=document.createElement('button')
-                button.id=cdm_co_on_set_list[i]+"btn"
-                button.innerHTML=cdm_co_on_set_list[i];
-                button.setAttribute("onclick","cdm_co_on_btn_func($(this))")
+                button.id=cr_co_on_set_list[i]+"btn"
+                button.innerHTML=cr_co_on_set_list[i];
+                button.setAttribute("onclick","cr_co_on_btn_func($(this))")
                 if (i===0){
                     var active_b=button
                 }
-                $('#cdm_co_on_set_buttons').append(button)
+                $('#cr_co_on_set_buttons').append(button)
             }
             document.getElementById("C.PRUNEbtn").style.backgroundColor = "#94000e"
 
         }
-        cdm_co_on_div=document.getElementById("cdm_co_on_div");
+        cr_co_on_div=document.getElementById("cr_co_on_div");
         var container=document.createElement("container");
-        container.setAttribute("class","cdm_co_cont");
-        cdm_co_on_div.append(container);
+        container.setAttribute("class","cr_co_cont");
+        cr_co_on_div.append(container);
         var main_row=document.createElement('div');
         main_row.setAttribute('class','row content');
         main_row.id="main_row_co";
@@ -9512,9 +9514,9 @@ function get_data_Ajax_Co(colist){
 
         var back_to_main_setup_btn=document.createElement('button');
         back_to_main_setup_btn.innerHTML="Back";
-        back_to_main_setup_btn.id="back_cdm_btn";
+        back_to_main_setup_btn.id="back_cr_btn";
 
-        back_to_main_setup_btn.setAttribute('onclick','cdm_On_Full_Co_HtmlSetup_back_req_from_Prune()')
+        back_to_main_setup_btn.setAttribute('onclick','cr_On_Full_Co_HtmlSetup_back_req_from_Prune()')
         col_md_1.append(back_to_main_setup_btn);
         var col_md_5=document.createElement('div');
         col_md_5.setAttribute('class','col-md-5 text-left');
@@ -9578,8 +9580,8 @@ function get_data_Ajax_Co(colist){
     
         var next_to_main_setup_btn=document.createElement('button');
         next_to_main_setup_btn.innerHTML="Next";
-        next_to_main_setup_btn.id="NEXT_CDM_BTN";
-        next_to_main_setup_btn.setAttribute('onclick',"showSetCritOrder_Cdm_Co_Next()");
+        next_to_main_setup_btn.id="NEXT_CR_BTN";
+        next_to_main_setup_btn.setAttribute('onclick',"showSetCritOrder_Cr_Co_Next()");
         col_md_1.append(next_to_main_setup_btn);
 
         co_feature_active="C.Prune";
@@ -9616,7 +9618,7 @@ function get_data_Ajax_Co(colist){
                 breadcrumb_ol.append(li);
                 var a=document.createElement("a");
                 a.setAttribute("href","#");
-                a.setAttribute("onclick","Cdm_on_CO_on_BreadCrumbActivateFunc($(this).parent())");
+                a.setAttribute("onclick","Cr_on_CO_on_BreadCrumbActivateFunc($(this).parent())");
                 a.setAttribute("style","color:white");
 
                 a.innerHTML="Set Prune Criteria  ";
@@ -9635,7 +9637,7 @@ function get_data_Ajax_Co(colist){
 
             }
             else{               
-                $("#cdm_co_on_div").show();
+                $("#cr_co_on_div").show();
                 var colist=block_feat_dict['CO'];
                 for (var co in colist){
                     
@@ -9689,7 +9691,7 @@ function get_data_Ajax_Co(colist){
 
         }
         else{
-            $("#cdm_co_on_div").show();
+            $("#cr_co_on_div").show();
 
             var feat_dsp=crit_ord_dict['CO.1_C.Prune'];
             feat_to_disp=feat_dsp;
@@ -9753,26 +9755,26 @@ function get_data_Ajax_Co(colist){
                             li_cfull_crit.append(btn_btn_primary);
                         
                         }  
-        cdm_on_co_on_TreeView();
+        cr_on_co_on_TreeView();
        
     }
-    function cdm_On_Full_Co_HtmlSetup_back_req_from_Prune(){
+    function cr_On_Full_Co_HtmlSetup_back_req_from_Prune(){
         var current= $('.breadcrumb').find('li.bdcrumb_active');
         var current_index=$( ".breadcrumb li" ).index( current );
         var prev_element_index=current_index-1;
         var prev_element= $( ".breadcrumb li" ).get( prev_element_index )
         current.prop('class',current.attr('class').replace('breadcrumb-item bdcrumb_active',"breadcrumb-item"));
         $(prev_element).prop('class', 'breadcrumb-item bdcrumb_active');
-        $("#cdm_co_on_show_Option").empty();
-        $("#cdm_co_on_show_Option").append("<h5>Full Criteria</h5>");
+        $("#cr_co_on_show_Option").empty();
+        $("#cr_co_on_show_Option").append("<h5>Full Criteria</h5>");
 
         
         document.getElementById("C.FULLbtn").style.backgroundColor = "#94000e"
         document.getElementById("C.PRUNEbtn").style.backgroundColor = ""      
         
-        cdm_On_Full_Co_HtmlSetup();
+        cr_On_Full_Co_HtmlSetup();
     }
-    function cdm_On_Prune_Co_HtmlSetup__back_req_from_CO(){
+    function cr_On_Prune_Co_HtmlSetup__back_req_from_CO(){
         request_from_full="false";
         var current= $('.breadcrumb').find('li.bdcrumb_active');
         var current_index=$( ".breadcrumb li" ).index( current );
@@ -9780,12 +9782,12 @@ function get_data_Ajax_Co(colist){
         var prev_element= $( ".breadcrumb li" ).get( prev_element_index )
         current.prop('class',current.attr('class').replace('breadcrumb-item bdcrumb_active',"breadcrumb-item"));
         $(prev_element).prop('class', 'breadcrumb-item bdcrumb_active');
-        cdm_On_Prune_Co_HtmlSetup();
+        cr_On_Prune_Co_HtmlSetup();
     }
-    function cdm_Order_On_Co_HtmlSetup(){
-        cdm_crit_order_on_flag="true";
+    function cr_Order_On_Co_HtmlSetup(){
+        cr_crit_order_on_flag="true";
 
-        $("#cdm_co_on_div").show();
+        $("#cr_co_on_div").show();
         $("#ol3").show();  
        var TESXT= $('.breadcrumb').find('li').find('a').text().split("  ");
          console.log("TEXST",TESXT)
@@ -9806,7 +9808,7 @@ function get_data_Ajax_Co(colist){
                 breadcrumb_ol.append(li);
                 var a=document.createElement("a");
                 a.setAttribute("href","#");
-                a.setAttribute("onclick","Cdm_on_CO_on_BreadCrumbActivateFunc($(this).parent())");
+                a.setAttribute("onclick","Cr_on_CO_on_BreadCrumbActivateFunc($(this).parent())");
                 a.setAttribute("style","color:white");
 
                 a.innerHTML="Set Criteria Order  ";
@@ -9814,15 +9816,15 @@ function get_data_Ajax_Co(colist){
                 current.prop('class',current.attr('class').replace('breadcrumb-item bdcrumb_active',"breadcrumb-item"));
                 $(li).prop('class', 'breadcrumb-item bdcrumb_active');
             }
-        $("#cdm_co_on_div").empty();
-        $("#cdm_co_on_show_Option").empty();
-        $("#cdm_co_on_show_Option").append("<h5>Criteria Ordering</h5>");
+        $("#cr_co_on_div").empty();
+        $("#cr_co_on_show_Option").empty();
+        $("#cr_co_on_show_Option").append("<h5>Criteria Ordering</h5>");
        
-        var cdm_co_on_div=document.getElementById("cdm_co_on_div");
+        var cr_co_on_div=document.getElementById("cr_co_on_div");
         var container=document.createElement("div");
         var container=document.createElement("container");
-        container.setAttribute("class","cdm_co_cont");
-        cdm_co_on_div.append(container);
+        container.setAttribute("class","cr_co_cont");
+        cr_co_on_div.append(container);
 
         var co_sel_list_row_div=document.createElement("div");
         co_sel_list_row_div.setAttribute("class","row");
@@ -9851,25 +9853,25 @@ function get_data_Ajax_Co(colist){
         col_2.append(select_div);
 
 
-        var div_cdm=document.createElement("div")
+        var div_cr=document.createElement("div")
         
         var toggle_btn_row_div=document.createElement('div');
         toggle_btn_row_div.setAttribute("class","row");
         container.append(toggle_btn_row_div);
         var col_md_12=document.createElement('div');
         col_md_12.setAttribute('class','col-md-8 btn-group');
-        col_md_12.id="set_buttons_cdm_co"
+        col_md_12.id="set_buttons_cr_co"
         toggle_btn_row_div.append(col_md_12);
         cmd_set_list_co=["C.Full","C.Prune"];
         for (var i=0;i<cmd_set_list_co.length;i++){
             var button=document.createElement('button');
             button.id=cmd_set_list_co[i];
             button.innerHTML=cmd_set_list_co[i];
-            button.setAttribute("onclick","btn_Cdm_Co_On_Func($(this))")
+            button.setAttribute("onclick","btn_Cr_Co_On_Func($(this))")
             if (i===0){
                 var active_b=button
             }
-            $('#set_buttons_cdm_co').append(button)
+            $('#set_buttons_cr_co').append(button)
         }
         document.getElementById("C.Full").style.backgroundColor = "#94000e";
         document.getElementById("C.Prune").style.backgroundColor = "";
@@ -9886,8 +9888,8 @@ function get_data_Ajax_Co(colist){
 
         var back_to_main_setup_btn=document.createElement('button');
         back_to_main_setup_btn.innerHTML="Back";
-        back_to_main_setup_btn.id="back_cdm_btn";
-        back_to_main_setup_btn.setAttribute('onclick','cdm_On_Prune_Co_HtmlSetup__back_req_from_CO()')
+        back_to_main_setup_btn.id="back_cr_btn";
+        back_to_main_setup_btn.setAttribute('onclick','cr_On_Prune_Co_HtmlSetup__back_req_from_CO()')
         col_md_1.append(back_to_main_setup_btn);
         var col_md_5=document.createElement('div');
         col_md_5.setAttribute('class','col-md-5 text-left');
@@ -9928,8 +9930,8 @@ function get_data_Ajax_Co(colist){
     
         var save_to_main_setup_btn=document.createElement('button');
         save_to_main_setup_btn.innerHTML="Save";
-        save_to_main_setup_btn.id="SAVE_CDM_BTN";
-        save_to_main_setup_btn.setAttribute('onclick',"Save_Cdm_CO_On()");
+        save_to_main_setup_btn.id="SAVE_CR_BTN";
+        save_to_main_setup_btn.setAttribute('onclick',"Save_Cr_CO_On()");
         col_md_1.append(save_to_main_setup_btn);
         var select_div=document.getElementById('select_div');
         var toggle_btn_row_div=document.createElement('div');
@@ -9937,7 +9939,7 @@ function get_data_Ajax_Co(colist){
         select_div.append(toggle_btn_row_div);
         var col_md_12=document.createElement('div');
         col_md_12.setAttribute('class','col-md-9 btn-group');
-        col_md_12.id="set_button_cdm_on_co_on"
+        col_md_12.id="set_button_cr_on_co_on"
         toggle_btn_row_div.append(col_md_12);
         colist=block_feat_dict["CO"];
         for (var i=0;i<colist.length;i++){
@@ -9949,7 +9951,7 @@ function get_data_Ajax_Co(colist){
             if (i===0){
                 var active_b=button
             }
-            $('#set_button_cdm_on_co_on').append(button)
+            $('#set_button_cr_on_co_on').append(button)
         }
         document.getElementById("CO.1btn").style.backgroundColor = "#94000e"
 
@@ -10027,14 +10029,14 @@ function get_data_Ajax_Co(colist){
                                             console.log("crit_order_dict-",crit_order_dict)
                                             console.log("crit_hide_dict-",crit_hide_dict);
                                         }
-                                        cdm_on_co_on_TreeView();
+                                        cr_on_co_on_TreeView();
                                     }
                                 });
-        cdm_on_co_on_TreeView();
+        cr_on_co_on_TreeView();
     }
-    var cdm_co_on_ord_button_active="C.Full"
-    function btn_Cdm_Co_On_Func(element){
-        cdm_co_on_ord_button_active=$(element).attr("id");
+    var cr_co_on_ord_button_active="C.Full"
+    function btn_Cr_Co_On_Func(element){
+        cr_co_on_ord_button_active=$(element).attr("id");
         alert($(element).attr("id"));
         co_feature_active=$(element).attr("id");
         if(co_feature_active==="C.Full"){
@@ -10107,7 +10109,7 @@ function get_data_Ajax_Co(colist){
                                             }
                                     
 
-                        cdm_on_co_on_TreeView();
+                        cr_on_co_on_TreeView();
                         
                         }
                     });
@@ -10198,14 +10200,18 @@ function get_data_Ajax_Co(colist){
 
            console.log("CRIT ORDER",crit_order_dict)
         }
-        cdm_on_co_on_TreeView();
+        cr_on_co_on_TreeView();
 
    }
-    function Save_Cdm_CO_On(){
-        current_save_state="CDM_on_CO_on"
+    function Save_Cr_CO_On(){
+        current_save_state="CR_on_CO_on"
         console.log("crit_order_dict",crit_order_dict);
         console.log("crit_hide_dict",crit_hide_dict);
         // make an ajax call that will send the two dicts to server. 
+        dummysendFeatureLevels();
+
+        console.log("final_def_blocks_to_send",final_def_blocks_to_send)
+
         $.ajax({
                                 
                                         type: 'POST',
@@ -10215,11 +10221,12 @@ function get_data_Ajax_Co(colist){
                                         'crit_order_dict':JSON.stringify(crit_order_dict),
                                         'crit_hide_dict':JSON.stringify(crit_hide_dict),
                                         'cataloglist':JSON.stringify(cataloglist),
+                                        "final_def_blocks_to_send":JSON.stringify(final_def_blocks_to_send),
 
                                         'csrfmiddlewaretoken': '{{ csrf_token }}',
                                         },
                                         
-                                        url: "{% url 'cdm_on_co_on_criteriasetup' %}",
+                                        url: "{% url 'cr_on_co_on_criteriasetup' %}",
                                         success: function(data){
                                             if(exp_id===""){
                                                     exp_id = data['exp_id'];
@@ -10233,7 +10240,7 @@ function get_data_Ajax_Co(colist){
                                                         window.localStorage.setItem("blockList", JSON.stringify(blockList));
                                                     }
                                                     showFeatureLvls_Active_CO();   
-                                                    cdm_on_co_on_TreeView(); 
+                                                    cr_on_co_on_TreeView(); 
                                                                                   
                                         }
                                     });
@@ -10247,7 +10254,7 @@ function get_data_Ajax_Co(colist){
         role_data=$(element).val();
         console.log("role_data", role_data ); 
         active_co=role_data;
-        var buttons=$("#set_button_cdm_off_co_on").find("button")
+        var buttons=$("#set_button_cr_off_co_on").find("button")
         $( buttons ).each(function( index ) {
             if ( $( this ).val()===role_data){
                 console.log("VALE",$( this ).val())
@@ -10294,15 +10301,15 @@ function get_data_Ajax_Co(colist){
         // hide_feature_div.append(ul_hiddenfeat);
         // have to change the checks as well... 
         if(default_active==="true"){
-            if(crit_order_dict[active_co+"_Cdm.Def"]===undefined || crit_hide_dict[active_co+"_Cdm.Def"]===undefined){
+            if(crit_order_dict[active_co+"_Cr.Def"]===undefined || crit_hide_dict[active_co+"_Cr.Def"]===undefined){
                 // set the default feature disp and hide here. along with mand and flag
                 var feat_dsp=default_crit_show_disp;
                 var feat_hide=default_crit_hide_disp;
                 
             }
             else{
-                data_obj_show=JSON.parse(JSON.stringify(crit_order_dict[active_co+"_Cdm.Def"]));
-                data_obj_hide=JSON.parse(JSON.stringify(crit_hide_dict[active_co+"_Cdm.Def"]));
+                data_obj_show=JSON.parse(JSON.stringify(crit_order_dict[active_co+"_Cr.Def"]));
+                data_obj_hide=JSON.parse(JSON.stringify(crit_hide_dict[active_co+"_Cr.Def"]));
 
                 var feat_dsp =data_obj_show;
                 var feat_hide=data_obj_hide
@@ -10335,8 +10342,8 @@ function get_data_Ajax_Co(colist){
             data_obj_show=JSON.parse(JSON.stringify(data['shw_disp']));
             data_obj_hide=JSON.parse(JSON.stringify(data['hide_disp']));
 
-            crit_order_dict[active_co+"_Cdm.Def"]=data_obj_show;
-            crit_hide_dict[active_co+"_Cdm.Def"]=data_obj_hide;
+            crit_order_dict[active_co+"_Cr.Def"]=data_obj_show;
+            crit_hide_dict[active_co+"_Cr.Def"]=data_obj_hide;
         }else{
             data_obj_show=JSON.parse(JSON.stringify(data['shw_disp']));
             data_obj_hide=JSON.parse(JSON.stringify(data['hide_disp']));
@@ -10361,14 +10368,14 @@ function get_data_Ajax_Co(colist){
         
                                     // $('span').text(data);
                                     if (default_active==="true"){
-                                        if (crit_order_dict[active_co+"_Cdm.Def"]===undefined){
-                                        crit_order_dict[active_co+"_Cdm.Def"]=[]
+                                        if (crit_order_dict[active_co+"_Cr.Def"]===undefined){
+                                        crit_order_dict[active_co+"_Cr.Def"]=[]
                                         }
                                         else{
                                             data_obj_show=JSON.parse(JSON.stringify(arr));
 
-                                            crit_order_dict[active_co+"_Cdm.Def"]=data_obj_show;
-                                            crit_hide_dict[active_co+"_Cdm.Def"]=hide_disp;
+                                            crit_order_dict[active_co+"_Cr.Def"]=data_obj_show;
+                                            crit_hide_dict[active_co+"_Cr.Def"]=hide_disp;
                                             
                                             console.log("crit_order_dict-",crit_order_dict)
                                             console.log("crit_hide_dict-",crit_hide_dict);
@@ -10395,17 +10402,17 @@ function get_data_Ajax_Co(colist){
 
 
                                     
-                                    cdm_off_co_on_TreeView();
+                                    cr_off_co_on_TreeView();
                                 }
                 });
-                cdm_off_co_on_TreeView();
+                cr_off_co_on_TreeView();
         }
      
     function select_Cmd_Co_On_Changer(element){
         role_data=$(element).val();
         console.log("role_data", role_data ); 
         active_co=role_data;
-        var buttons=$("#set_button_cdm_on_co_on").find("button")
+        var buttons=$("#set_button_cr_on_co_on").find("button")
         $( buttons ).each(function( index ) {
             if ( $( this ).val()===role_data){
                 document.getElementById(role_data+"btn").style.backgroundColor = "#94000e"
@@ -10462,7 +10469,7 @@ function get_data_Ajax_Co(colist){
            
             console.log("crit_order_dict->>",crit_order_dict);
             console.log("crit_hide_dict->>",crit_hide_dict);
-            // $("#set_buttons_cdm_co").find("button").each(function( index ) {
+            // $("#set_buttons_cr_co").find("button").each(function( index ) {
             //     console.log($(this).attr("style").length);
 
             //     if (($(this).attr("style").length!==0)){
@@ -10473,8 +10480,8 @@ function get_data_Ajax_Co(colist){
             //     }
             //     });
             // alert(button_active)
-            alert(cdm_co_on_ord_button_active)
-            if (cdm_co_on_ord_button_active!=="C.Prune"){
+            alert(cr_co_on_ord_button_active)
+            if (cr_co_on_ord_button_active!=="C.Prune"){
             $('ul').sortable({
                 axis: 'y',
                 stop: function (event, ui) {
@@ -10500,16 +10507,16 @@ function get_data_Ajax_Co(colist){
                                         }
                                    
 
-                     cdm_on_co_on_TreeView();
+                     cr_on_co_on_TreeView();
 
                     }
                 });
             }
-            cdm_on_co_on_TreeView();
+            cr_on_co_on_TreeView();
 
         }
         
-    function hideFromDisplay_Def_Cdm_CO_On(id) {
+    function hideFromDisplay_Def_Cr_CO_On(id) {
            var item = $('#'+id);
            console.log(id);
            var temp=document.getElementById(id);
@@ -10518,7 +10525,7 @@ function get_data_Ajax_Co(colist){
           item.find(".show_hide").remove();
           var btn=document.createElement('button');
           btn.setAttribute('class','show_hide');
-          btn.setAttribute('onclick','showToDisplay_Def_Cdm_CO_On($(this).parent().parent().parent().attr("id"))');
+          btn.setAttribute('onclick','showToDisplay_Def_Cr_CO_On($(this).parent().parent().parent().attr("id"))');
           btn.setAttribute('style','  background-color: rgba(1, 255, 1, 0.664);   border: 1px solid  rgba(1, 255, 1, 0.664);');
 
           btn.innerHTML="show"
@@ -10540,7 +10547,7 @@ function get_data_Ajax_Co(colist){
             var colist=block_feat_dict["CO"];
             // def_dict_show_obj=JSON.parse(JSON.stringify(default_crit_show_dict));
             for ( var co in colist){
-                var koool=colist[co]+"_Cdm.Def";
+                var koool=colist[co]+"_Cr.Def";
                 console.log("KOOOL",koool)
                         // if (crit_order_dict[koool]===undefined){
                         //     crit_order_dict[koool]=[]
@@ -10586,9 +10593,9 @@ function get_data_Ajax_Co(colist){
                     div_col_md_6_2.append(btn);
                     console.log("crit_order_dict",crit_order_dict)
                     console.log("crit_hide_dict",crit_hide_dict)
-                    cdm_off_co_on_TreeView();
+                    cr_off_co_on_TreeView();
          } 
-    function showToDisplay_Def_Cdm_CO_On(id){
+    function showToDisplay_Def_Cr_CO_On(id){
         console.log("showToDisplayid",id)
             var item = $("#"+id);
             //var item=document.getElementById(id)
@@ -10598,7 +10605,7 @@ function get_data_Ajax_Co(colist){
             //  var btn = $('<button>Hide</button>').attr('width', '200px').addClass('show_hide').attr('onclick', '(hideFromDisplay($(this).parent().attr("id")))');
             var btn=document.createElement('button');
             btn.setAttribute('class','show_hide');
-            btn.setAttribute('onclick',"hideFromDisplay_Def_Cdm_CO_On($(this).parent().parent().parent().attr('id'))");
+            btn.setAttribute('onclick',"hideFromDisplay_Def_Cr_CO_On($(this).parent().parent().parent().attr('id'))");
             btn.setAttribute("style","background-color: rgba(212, 17, 17, 0.664); border: 1px solid  rgba(212, 17, 17, 0.664); ")
 
             btn.innerHTML="Hide";
@@ -10629,7 +10636,7 @@ function get_data_Ajax_Co(colist){
                     console.log("active_co",active_co)
                     var colist=block_feat_dict["CO"];
                     for (var co in colist){
-                        var koool=colist[co]+"_Cdm.Def"
+                        var koool=colist[co]+"_Cr.Def"
                         var index = crit_hide_dict[koool].indexOf(elem);
                         console.log("INDEX",index)
                         if (index > -1) {
@@ -10667,7 +10674,7 @@ function get_data_Ajax_Co(colist){
                 div_col_md_6_2.setAttribute("class","col");
                 div_row.append(div_col_md_6_2);
                 div_col_md_6_2.appendChild(btn);
-                cdm_off_co_on_TreeView();
+                cr_off_co_on_TreeView();
     }
     function hideFromDisplay(id) {
            var item = $('#'+id);
@@ -10699,23 +10706,23 @@ function get_data_Ajax_Co(colist){
             // check if active_co exists, if it doesn't then simply 
             // run default_crit_show_dict['default'].indexOf(elem);;;;
             if(default_active==="true"){
-                if(crit_order_dict[active_co+"_Cdm.Def"]===undefined || crit_hide_dict[active_co+"_Cdm.Def"]===undefined){
+                if(crit_order_dict[active_co+"_Cr.Def"]===undefined || crit_hide_dict[active_co+"_Cr.Def"]===undefined){
                     var index =  default_crit_show_dict['default'].indexOf(elem);
                     if (index > -1) {
-                    default_crit_show_dict['Cdm.Def'].splice(index, 1);
+                    default_crit_show_dict['Cr.Def'].splice(index, 1);
                     }
-                    default_crit_hide_dict['Cdm.Def'].push(elem);
+                    default_crit_hide_dict['Cr.Def'].push(elem);
                 }
                 else{
                     console.log("active_co",active_co)
                     console.log("crit_order_dict",crit_order_dict)
 
-                    var index = crit_order_dict[active_co+"_Cdm.Def"].indexOf(elem);
+                    var index = crit_order_dict[active_co+"_Cr.Def"].indexOf(elem);
                     if (index > -1) {
-                    crit_order_dict[active_co+"_Cdm.Def"].splice(index, 1);
+                    crit_order_dict[active_co+"_Cr.Def"].splice(index, 1);
                         }
                 
-                    crit_hide_dict[active_co+"_Cdm.Def"].push(elem);
+                    crit_hide_dict[active_co+"_Cr.Def"].push(elem);
                     console.log("crit_order_dict###",crit_order_dict);
                     console.log("crit_hide_dict###",crit_hide_dict);
                     console.log("default_crit_show_dict>>>>",default_crit_show_dict);
@@ -10730,9 +10737,9 @@ function get_data_Ajax_Co(colist){
                 if(crit_order_dict[koool]===undefined || crit_hide_dict[koool]===undefined){
                     var index =  default_crit_show_dict['default'].indexOf(elem);
                     if (index > -1) {
-                    default_crit_show_dict['Cdm.Def'].splice(index, 1);
+                    default_crit_show_dict['Cr.Def'].splice(index, 1);
                     }
-                    default_crit_hide_dict['Cdm.Def'].push(elem);
+                    default_crit_hide_dict['Cr.Def'].push(elem);
                 }
                 else{
                     console.log("active_co",active_co)
@@ -10821,24 +10828,24 @@ function get_data_Ajax_Co(colist){
                     // run default_crit_hide_dict['default'].indexOf(elem);;;;
             */
             if(default_active==="true"){
-                if(crit_order_dict[active_co+"_Cdm.Def"]===undefined || crit_hide_dict[active_co+"_Cdm.Def"]===undefined){
-                    var index = default_crit_hide_dict['Cdm.Def'].indexOf(elem);
+                if(crit_order_dict[active_co+"_Cr.Def"]===undefined || crit_hide_dict[active_co+"_Cr.Def"]===undefined){
+                    var index = default_crit_hide_dict['Cr.Def'].indexOf(elem);
                         if (index > -1) {
-                            default_crit_hide_dict['Cdm.Def'].splice(index, 1);
+                            default_crit_hide_dict['Cr.Def'].splice(index, 1);
                             }
-                    default_crit_show_dict['Cdm.Def'].push(elem);
+                    default_crit_show_dict['Cr.Def'].push(elem);
                     console.log("default_crit_show_dict>>>>",default_crit_show_dict);
                     console.log("default_crit_hide_dict>>>>",default_crit_hide_dict);
 
                 }
                 else{
-                    var index = crit_hide_dict[active_co+"_Cdm.Def"].indexOf(elem);
+                    var index = crit_hide_dict[active_co+"_Cr.Def"].indexOf(elem);
                     console.log("INDEX",index)
                             if (index > -1) {
-                            crit_hide_dict[active_co+"_Cdm.Def"].splice(index, 1);
+                            crit_hide_dict[active_co+"_Cr.Def"].splice(index, 1);
                                     }
                     
-                    crit_order_dict[active_co+"_Cdm.Def"].push(elem);
+                    crit_order_dict[active_co+"_Cr.Def"].push(elem);
                     console.log("crit_order_dict>>>>",crit_order_dict);
                     console.log("crit_hide_dict>>>>",crit_hide_dict);
                     console.log("default_crit_show_dict>>>>",default_crit_show_dict);
@@ -10931,9 +10938,9 @@ function get_data_Ajax_Co(colist){
                 mainchildlist.push(defaut_criteria_order_dict);
                     
 
-                    var default_cdm_dict={};
-                    var default_cdm_childlist=[];
-                    default_cdm_dict['name']="Default CDM";
+                    var default_cr_dict={};
+                    var default_cr_childlist=[];
+                    default_cr_dict['name']="Default CR";
                         var default_selected_criteria_dict={};
                         var default_selected_criteria_childlist=[];
                         default_selected_criteria_dict['name']="Default Selected";
@@ -10945,8 +10952,8 @@ function get_data_Ajax_Co(colist){
 
                                     }
                         default_selected_criteria_dict['children']=default_selected_criteria_childlist;
-                    default_cdm_childlist.push(default_selected_criteria_dict);
-                    default_cdm_dict['children']=default_cdm_childlist;
+                    default_cr_childlist.push(default_selected_criteria_dict);
+                    default_cr_dict['children']=default_cr_childlist;
                 
                         var default_hidden_criteria_dict={};
                         var default_hidden_criteria_childlist=[];  
@@ -10959,9 +10966,9 @@ function get_data_Ajax_Co(colist){
 
                                     }            
                         default_hidden_criteria_dict['children']=default_hidden_criteria_childlist;
-                    default_cdm_childlist.push(default_hidden_criteria_dict);
-                    default_cdm_dict['children']=default_cdm_childlist;
-                mainchildlist.push(default_cdm_dict);
+                    default_cr_childlist.push(default_hidden_criteria_dict);
+                    default_cr_dict['children']=default_cr_childlist;
+                mainchildlist.push(default_cr_dict);
 
                                     
                         
@@ -11148,13 +11155,13 @@ function get_data_Ajax_Co(colist){
                
          }
 
-    function cdm_off_co_on_TreeView(){
+    function cr_off_co_on_TreeView(){
         var colist=block_feat_dict['CO'];
-                        $("#cdm_off_co_on_tree_view_div").empty();
+                        $("#cr_off_co_on_tree_view_div").empty();
                         var main_treeview_list=[];
                         var main_treeview_dict={};
 
-                                main_treeview_dict['name']="Cdm off Co on Criteria Tree View";
+                                main_treeview_dict['name']="Cr off Co on Criteria Tree View";
                                 mainchildlist=[];
                                 var criteria_order_dict={};
                                 var criteria_order_dict_childlist=[];
@@ -11162,10 +11169,10 @@ function get_data_Ajax_Co(colist){
                                 for (co in colist){
                                     var co_dyn_dict={};
                                     var co_dyn_child_list=[];
-                                    co_dyn_dict['name']=[colist[co]+"_Cdm.Def"];
-                                        for (var j in crit_order_dict[colist[co]+"_Cdm.Def"]){
+                                    co_dyn_dict['name']=[colist[co]+"_Cr.Def"];
+                                        for (var j in crit_order_dict[colist[co]+"_Cr.Def"]){
                                             var criteria_order_child_dict={};
-                                            criteria_order_child_dict['name']=crit_order_dict[colist[co]+"_Cdm.Def"][j];
+                                            criteria_order_child_dict['name']=crit_order_dict[colist[co]+"_Cr.Def"][j];
                                             criteria_order_child_dict['childern']=[];
                                             co_dyn_child_list.push(criteria_order_child_dict);
 
@@ -11176,15 +11183,15 @@ function get_data_Ajax_Co(colist){
                                 }
                         mainchildlist.push(criteria_order_dict);
                         for (co in colist)
-                        var default_cdm_dict={};
-                        var default_cdm_childlist=[];
-                        default_cdm_dict['name']="Default CDM";
+                        var default_cr_dict={};
+                        var default_cr_childlist=[];
+                        default_cr_dict['name']="Default CR";
                             var default_selected_criteria_dict={};
                             var default_selected_criteria_childlist=[];
                             default_selected_criteria_dict['name']="Default Selected";
-                                        for (var i in crit_order_dict["CO.1_Cdm.Def"]){
+                                        for (var i in crit_order_dict["CO.1_Cr.Def"]){
                                             var default_selected_child_dict={};
-                                            var ele=JSON.parse(JSON.stringify(crit_order_dict["CO.1_Cdm.Def"][i]));
+                                            var ele=JSON.parse(JSON.stringify(crit_order_dict["CO.1_Cr.Def"][i]));
 
                                             default_selected_child_dict['name']=ele;
                                             default_selected_child_dict['children']=[];
@@ -11192,24 +11199,24 @@ function get_data_Ajax_Co(colist){
 
                                         }
                             default_selected_criteria_dict['children']=default_selected_criteria_childlist;
-                        default_cdm_childlist.push(default_selected_criteria_dict);
-                        default_cdm_dict['children']=default_cdm_childlist;
+                        default_cr_childlist.push(default_selected_criteria_dict);
+                        default_cr_dict['children']=default_cr_childlist;
                     
                             var default_hidden_criteria_dict={};
                             var default_hidden_criteria_childlist=[];  
                             default_hidden_criteria_dict['name']="Default Hidden";
-                                        for (var i in crit_hide_dict["CO.1_Cdm.Def"]){
+                                        for (var i in crit_hide_dict["CO.1_Cr.Def"]){
                                             var default_hidden_child_dict={};
-                                            default_hidden_child_dict['name']= crit_hide_dict[colist[co]+"_Cdm.Def"][i];
+                                            default_hidden_child_dict['name']= crit_hide_dict[colist[co]+"_Cr.Def"][i];
                                             default_hidden_child_dict['children']=[];
                                             default_hidden_criteria_childlist.push(default_hidden_child_dict);
 
                                         }            
                             default_hidden_criteria_dict['children']=default_hidden_criteria_childlist;
-                        default_cdm_childlist.push(default_hidden_criteria_dict);
-                        default_cdm_dict['children']=default_cdm_childlist;
+                        default_cr_childlist.push(default_hidden_criteria_dict);
+                        default_cr_dict['children']=default_cr_childlist;
                    
-                mainchildlist.push(default_cdm_dict);
+                mainchildlist.push(default_cr_dict);
 
 
 
@@ -11221,42 +11228,42 @@ function get_data_Ajax_Co(colist){
                         //
                         // Create tree
                         //
-                        var t = new TreeView(tree, 'cdm_off_co_on_tree_view_div');
+                        var t = new TreeView(tree, 'cr_off_co_on_tree_view_div');
                         t.expandAll(); 
 
     }
-    function def_crit_cdm_on_co_off_TreeView(){
-        $("#cdm_on_co_off_tree_view_div").empty();
+    function def_crit_cr_on_co_off_TreeView(){
+        $("#cr_on_co_off_tree_view_div").empty();
                 var main_treeview_list=[];
                 var main_treeview_dict={};
-                main_treeview_dict['name']="Cdm On CO Off Criteria Tree View";
+                main_treeview_dict['name']="Cr On CO Off Criteria Tree View";
                 mainchildlist=[];
                         var defaut_criteria_order_dict={};
                         defaut_criteria_order_dict_childlist=[];
                         defaut_criteria_order_dict['name']='Defaut criteria order';
-                        for (var i in default_crit_show_dict['cdm'])
+                        for (var i in default_crit_show_dict['cr'])
                         {
                             
                             var defaut_criteria_order_child_dict={};
-                            defaut_criteria_order_child_dict['name']=default_crit_show_dict['cdm'][i];
+                            defaut_criteria_order_child_dict['name']=default_crit_show_dict['cr'][i];
                             defaut_criteria_order_child_dict['childern']=[];
                             defaut_criteria_order_dict_childlist.push(defaut_criteria_order_child_dict);
 
                         }
                         defaut_criteria_order_dict['children']=defaut_criteria_order_dict_childlist;
                 mainchildlist.push(defaut_criteria_order_dict);
-                        var active_cdm_dict={};
-                        var active_cdm_childlist=[];
-                        active_cdm_dict['name']="Active CDM";
+                        var active_cr_dict={};
+                        var active_cr_childlist=[];
+                        active_cr_dict['name']="Active CR";
                             var cfull_criteria_dict={};
                             var cfull_criteria_childlist=[];
                             cfull_criteria_dict['name']="C.Full";
                                 var full_selected_dict={};
                                 var full_selected_childlist=[];
                                 full_selected_dict['name']="Full Selected";
-                                for (var i in cdm_crit_show_dict['c.full']){
+                                for (var i in cr_crit_show_dict['c.full']){
                                     var full_single_crit_dict={};
-                                    full_single_crit_dict['name']=cdm_crit_show_dict['c.full'][i];
+                                    full_single_crit_dict['name']=cr_crit_show_dict['c.full'][i];
                                     full_single_crit_dict['children']=[];
                                     full_selected_childlist.push(full_single_crit_dict);
                                 }
@@ -11265,9 +11272,9 @@ function get_data_Ajax_Co(colist){
                                 var full_hidden_dict={};
                                 var full_hidden_childlist=[];
                                 full_hidden_dict['name']="Full Hidden";
-                                for (var i in cdm_crit_hide_dict['c.full']){
+                                for (var i in cr_crit_hide_dict['c.full']){
                                     var full_single_crit_hidden_dict={};
-                                    full_single_crit_hidden_dict['name']=cdm_crit_hide_dict['c.full'][i];
+                                    full_single_crit_hidden_dict['name']=cr_crit_hide_dict['c.full'][i];
                                     full_single_crit_hidden_dict['children']=[];
                                     full_hidden_childlist.push(full_single_crit_hidden_dict);
                                 }
@@ -11275,8 +11282,8 @@ function get_data_Ajax_Co(colist){
                             cfull_criteria_childlist.push(full_hidden_dict);
 
                             cfull_criteria_dict['children']=cfull_criteria_childlist;
-                        active_cdm_childlist.push(cfull_criteria_dict);
-                        if (cdm_full_btn_on==="false" || cdm_crit_show_dict['c.pruned']!==undefined){
+                        active_cr_childlist.push(cfull_criteria_dict);
+                        if (cr_full_btn_on==="false" || cr_crit_show_dict['c.pruned']!==undefined){
 
                         
                             var cprune_criteria_dict={};
@@ -11285,9 +11292,9 @@ function get_data_Ajax_Co(colist){
                                 var prune_selected_dict={};
                                 var prune_selected_childlist=[];
                                 prune_selected_dict['name']="Prune Selected";
-                                for (var i in cdm_crit_show_dict['c.pruned']){
+                                for (var i in cr_crit_show_dict['c.pruned']){
                                     var prune_single_crit_dict={};
-                                    prune_single_crit_dict['name']=cdm_crit_show_dict['c.pruned'][i];
+                                    prune_single_crit_dict['name']=cr_crit_show_dict['c.pruned'][i];
                                     prune_single_crit_dict['children']=[];
                                     prune_selected_childlist.push(prune_single_crit_dict);
                                 }
@@ -11296,22 +11303,22 @@ function get_data_Ajax_Co(colist){
                                 var prune_hidden_dict={};
                                 var prune_hidden_childlist=[];
                                 prune_hidden_dict['name']="Prune Hidden";
-                                for (var i in cdm_crit_hide_dict['c.pruned']){
+                                for (var i in cr_crit_hide_dict['c.pruned']){
                                     var prune_single_crit_hidden_dict={};
-                                    prune_single_crit_hidden_dict['name']=cdm_crit_hide_dict['c.pruned'][i];
+                                    prune_single_crit_hidden_dict['name']=cr_crit_hide_dict['c.pruned'][i];
                                     prune_single_crit_hidden_dict['children']=[];
                                     prune_hidden_childlist.push(prune_single_crit_hidden_dict);
                                 }
                                 prune_hidden_dict['children']=prune_hidden_childlist;
                             cprune_criteria_childlist.push(prune_hidden_dict);
                             cprune_criteria_dict['children']=cprune_criteria_childlist;
-                        active_cdm_childlist.push(cprune_criteria_dict);
+                        active_cr_childlist.push(cprune_criteria_dict);
                         }
 
 
 
-                        active_cdm_dict['children']=active_cdm_childlist;
-                mainchildlist.push(active_cdm_dict);
+                        active_cr_dict['children']=active_cr_childlist;
+                mainchildlist.push(active_cr_dict);
                 main_treeview_dict['children']=mainchildlist
                 main_treeview_list.push(main_treeview_dict);
                 
@@ -11320,10 +11327,10 @@ function get_data_Ajax_Co(colist){
                 
                 
     var tree=main_treeview_list;
-    var t = new TreeView(tree, 'cdm_on_co_off_tree_view_div');
+    var t = new TreeView(tree, 'cr_on_co_off_tree_view_div');
     t.expandAll(); 
     }
-    function hideFromDisplay_CDM(id){
+    function hideFromDisplay_CR(id){
         var item = $('#'+id);
         console.log(id);
         var temp=document.getElementById(id);
@@ -11334,7 +11341,7 @@ function get_data_Ajax_Co(colist){
         // var btn = $('<button>Show</button>').attr('width','200px').addClass('show_hide').attr('onclick', '(showToDisplay($(this).parent().attr("id")))');
         var btn=document.createElement('button');
         btn.setAttribute('class','show_hide');
-        btn.setAttribute('onclick','showToDisplay_CDM($(this).parent().parent().parent().attr("id"))');
+        btn.setAttribute('onclick','showToDisplay_CR($(this).parent().parent().parent().attr("id"))');
         btn.setAttribute('style','  background-color: rgba(1, 255, 1, 0.664);   border: 1px solid  rgba(1, 255, 1, 0.664);');
 
         btn.innerHTML="show"
@@ -11350,21 +11357,21 @@ function get_data_Ajax_Co(colist){
                     break;
                 } 
         item.remove();
-        if (cdm_full_btn_on==="true"){
-            console.log("cdm_full_btn_on1.1 hide",cdm_full_btn_on)
-            cdm_hide_list=cdm_crit_hide_dict['c.full'];
-            cdm_show_list=cdm_crit_show_dict['c.full'];
+        if (cr_full_btn_on==="true"){
+            console.log("cr_full_btn_on1.1 hide",cr_full_btn_on)
+            cr_hide_list=cr_crit_hide_dict['c.full'];
+            cr_show_list=cr_crit_show_dict['c.full'];
 
 
 
 
         }else{
-            console.log("cdm_full_btn_on1.2 hide",cdm_full_btn_on)
-            console.log("cdm_crit_show_dict--prunecheck",cdm_crit_show_dict)
+            console.log("cr_full_btn_on1.2 hide",cr_full_btn_on)
+            console.log("cr_crit_show_dict--prunecheck",cr_crit_show_dict)
 
-            console.log("cdm_crit_hide_dict--prunecheck",cdm_crit_hide_dict)
-            cdm_hide_list=cdm_crit_hide_dict['c.pruned']
-            cdm_show_list=cdm_crit_show_dict['c.pruned']
+            console.log("cr_crit_hide_dict--prunecheck",cr_crit_hide_dict)
+            cr_hide_list=cr_crit_hide_dict['c.pruned']
+            cr_show_list=cr_crit_show_dict['c.pruned']
 
 
 
@@ -11375,53 +11382,53 @@ function get_data_Ajax_Co(colist){
             
             // if (crit_order_dict[active_co]===undefined){
                 // a check here to see which full or prune active
-                // if (cdm_full_btn_on==="false"){
-                //     var index = cdm_crit_show_dict['c.full'].indexOf(elem);
+                // if (cr_full_btn_on==="false"){
+                //     var index = cr_crit_show_dict['c.full'].indexOf(elem);
 
                 // }else{
-                //     var index = cdm_crit_show_dict['c.prune'].indexOf(elem);
+                //     var index = cr_crit_show_dict['c.prune'].indexOf(elem);
 
                 // }
-                var index = cdm_show_list.indexOf(elem);
+                var index = cr_show_list.indexOf(elem);
                 if (index > -1) {
                 // check which if pruned or full on, onthe basis of it fetch the 
                 // value from key.... 
-                // if (cdm_full_btn_on==="false"){
-                //     cdm_crit_show_dict['c.full'].splice(index, 1);
+                // if (cr_full_btn_on==="false"){
+                //     cr_crit_show_dict['c.full'].splice(index, 1);
                 // }else{
-                //     cdm_crit_show_dict['c.prune'].splice(index, 1);
-                //     console.log("cdm_crit_show_dict['c.prune']$$$",cdm_crit_show_dict['c.prune'])
+                //     cr_crit_show_dict['c.prune'].splice(index, 1);
+                //     console.log("cr_crit_show_dict['c.prune']$$$",cr_crit_show_dict['c.prune'])
                 // }
-                cdm_show_list.splice(index, 1);
+                cr_show_list.splice(index, 1);
                 }
-                // if (cdm_full_btn_on==="false"){
-                //     cdm_crit_hide_dict['c.full'].push(elem);
+                // if (cr_full_btn_on==="false"){
+                //     cr_crit_hide_dict['c.full'].push(elem);
 
                 // }else{
-                //     cdm_crit_hide_dict['c.prune'].push(elem);
-                //     console.log("cdm_crit_hide_dict['c.prune']",cdm_crit_hide_dict['c.prune'])
+                //     cr_crit_hide_dict['c.prune'].push(elem);
+                //     console.log("cr_crit_hide_dict['c.prune']",cr_crit_hide_dict['c.prune'])
 
                 // }
-                cdm_hide_list.push(elem);
+                cr_hide_list.push(elem);
 
                 // }
-                if (cdm_full_btn_on==="true"){
-                    console.log("cdm_full_btn_on2.1 hide",cdm_full_btn_on)
+                if (cr_full_btn_on==="true"){
+                    console.log("cr_full_btn_on2.1 hide",cr_full_btn_on)
 
-                cdm_crit_hide_dict['c.full']=cdm_hide_list
-                cdm_crit_show_dict['c.full']=cdm_show_list
+                cr_crit_hide_dict['c.full']=cr_hide_list
+                cr_crit_show_dict['c.full']=cr_show_list
 
                 }
                 else{
-                    console.log("cdm_full_btn_on2.2 hide",cdm_full_btn_on)
+                    console.log("cr_full_btn_on2.2 hide",cr_full_btn_on)
 
-                cdm_crit_hide_dict['c.pruned']= cdm_hide_list
-                cdm_crit_show_dict['c.pruned']= cdm_show_list
+                cr_crit_hide_dict['c.pruned']= cr_hide_list
+                cr_crit_show_dict['c.pruned']= cr_show_list
 
    
                 }
-                console.log("cdm_crit_show_dict@@@",cdm_crit_show_dict)
-                console.log("cdm_crit_hide_dict@@@",cdm_crit_hide_dict)
+                console.log("cr_crit_show_dict@@@",cr_crit_show_dict)
+                console.log("cr_crit_hide_dict@@@",cr_crit_hide_dict)
 
           
                 var mylist=document.getElementById('myList');
@@ -11448,17 +11455,17 @@ function get_data_Ajax_Co(colist){
                 div_col_md_6_2.setAttribute('class','col');
                 div_row.append(div_col_md_6_2);
                 div_col_md_6_2.append(btn);
-                def_crit_cdm_on_co_off_TreeView();
+                def_crit_cr_on_co_off_TreeView();
 
     }
-    function showToDisplay_CDM(id){
+    function showToDisplay_CR(id){
         var item = $("#"+id);
             //var item=document.getElementById(id)
             // var item = $(id);
              var temp = document.getElementById(id);
                 item.find(".show_hide").remove();
                 //  var btn = $('<button>Hide</button>').attr('width', '200px').addClass('show_hide').attr('onclick', '(hideFromDisplay($(this).parent().attr("id")))');
-                var btn=document.createElement('button');btn.setAttribute('class','show_hide');btn.setAttribute('onclick',"hideFromDisplay_CDM($(this).parent().parent().parent().attr('id'))");
+                var btn=document.createElement('button');btn.setAttribute('class','show_hide');btn.setAttribute('onclick',"hideFromDisplay_CR($(this).parent().parent().parent().attr('id'))");
                 btn.setAttribute("style","background-color: rgba(212, 17, 17, 0.664); border: 1px solid  rgba(212, 17, 17, 0.664); ")
 
                 btn.innerHTML="Hide";
@@ -11484,66 +11491,66 @@ function get_data_Ajax_Co(colist){
                     // check if active_co exists, if it doesn't then simply 
                     // run default_crit_hide_dict['default'].indexOf(elem);;;;
             */
-            if (cdm_full_btn_on==="true"){
-                console.log("cdm_full_btn_on1.1 show",cdm_full_btn_on)
+            if (cr_full_btn_on==="true"){
+                console.log("cr_full_btn_on1.1 show",cr_full_btn_on)
 
-                cdm_hide_list=cdm_crit_hide_dict['c.full']
-                cdm_show_list=cdm_crit_show_dict['c.full']
+                cr_hide_list=cr_crit_hide_dict['c.full']
+                cr_show_list=cr_crit_show_dict['c.full']
             }else{
-                console.log("cdm_full_btn_on1.2 show",cdm_full_btn_on)
-                console.log("cdm_crit_show_dict--prunecheck",cdm_crit_show_dict)
+                console.log("cr_full_btn_on1.2 show",cr_full_btn_on)
+                console.log("cr_crit_show_dict--prunecheck",cr_crit_show_dict)
 
-                console.log("cdm_crit_hide_dict--prunecheck",cdm_crit_hide_dict)
-                cdm_hide_list=cdm_crit_hide_dict['c.pruned']
-                cdm_show_list=cdm_crit_show_dict['c.pruned']
+                console.log("cr_crit_hide_dict--prunecheck",cr_crit_hide_dict)
+                cr_hide_list=cr_crit_hide_dict['c.pruned']
+                cr_show_list=cr_crit_show_dict['c.pruned']
             }
             if (crit_hide_dict[active_co]===undefined){
-                var index = cdm_hide_list.indexOf(elem);
-                // if (cdm_full_btn_on==="false"){
-                //     console.log("cdm_crit_hide_dict['c.full']^^^",cdm_crit_hide_dict['c.full'])
+                var index = cr_hide_list.indexOf(elem);
+                // if (cr_full_btn_on==="false"){
+                //     console.log("cr_crit_hide_dict['c.full']^^^",cr_crit_hide_dict['c.full'])
 
-                //     var index = cdm_crit_hide_dict['c.full'].indexOf(elem);
+                //     var index = cr_crit_hide_dict['c.full'].indexOf(elem);
 
                 // }
                 // else{
-                //     console.log("cdm_crit_hide_dict['c.prune']^^^",cdm_crit_hide_dict['c.prune'])
-                //     var index = cdm_crit_hide_dict['c.prune'].indexOf(elem);
+                //     console.log("cr_crit_hide_dict['c.prune']^^^",cr_crit_hide_dict['c.prune'])
+                //     var index = cr_crit_hide_dict['c.prune'].indexOf(elem);
 
                 // }
                 console.log("INDEX",index)
                     if (index > -1) {
-                        // if (cdm_full_btn_on==="false"){
-                        //     cdm_crit_hide_dict['c.full'].splice(index, 1);
+                        // if (cr_full_btn_on==="false"){
+                        //     cr_crit_hide_dict['c.full'].splice(index, 1);
                         // }else{
-                        //     cdm_crit_hide_dict['c.prune'].splice(index, 1);
+                        //     cr_crit_hide_dict['c.prune'].splice(index, 1);
                         // }
-                        cdm_hide_list.splice(index, 1);
+                        cr_hide_list.splice(index, 1);
                         }
-                        // if (cdm_full_btn_on==="false"){
-                        //     cdm_crit_show_dict['c.full'].push(elem);
+                        // if (cr_full_btn_on==="false"){
+                        //     cr_crit_show_dict['c.full'].push(elem);
 
                         // }
                         // else{
-                        //     cdm_crit_show_dict['c.prune'].push(elem);
+                        //     cr_crit_show_dict['c.prune'].push(elem);
 
                         // }
-                        cdm_show_list.push(elem);
+                        cr_show_list.push(elem);
                         
             }   
-            if (cdm_full_btn_on==="true"){
-                console.log("cdm_full_btn_on2.1 show",cdm_full_btn_on)
+            if (cr_full_btn_on==="true"){
+                console.log("cr_full_btn_on2.1 show",cr_full_btn_on)
 
-                cdm_crit_hide_dict['c.full']=cdm_hide_list
-                cdm_crit_show_dict['c.full']=cdm_show_list
+                cr_crit_hide_dict['c.full']=cr_hide_list
+                cr_crit_show_dict['c.full']=cr_show_list
             }else{
-                console.log("cdm_full_btn_on2.2 show",cdm_full_btn_on)
+                console.log("cr_full_btn_on2.2 show",cr_full_btn_on)
 
-                cdm_crit_hide_dict['c.pruned']=cdm_hide_list
-                cdm_crit_show_dict['c.pruned']=cdm_show_list
+                cr_crit_hide_dict['c.pruned']=cr_hide_list
+                cr_crit_show_dict['c.pruned']=cr_show_list
             }
 
-                console.log("cdm_crit_show_dict****",cdm_crit_show_dict)
-                console.log("cdm_crit_hide_dict****",cdm_crit_hide_dict)
+                console.log("cr_crit_show_dict****",cr_crit_show_dict)
+                console.log("cr_crit_hide_dict****",cr_crit_hide_dict)
 
                 
                 var ul_sortable=document.getElementById('sortable');
@@ -11567,7 +11574,7 @@ function get_data_Ajax_Co(colist){
                 div_col_md_6_2.setAttribute("class","col");
                 div_row.append(div_col_md_6_2);
                 div_col_md_6_2.appendChild(btn);
-                def_crit_cdm_on_co_off_TreeView();
+                def_crit_cr_on_co_off_TreeView();
 
 
     }
@@ -11899,13 +11906,13 @@ function get_data_Ajax_Co(colist){
 
 
       }
-    function cdm_on_co_on_TreeView(){
-        $('#cdm_on_co_on_tree_view_div').empty();
+    function cr_on_co_on_TreeView(){
+        $('#cr_on_co_on_tree_view_div').empty();
 
             var main_treeview_list=[];
             var main_treeview_dict={};
 
-            main_treeview_dict['name']="CDM On CO ON Criteria Tree View";
+            main_treeview_dict['name']="CR On CO ON Criteria Tree View";
             mainchildlist=[];
                     var defaut_criteria_order_dict={};
                     defaut_criteria_order_dict_childlist=[];
@@ -12030,11 +12037,11 @@ function get_data_Ajax_Co(colist){
     //
     // Create tree
     //
-    var t = new TreeView(tree, 'cdm_on_co_on_tree_view_div');
+    var t = new TreeView(tree, 'cr_on_co_on_tree_view_div');
     t.expandAll(); 
        
     }
-    function hideFromDisplay_Cdm_CO_On(id) {
+    function hideFromDisplay_Cr_CO_On(id) {
            var item = $('#'+id);
            console.log(id);
            var temp=document.getElementById(id);
@@ -12045,7 +12052,7 @@ function get_data_Ajax_Co(colist){
           // var btn = $('<button>Show</button>').attr('width','200px').addClass('show_hide').attr('onclick', '(showToDisplay($(this).parent().attr("id")))');
           var btn=document.createElement('button');
           btn.setAttribute('class','show_hide');
-          btn.setAttribute('onclick','showToDisplay_Cdm_CO_On($(this).parent().parent().parent().attr("id"))');
+          btn.setAttribute('onclick','showToDisplay_Cr_CO_On($(this).parent().parent().parent().attr("id"))');
           btn.setAttribute('style','  background-color: rgba(1, 255, 1, 0.664);   border: 1px solid  rgba(1, 255, 1, 0.664);');
 
           btn.innerHTML="show"
@@ -12122,10 +12129,10 @@ function get_data_Ajax_Co(colist){
                     div_col_md_6_2.setAttribute('class','col');
                     div_row.append(div_col_md_6_2);
                     div_col_md_6_2.append(btn);
-                    cdm_on_co_on_TreeView();
+                    cr_on_co_on_TreeView();
  
          } 
-    function showToDisplay_Cdm_CO_On(id) {
+    function showToDisplay_Cr_CO_On(id) {
             console.log("showToDisplayid",id)
             var item = $("#"+id);
             //var item=document.getElementById(id)
@@ -12135,7 +12142,7 @@ function get_data_Ajax_Co(colist){
             //  var btn = $('<button>Hide</button>').attr('width', '200px').addClass('show_hide').attr('onclick', '(hideFromDisplay($(this).parent().attr("id")))');
             var btn=document.createElement('button');
             btn.setAttribute('class','show_hide');
-            btn.setAttribute('onclick',"hideFromDisplay_Cdm_CO_On($(this).parent().parent().parent().attr('id'))");
+            btn.setAttribute('onclick',"hideFromDisplay_Cr_CO_On($(this).parent().parent().parent().attr('id'))");
             btn.setAttribute("style","background-color: rgba(212, 17, 17, 0.664); border: 1px solid  rgba(212, 17, 17, 0.664); ")
 
             btn.innerHTML="Hide";
@@ -12204,7 +12211,7 @@ function get_data_Ajax_Co(colist){
                 div_col_md_6_2.setAttribute("class","col");
                 div_row.append(div_col_md_6_2);
                 div_col_md_6_2.appendChild(btn);
-                cdm_on_co_on_TreeView();
+                cr_on_co_on_TreeView();
 
            
          }
@@ -12258,27 +12265,27 @@ function get_data_Ajax_Co(colist){
                     console.log("HIDE THE HIDE buttOn")
                 }
                 else {
-                    if(cdm_crit_order_on_flag==="true"){
+                    if(cr_crit_order_on_flag==="true"){
 
                     }
                     else{
                         var btn_show_hide=document.createElement('button');
                         btn_show_hide.setAttribute("class","show_hide");
                         btn_show_hide.setAttribute("style","background-color: rgba(212, 17, 17, 0.664); border: 1px solid  rgba(212, 17, 17, 0.664); ")
-                        if (CO_CDM_COMB==="CDM_off_CO_off"){
+                        if (CO_CR_COMB==="CR_off_CO_off"){
                             btn_show_hide.setAttribute("onclick","hideFromDisplay_Default($(this).parent().parent().parent().attr('id'))");
 
                         }
-                        else if (CO_CDM_COMB==="CDM_on_CO_off"){
-                            btn_show_hide.setAttribute("onclick","hideFromDisplay_CDM($(this).parent().parent().parent().attr('id'))");
+                        else if (CO_CR_COMB==="CR_on_CO_off"){
+                            btn_show_hide.setAttribute("onclick","hideFromDisplay_CR($(this).parent().parent().parent().attr('id'))");
 
                         }
-                        else if (CO_CDM_COMB==="CDM_off_CO_on"){
-                            btn_show_hide.setAttribute("onclick","hideFromDisplay_Def_Cdm_CO_On($(this).parent().parent().parent().attr('id'))");
+                        else if (CO_CR_COMB==="CR_off_CO_on"){
+                            btn_show_hide.setAttribute("onclick","hideFromDisplay_Def_Cr_CO_On($(this).parent().parent().parent().attr('id'))");
 
                         }
-                        else if (CO_CDM_COMB==="CDM_on_CO_on"){
-                            btn_show_hide.setAttribute("onclick","hideFromDisplay_Cdm_CO_On($(this).parent().parent().parent().attr('id'))");
+                        else if (CO_CR_COMB==="CR_on_CO_on"){
+                            btn_show_hide.setAttribute("onclick","hideFromDisplay_Cr_CO_On($(this).parent().parent().parent().attr('id'))");
 
                         }
                         btn_show_hide.innerHTML="Hide";
@@ -12342,27 +12349,27 @@ function get_data_Ajax_Co(colist){
 
                                     }
                                     div_col_md_6_1.append(btn_btn_primary);
-                                    if(cdm_crit_order_on_flag==="true"){
+                                    if(cr_crit_order_on_flag==="true"){
 
                                     }
                                     else{
                                         var btn_show_hide=document.createElement('button');
                                         btn_show_hide.setAttribute('class','show_hide');
                                         btn_show_hide.setAttribute('style','  background-color: rgba(1, 255, 1, 0.664);   border: 1px solid  rgba(1, 255, 1, 0.664);');
-                                        if (CO_CDM_COMB==="CDM_off_CO_off"){
+                                        if (CO_CR_COMB==="CR_off_CO_off"){
                                             btn_show_hide.setAttribute("onclick","showToDisplay_Default($(this).parent().parent().parent().attr('id'))");
 
                                         }
-                                        else if (CO_CDM_COMB==="CDM_on_CO_off"){
-                                            btn_show_hide.setAttribute('onclick','showToDisplay_CDM($(this).parent().parent().parent().attr("id"))');
+                                        else if (CO_CR_COMB==="CR_on_CO_off"){
+                                            btn_show_hide.setAttribute('onclick','showToDisplay_CR($(this).parent().parent().parent().attr("id"))');
 
                                         }
-                                        else if (CO_CDM_COMB==="CDM_off_CO_on"){
-                                            btn_show_hide.setAttribute('onclick','showToDisplay_Def_Cdm_CO_On($(this).parent().parent().parent().attr("id"))');
+                                        else if (CO_CR_COMB==="CR_off_CO_on"){
+                                            btn_show_hide.setAttribute('onclick','showToDisplay_Def_Cr_CO_On($(this).parent().parent().parent().attr("id"))');
 
                                         }
-                                        else if (CO_CDM_COMB==="CDM_on_CO_on"){
-                                            btn_show_hide.setAttribute('onclick','showToDisplay_Cdm_CO_On($(this).parent().parent().parent().attr("id"))');
+                                        else if (CO_CR_COMB==="CR_on_CO_on"){
+                                            btn_show_hide.setAttribute('onclick','showToDisplay_Cr_CO_On($(this).parent().parent().parent().attr("id"))');
 
                                         }
                                         btn_show_hide.innerHTML="show";

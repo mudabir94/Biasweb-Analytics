@@ -1,7 +1,10 @@
 #savecrit_button{
 
 }
-#next_button{}
+#next_button{
+
+}
+
 .maincontentblur{
     filter: blur(10px);
 }
@@ -11,7 +14,7 @@
 .crit_labels{
     font-size: 18px;
     font-weight: bold;
-    color:#009688;    
+    color:#4d8cc1;    
 }
 #main-critw-div{
     padding-top: 20px

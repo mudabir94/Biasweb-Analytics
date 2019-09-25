@@ -154,14 +154,17 @@ class ExperimentController:
                 nLev = None
                 if newFLevels:
                     nLev = newFLevels[f]
+                    print("nLev",nLev)
                 self.addFeature(fSymbol=f, newLevList=nLev, byPrompt=prompt)
         #2. compare the existing fSet with proposed, and identify diffs
             curFSet = list(self.fSet.values_list('p_feature__feature_symbol', flat=True))
             dropFList = list(set(curFSet)-set(newFSet))
-            #3. delete any features not required
-            # for d in dropFList:
-            #     self.delFeature(d)
-        #self.fSet.bulk_create(self.fInSet)
+            print("curFSet",curFSet)
+            print("dropFList",dropFList)
+            # 3. delete any features not required
+            for d in dropFList:
+                self.delFeature(d)
+        # self.fSet.bulk_create(self.fInSet)
 
     def addDefFeature(self, DefFSymbol, newDefLevList = None, byPrompt = False):
         pf = PFeature.objects.filter(feature_symbol=DefFSymbol)[0]
@@ -190,7 +193,9 @@ class ExperimentController:
 
     def addFeature(self, fSymbol, newLevList = None, byPrompt = False):
         #ADD EXTRA ATTRIBUTE OF "DEFAULT"
+        print("fSymbol",fSymbol)
         pf = PFeature.objects.filter(feature_symbol=fSymbol)[0]
+        print("PLATFORM OBJ",pf)
         if newLevList:
             #EDIT TASK: A new list is given for an existing feature in fSet
             print("New Levels for ",fSymbol," are: ",newLevList)
@@ -278,6 +283,8 @@ class ExperimentController:
     #only for setting fLevels afresh by unpacking QuerySet
         for f in self.fSet.all():
             self.fLevels[f.p_feature.feature_symbol] = f.chosen_levels
+        
+
         return self.fLevels
 
     # def setFeatureLevels(self, fLevels):
@@ -495,7 +502,7 @@ class ExperimentController:
         
         
     def saveSubjects(self, dSub=None, writeXL=False, fName=None):
-        roleSubj_id = Role.objects.get(role_name="Subject").id
+        roleSubj_Obj = Role.objects.get(role_name="Subject")
         if isinstance(dSub,pd.DataFrame):
             self.subjData = dSub
         #WRITE TO DATABASE
@@ -516,7 +523,7 @@ class ExperimentController:
                     subjUser = scf().save(commit=False, pwd=c_id)
                     subjUser.username = c_id
                     subjUser.custom_id = c_id
-                    subjUser.role_id = roleSubj_id
+                    subjUser.role_id = roleSubj_Obj
                     subjUser.save()
                     subj_id = subjUser.id
                 #TODO@SHAZIB: CHECK IF SUBJECT USER EXISTS IN EXPERIMENT
