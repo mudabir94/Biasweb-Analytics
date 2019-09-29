@@ -6,12 +6,17 @@ Survey Form Changes.
     Question numbers
 
 Criteria Display Vs Criteria range
-1. Change current Criteria Display platform feature lable to "Criteria Range"
-2. Implement a separate Criteria Display feature in the Platform/Experiment Feature Model
+1. Change current Criteria Display platform feature lable to "Criteria Range" (Done )
+2. Implement a separate Criteria Display feature in the Platform/Experiment Feature Model (Done)
 --> a. CD.1by1
 --> b. CD.2by2 (for AHP only)
 --> c. CD.all 
 
-3. CD.all: Either go for a vertical bars implementation (like Volume Mixer)
+3. CD.all: Either go for a vertical bars implementation (like Volume Mixer) 
 or Go for array of Icons/Compressed List (Acts like a map for navigation)
 and shows currently active comparisons in a larger size (to know what is current question)
+    --> Todos 
+    a. Give a parameter for how many per page (whether criteria or attributes)
+    b. Fit as many per page by adjusting fonts
+    c. For complete interactivity implementation, also criteria page should have Chart (what type, this is homework)
+    problem is that revisability needs to be natural and Pie Chart doesn't look natural if I want to go back and forth.

@@ -41,7 +41,7 @@ class ExperimentController:
         self.idField = None
         self.assigner = Assigner()
         self.defFlevels={}
-
+        print("EXPERIMENT ID")
         # check is to be made if the user wants to save the current exp so that its status changes from design mode to active and the previous exps status changes to inactive.
         if e_id:
             self.exp = Experiment.objects.get(id=e_id)
@@ -54,22 +54,16 @@ class ExperimentController:
             # populate self.defFLevels & self.fLevels
             #TODO: CREATE setDefFSet() and getDefFSet()
         else:
-            print("In else")
+            print("Experiment Id not Found/Created")
             self.exp.status = DESIGN_MODE
             self.exp.status_code=exStatusCd.objects.get(id=1)
-            print("exp.status_code",self.exp.status_code)
             self.exp.owner = User.objects.get(custom_id=a_id)      #TODO@MUDABIR - NEED TO MODIFY EXPERIMENT ADMIN IMPLEMENTATION
-            print(" self.exp.owner", self.exp.owner)
-            print("A_ID***********",a_id)
-
+            
             self.exp.custom_exp_id = 'TBA' #can only be created after Experient table assigns an id
-            print("self.exp.custom_exp_id",self.exp.custom_exp_id)
             self.exp.capacity = cap            #Capacity to budget for experiment
-            print("Capacity")
             self.saveExperiment()
 
             self.exp.custom_exp_id = a_id
-            print(" self.exp.custom_exp_id***********", self.exp.custom_exp_id)
 
             #print('self.exp.custom_exp_id',self.exp.custom_exp_id)
             exp_id = self.exp.id
@@ -79,6 +73,10 @@ class ExperimentController:
             self.fSet = self.exp.experiment_feature_set
             self.defFSet =self.exp.experiment_feature_set
 
+            print(" self.exp.owner", self.exp.owner)
+            print("exp.status_code",self.exp.status_code)
+            print("self.exp.custom_exp_id",self.exp.custom_exp_id)
+            print("self.exp.custom_exp_id***********", self.exp.custom_exp_id)
             print("self.exp.experiment_feature_set",self.exp.experiment_feature_set)
             # self.defFSet = self.exp.exp_defaults_set  #TODO TO BE TESTED!!
 

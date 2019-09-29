@@ -120,8 +120,8 @@ $(document).ready(function(){
                         console.log("criteria_list",criteria_list)
                         // LATER ADD THIS BLOCK OF CODE TO A FUNCTION
                         for (var crit in criteria_list){
-                            crit_wght_name=criteria_weights_dict['criteria_weights'][crit][0];
-                            crit_wght_val=criteria_weights_dict['criteria_weights'][crit][1];
+                            crit_wght_name=criteria_list[crit];
+                            crit_wght_val=criteria_weights_dict[criteria_list[crit]];
                         
                             templist=[]
                             templist.push(crit_wght_name)

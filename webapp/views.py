@@ -1179,8 +1179,8 @@ class defaultCriteria_Setup(TemplateView):
                         print(key,":",s)
                         p_levList.append('Def.'+str(key))
                         for count, i in enumerate(s):
-                            print("count",count)
-                            print("ii",i)
+                            # print("count",count)
+                            # print("ii",i)
                             
                             try:
                                 pCObj=PhoneCriteria.objects.get(criteria_name=i)
@@ -1199,8 +1199,8 @@ class defaultCriteria_Setup(TemplateView):
                         p_levList.append('Def.'+str(key))
                         for count, i in enumerate(s):
                             try:
-                                print("count",count)
-                                print("ii",i)
+                                # print("count",count)
+                                # print("ii",i)
                                 pCObj=PhoneCriteria.objects.get(criteria_name=i)
                                 expOSets=ExpCriteriaOrder()
                                 expOSets.exp=expCont.exp
@@ -2706,8 +2706,8 @@ def deleteAllSubjects(request):
 def getExpController(request):
     try:
         cest_obj=customExpSessionTable.objects.aggregate(Max('expid'))
-        print("ssss",cest_obj)
-        print("qqqqqqqq",cest_obj['expid__max'])
+        print("cest_obj",cest_obj)
+        print("cest_obj['expid__max']",cest_obj['expid__max'])
         sess_expId=cest_obj['expid__max']
         # sess_expId = request.session['sess_expId']
         # print("session>>>>>>>>>>>>>>",request.session['sess_expId'])
@@ -2752,7 +2752,7 @@ def getExpController(request):
         print('expAdminId',expAdminId)
         expCont = ExperimentController(a_id=expAdminId)
         print('NEW Exp id',expCont.exp.id)
-        # Default Session Maintenance
+        # New  Session Maintenance
         cest_obj=customExpSessionTable()
         cest_obj.expid=expCont.exp.id
         cest_obj.cusexpid=expCont.exp.custom_exp_id
@@ -3501,11 +3501,17 @@ def SavePhoneSets_P0(request):
             expCont = getExpController(request)
             print("Return from getExpController")
             existExpId = expCont.exp.id
+            print("existExpId",existExpId)
             exp_obj=Experiment.objects.get(custom_exp_id=expCont.exp.custom_exp_id)
+            try:
+                obj=selectedAdminPhones.objects.get(exp=exp_obj)
+                rows=selectedAdminPhones.objects.filter(exp=exp_obj)          
+                for r in rows:
+                    r.detele()
+            except:
+                print("nothing in selectedAdminPhones")
 
-            if (selectedAdminPhones.objects.filter(exp=exp_obj).exists()):
-                selectedAdminPhones.objects.filter(exp=exp_obj).delete()          
-            
+           
             expPSets = selectedAdminPhones()
             expPSets.exp = expCont.exp
             expPSets.pset_id= "P.All"
@@ -3530,15 +3536,19 @@ def SavePhoneSets(request):
                 expCont = getExpController(request)
                 existExpId = expCont.exp.id
                 try:
-                    obj=selectedAdminPhones.objects.filter(exp=exp_obj,pset_id="P.All")
+                    # delete P.All If it Exsists
+                    obj=selectedAdminPhones.objects.get(exp=exp_obj,pset_id="P.All")
                     obj.delete()
                 except:
-                    print("sss")
+                    print("deleted P.All")
+
+                    
                 print("existExpId",existExpId)
 
                 expCont.setFSet(newFLevels=postedFLevels,prompt=False)
                 block_set = expCont.generateBlocks()
                 block_list = list(block_set.all().values('serial_no','levels_set'))
+
                 print('<<<<<<TO DISPLAY ON PAGE>>>>>>')
                 print(block_list)
                 p_levList = list()
@@ -3564,10 +3574,10 @@ def SavePhoneSets(request):
                 else:
                     exp_obj=Experiment.objects.get(custom_exp_id=expCont.exp.custom_exp_id)
                     # Updation check. 
-                    sap_obj=selectedAdminPhones.objects.get(exp=exp_obj)
+                    # sap_obj=selectedAdminPhones.objects.get(exp=exp_obj)
 
-                    if sap_obj.pset_id=='P.All':
-                        sap_obj.delete()
+                    # if sap_obj.pset_id=='P.All':
+                    #     sap_obj.delete()
                     if (selectedAdminPhones.objects.filter(exp=exp_obj).exists()):
                         
                             
