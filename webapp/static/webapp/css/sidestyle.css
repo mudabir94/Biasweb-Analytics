@@ -67,7 +67,7 @@
 .sidebar-nav li a {
      
     text-decoration: none;
-    color: #999999;
+    color: #f8f8f8;
     padding: 6px 10px;
 }
 
@@ -75,9 +75,13 @@
     /* text-decoration: none;
     color: #fff;
     background: rgba(255,255,255,0.2); */
-    color: #fff;
+    background: rgba(255,255,255,0.2); 
+	color: #25b014 !important;
+    border-color: #25b014; 
+
+    /* color: #fff;
     background-color: #5cb85c;
-    border-color: #4cae4c;  
+    border-color: #4cae4c;   */
     /* display: inline-block; */
    
     margin-bottom: 0;
@@ -147,3 +151,43 @@
         margin-right: 0;
     }
 }
+.custom_side_rows {
+  display: block;
+
+  background-color: #5276ff;
+  border: 1px solid #5276ff; 
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  width: auto;
+  color: white !important; 
+  margin: 10px;
+  padding: 10px 10px; 
+  cursor: pointer;
+}
+.sidebar_span{
+    color:#009688 ;
+}
+.custom_side_rows:hover  {
+  background-color:  #ffffff !important;
+		
+  color: #009688 !important;
+  
+  border-color: #009688;  
+}
+ /* .custom_side_rows{
+    display: block;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    width: auto;
+    margin: 10px;
+    padding: 10px 10px; 
+    background: #5276ff;
+}
+.custom_side_rows:hover  span{
+  color: #009688
+}
+.custom_side_rows:hover {
+    background-color: #d4c6fa5e;
+    
+  } */
+  

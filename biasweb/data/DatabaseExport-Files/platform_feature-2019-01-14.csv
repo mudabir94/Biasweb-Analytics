@@ -1,0 +1,6 @@
+id,feature_name,feature_symbol,feature_levels
+1,Interactivity,I,"[""['I.0'"", "" 'I.1']""]"
+2,Revisiablity,R,"[""['R.0'"", "" 'R.1']""]"
+3,Weight Generation Method,W,"[""['W.direct'"", "" 'W.AHP']""]"
+4,Alternatives Display Method,A,"[""['A.all'"", "" 'A.1by1'"", "" 'A.2by2'"", "" 'A.user']""]"
+5,Criteria Display Method,C,"[""['C.full'"", "" 'C.pruned'"", "" 'C.self']""]"

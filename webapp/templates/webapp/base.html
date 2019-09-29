@@ -9,13 +9,19 @@
 
 
 	{% load staticfiles %}
-	<link rel="stylesheet" href="{% static 'webapp/css/bootstrap.min.css' %}" type = "text/css"/>
+	<!-- <link rel="stylesheet" href="{% static 'webapp/css/bootstrap.min.css' %}" type = "text/css"/> -->
 	<link rel="stylesheet" href="{% static 'webapp/css/style.css' %}" type = "text/css"/>
 	<link rel="stylesheet" href="{% static 'webapp/css/formoid-solid-green.css' %}" type="text/css" />
 	<link rel="stylesheet" href="{% static 'webapp/css/webix.css' %}" type="text/css" />
 	<link rel="stylesheet" href="{% static 'webapp/css/newstyle.css' %}" type="text/css" />
 	<link rel="stylesheet" href="{% static 'webapp/css/sidestyle.css' %}" type="text/css" />
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<link rel="stylesheet" href="{% static 'webapp/css/jquery-ui.css' %}" type="text/css" />
+	<link rel="stylesheet" href="{% static 'webapp/css/jquery-ui.structure.css' %}" type="text/css" />
+	<script type="text/javascript" src="{% static 'webapp/js/jquery1.12.4.js' %}" charset="utf-8"></script>
+  	<script type="text/javascript" src="{% static 'webapp/js/jquerry-ui-1.12.4.js' %}" charset="utf-8"></script>
+  	<link rel="stylesheet" href="{% static 'webapp/bootstrap-4.1.3-dist/css/bootstrap.min.css' %}" type = "text/css"/>
+  	<script type="text/javascript" src="{% static 'webapp/bootstrap-4.1.3-dist/js/bootstrap.min.js' %}" charset="utf-8"></script>
+	<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script type="text/javascript" src="{% static 'webapp/js/jquery-ui.js' %}" charset="utf-8" ></script>
 	<script type="text/javascript" src="{% static 'webapp/js/jquery.js' %}" charset="utf-8" ></script>
     <link rel="stylesheet" href="{% static 'webapp/css/jquery-ui.css' %}" type="text/css" />
@@ -23,9 +29,9 @@
 	<link rel="stylesheet" href="{% static 'webapp/css/jquery-ui.theme.css' %}" type="text/css" />
 	<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
-	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+	<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script> -->
+	<!-- <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script> -->
 	<link rel="stylesheet" href="{% static 'webapp/css/one_mobile.css' %}" type = "text/css"/>
 	<script type="text/javascript" src="{% static 'webapp/js/one_mobile.js' %}" charset="utf-8"></script>
 	
@@ -70,10 +76,17 @@
 			}
 			.row.content {height: auto;} 
 		}
-		
-		
-		
-
+	#cont{
+		width: 100vw; 
+    height: 56.25vw; /* height:width ratio = 9/16 = .5625  */
+    background: pink;
+    max-height: 100vh;
+    max-width: 177.78vh; /* 16/9 = 1.778 */
+    margin: auto;
+    position: absolute;
+    top:0;bottom:0; /* vertical center */
+    left:0;right:0; /* horizontal center */
+	}
 		</style>
 
  
@@ -86,14 +99,14 @@
 	{% endblock %}	
   
 
-
+	
 	
 </body>
-<footer>
+<!-- <footer>
 		
-		<div class="container-fluid" style='margin-left:15px'>
-			<p><a href="#" target="blank">Contact</a> | <a href="#" target="blank">LinkedIn1</a> | <a href="#" target="blank">Twitter</a> | <a href="#" target="blank">Google+</a></p>
-		</div>
-</footer>	
+	<div class="container" style='margin-left:15px'>
+		<p><a href="#" target="blank">Contact</a> | <a href="#" target="blank">LinkedIn1</a> | <a href="#" target="blank">Twitter</a> | <a href="#" target="blank">Google+</a></p>
+	</div>
+</footer>	 -->
 </html>
 
