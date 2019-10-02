@@ -535,7 +535,7 @@ def criteriaWeights(request):
             print("adm",adm)
 
             data={
-                'crit_list':crit_list,
+                'crit_list':json.dumps(crit_list),
                 "ADM":adm[0],
                 'userid':request.user.id,
                 "pagevisited":flag,

@@ -25,7 +25,7 @@
                                     </div>
                                         <div class='row'>
                                             <div class='col-md-12'>
-                                                <canvas id="bar_chart_criteria" width="400"height="200" style="background:rgba(158, 193, 248, 0.431)"></canvas>
+                                                <canvas id="bar_chart_criteria" width="400"height="400" style="background:rgba(158, 193, 248, 0.431)"></canvas>
                                             </div>
                                         </div>       
                             </div>
@@ -215,7 +215,9 @@ function makeTable(allmobile,mob_name){
             img.setAttribute('class','img-responsive')
             var im=allmobile[mob_name][mobilespec]
             img.src="/static/"+im;
-            img.style="height: 154px;"
+            // img.style="height: 154px;"
+            img.style="height: 100px;"
+
             td.append(img);
             // console.log('mobilespec',mobilespec)
             // console.log('allmobile[namekey][mobilespec]',allmobile[namekey][mobilespec])
@@ -231,10 +233,14 @@ function makeTable(allmobile,mob_name){
             tbody.appendChild(tr);
             var td=document.createElement('TD');
             td.setAttribute("align","center")
+            td.setAttribute("style","font-size:10px")
+
             tr.appendChild(td);
             td.append(mobilespec);
             var td=document.createElement('TD');
-            td.setAttribute("align","center")
+            td.setAttribute("align","center");
+            td.setAttribute("style","font-size:10px")
+
             tr.appendChild(td);
             td.append(allmobile[mob_name][mobilespec]);
             // console.log('mobilespec',mobilespec)
@@ -322,7 +328,7 @@ function makeTable(allmobile,mob_name){
                                
                                labels:true,
                                set:value,
-                               tooltip:true,
+                               tooltip:false,
                                
                                onChange: function (event) {
                               
@@ -566,7 +572,7 @@ function show_FinalChart(){
     var data_percentage=[];
     for (var t in mobile_crit_sum_list){
        
-        data_percentage.push(  mobile_crit_sum_list[t])
+        data_percentage.push(mobile_crit_sum_list[t])
    } 
    var data=data_percentage;
    if (final_backg_col.length===0 && final_bor_col.length===0){
@@ -714,55 +720,55 @@ function showchart_criteria(){
 
     var canvas_crit=document.getElementById('bar_chart_criteria').getContext('2d');
     myChart_crit = new Chart(canvas_crit, {
-    type: 'pie',
+    type: 'horizontalBar',
     showTooltips: false,
     data: main_data,
     
     options: {
         responsive: true,
-        // scales: {
-        //     yAxes: [{
-        //         ticks: {
-        //             beginAtZero:true,
-        //             // max: 100
-        //         }
-        //     }]
-        // },
-        legend: {
-            // display: true,
-            position:'left',
-            // now user cant click on labels...
-            onClick: (e) => e.stopPropagation(),
-
-            labels: {
-                fontColor: 'rgb(255, 99, 132)',
-                fontSize:16,
-                fontFamily:'sans-serif', 
-                padding:5,
-                boxWidth:20
-                
-                
-            }
-        },
-        tooltips: {
-            callbacks: {
-               
-                label: function(tooltipItem, data) { 
-            var indice = tooltipItem.index;   
-            console.log(" data.labels[indice]", data.labels[indice])  
-            var label=data.labels[indice]; 
-            var value=data.datasets[0].data[indice];
-            console.log("data.datasets[0].data[indice]",data.datasets[0].data[indice])
-
-            storehoveronpielog[new Date($.now())]=[userid,label,value]
-            console.log("storehoveronpielog",storehoveronpielog)
-            return  data.labels[indice] +': '+data.datasets[0].data[indice] + '';
-
-        }
-
+        scales: {
+            xAxes: [{
+                ticks: {
+                    beginAtZero:true,
+                    // max: 100
                 }
-            
+            }]
         },
+        // legend: {
+        //     // display: true,
+        //     // position:'left',
+        //     // now user cant click on labels...
+        //     onClick: (e) => e.stopPropagation(),
+
+        //     labels: {
+        //         fontColor: 'rgb(255, 99, 132)',
+        //         fontSize:6,
+        //         fontFamily:'sans-serif', 
+        //         padding:5,
+        //         boxWidth:20
+                
+                
+        //     }
+        // },
+        // tooltips: {
+        //     callbacks: {
+               
+        //         label: function(tooltipItem, data) { 
+        //     var indice = tooltipItem.index;   
+        //     console.log(" data.labels[indice]", data.labels[indice])  
+        //     var label=data.labels[indice]; 
+        //     var value=data.datasets[0].data[indice];
+        //     console.log("data.datasets[0].data[indice]",data.datasets[0].data[indice])
+
+        //     storehoveronpielog[new Date($.now())]=[userid,label,value]
+        //     console.log("storehoveronpielog",storehoveronpielog)
+        //     return  data.labels[indice] +': '+data.datasets[0].data[indice] + '';
+
+        // }
+
+        //         }
+            
+        // },
     }
 });
 

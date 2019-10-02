@@ -5,7 +5,10 @@
 }
 .rs-container{
     font-family:Arial,Helvetica,sans-serif;
-    height:45px;position:relative
+    /* height:45px; */
+    height:20px;
+
+    position:relative
 }
 .rs-container .rs-bg,.rs-container .rs-selected{
             /*  */
@@ -81,8 +84,8 @@
 }
 .rs-tooltip{
     color:#333;
-    width:auto;min-width:60px;
-    height:30px;
+    width:auto;min-width:20px;
+    height:25px;
     /* #fff */
     background:rgba(255, 255, 255, 0.534);
     border:1px solid #00969b;

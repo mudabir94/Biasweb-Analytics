@@ -3,37 +3,35 @@
 {%load static from staticfiles%}
 <div class="container-fluid text-center" >    
     <div class="row content maincontentblur"  id='maincontent'>
-        <div class="col-md-2 sidenav" >
-                <div id="dialog" title="Basic dialog">
-                        <p>Now You will be asked to set criteria weights.</p>
+        <div class="col-md-1 sidenav" >
+                <div id="dialog" title="Set Criteria Weights">
+                        <p>Please set the weights of criterias</p>
                 </div>
                 <div id="save-dialog" title="Basic dialog">
                     <p>Your Changes are saved</p>
             </div>
         </div>
-        <div class=" col-md-8" >
+        <div class=" col-md-10" >
             <div class="row is-flex" style="background: rgb(245, 244, 244);">
-                <div class="col-md-4" style="position: relative"  id="crit_list">
-                    {%for crit in crit_list%}
-                        {%if crit == "imagepath1" %}
-                        <div class='criteria_lists zoom'>
-                            <label class='crit_labels' rel ='{{crit}}'onclick='activateSlider($(this))'>Look & Feel</label>
-                        </div>
-                        {%else%}
-                        <div class='criteria_lists zoom'>
-                            <label class='crit_labels' rel ='{{crit}}'  onclick='activateSlider($(this))'>{{crit}}</label>
-                        </div>
-                        {%endif%}
-                    {%endfor%}
+                <div class="col-md-4"   id="side_crit_list_one">
+                 <h1>Criteria List</h1>
 
                 </div>
-                <div class="col-md-6 center " id='main-critw-div'>
+                <div class="col-md-4 center " id='main-critw-div'>
                     <h3 id="main_heading"><b>Set Criteria Weights</b></h3>
-                    <div id='critera_div'>
-                       
+                    <div id='critera_div'></div>
+                    <div id="graph_div_one">
+                        <canvas id="bar_chart_graph_div_one" width="400"height="200" style="background:white"></canvas>
+
+                    </div>
+                    <div id='graph_div_two'>
+                        <canvas id="bar_chart_graph_div_one" width="400"height="200" style="background:white"></canvas>
+
                     </div>
                 </div>
-                <div class="col-md-2"></div>
+                <div class="col-md-4" id="side_crit_list_two">
+                    
+                </div>
 
                
          </div>              
@@ -41,9 +39,9 @@
             
         </div>
         
-        <div class="col-md-2 sidenav" >
-                <button id="savecrit_button" style="font-size: large;"  onclick="SaveWeights()" > Save</button>
-                <button id="next_button" style="font-size: large;" class="btn-danger" onclick="NextPage()">Next</button>
+        <div class="col-md-1" >
+                <!-- <button id="savecrit_button" style="font-size: large;"  onclick="SaveWeights()" > Save</button> -->
+                <button id="next_button" style="font-size: large;" class="btn-danger" onclick="SaveWeights()">Save & Continue</button>
 
         </div>
     
@@ -53,7 +51,7 @@
     </div>
 <script>
     var critlist_val_dict=null
-    var crit_list=[]
+    var crit_list={{crit_list |safe}}
     var ADM='{{ADM}}'
     var userid='{{userid}}';
     // dict that stores how many times the user pressed the save button by storing time. 
@@ -65,50 +63,69 @@
 $(document).ready(function(){ 
     $('#save-dialog').hide();
     // localStorage.removeItem("critlist_val_dict");
-
     // GET CRIT LIST and run the slider.... 
-  
-    if (pagevisited!=="true"){
-        console.log('d')
-        $("#crit_list label").each(function(i)
-        {
-            console.log("crit_list",$(this).attr('rel')) // This is your rel value
-            crit_list.push($(this).attr('rel'));
-        });
-    
-        critlist_val_dict=JSON.parse(window.localStorage.getItem("critlist_val_dict")); 
-        // if (critlist_val_dict!=null){
-        // console.log("critlist_val_dict",critlist_val_dict["criteria_weights"])
-        // console.log("crit_list",crit_list)
-        // }
-        // else{
-        // critlist_val_dict={}
-        // }
-        
-        // if(critlist_val_dict==null){
-        //         critlist_val_dict={}
-                
-        //     }
-        //     if (critlist_val_dict!==undefined){
-        //         // console.log("CHECK2",critlist_val_dict.criteria_weights)
-        //         if (critlist_val_dict["criteria_weights"]!=undefined){
-        //             value=[parseInt(critlist_val_dict["criteria_weights"][c][1])];
-        //         }
-        //     }
-    if(critlist_val_dict==null){
-        critlist_val_dict={}
+    // crit_list=JSON.parse(crit_list)
+    console.log("Criteria list------->",crit_list.length) 
 
-        for (var c in crit_list){
-            console.log("criteria_list",crit_list[c])
-            var value=[5];
-            critlist_val_dict[crit_list[c]]=value
-         }
-         console.log("critlist_val_dict",critlist_val_dict);
-    }
-   
-            
-           
-       
+    if (pagevisited!=="true"){
+        i=0;k=0;length=crit_list.length;
+
+        while (i<=crit_list.length){
+            var side_crit_list=$('#side_crit_list_one');
+
+            // if (k%2==0){
+            //     var side_crit_list=$('#side_crit_list_one');
+            // }
+            // else {
+            //     var side_crit_list=$('#side_crit_list_two');
+            // }
+            if (crit_list[i]==undefined){
+                    break
+            }
+            var sub_crit_row_divs=$("<div class='sub_crit_row_divs zoom' id='sub_crit_row_divs_"+k+"' onclick='getCriterias($(this))'></div>")
+                var sub_crit_col_div=$("<div class='col-md-12'></div>")
+            sub_crit_row_divs.append(sub_crit_col_div);
+
+            for (j=0;j<5;j++){
+                if (crit_list[i]==undefined){
+                    break;
+                }
+
+                var div=$("<div class='crit_labels_row'></div>");
+                criteria=crit_list[i];
+                if (crit_list[i]==='imagepath1'){
+                    criteria="Looks & Feel";
+                }
+                var label=$("<label class='crit_labels_in_list'>"+criteria+"</label>")
+                div.append(label);
+                sub_crit_col_div.append(div);
+                i++;
+            }
+            var hr=$("<hr>")
+            // sub_crit_col_div.append(hr)
+            side_crit_list.append(sub_crit_row_divs);
+
+            if (crit_list[i]==undefined){
+                    break
+                }
+            k++;
+
+        }
+        
+        
+        critlist_val_dict=JSON.parse(window.localStorage.getItem("critlist_val_dict")); 
+        
+        console.log("SSS",critlist_val_dict)
+        if(critlist_val_dict==null){
+            critlist_val_dict={}
+
+            for (var c in crit_list){
+                console.log("criteria_list",crit_list[c])
+                var value=[5];
+                critlist_val_dict[crit_list[c]]=value
+            }
+            console.log("critlist_val_dict",critlist_val_dict);
+        }
     
         $( function() {
         $( "#dialog" ).dialog({
@@ -125,6 +142,9 @@ $(document).ready(function(){
             "ok": function() {
                 var maincontent=$('#maincontent')
                 maincontent.attr('class',"row content")
+
+                var sub_crit_row_divs=$("#sub_crit_row_divs_0");
+                getCriterias(sub_crit_row_divs)
                 $( this ).dialog( "close" );
 
 
@@ -164,7 +184,9 @@ function SaveWeights(){
             temp_slider_id_val_check_list=[];
     }
    
-    console.log("critlist_val_dict",critlist_val_dict)
+    console.log("critlist_val_dict---->>>>",critlist_val_dict)
+    window.localStorage.setItem("critlist_val_dict",JSON.stringify( critlist_val_dict));
+
     $.ajax({
     type: 'POST',
     dataType: "json",
@@ -185,8 +207,9 @@ function SaveWeights(){
         width: 400,
         modal: true,
         open: function(event, ui){
+
             setTimeout("$('#save-dialog').dialog( 'close' );",1000);
-            
+            NextPage();
 
         },
         buttons: {
@@ -208,97 +231,33 @@ function SaveWeights(){
 function NextPage(){
     console.log("ADM",ADM);
 
-    // var input_class=document.getElementsByClassName('slider');
-    // var temp_slider_id_val_check_list=[];
-    // var temp_final_list=[];
-    // for (var i=0;i<input_class.length;i++){
-        
-    //         temp_slider_id_val_check_list.push(input_class[i].id) 
-    //         temp_slider_id_val_check_list.push(input_class[i].value)  
-    //         temp_final_list.push(temp_slider_id_val_check_list);
-    //         temp_slider_id_val_check_list=[];
-    // }
-    // criteria_weights=["criteria_weights"]
-    // if (critlist_val_dict==null){
-    //     critlist_val_dict={}
-    // }
-    // critlist_val_dict[criteria_weights[0]]=temp_final_list
-    // console.log("critlist_val_dict",critlist_val_dict)
-    // $.ajax({
-    // type: 'POST',
-    // dataType: "json",
-    // 'data': {
-    //     "critw_logs_dict":JSON.stringify(critw_logs_dict),
-    //     'critlist_val_dict':JSON.stringify(critlist_val_dict),
-    //     'csrfmiddlewaretoken': '{{ csrf_token }}',
-
-    // },
-    // // the ajax call is sent to subdetails url name in the post function.  
-    //     url: "{% url 'criteria_weights' %}",
-    //     success: function(data){
-
-    //     }
-    // });
-    // if (Object.keys(critlist_val_dict).length === 0){
-    //     alert("Please save the changes before you continue")
-    //     return;
-    // }
     if (ADM==="A.1by1"){
         window.location="{%url 'comparemobile_1by1_direct'%}"
     }
     else if  (ADM==="A.2by2"){
         window.location="{%url 'comparemobile_2by2_direct'%}"
     }
-
-    // $.ajax({
-    // type: 'GET',
-    // dataType: "json",
-    // 'data': {
-
-    // },
-    // // the ajax call is sent to subdetails url name in the post function.  
-    // url: "{% url 'criteria_weights' %}",
-    // success: function(data){
-        
-    //         if (data['ADM']=="A.1by1"){
-    //             window.location="{%url 'comparemobile_1by1_direct'%}"
-
-    //         }
-    //         else if  (data['ADM']=="A.2by2"){
-    //             window.location="{%url 'comparemobile_2by2_direct'%}"
-    //         }
-    //     }
-    
-    // });
-    // if 1by1 in block then show 1by1 page other wise show 2by2 page.. 
-
-    // save time when user clicks save button
-    
-   
-
 }
 function  countSaveButtonEvents(){
     storesavebuttonlogs[new Date($.now())]=[userid]
     }
-function activateSlider(element){
-    crit=$(element).attr('rel');
-    ele=$('#crit_list').find('.selected_zoom');
-    $(ele).attr('class','criteria_lists zoom');    
-    $(element).parent().attr('class','criteria_lists selected_zoom');
-
-
+function activateSlider(crt){
+    var crit=crt;
 
     console.log("CriteriaQQQQ",crit);
-    value=critlist_val_dict[crit]
+    if (crit=="Looks & Feel"){
+        crit="imagepath1"
+        
+    }
+    value=critlist_val_dict[crit];
     console.log("VALUE",value);
 
-    $("#critera_div").empty();
-    var critera_div=$("#critera_div");
-    var row=$('<div class="row is-flex"></div');
+   
+    var row=$('<div class="row slider_rows"></div');
         var col1=$('<div class="col-md-3">');
-            if (crit==='imagepath1'){
-                crit="Look And Feel"
-            }
+        if (crit==='imagepath1'){
+            crit="Looks & Feel"
+        }
             var label=$("<label class='crit_labels'>"+crit+"</label>")
         col1.append(label)
         var col2=$("<div class='col-md-8'></div>");
@@ -310,24 +269,24 @@ function activateSlider(element){
     row.append(col1);
     row.append(col2);
     row.append(col3);
-critera_div.append(row);
-
+    $("#critera_div").append(row);
     var slider = new rSlider({
 
-                target:crit ,
+                target:crit,
                 values: [1,2,3,4,5,6,7,8,9,10],
                 widget:false,
                 labels:[1,2,3,4,5,6,7,8,9,10],
                 labels:true,
                 set:value,
-                tooltip:true,
+                tooltip:false,
                 onChange: function (event) {
                     console.log("EVENT",event)
                     console.log("THIS",this.target)
                     document.getElementById(this.target+'_span').innerHTML=event;
                    
                     console.log("critw_logs_dict",critw_logs_dict)
-                    if (this.target==='Look And Feel')
+                    target=this.target;
+                    if (this.target==='Looks & Feel')
                     {
                         target='imagepath1'
                     }
@@ -345,7 +304,26 @@ critera_div.append(row);
                 }
                 });
 
+}
+function getCriterias(element){
+    var ele=$('#side_crit_list_one').find('.selected_zoom');
+    $(ele).attr('class','sub_crit_row_divs  zoom');    
+    $(element).attr('class','sub_crit_row_divs  selected_zoom');
 
+    $("#critera_div").empty();
+
+    $(element).each(function() {
+
+        label=$(this).find("label");
+        $(label).each(function(){
+            crit=$(this).text();
+            console.log("crit",crit);
+            var critera_div=$("#critera_div");
+            activateSlider(crit);
+        });
+        
+
+});
 }
 </script>
 
