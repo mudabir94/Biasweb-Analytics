@@ -59,9 +59,20 @@
     // list that stores criteria weight logs based on time 
     var critw_logs_dict={};
     var pagevisited="{{pagevisited}}"
+    var subcritcount=0;
+    var crit_divs_visited=[];
+    var Reviseability_On="{{res}}";
 
 $(document).ready(function(){ 
     $('#save-dialog').hide();
+    alert(Reviseability_On);
+    if (Reviseability_On==="False"){
+        Reviseability_On=false
+    }
+    else{
+        Reviseability_On=true
+
+    }
     // localStorage.removeItem("critlist_val_dict");
     // GET CRIT LIST and run the slider.... 
     // crit_list=JSON.parse(crit_list)
@@ -73,12 +84,6 @@ $(document).ready(function(){
         while (i<=crit_list.length){
             var side_crit_list=$('#side_crit_list_one');
 
-            // if (k%2==0){
-            //     var side_crit_list=$('#side_crit_list_one');
-            // }
-            // else {
-            //     var side_crit_list=$('#side_crit_list_two');
-            // }
             if (crit_list[i]==undefined){
                     break
             }
@@ -111,14 +116,12 @@ $(document).ready(function(){
             k++;
 
         }
-        
-        
+        subcritcount=k;
+        subcritcount++;
         critlist_val_dict=JSON.parse(window.localStorage.getItem("critlist_val_dict")); 
-        
         console.log("SSS",critlist_val_dict)
         if(critlist_val_dict==null){
             critlist_val_dict={}
-
             for (var c in crit_list){
                 console.log("criteria_list",crit_list[c])
                 var value=[5];
@@ -169,6 +172,13 @@ $(document).ready(function(){
  }); 
 
 function SaveWeights(){
+    if (Reviseability_On==false){
+        len=crit_divs_visited.length       
+        if (len<subcritcount){
+            alert ("Please See all Criterias before Moving Further.")
+            return;
+        }
+    }
     console.log("Time",new Date($.now()));
     console.log("critw_logs_dict",critw_logs_dict)
     countSaveButtonEvents();
@@ -305,11 +315,45 @@ function activateSlider(crt){
                 });
 
 }
-function getCriterias(element){
-    var ele=$('#side_crit_list_one').find('.selected_zoom');
-    $(ele).attr('class','sub_crit_row_divs  zoom');    
-    $(element).attr('class','sub_crit_row_divs  selected_zoom');
 
+function getCriterias(element){
+    element_id=$(element).attr('id')
+
+    if (Reviseability_On===false){
+
+        if (crit_divs_visited.includes(element_id)){
+            
+            $('.error-notification').remove();
+            var $err = $('<div>').addClass('error-notification')
+            .html('<div><h4>Sorry you can not check these Criterias again!</h4></div>')
+            .css('left', $(element).position().left);
+            $(element).after($err);
+            $err.fadeIn('fast');
+            $err.fadeOut(3000);
+            return;
+           
+        }
+        else{
+
+            crit_divs_visited.push(element_id)
+
+            var ele=$('#side_crit_list_one').find('.selected_zoom');
+            $(ele).attr('class','sub_crit_row_divs');    
+            $(element).attr('class','sub_crit_row_divs  selected_zoom');
+        } 
+
+    }
+    else{
+        var ele=$('#side_crit_list_one').find('.selected_zoom');
+        $(ele).attr('class','sub_crit_row_divs  zoom');    
+        $(element).attr('class','sub_crit_row_divs  selected_zoom');
+
+    }
+
+
+
+
+    
     $("#critera_div").empty();
 
     $(element).each(function() {

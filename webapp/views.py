@@ -474,7 +474,8 @@ def criteriaWeights(request):
    
     if request.method=="GET":
         print("storeuserpagelogs",storeuserpagelogs)
-
+        reviseability = [idx for idx in exp_feat_levels if idx.startswith("R.")] 
+        print("res -- R",reviseability[0])
         if "criteriaweights" in storeuserpagelogs:
             flag="true"
        
@@ -533,12 +534,17 @@ def criteriaWeights(request):
             # res1 = [idx for idx in Sub_obj.block.levels_set if idx.startswith("A.")] 
             adm = [idx for idx in exp_feat_levels if idx.startswith("A.")] 
             print("adm",adm)
-
+            revs=reviseability[0]
+            if revs=='R.1':
+                revs=True
+            else:
+                revs=False
             data={
                 'crit_list':json.dumps(crit_list),
                 "ADM":adm[0],
                 'userid':request.user.id,
                 "pagevisited":flag,
+                'res':revs,
 
                 
             }
@@ -1132,9 +1138,9 @@ class defaultCriteria_Setup(TemplateView):
                 # global catalogcrit_show_list
 
                 # catalogcrit_show_list=cataloglist
-                print("postedFLevels",postedFLevels)
-                print("default_crit_show_dict",default_crit_show_dict)
-                print("default_crit_hide_dict",default_crit_hide_dict)
+                # print("postedFLevels",postedFLevels)
+                # print("default_crit_show_dict",default_crit_show_dict)
+                # print("default_crit_hide_dict",default_crit_hide_dict)
                 
                 final_def_blocks_to_send = request.POST.get('final_def_blocks_to_send')
                 postedDefFLevels=json.loads(final_def_blocks_to_send)
@@ -1347,10 +1353,13 @@ class orderCriteria_Setup(TemplateView):
                 crit_hide_dict=json.loads(crit_hide_dict)
                 featlevels_dic=request.POST.get('featlevels_dic')
                 postedFLevels = json.loads(featlevels_dic)
-                print("crit_order_dict",crit_order_dict)
-                print("crit_hide_dict",crit_hide_dict)
-                print("featlevels_dic",featlevels_dic)
-
+                # print("crit_order_dict",crit_order_dict)
+                # print("crit_hide_dict",crit_hide_dict)
+                # print("featlevels_dic",featlevels_dic)
+                final_def_blocks_to_send = request.POST.get('final_def_blocks_to_send')
+                postedDefFLevels=json.loads(final_def_blocks_to_send)
+                print("final_def_blocks_to_send",final_def_blocks_to_send)
+                
                 expCont = getExpController(request)
                 existExpId = expCont.exp.id
                 existCusId=expCont.exp.custom_exp_id

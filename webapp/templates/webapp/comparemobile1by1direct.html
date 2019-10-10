@@ -6,16 +6,36 @@
             <div class="col-md-2" style="background:black">
                 <div id="prevbtn_div"></div>
                 <div id="checkdiv_np"></div>
+                <div   id="side_crit_list_compmob_one" style="text-align: -moz-center;">
+                    <h3 style="color:black;background: cadetblue;width: max-content;padding: 5px; margin-top: 10px; font-weight:normal;font-size:25px;">Criteria List</h3>
+                </div>
             </div>
             <div class="col-md-9">
                     <div class="row" >
-                            <div class="col-md-7"  id="comparison_table">
-                                <div id="tablediv">   </div>
+                            <div class="col-md-7" >
+                                <div class='row'>
+                                    <div class='allmobilelist'>
+                                        
+                                    </div>
+                                </div>
+                                <div class='row'>
+                                    <div class='col-md-12'>
+                                        <div class='row'   > <!--Comparison Table Heading-->
+                                            <div class='col-md-12' id="comparison_table">
+                                                <div class='row'  id="mobilenameheadingdiv"></div>
+                                                <div class='row'  id='imagediv'></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            <div  id="criteria_div"></div>
                             </div>
                             <div class='col-md-5' id="charts_div">
                                     <!-- <div id="chartContainer" style="height: 300px; width: 100%;"></div> -->
                                     <div class='row'>
                                         <div class='col-md-12'>
+                                            <div style="text-align: center;margin: auto;font-size: larger;color: #009688;font-weight: bold;padding-top: 10px;padding-bottom: 10px;">Final Ranking Bar Chart</div>
                                             <canvas id="bar_chart" width="400"height="200" style="background:white"></canvas>
                                         </div>
                                     </div>
@@ -25,8 +45,15 @@
                                     </div>
                                         <div class='row'>
                                             <div class='col-md-12'>
-                                                <canvas id="bar_chart_criteria" width="400"height="400" style="background:rgba(158, 193, 248, 0.431)"></canvas>
-                                            </div>
+                                                    <div  style="text-align: center;margin: auto;font-size: larger;color: #009688;font-weight: bold;padding-top: 10px;padding-bottom: 10px;">
+                                                        Criteria Weight Bar Chart Previously Set
+                                                            <div id='change-criteria-weights_div'>
+                                                                    <a style="color:red" href="{%url 'criteria_weights'%}" > Change Criteria Weights</a>                                           </div>
+                                                            </div>
+                                                    </div>
+
+                                                <canvas id="bar_chart_criteria" width="400"height="300" style="background:rgba(158, 193, 248, 0.431)"></canvas>
+                                            
                                         </div>       
                             </div>
                     </div>
@@ -44,7 +71,7 @@
     var nextmob_index=0
     var criteria_weights_dict={}
     var criteria_list=[]
-    var temp_crit_list=[]
+    var criteriaweight_name_value_list=[]
     var pageloadedfrompressingnextorprev=true;
 
     var Interactivity_On=true
@@ -62,19 +89,37 @@
     var slider2=""
     var pagevisited="{{pagevisited}}"
     var surveydata=[];
+    var slider_id_val_check_dict;
+    var crit_name_list=[];
+    var crit_wght_list=[];
+    var crit_wght_sum=0;
+    var mobile_crit_sum_dict={};
+    var mobile_crit_sum_list=[];
+    var final_backg_col=[];
+    var final_bor_col=[];
+    var myChart;
+    var myChart_crit;
+    var crit_backg_col=[];
+    var crit_bor_col=[];
+    var subcritcount=0;
+    var crit_divs_visted=[];
+    var alpha=1.0;
+    var mobilephonecolordict={}
+
 $(document).ready(function(){
     $('#checkdiv_np').hide();
     if (pagevisited!=="True"){
         $.ajax({
                     type: 'GET',
                     dataType: "json",
+                    async: false, 
+
                     'data': {
                     },
                     url: "{% url 'comparemobile_1by1_direct' %}",
                     success: function(data){
 
                         if (data['pagevisited']==="True"){
-                            alert("SS")
                             console.log("Sorry you can't go back. ")
                         }
                         else{
@@ -87,14 +132,15 @@ $(document).ready(function(){
                             else if (interactivity_data=="I.1"){
                                 Interactivity_On=true
                             }   
-                            alert(interactivity_data)
+                            // alert(interactivity_data)
                             if (reviseability_data=="R.0"){
                                 Reviseability_On=false
+                                $("#change-criteria-weights_div").hide();
                             }
                             else if (reviseability_data=="R.1"){
                                 Reviseability_On=true
-                            }   
-                            alert(reviseability_data)
+                            } 
+                            // alert(reviseability_data)
                         }
                     }
                       
@@ -103,6 +149,7 @@ $(document).ready(function(){
         $.ajax({
                     type: 'POST',
                     dataType: "json",
+                    async: false, 
                     'data': {
                     'csrfmiddlewaretoken': '{{ csrf_token }}',
                     },
@@ -114,27 +161,27 @@ $(document).ready(function(){
                     
                         allmobile=data['allmobiles'] 
                         alternatives_list=data['alternative_list'];
-                        criteria_list=[]
+                        criteria_list=[];
                         criteria_list=data['criteria_list'];
-                        console.log("criteria_weights_dict",criteria_weights_dict)
-                        console.log("criteria_list",criteria_list)
+                     
                         // LATER ADD THIS BLOCK OF CODE TO A FUNCTION
                         for (var crit in criteria_list){
                             crit_wght_name=criteria_list[crit];
                             crit_wght_val=criteria_weights_dict[criteria_list[crit]];
                         
-                            templist=[]
+                            templist=[];
                             templist.push(crit_wght_name)
                             templist.push(crit_wght_val)
-                            temp_crit_list.push(templist)
-                        
+                            criteriaweight_name_value_list.push(templist)
                         }
+                        console.log("criteriaweight_name_value_list",criteriaweight_name_value_list);
                         // 
                         mobiletesting=data['allmobiles'];
                         console.log("allmobile",allmobile)
                         console.log("alternatives_list",alternatives_list)
                         console.log("criteria_list",criteria_list)
                         console.log("mobiletesting",mobiletesting)
+
                         // LABEL ASSIGNING TO BAR CHART
                         for (var i in alternatives_list){
                             if (alternatives_list[i].length>5){
@@ -144,233 +191,287 @@ $(document).ready(function(){
                             }
                         }
 
-                        slider_id_val_check_dict=JSON.parse(window.localStorage.getItem("slider_id_val_check_dict"));
-                        console.log("ffffffff",$('#checkdiv_np').is(":visible"))
+                        var i=0;var k=0;length=criteria_list.length;
                         
-                        pageloadedfrompressingnextorprev=true;
-                        makeTable(allmobile,alternatives_list[nextmob_index]);
-                        pageloadedfrompressingnextorprev=false;
+                        while (i<=criteria_list.length){
+                            var side_crit_list=$('#side_crit_list_compmob_one');
+                            if (criteria_list[i]==undefined){
+                                    break;
+                            }
+                            var sub_crit_row_divs=$("<div class='sub_crit_row_divs zoom' id='sub_crit_row_divs_"+k+"' onclick='getCriterias($(this))'></div>")
+                                var sub_crit_col_div=$("<div class='col-md-12'></div>")
+                            sub_crit_row_divs.append(sub_crit_col_div);
 
-                        //  $('#checkdiv_np').show();
+                            for (j=0;j<5;j++){
+                                if (criteria_list[i]==undefined){
+                                    break;
+                                }
+
+                                var div=$("<div class='crit_labels_row'></div>");
+                                criteria=criteria_list[i];
+                                if (criteria_list[i]==='imagepath1'){
+                                    criteria="Looks & Feel";
+                                }
+                                var label=$("<label class='crit_labels_in_list'>"+criteria+"</label>")
+                                div.append(label);
+                                sub_crit_col_div.append(div);
+                                i++;
+                            }
+                            var hr=$("<hr>")
+                            // sub_crit_col_div.append(hr)
+                            side_crit_list.append(sub_crit_row_divs);
+
+                            if (criteria_list[i]==undefined){
+                                    break
+                                }
+                            k++;
+
+                        }
+                        subcritcount=k;
+                        subcritcount++;
+                        slider_id_val_check_dict=JSON.parse(window.localStorage.getItem("slider_id_val_check_dict")); 
+                        if (slider_id_val_check_dict==undefined){
+                            createValDictForPhones(allmobile,alternatives_list);
+                        }
+                        makeTable(allmobile,alternatives_list[nextmob_index])
+                        var sub_crit_row_divs=$("#sub_crit_row_divs_0");
+                        getCriterias(sub_crit_row_divs);
+                        CalculateWeightsWithAlts();
+                        showchart_criteria();
+                        var red = Math.floor(Math.random() * 255);
+                        var green = Math.floor(Math.random() * 255);
+                        var blue = Math.floor(Math.random() * 255);
+      
+                        for (var c=0;c<alternatives_list.length;c++){
+            
+                        var rgba='rgba('+red+','+ green+','+blue+','+ alpha+')'
+                        var red = Math.floor(Math.random() * 255);
+                        var green = Math.floor(Math.random() * 255);
+                        var blue = Math.floor(Math.random() * 255);
+                        final_backg_col.push(rgba)
+                        final_bor_col.push(rgba)
+                        mobilephonecolordict[alternatives_list[c]]=rgba;
+                        }
+                        activeMobilePage();
+                        mobilelabelid='#'+alternatives_list[0].replace(/ /g,'-')+'_color';
+                        $(mobilelabelid).attr('style','background:'+mobilephonecolordict[alternatives_list[0]]+'')
+                        // // slider_id_val_check_dict=JSON.parse(window.localStorage.getItem("slider_id_val_check_dict"));
+                        // // console.log("ffffffff",$('#checkdiv_np').is(":visible"))
                         
-                        
-                    
-                    // As it is only one by one. We won't be needing any combinations. 
-                    // allmobile is a dictionary containing data of each mobile,where mobile name is the key. 
-                    // Alternative_list contain only the name of the phones. 
-                    // criteria list contains all the criterias admin has set for the subject. 
-                    // mobile testing is the same as allmobile
-                    // WORKFLOW!!!!
-                    // -Pass the allmobile dictionary to maketable function. Which will populate the data... 
-                    // -Keeping the number of phones in check we will show the next button, which will again
-                    //    populate the next in line phone data to the table. 
-                    // *Here we will check the permission given to the subject if revisiablity is on only then
-                    // we'll show it the option of going back. 
-                    // -Similarly seeing if interactivity check is On we'll populate the charts as well.
+                        // //  pageloadedfrompressingnextorprev=true;
+                        // // pageloadedfrompressingnextorprev=false;
 
-
+                        // // $('#checkdiv_np').show();
                     }
+                   
+
                 });
+
         }
 });
-function makeTable(allmobile,mob_name){
+function activeMobilePage(){
+    // console.log("final_backg_col------------------",final_backg_col)
+    var allmobilelist=$('.allmobilelist');
+    var ul=$('<ul></ul>')
+    for (var mob in alternatives_list){
+        var li=$("<li></li>");
+        var row=$('<div class="row"></div>');
+        
+        var div=$('<div style="margin-top:4px;background:'+mobilephonecolordict[alternatives_list[mob]]+';width:15px;height:15px;border:solid;border-color:black;border-width:thin"></div>')
+        // console.log("MOB->>>>>>>>",final_backg_col[mob])
+        mobname=alternatives_list[mob].replace(/ /g,'-')
+        var label=$('<label class="mobile_label_color" id="'+mobname+'_color" >'+alternatives_list[mob]+'</label>')
+        
+        row.append(div)
+        row.append(label)
 
-    var table=document.createElement("TABLE");
-    // table.setAttribute('class','table-bordered')
-    var thead=document.createElement("THEAD");
-    table.appendChild(thead)
-    var tbody=document.createElement("TBODY");
-    table.appendChild(tbody);
-    var trh=document.createElement("TR");
-    thead.appendChild(trh);
-    var th=document.createElement('TH')
-    th.setAttribute("style","padding-right:1pc")
-    trh.appendChild(th);
-    th.append("Criteria");
-    var count=0;
-    var mobilename=[];
-    var specs=[];
-    mobilename.push(mob_name)
-    var th=document.createElement('TH')
-    th.setAttribute("style","padding-right:1pc")
-    trh.appendChild(th);
-    th.append(mob_name)
-    var rowcount=0
-    console.log("ALL MOBILE",allmobile)
-    for (var mobilespec in allmobile[mob_name]){
-        if (mobilespec==='imagepath1'){
-            specs.push('imagepath1')
-            
-            var tr=document.createElement('TR');
-            tr.setAttribute('id','imagepath1'+rowcount)
-            tbody.appendChild(tr);
-            var td=document.createElement('TD');
-            td.setAttribute("align","center")
-            tr.appendChild(td);
-            td.append('Models');
-            var td=document.createElement('TD');
-            td.setAttribute("align","center")
-            tr.appendChild(td);
-            var img=document.createElement('img');
-            img.setAttribute('class','img-responsive')
-            var im=allmobile[mob_name][mobilespec]
-            img.src="/static/"+im;
-            // img.style="height: 154px;"
-            img.style="height: 100px;"
+        // label.append(div)
+        
+        li.append(row);
 
-            td.append(img);
-            // console.log('mobilespec',mobilespec)
-            // console.log('allmobile[namekey][mobilespec]',allmobile[namekey][mobilespec])
-            
-            rowcount++;
-            $('#tablediv').append(table) 
+        ul.append(li);
+    }
+    allmobilelist.append(ul);
+}
+
+function activateSlider(crt){
+    var crit=crt;
+    var mob_name=alternatives_list[nextmob_index]
+    if (crit=="Looks & Feel"){
+        crit="imagepath1"
+    }
+    // console.log("crit>>",crit)
+
+    console.log("slider_id_val_check_dict>>",slider_id_val_check_dict)
+    value=slider_id_val_check_dict[mob_name][crit]
+    console.log("value",value);
+    var row=$('<div class="row slider_rows"></div');
+    $("#criteria_div").append(row);
+
+        var col1=$('<div class="col-md-3">');
+        if (crit==='imagepath1'){
+            crit="Looks & Feel"
+        }
+        console.log("crit",crit)
+            var label=$("<label class='crit_labels'>"+crit+"</label>")
+        col1.append(label)
+        var col2=$("<div class='col-md-8'></div>");
+            input=$('<input id="'+crit+'" class="slider"></input>')
+        col2.append(input);
+            var specinfo_div=$("<div style='text-align: center;font-weight: bolder;'></div>");
+            specinfo_div.append(allmobile[mob_name][crit]);
+        col2.append(specinfo_div);
+
+        var col3=$("<div class='col-md-1'></div>");
+            span=$('<span id="'+crit+'_span"></span>')
+        col3.append(span);
+    row.append(col1);
+    row.append(col2);
+    row.append(col3);
+   
+
+    var slider = new rSlider({
+
+                target:crit,
+                values: [1,2,3,4,5,6,7,8,9,10],
+                widget:false,
+                labels:[1,2,3,4,5,6,7,8,9,10],
+                labels:true,
+                set:value,
+                tooltip:false,
+                onChange: function (event) {
+                    console.log("EVENT",event)
+                    console.log("THIS",this.target)
+                    document.getElementById(this.target+'_span').innerHTML=event;
+                    target=this.target;
+                    if (this.target==='Looks & Feel')
+                    {
+                        target='imagepath1'
+                    }
+                    else{
+                        target=this.target;
+                    }
+                   
+                    
+
+                    if (slider_id_val_check_dict[mob_name][target]===undefined){
+                        slider_id_val_check_dict[mob_name][target]=[]
+                    }
+                    else{
+                        event=parseInt(event)
+                        slider_id_val_check_dict[mob_name][target]=[event];
+                        // console.log("Mobile name",mob_name);
+                        // console.log("Target",target);
+                        // console.log("slider_id_val_check_dict[mob_name][target]",slider_id_val_check_dict[mob_name][target])
+
+                    }
+                    // console.log("slider_id_val_check_dict",slider_id_val_check_dict)
+                    CalculateWeightsWithAlts();
+                    show_FinalChart();
+
+                    
+                }
+                });
+
+}
+function getCriterias(element){
+    console.log("crit_divs_visted--------------",crit_divs_visted)
+
+    element_id=$(element).attr('id')
+    if (Reviseability_On===false){
+
+        if (crit_divs_visted.includes(element_id)){
+            // alert("CLicked Again ")
+            $('.error-notification').remove();
+            var $err = $('<div>').addClass('error-notification')
+            .html('<div><h4>Sorry you can not check these Criterias again!</h4></div>')
+
+            // .html('<div><img class="imgClose" src="http://www.mobissimo.com/images/module-close.png" /><p><img src="http://www.mousescrappers.com/forums/xperience/icons/teacups24.png" /><h2>Paolo is awesome</h2>(click on this box to close)</p></div>')
+                .css('left', $(element).position().left);
+                $(element).after($err);
+                $err.fadeIn('fast');
+                $err.fadeOut(3000);
+                return;
+            // var ele=$('#side_crit_list_compmob_one').find('.selected_zoom');
+            // $(ele).attr('class','sub_crit_row_divs');    
+            // $(element).attr('class','sub_crit_row_divs  selected_zoom');
         }
         else{
+            // alert("CLicked First Time")
+
+            crit_divs_visted.push(element_id)
+
+            var ele=$('#side_crit_list_compmob_one').find('.selected_zoom');
+            $(ele).attr('class','sub_crit_row_divs');    
+            $(element).attr('class','sub_crit_row_divs  selected_zoom');
+        }
+
+   
+
+    //     $('#test').each(function (){
+    //     this.style.pointerEvents = 'none'; 
+    //     }); 
+
+        // // To re-enable:
+        // $('#test').each(function (){
+        //     this.style.pointerEvents = 'auto'; 
+        // }); 
+    }
+    else{
+        var ele=$('#side_crit_list_compmob_one').find('.selected_zoom');
+        $(ele).attr('class','sub_crit_row_divs  zoom');    
+        $(element).attr('class','sub_crit_row_divs  selected_zoom');
+    }
+  
+       
+
+    
+    $("#criteria_div").empty();
+    $(element).each(function() {
+        label=$(this).find("label");
+        $(label).each(function(){
+            crit=$(this).text();
+            activateSlider(crit);
+        });
+    });
+    
+    
+   
+
+       
+
+
+    
+
+
+
+}
+
+function makeTable(allmobile,mob_name){
+
+    var specs=[];
+    var mobilenameheadingdiv=$('#mobilenameheadingdiv')
+    var div=$("<div style='text-align: center;margin: auto;font-size: larger;color: #009688;font-weight: bold;padding-top: 10px;padding-bottom: 10px;'></div>");
+        div.append(mob_name); 
+    mobilenameheadingdiv.append(div);
+    
+    for (var mobilespec in allmobile[mob_name]){
+
+        if (mobilespec==='imagepath1'){
+            var im=allmobile[mob_name][mobilespec]
+            specs.push('imagepath1')
+            // console.log("MOBILESPEC1",mobilespec);
+                var  imageelement=$("<img class='img-responsive zoom' src='/static/"+im+"'></img>")
+                imagediv=$("#imagediv");
+                imagediv.append(imageelement);
+            }
+        else{
             specs.push(mobilespec)
-            
-            var tr=document.createElement('TR');
-            tr.setAttribute('id',mobilespec+rowcount)
-            tbody.appendChild(tr);
-            var td=document.createElement('TD');
-            td.setAttribute("align","center")
-            td.setAttribute("style","font-size:10px")
+            console.log("MOBILESPEC2",mobilespec);
 
-            tr.appendChild(td);
-            td.append(mobilespec);
-            var td=document.createElement('TD');
-            td.setAttribute("align","center");
-            td.setAttribute("style","font-size:10px")
-
-            tr.appendChild(td);
-            td.append(allmobile[mob_name][mobilespec]);
-            // console.log('mobilespec',mobilespec)
-            // console.log('allmobile[namekey][mobilespec]',allmobile[namekey][mobilespec])
-            
-            rowcount++;
-            $('#tablediv').append(table) 
         }
     }
-    var rowcount=0;
-    for (var mbs in specs){
-               
-               var refrow =document.getElementById(specs[mbs]+rowcount);
-           
-               if (refrow!=null){
-                   var newrow = document.createElement("TR");
-                   newrow.setAttribute('align','center')
-                   newrow.setAttribute('id',specs[mbs]+'-'+mobilename)
-                   // var td=document.createElement('TD');
-                   // newrow.appendChild(td);
-                   // td.append("Slider ");
-                   var td=document.createElement('TD');
-                   td.setAttribute('id',specs[mbs]+'-'+mobilename+'-td')
-                   td.setAttribute("align","center")
-                   td.setAttribute('colSpan',"3")
-                   newrow.appendChild(td);
-                   // creating style divs ... 
-                   var div_row=document.createElement('div')
-                   div_row.setAttribute('class','row');
-                   td.append(div_row);
-                   var div_col=document.createElement('div');
-                   div_col.setAttribute('class','col-md-2')
-                   div_row.append(div_col);
-                   var div_col1=document.createElement('div');
-                   div_col1.setAttribute('class','col-md-8');
-                   div_row.append(div_col1);
-                   
-                   var input = document.createElement("input");
-                   input.type = "text";
-                   input.id=specs[mbs]+'-'+mobilename+'-td'+'__'+specs[mbs]+'-slider';
-                   input.setAttribute('class','slider')
-                   div_col1.append(input);
-                  
-                 
-                   var span=document.createElement('span');
-                   span.id=specs[mbs]+'span';
-                   span.innerHTML=1;
-                   
-                   var div_col2=document.createElement('div');
-                   div_col2.setAttribute('class','col-md-2');
-                   div_col2.append(span)
-                   div_row.append(div_col2);
-           
-                   td.append(div_row);
-                   refrow.parentNode.insertBefore(newrow, refrow.nextSibling);
-                   rowcount++;
-                  
-             
-                 // on creation check if the comparison is already done or not ? 
-                 // if already done then load the values of ranges selected earlier 
-                 // into the slider value ... THATS it.   
-                 // if target id matched the stored slider id then get value
-                 
-                 // GEt the  current pair of mobile in comparison
-                 // search in dict if the pair already exsists. 
-                 // if it exsists then get the values of slider one by one, which is based on the loop. 
-           
-                //    var current_slider_comb=mobilename;
-                //    current_slider_comb=current_slider_comb.join(',')
-                   var value=[5];
-                   if (slider_id_val_check_dict!=null){
-                       if (slider_id_val_check_dict[mob_name]!=undefined){
-                           value=[parseInt(slider_id_val_check_dict[mob_name][mbs][1])];
-                       }
-                   }
-                   
-                  
-               
-                 slider2 = new rSlider({
-                               target: specs[mbs]+'-'+mobilename+'-td'+'__'+specs[mbs]+'-slider',
-                               
-                               values: [0,1,2,3,4,5,6,7,8,9,10],
-                               widget:false,
-                               labels:[0,1,2,3,4,5,6,7,8,9,10],
-                               
-                               labels:true,
-                               set:value,
-                               tooltip:false,
-                               
-                               onChange: function (event) {
-                              
-                                   console.log(this.target);
-                                   var split_arr=this.target.split('__');
-                                   var breakid=split_arr[0].split("-");
-                                   var mobilename=breakid[1];
-                                   var parent_id=document.getElementById(split_arr[0]).parentNode;
-                                   console.log("mobilename",mobilename);
-                                   console.log("BAR CHArt status",$("#bar_chart").hasClass("chartjs-render-monitor"));
-                                   console.log("pageloadedfrompressingnextorprev",pageloadedfrompressingnextorprev)
-                                   console.log($('#checkdiv_np').is(":visible"))
-                                //    if ($('#checkdiv_np').is(":visible")===true){
-
-                                   if (pageloadedfrompressingnextorprev===false){
-                                            var criteria_name=breakid[0]
-                                            if (alt_crit_logs_dict[mobilename]===undefined){
-                                                    alt_crit_logs_dict[mobilename]={}
-                                            }
-                                                var crit_log_dict=JSON.parse(JSON.stringify(alt_crit_logs_dict[mobilename]));
-                                                if (crit_log_dict[criteria_name]===undefined){
-                                                    crit_log_dict[criteria_name]=[];
-                                                }
-                                                else{
-                                                    crit_log_dict[criteria_name].push([userid,event,new Date($.now())]);
-                                                }
-                                                alt_crit_logs_dict[mobilename]=JSON.parse(JSON.stringify(crit_log_dict));
-                                                console.log("alt_crit_logs_dict",alt_crit_logs_dict)
-                                        }
-
-                                        
-                                   
-
-                                        
-                                        showSliderRangeVal(parent_id,event)
-
-                                    
-                               }
-                    });
-
-            }
-        }
+   
            
         if (nextmob_index!==0){
             // if block contains R.O then dont show prev option.
@@ -396,6 +497,7 @@ function makeTable(allmobile,mob_name){
             $('#prevbtn_div').empty(); 
         }
         if (nextmob_index===alternatives_list.length){
+
             $('#nextbtn_div').empty();
             show_FinalChart();
             showchart_criteria();
@@ -406,9 +508,13 @@ function makeTable(allmobile,mob_name){
             var text = document.createTextNode("Submit");
             submit_button.appendChild(text);
             $(submit_button).appendTo('#nextbtn_div');
+            $("#side_crit_list_compmob_one").hide();
         }
         else{
             $('#nextbtn_div').empty();
+            if (Reviseability_On===false){
+                $('#prevbtn_div').empty(); 
+            }
             var nextbutton=document.createElement('button');
             nextbutton.setAttribute("onclick","nextMobile()")
             nextbutton.setAttribute("class","btn btn-primary");
@@ -421,24 +527,94 @@ function makeTable(allmobile,mob_name){
         }
 
 }
+function createValDictForPhones(allmobile,mobilenames){
 
-function nextMobile(){
-    pageloadedfrompressingnextorprev=true;
-    storenextprevbuttonlogs[new Date($.now())]=['next',userid,alternatives_list[nextmob_index]];
-    console.log("storenextprevbuttonlogs",storenextprevbuttonlogs);
-    $("#tablediv").empty();
-    console.log("mob_index--1",nextmob_index)
-    
-    nextmob_index+=1
-    console.log("mob_index--1--2",nextmob_index)
+    slider_id_val_check_dict={};
+    for (var mobname in mobilenames){
+        var specdict={};
+        var mobname=mobilenames[mobname];
+        slider_id_val_check_dict[mobname]={};
+        mobilespecs=allmobile[mobname];
+        console.log("allmobile[mobname]",allmobile[mobname])
+        for (var mobilespec in mobilespecs){
+            var value=[5];
+            specdict[mobilespec]=value;
+            slider_id_val_check_dict[mobname]=specdict;
+        }
+    }
 
-    makeTable(allmobile,alternatives_list[nextmob_index]);
-    pageloadedfrompressingnextorprev=false;
-
-    
-
+    console.log("slider_id_val_check_dict",slider_id_val_check_dict)
 }
+function nextMobile(){
+   
+    // pageloadedfrompressingnextorprev=true;
+    if (Reviseability_On==false){
+
+    
+        len=crit_divs_visted.length
+        
+        if (len<subcritcount){
+            alert ("Please See all Criterias before Moving Further.")
+            return;
+        }
+    }
+    if (alternatives_list[nextmob_index+1]!==undefined){
+        var mobilename=alternatives_list[nextmob_index+1];
+        mobilename=mobilename.replace(/ /g,'-')
+        labelid=mobilename+'_color'
+            $('.mobile_label_color').each(function () {
+                console.log("LABEL IDS---------->",$(this).attr('id'))
+                $(this).attr('style','background:none');
+                console.log("L id>>>>>>>>>",labelid)
+                if ($(this).attr('id')===labelid){
+                    $(this).attr('style','background:'+mobilephonecolordict[alternatives_list[nextmob_index+1]]+'');
+                }
+            });
+    }
+      
+        
+        storenextprevbuttonlogs[new Date($.now())]=['next',userid,alternatives_list[nextmob_index]];
+        console.log("storenextprevbuttonlogs",storenextprevbuttonlogs);
+        console.log("mob_index--1",nextmob_index);
+        nextmob_index+=1;
+        console.log("mob_index--1--2",nextmob_index);
+        $("#mobilenameheadingdiv").empty();
+        $("#imagediv").empty();
+        $("#criteria_div").empty();
+        // makeTable(allmobile,alternatives_list[nextmob_index]);
+        // pageloadedfrompressingnextorprev=false;
+        console.log("NEXT MObile",alternatives_list[nextmob_index]);
+        makeTable(allmobile,alternatives_list[nextmob_index]);
+        if (Reviseability_On===false){
+            $('#side_crit_list_compmob_one > .sub_crit_row_divs')
+            .each(function (){
+                console.log("Divs",$(this).attr("id"))
+                $(this).attr("class",'sub_crit_row_divs zoom')
+            });
+            crit_divs_visted=[];
+        }
+        var sub_crit_row_divs=$("#sub_crit_row_divs_0");
+        getCriterias(sub_crit_row_divs);
+    }
 function prevMobile(){
+    var mobilename=alternatives_list[nextmob_index-1];
+    mobilename=mobilename.replace(/ /g,'-')
+
+    labelid=mobilename+'_color'
+        $('.mobile_label_color').each(function () {
+            console.log("LABEL IDS---------->",$(this).attr('id'))
+            $(this).attr('style','background:none');
+            console.log("L id>>>>>>>>>",labelid)
+            if ($(this).attr('id')===labelid){
+                $(this).attr('style','background:'+mobilephonecolordict[alternatives_list[nextmob_index-1]]+'');
+
+            }
+    })
+
+
+
+
+
     pageloadedfrompressingnextorprev=true
     storenextprevbuttonlogs[new Date($.now())]=['prev',userid,alternatives_list[nextmob_index]];
     console.log("storenextprevbuttonlogs",storenextprevbuttonlogs);
@@ -446,16 +622,19 @@ function prevMobile(){
 
     console.log("mob_index--2",nextmob_index)
 
-    $("#tablediv").empty();
     
     nextmob_index-=1
     console.log("mob_index--2--2",nextmob_index)
-
-    makeTable(allmobile,alternatives_list[nextmob_index]);
-    pageloadedfrompressingnextorprev=true
+    $("#mobilenameheadingdiv").empty();
+    $("#imagediv").empty();
+    $("#criteria_div").empty();
+    // makeTable(allmobile,alternatives_list[nextmob_index]);
+    // pageloadedfrompressingnextorprev=false;
+    makeTable(allmobile,alternatives_list[nextmob_index])
+    var sub_crit_row_divs=$("#sub_crit_row_divs_0");
+    getCriterias(sub_crit_row_divs)
 
 }
-slider_id_val_check_dict=null
 function showSliderRangeVal(parent_id,value){
     var val=parseInt(value);
     var split_arr=parent_id.id.split('-');
@@ -490,12 +669,11 @@ function showSliderRangeVal(parent_id,value){
     // console.log("criteria_list",criteria_list)
 
    
-    // console.log("temp_crit_list",temp_crit_list)
+    // console.log("criteriaweight_name_value_list",criteriaweight_name_value_list)
     CalculateWeightsWithAlts();
     // if I.O in blocks then dont run these functions
     if (Interactivity_On===true){
         show_FinalChart();
-        showchart_criteria();
     }
     else{
         console.log("Interactivity off")
@@ -504,11 +682,6 @@ function showSliderRangeVal(parent_id,value){
           
 }
 
-var crit_name_list=[]
-var crit_wght_list=[]
-var crit_wght_sum=0
-var mobile_crit_sum_dict={}
-var mobile_crit_sum_list=[]
 
 function CalculateWeightsWithAlts(){
     crit_wght_sum=0
@@ -518,11 +691,11 @@ function CalculateWeightsWithAlts(){
     mobile_crit_sum_list=[]
     for (var mobilename in alternatives_list){
        var mobile_name= alternatives_list[mobilename];
-       mobile_bar_sum=0
+       mobile_bar_sum=0;
       
-       for (var crit in temp_crit_list){
-            crit_wght_name=temp_crit_list[crit][0];
-            crit_wght_val=temp_crit_list[crit][1];
+       for (var crit in criteriaweight_name_value_list){
+            crit_wght_name=criteriaweight_name_value_list[crit][0];
+            crit_wght_val=criteriaweight_name_value_list[crit][1];
 
             if (parseInt(mobilename)===0){
                 // console.log("crit_wght_sum",crit)
@@ -534,33 +707,44 @@ function CalculateWeightsWithAlts(){
             // console.log("crit_wght",crit_wght_name)
             // console.log("crit_wght_val",crit_wght_val)
             if (slider_id_val_check_dict[mobile_name]!==undefined){
-                foo=slider_id_val_check_dict[mobile_name][crit][0].split('-')
+                // foo=slider_id_val_check_dict[mobile_name][crit]
                 outOf=10
+                foo=Object.keys(slider_id_val_check_dict[mobile_name])
+            //     if (crit_wght_name in foo){
 
-                if (foo[0].includes(crit_wght_name)){
-                    // console.log("PPP")
-                    crit_slide_val=parseInt(slider_id_val_check_dict[mobile_name][crit][1])
+            //         crit_slide_val=parseInt(slider_id_val_check_dict[mobile_name][crit][0])
+            //         console.log("crit_slide_val",crit_slide_val)
+                    
+            //         bar=parseInt(crit_wght_val)/outOf*crit_slide_val
+            //         console.log("BAR",bar)
+            //         mobile_bar_sum=mobile_bar_sum+bar
+            // }
+                if (foo.includes(crit_wght_name)){
+                    crit_slide_val=parseInt(slider_id_val_check_dict[mobile_name][crit_wght_name][0])
+                    // console.log("crit_slide_val",crit_slide_val)
                     bar=parseInt(crit_wght_val)/outOf*crit_slide_val
-
+                    // console.log("BAR",bar)
                     mobile_bar_sum=mobile_bar_sum+bar
-                    // console.log("bar",bar)
                 }
+            
+                
             }
         
              
        }
+       console.log("mobile_bar_sum",mobile_bar_sum)
+
        mobile_crit_sum_dict[alternatives_list[mobilename]]=mobile_bar_sum;
        mobile_crit_sum_list.push(mobile_bar_sum);
     }
+
     // console.log("WT_TOTAL",crit_wght_sum)
     // console.log("Crit Total",mobile_crit_sum_dict)
     // console.log("crit_wght_list",crit_wght_list)
-    // console.log("mobile_crit_sum_list",mobile_crit_sum_list)
+    console.log("mobile_crit_sum_list",mobile_crit_sum_list)
 
 }
-var final_backg_col=[];
-var final_bor_col=[];
-var myChart;
+
 function show_FinalChart(){
     var main_data={};
     var dataset=[];
@@ -579,17 +763,17 @@ function show_FinalChart(){
         var red = Math.floor(Math.random() * 255);
         var green = Math.floor(Math.random() * 255);
         var blue = Math.floor(Math.random() * 255);
-        var alpha=0.8;
+        alpha=0.8;
         // previously it was criteria_list....
-        for (var c=0;c<alternatives_list.length;c++){
+        // for (var c=0;c<alternatives_list.length;c++){
             
-            var rgba='rgba('+red+','+ green+','+blue+','+ alpha+')'
-            var red = Math.floor(Math.random() * 255);
-            var green = Math.floor(Math.random() * 255);
-            var blue = Math.floor(Math.random() * 255);
-            final_backg_col.push(rgba)
-            final_bor_col.push(rgba)
-            }
+        //     var rgba='rgba('+red+','+ green+','+blue+','+ alpha+')'
+        //     var red = Math.floor(Math.random() * 255);
+        //     var green = Math.floor(Math.random() * 255);
+        //     var blue = Math.floor(Math.random() * 255);
+        //     final_backg_col.push(rgba)
+        //     final_bor_col.push(rgba)
+        //     }
     }
     var borderWidth=0.5;
     dataset_dic['label']=label;
@@ -662,9 +846,7 @@ function show_FinalChart(){
 
 
 }
-var myChart_crit;
-var crit_backg_col=[];
-var crit_bor_col=[];
+
 function showchart_criteria(){
     var main_data={};
     var dataset=[];
@@ -720,55 +902,56 @@ function showchart_criteria(){
 
     var canvas_crit=document.getElementById('bar_chart_criteria').getContext('2d');
     myChart_crit = new Chart(canvas_crit, {
-    type: 'horizontalBar',
+    // type: 'horizontalBar',
+    type:'pie',
     showTooltips: false,
     data: main_data,
     
     options: {
         responsive: true,
-        scales: {
-            xAxes: [{
-                ticks: {
-                    beginAtZero:true,
-                    // max: 100
-                }
-            }]
-        },
-        // legend: {
-        //     // display: true,
-        //     // position:'left',
-        //     // now user cant click on labels...
-        //     onClick: (e) => e.stopPropagation(),
-
-        //     labels: {
-        //         fontColor: 'rgb(255, 99, 132)',
-        //         fontSize:6,
-        //         fontFamily:'sans-serif', 
-        //         padding:5,
-        //         boxWidth:20
-                
-                
-        //     }
-        // },
-        // tooltips: {
-        //     callbacks: {
-               
-        //         label: function(tooltipItem, data) { 
-        //     var indice = tooltipItem.index;   
-        //     console.log(" data.labels[indice]", data.labels[indice])  
-        //     var label=data.labels[indice]; 
-        //     var value=data.datasets[0].data[indice];
-        //     console.log("data.datasets[0].data[indice]",data.datasets[0].data[indice])
-
-        //     storehoveronpielog[new Date($.now())]=[userid,label,value]
-        //     console.log("storehoveronpielog",storehoveronpielog)
-        //     return  data.labels[indice] +': '+data.datasets[0].data[indice] + '';
-
-        // }
-
+        // scales: {
+        //     xAxes: [{
+        //         ticks: {
+        //             beginAtZero:true,
+        //             // max: 100
         //         }
-            
+        //     }]
         // },
+        legend: {
+            display: true,
+            // position:'left',
+            // now user cant click on labels...
+            onClick: (e) => e.stopPropagation(),
+
+            labels: {
+                fontColor: 'rgb(255, 99, 132)',
+                fontSize:6,
+                fontFamily:'sans-serif', 
+                padding:5,
+                boxWidth:20
+                
+                
+            }
+        },
+        tooltips: {
+            callbacks: {
+               
+                label: function(tooltipItem, data) { 
+            var indice = tooltipItem.index;   
+            console.log(" data.labels[indice]", data.labels[indice])  
+            var label=data.labels[indice]; 
+            var value=data.datasets[0].data[indice];
+            console.log("data.datasets[0].data[indice]",data.datasets[0].data[indice])
+
+            storehoveronpielog[new Date($.now())]=[userid,label,value]
+            console.log("storehoveronpielog",storehoveronpielog)
+            return  data.labels[indice] +': '+data.datasets[0].data[indice] + '';
+
+        }
+
+                }
+            
+        },
     }
 });
 
