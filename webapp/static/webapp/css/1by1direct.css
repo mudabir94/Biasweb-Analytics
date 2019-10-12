@@ -12,7 +12,9 @@ filter: blur(10px);
   
   }
   #main-critw-div{
-      padding-top: 20px
+      padding-top: 20px;
+      margin-left: 0px;
+      background-color: #d1daf9;
   }
   .zoom {
     padding-bottom: 5px;  

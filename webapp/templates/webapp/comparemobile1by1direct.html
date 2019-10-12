@@ -45,12 +45,16 @@
                                     </div>
                                         <div class='row'>
                                             <div class='col-md-12'>
-                                                    <div  style="text-align: center;margin: auto;font-size: larger;color: #009688;font-weight: bold;padding-top: 10px;padding-bottom: 10px;">
-                                                        Criteria Weight Bar Chart Previously Set
-                                                            <div id='change-criteria-weights_div'>
-                                                                    <a style="color:red" href="{%url 'criteria_weights'%}" > Change Criteria Weights</a>                                           </div>
-                                                            </div>
+                                                <div class='row'>
+                                                    <div class='col-md-8' style="text-align: center;margin: auto;font-size: larger;color: #009688;font-weight: bold;padding-top: 10px;padding-bottom: 10px;">
+                                                            Criteria Weight Bar Chart Previously Set
+ 
                                                     </div>
+                                                    <div class='col-md-4'  id='change-criteria-weights_div'>
+                                                            <a style="color:red"  href="{%url 'criteria_weights'%}" > Change Criteria Weights</a>                                           </div>
+                                                    </div>
+
+                                                </div>
 
                                                 <canvas id="bar_chart_criteria" width="400"height="300" style="background:rgba(158, 193, 248, 0.431)"></canvas>
                                             
@@ -855,7 +859,9 @@ function showchart_criteria(){
     var data_per=[];
     console.log("crit_wght_list",crit_wght_list)
     for (var t in crit_wght_list){
-        var foo=crit_wght_list[t]/crit_wght_sum
+        var foo=crit_wght_list[t]/crit_wght_sum;
+        foo=foo.toFixed(3);
+
        data_per.push(100* foo)
    }
    var data=data_per;

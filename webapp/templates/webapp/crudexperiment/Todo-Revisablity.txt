@@ -16,7 +16,8 @@ Criteria Display Vs Criteria range
 or Go for array of Icons/Compressed List (Acts like a map for navigation)
 and shows currently active comparisons in a larger size (to know what is current question)
     --> Todos 
-    a. Give a parameter for how many per page (whether criteria or attributes)
+    a. Give a parameter for how many per page (whether criteria or attributes) 
     b. Fit as many per page by adjusting fonts
     c. For complete interactivity implementation, also criteria page should have Chart (what type, this is homework)
     problem is that revisability needs to be natural and Pie Chart doesn't look natural if I want to go back and forth.
+

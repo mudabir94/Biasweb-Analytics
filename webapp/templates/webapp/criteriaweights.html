@@ -20,17 +20,18 @@
                 <div class="col-md-4 center " id='main-critw-div'>
                     <h3 id="main_heading"><b>Set Criteria Weights</b></h3>
                     <div id='critera_div'></div>
+                    
+                </div>
+                <div class="col-md-4" id="side_crit_list_two">
                     <div id="graph_div_one">
-                        <canvas id="bar_chart_graph_div_one" width="400"height="200" style="background:white"></canvas>
+                        <canvas id="bar_chart_graph_div_one" width="inherit"height="200" style="background:white"></canvas>
 
                     </div>
                     <div id='graph_div_two'>
-                        <canvas id="bar_chart_graph_div_one" width="400"height="200" style="background:white"></canvas>
+                        <canvas id="bar_chart_graph_div_two" width='inherit'height="200" style="background:white"></canvas>
 
                     </div>
-                </div>
-                <div class="col-md-4" id="side_crit_list_two">
-                    
+                    <button onclick="genrateBarColors()">Change Bar Color</button>
                 </div>
 
                
@@ -65,7 +66,6 @@
 
 $(document).ready(function(){ 
     $('#save-dialog').hide();
-    alert(Reviseability_On);
     if (Reviseability_On==="False"){
         Reviseability_On=false
     }
@@ -149,7 +149,7 @@ $(document).ready(function(){
                 var sub_crit_row_divs=$("#sub_crit_row_divs_0");
                 getCriterias(sub_crit_row_divs)
                 $( this ).dialog( "close" );
-
+                genrateBarColors();
 
             },
             // Cancel: function() {
@@ -170,7 +170,26 @@ $(document).ready(function(){
     }
     
  }); 
+function genrateBarColors(){
+    crit_backg_col=[];
+    crit_bor_col=[];
+    var red = Math.floor(Math.random() * 255);
+    var green = Math.floor(Math.random() * 255);
+    var blue = Math.floor(Math.random() * 255);
 
+    var alpha=1;
+    for (var c=1;c<crit_list.length+1;c++){
+        
+        var rgba='rgba('+red+','+ green+','+blue+','+ alpha+')';
+        var red = Math.floor(Math.random() * 255);
+        var green = Math.floor(Math.random() * 255);
+        var blue = Math.floor(Math.random() * 255);
+        crit_backg_col.push(rgba)
+        crit_bor_col.push(rgba)
+        }
+        showchart_criteria();
+        show_FinalChart();
+}
 function SaveWeights(){
     if (Reviseability_On==false){
         len=crit_divs_visited.length       
@@ -310,8 +329,9 @@ function activateSlider(crt){
                         event=parseInt(event)
                         critlist_val_dict[target]=[event];
                     }
-                    console.log("critlist_val_dict",critlist_val_dict)
-                }
+                    showchart_criteria();
+                    show_FinalChart();
+                    }
                 });
 
 }
@@ -369,6 +389,231 @@ function getCriterias(element){
 
 });
 }
+crit_wght_list=[];
+crit_name_list=[];
+function convertDictToList(){
+    crit_wght_list=[];
+    crit_name_list=[];
+    crit_wght_sum=0;
+    
+    console.log('critlist_val_dict-----------',critlist_val_dict);
+    for ( var key in critlist_val_dict){
+
+        console.log("criteria key",key);
+        console.log("critlist_val_dict[key]",critlist_val_dict[key]);
+        crit_wght_val=critlist_val_dict[key][0]
+        crit_wght_sum=crit_wght_sum+parseInt(crit_wght_val)
+
+        crit_wght_list.push(parseInt(crit_wght_val))
+        crit_name_list.push(key);
+    }
+}
+var crit_backg_col=[];
+var crit_bor_col=[];
+var myChart_crit;
+var crit_rank_backg_colr=[];
+var crit_rank_bord_colr=[];
+var myChart;
+
+function showchart_criteria(){
+    convertDictToList();
+    var main_data={};
+    var dataset=[];
+    var dataset_dic={};
+    var label='Criteria';
+    var data_per=[];
+    console.log("crit_wght_list",crit_wght_list)
+    for (var t in crit_wght_list){
+        var foo=crit_wght_list[t]/crit_wght_sum
+        // foo=Math.round(foo * 100) / 100;
+        foo=foo.toFixed(3);
+        data_per.push(100* foo)
+   }
+   var data=data_per;
+//    if (crit_backg_col.length===0 && crit_bor_col.length===0){
+//         var red = Math.floor(Math.random() * 255);
+//         var green = Math.floor(Math.random() * 255);
+//         var blue = Math.floor(Math.random() * 255);
+
+//         var alpha=1;
+//         for (var c=1;c<crit_name_list.length+1;c++){
+            
+//             var rgba='rgba('+red+','+ green+','+blue+','+ alpha+')'
+//             var red = Math.floor(Math.random() * 255);
+//             var green = Math.floor(Math.random() * 255);
+//             var blue = Math.floor(Math.random() * 255);
+//             crit_backg_col.push(rgba)
+//             crit_bor_col.push(rgba)
+//             }
+//     }
+    var backgroundColor=crit_backg_col;
+    var borderColor=crit_bor_col;
+    var borderWidth=0.5;
+
+    dataset_dic['label']=label;
+    dataset_dic['data']=data;
+    dataset_dic['backgroundColor']=backgroundColor;
+    dataset_dic['borderColor']=borderColor;
+    dataset_dic['borderWidth']=borderWidth;
+    dataset.push(dataset_dic);
+    console.log("crit_name_list",crit_name_list)
+    if (crit_name_list.includes("imagepath1")){
+        var index = crit_name_list.indexOf("imagepath1");
+
+        if (index !== -1) {
+            crit_name_list[index] = "Look and Feel";
+        }
+    }
+    main_data['labels']=crit_name_list
+    main_data['datasets']=dataset;
+    if(myChart_crit)
+    {
+        myChart_crit.destroy();
+    }
+
+    var canvas_crit=document.getElementById('bar_chart_graph_div_two').getContext('2d');
+    myChart_crit = new Chart(canvas_crit, {
+    // type: 'horizontalBar',
+    type:'pie',
+    showTooltips: false,
+    data: main_data,
+    
+    options: {
+        responsive: true,
+        // scales: {
+        //     xAxes: [{
+        //         ticks: {
+        //             beginAtZero:true,
+        //             // max: 100
+        //         }
+        //     }]
+        // },
+        legend: {
+            display: true,
+            // position:'left',
+            // now user cant click on labels...
+            onClick: (e) => e.stopPropagation(),
+
+            labels: {
+                fontColor: 'rgb(255, 99, 132)',
+                fontSize:6,
+                fontFamily:'sans-serif', 
+                padding:5,
+                boxWidth:20
+                
+                
+            }
+        },
+        // tooltips: {
+        //     callbacks: {
+               
+        //         label: function(tooltipItem, data) { 
+        //     var indice = tooltipItem.index;   
+        //     console.log(" data.labels[indice]", data.labels[indice])  
+        //     var label=data.labels[indice]; 
+        //     var value=data.datasets[0].data[indice];
+        //     console.log("data.datasets[0].data[indice]",data.datasets[0].data[indice])
+
+        //     storehoveronpielog[new Date($.now())]=[userid,label,value]
+        //     console.log("storehoveronpielog",storehoveronpielog)
+        //     return  data.labels[indice] +': '+data.datasets[0].data[indice] + '';
+
+        // }
+
+        //         }
+            
+        // },
+    }
+});
+
+
+}
+
+
+function show_FinalChart(){
+    // convertDictToList();
+    var main_data={};
+    var dataset=[];
+    var dataset_dic={};
+   
+    var labels=crit_name_list;
+    var label='Score';
+    var data_percentage=[];
+    for (var t in crit_wght_list){
+       
+        data_percentage.push(crit_wght_list[t])
+   } 
+   var data=data_percentage;
+//    if (crit_rank_backg_colr.length===0 && crit_rank_bord_colr.length===0){
+//         var red = Math.floor(Math.random() * 255);
+//         var green = Math.floor(Math.random() * 255);
+//         var blue = Math.floor(Math.random() * 255);
+//         alpha=0.8;
+//         // previously it was criteria_list....
+//         for (var c=0;c<labels.length;c++){
+            
+//             var rgba='rgba('+red+','+ green+','+blue+','+ alpha+')'
+//             var red = Math.floor(Math.random() * 255);
+//             var green = Math.floor(Math.random() * 255);
+//             var blue = Math.floor(Math.random() * 255);
+//             crit_rank_backg_colr.push(rgba)
+//             crit_rank_bord_colr.push(rgba)
+//             }
+//     }
+    var borderWidth=0.5;
+    dataset_dic['label']=label;
+    dataset_dic['data']=data;
+    dataset_dic['backgroundColor']=crit_backg_col;
+    dataset_dic['borderColor']=crit_bor_col;
+    dataset_dic['borderWidth']=borderWidth;
+    dataset.push(dataset_dic);
+    main_data['labels']=labels;
+    main_data['datasets']=dataset;
+
+    if(myChart)
+    {
+        myChart.destroy();
+    }
+	var canvas=document.getElementById('bar_chart_graph_div_one').getContext('2d')
+    
+    
+     myChart = new Chart(canvas, {
+    type: 'horizontalBar',
+    
+    data: main_data,
+    showTooltips: true,
+    options: {
+        responsive: true,
+        scales: {
+            xAxes: [{
+                ticks: {
+                    beginAtZero:true,
+                     max:10
+                }
+            }]
+        },
+        legend: {
+            display: true,
+            labels: {
+                fontColor: 'rgb(255, 99, 132)',
+                fontSize:13,
+                fontFamily:'sans-serif', 
+                padding:5,
+                boxWidth:20
+            }
+        },
+        // onHover: function(evt) {
+        //     console.log(evt)
+        // },
+        
+    }
+});
+
+
+}
+
+
+
 </script>
 
 <script>
