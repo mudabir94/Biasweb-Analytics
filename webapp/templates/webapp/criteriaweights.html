@@ -31,7 +31,7 @@
                         <canvas id="bar_chart_graph_div_two" width='inherit'height="200" style="background:white"></canvas>
 
                     </div>
-                    <button onclick="genrateBarColors()">Change Bar Color</button>
+                    <!-- <button onclick="genrateBarColors()">Change Bar Color</button> -->
                 </div>
 
                
@@ -170,22 +170,41 @@ $(document).ready(function(){
     }
     
  }); 
+ //  'rgba(96, 208, 11, 0.3)', light green
+    //  'rgba(8, 0, 153, 0.3)',    dark blue
+    //  'rgba(255, 255, 31, 0.3),' yellow
+    //  "rgba(226, 21, 249, 0.3)" pink
+    //  " rgba(0, 209, 112, 0.3)" purple
+    // "rgba(0, 162, 250, 0.3)"   sky blue
+    // "rgba(169, 87, 25, 0.3)"   brown
+    // "rgba(1, 1, 1, 0.3)"       black
+    // "rgba(247, 0, 0, 0.3)"           red
+    // "rgba(149, 149, 149, 0.3)"       grey
+    // "rgba(67, 171, 182, 0.3)"       sea green
+ var colors_list=[
+    "rgba(1, 1, 1, 0.5)", 
+    "rgba(226, 21, 249, 0.5)" ,
+    "rgba(255, 209, 112, 0.5)",
+    "rgba(255, 162, 250, 0.5)",   
+    "rgba(169, 87, 25, 0.5)" ,  
+    "rgba(1, 1, 1, 0.5)", 
+    "rgba(247, 0, 0, 0.5)",          
+    "rgba(149, 149, 149, 0.5)",       
+    "rgba(255, 171, 182, 0.5)",     
+    'rgba(255,400,300, 0.5)', 
+    'rgba(50, 150, 205, 0.5)',   
+    "rgba(255, 1, 1, 0.5)", 
+   
+    ]
 function genrateBarColors(){
     crit_backg_col=[];
     crit_bor_col=[];
-    var red = Math.floor(Math.random() * 255);
-    var green = Math.floor(Math.random() * 255);
-    var blue = Math.floor(Math.random() * 255);
-
-    var alpha=1;
-    for (var c=1;c<crit_list.length+1;c++){
+   
+    for (var c=0;c<crit_list.length;c++){
         
-        var rgba='rgba('+red+','+ green+','+blue+','+ alpha+')';
-        var red = Math.floor(Math.random() * 255);
-        var green = Math.floor(Math.random() * 255);
-        var blue = Math.floor(Math.random() * 255);
-        crit_backg_col.push(rgba)
-        crit_bor_col.push(rgba)
+       
+        crit_backg_col.push(colors_list[c])
+        crit_bor_col.push(colors_list[c])
         }
         showchart_criteria();
         show_FinalChart();
@@ -290,8 +309,12 @@ function activateSlider(crt){
             var label=$("<label class='crit_labels'>"+crit+"</label>")
         col1.append(label)
         var col2=$("<div class='col-md-8'></div>");
-            input=$('<input id="'+crit+'" class="slider"></input>')
-        col2.append(input);
+            var div1=$("<div>")
+                input=$('<input id="'+crit+'" class="slider"></input>')
+            div1.append(input);
+            var div2=$("<div>This text is for information of the criteria</div>")
+        col2.append(div1);
+        col2.append(div2);
         var col3=$("<div class='col-md-1'></div>");
             span=$('<span id="'+crit+'_span"></span>')
         col3.append(span);
@@ -329,8 +352,18 @@ function activateSlider(crt){
                         event=parseInt(event)
                         critlist_val_dict[target]=[event];
                     }
+                    if (target==='imagepath1')
+                    {
+                        target='Looks & Feel';
+                    }
+
+                   
+                    index=crit_name_list.indexOf(target)
+                    console.log("index",index)
+                    console.log("label",myChart.data.datasets[0].data[index])
+                    myChart.data.datasets[0].data[index]=event;
+                    myChart.update();
                     showchart_criteria();
-                    show_FinalChart();
                     }
                 });
 
@@ -461,10 +494,10 @@ function showchart_criteria(){
         var index = crit_name_list.indexOf("imagepath1");
 
         if (index !== -1) {
-            crit_name_list[index] = "Look and Feel";
+            crit_name_list[index] = "Looks & Feel";
         }
     }
-    main_data['labels']=crit_name_list
+    main_data['labels']=crit_name_list;
     main_data['datasets']=dataset;
     if(myChart_crit)
     {
@@ -529,7 +562,7 @@ function showchart_criteria(){
 
 }
 
-
+var active_bar_color_dict={}
 function show_FinalChart(){
     // convertDictToList();
     var main_data={};
@@ -584,6 +617,62 @@ function show_FinalChart(){
     showTooltips: true,
     options: {
         responsive: true,
+        onClick: function(e){
+        var element = this.getElementAtEvent(e);
+        console.log("element",element)
+        totalcriteria=crit_name_list.length;
+        if(element.length > 0){
+            // active_bar_color_dict
+            selected_label=element[0]._model.label;
+            selected_index=element[0]._index;
+            background_color=element[0]._chart.controller.config.data.datasets[0]._meta[1].data[element[0]._index]._model.backgroundColor;
+            if (active_bar_color_dict[selected_index]===undefined){
+                active_bar_color_dict[selected_index]=background_color;
+            
+            }
+            background_color=background_color.replace('rgba(','');
+            background_color=background_color.replace(')','');
+            background_color=background_color.split(',');
+            background_color.pop()
+
+            console.log("background_color",background_color)
+            new_color="rgba("
+            for (var col in background_color){
+                console.log("Coloumn",background_color[col])
+                new_color += background_color[col]
+                console.log("col",col)
+                if (col<2){
+                    new_color +=",";
+                }
+                else{
+                    new_color +=",";
+
+                    new_color +="0.9";
+                }
+            }
+            new_color +=")"
+            console.log("NEW COLOR",new_color)
+
+            // element[0]._chart.controller.config.data.datasets[0]._meta[11].data[element[0]._index]._model.backgroundColor = "rgb(255,0,0)";
+            
+            // myChart.chart.controller.config.data.datasets[0]._meta[11].data[element[0]._index]._model.backgroundColor = "rgb(255,0,0)";
+            myChart.data.datasets[0].backgroundColor[selected_index]=new_color;
+
+            console.log("MY CHART",myChart)
+            console.log("active_bar_color_dict",active_bar_color_dict);
+            for (var key in active_bar_color_dict ){
+                if (key!=selected_index){
+                    myChart.data.datasets[0].backgroundColor[key]=active_bar_color_dict[key]
+                }
+            }
+
+
+            myChart.update();
+
+          }
+        },
+       
+       
         scales: {
             xAxes: [{
                 ticks: {
@@ -602,16 +691,10 @@ function show_FinalChart(){
                 boxWidth:20
             }
         },
-        // onHover: function(evt) {
-        //     console.log(evt)
-        // },
-        
     }
 });
 
-
 }
-
 
 
 </script>
