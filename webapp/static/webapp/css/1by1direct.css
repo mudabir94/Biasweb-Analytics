@@ -45,3 +45,6 @@ filter: blur(10px);
     font-weight: bold;
     color:#4d8cc1; 
     }
+.mobile_label_color{
+  color:black;
+}

@@ -12,15 +12,16 @@
             </div>
             <div class="col-md-9">
                     <div class="row" >
-                            <div class="col-md-7" >
+                            <div class="col-md-4" >
                                 <div class='row'>
-                                    <div class='col-md-5 allmobilelist'  style='padding-top:20px;'>
-                                        
+                                    <div class='col-md-12'  style='padding-top:20px;'>
+                                        <div class="allmobilelist">
+                                        </div>
                                     </div>
-                                    <div class='col-md-5 offset-md-1' id="comparison_table">
+                                    <!-- <div class='col-md-5 offset-md-1' id="comparison_table">
                                         <div class='row'  id="mobilenameheadingdiv"></div>
                                         <div class='row'  id='imagediv'></div>
-                                    </div>
+                                    </div> -->
                                 </div>
                                 <div class='row'>
                                     <div class='col-md-12'>
@@ -32,10 +33,18 @@
                                         </div>
                                     </div>
                                 </div>
-                                
-                            <div  id="criteria_div" style='padding-top:20px;'></div>
+                            <div class='row'>    
+                                <div  class='col-md-12'id="criteria_div" style='padding-top:20px;'></div>
                             </div>
-                            <div class='col-md-5' id="charts_div">
+                            </div>
+                            <div class='col-md-4' >
+                                        <div class='row'  id="mobilenameheadingdiv"></div>
+
+                                        <div  id='imagediv'>
+                                         
+                                        </div>
+                            </div>
+                            <div class='col-md-4' id="charts_div">
                                     <!-- <div id="chartContainer" style="height: 300px; width: 100%;"></div> -->
                                     <div class='row'>
                                         <div class='col-md-12'>
@@ -56,6 +65,7 @@
                                                     </div>
                                                     <div class='col-md-4'  id='change-criteria-weights_div'>
                                                             <a style="color:red"  href="{%url 'criteria_weights'%}" > Change Criteria Weights</a>                                           </div>
+                                                            <button onclick='showCritWeights()'>Show Criteria Weights Chart</button>
                                                     </div>
 
                                                 </div>
@@ -116,6 +126,7 @@
 
 $(document).ready(function(){
     $('#checkdiv_np').hide();
+    $("#bar_chart_criteria").hide();
     if (pagevisited!=="True"){
         $.ajax({
                     type: 'GET',
@@ -134,6 +145,8 @@ $(document).ready(function(){
                             interactivity_data=data["interactivity_data"];
                             reviseability_data=data["reviseability_data"];
                             userid=data['userid'];
+                            alert(interactivity_data)
+                            alert(reviseability_data)
                             if (interactivity_data=="I.0"){
                                 Interactivity_On=false
                             }
@@ -284,17 +297,15 @@ function activeMobilePage(){
     var ul=$('<ul></ul>')
     for (var mob in alternatives_list){
         var li=$("<li></li>");
-        var row=$('<div class="row"></div>');
-        
-        var div=$('<div style="margin-top:4px;background:'+mobilephonecolordict[alternatives_list[mob]]+';width:15px;height:15px;border:solid;border-color:black;border-width:thin"></div>')
-        // console.log("MOB->>>>>>>>",final_backg_col[mob])
-        mobname=alternatives_list[mob].replace(/ /g,'-')
-        var label=$('<label class="mobile_label_color" id="'+mobname+'_color" >'+alternatives_list[mob]+'</label>')
-        
-        row.append(div)
+        var row=$('<div ></div>');
+                // var div=$('<div style="margin-top:4px;background:'+mobilephonecolordict[alternatives_list[mob]]+';width:15px;height:15px;border:solid;border-color:black;border-width:thin"></div>')
+                // console.log("MOB->>>>>>>>",final_backg_col[mob])
+                mobname=alternatives_list[mob].replace(/ /g,'-')
+                var label=$('<label class="mobile_label_color" id="'+mobname+'_color" >'+alternatives_list[mob]+'</label>')
+            
+        // row.append(div)
         row.append(label)
 
-        // label.append(div)
         
         li.append(row);
 
@@ -317,7 +328,7 @@ function activateSlider(crt){
     var row=$('<div class="row slider_rows"></div');
     $("#criteria_div").append(row);
 
-        var col1=$('<div class="col-md-3">');
+        var col1=$('<div class="col-md-2">');
         if (crit==='imagepath1'){
             crit="Looks & Feel"
         }
@@ -473,9 +484,93 @@ function makeTable(allmobile,mob_name){
             var im=allmobile[mob_name][mobilespec]
             specs.push('imagepath1')
             // console.log("MOBILESPEC1",mobilespec);
-                var  imageelement=$("<img class='img-responsive zoom' src='/static/"+im+"'></img>")
-                imagediv=$("#imagediv");
-                imagediv.append(imageelement);
+                // var  imageelement=$("<img class='img-responsive zoom' src='/static/"+im+"'></img>")
+                var imagediv=$("#imagediv");
+                // imagediv.append(imageelement);
+                var show_img_div=$("<div class='show' id='show-img-div'   href='/static/"+im+"'></div>")
+               
+                var  imageelement=$("<img id='show-img' src='/static/"+im+"'></img>");
+
+                $(show_img_div).append(imageelement);
+                $(imagediv).append(show_img_div);
+
+            var small_img_div=$("<div class='small-img'>");
+                var leftarrow=$("<img  src='/static/webapp/Product-Gallery-Image-Zoom/images/online_icon_right@2x.png' class='icon-left' alt='' id='prev-img'></img>")
+                var small_container=$("<div class='small-container'></div>");
+                    var small_img_roll=$("<div id='small-img-roll'>");
+                        var img1=$("<img  src='/static/"+im+"' class='show-small-img' alt=''></img>")
+                        var img2=$("<img  src='/static/webapp/img/frontDisplay/j3highresoimage.jpg' class='show-small-img' alt=''></img>")
+                        var img3=$("<img  src='/static/webapp/img/frontDisplay/j3highresoimage2.jpg' class='show-small-img' alt=''></img>")
+                        var img4=$("<img  src='/static/webapp/img/frontDisplay/j3highresoimage2.jpg' class='show-small-img' alt=''></img>")
+
+                    $(small_img_roll).append(img1);
+                    $(small_img_roll).append(img2);
+                    $(small_img_roll).append(img3);
+                    $(small_img_roll).append(img4);
+
+                small_container.append(small_img_roll);
+                var rightarrow=$("<img  src='/static/webapp/Product-Gallery-Image-Zoom/images/online_icon_right@2x.png' class='icon-right' alt='' id='next-img'></img>")
+
+            small_img_div.append(leftarrow);
+            small_img_div.append(small_container);
+            small_img_div.append(rightarrow);
+
+
+            $(small_img_div).append(leftarrow);
+            $("#imagediv").append(small_img_div);
+            $('.show').zoomImage();
+
+            $('.show-small-img:first-of-type').css({'border':'solid 1px #951b25','padding':'2px'})
+            $('.show-small-img:first-of-type').attr('alt','now').siblings().removeAttr('alt');
+            
+        $('.show-small-img').click(function () {
+        $('#show-img').attr('src', $(this).attr('src'))
+        $('#big-img').attr('src', $(this).attr('src'))
+        $(this).attr('alt','now').siblings().removeAttr('alt')
+        $(this).css({'border':'solid 1px #951b25','padding':'2px'}).siblings().css({'border':'none','padding':'0'})
+        if ($('#small-img-roll').children().length > 4) {
+            if ($(this).index() >= 3 && $(this).index() < $('#small-img-roll').children().length - 1){
+            $('#small-img-roll').css('left', -($(this).index() - 2) * 76 +'px')
+            }else if ($(this).index() == $('#small-img-roll').children().length - 1) {
+            $('#small-img-roll').css('left', -($('#small-img-roll').children().length - 4) * 76 +'px')
+            }else {
+            $('#small-img-roll').css('left','0')
+            }
+        }
+        });
+        $('#next-img').click(function (){
+
+        $('#show-img').attr('src', $(".show-small-img[alt='now']").next().attr('src'))
+        $('#big-img').attr('src', $(".show-small-img[alt='now']").next().attr('src'))
+        $(".show-small-img[alt='now']").next().css({'border':'solid 1px #951b25','padding':'2px'}).siblings().css({'border':'none','padding':'0'})
+        $(".show-small-img[alt='now']").next().attr('alt','now').siblings().removeAttr('alt')
+        if ($('#small-img-roll').children().length > 4) {
+            if ($(".show-small-img[alt='now']").index() >= 3 && $(".show-small-img[alt='now']").index() < $('#small-img-roll').children().length - 1){
+            $('#small-img-roll').css('left', -($(".show-small-img[alt='now']").index() - 2) * 76 +'px')
+            }else if ($(".show-small-img[alt='now']").index() == $('#small-img-roll').children().length - 1) {
+            $('#small-img-roll').css('left', -($('#small-img-roll').children().length - 4) * 76 +'px')
+            }else {
+            $('#small-img-roll').css('left','0')
+            }
+        }
+        });
+        $('#prev-img').click(function (){
+
+        $('#show-img').attr('src', $(".show-small-img[alt='now']").prev().attr('src'))
+        $('#big-img').attr('src', $(".show-small-img[alt='now']").prev().attr('src'))
+        $(".show-small-img[alt='now']").prev().css({'border':'solid 1px #951b25','padding':'2px'}).siblings().css({'border':'none','padding':'0'})
+        $(".show-small-img[alt='now']").prev().attr('alt','now').siblings().removeAttr('alt')
+        if ($('#small-img-roll').children().length > 4) {
+            if ($(".show-small-img[alt='now']").index() >= 3 && $(".show-small-img[alt='now']").index() < $('#small-img-roll').children().length - 1){
+            $('#small-img-roll').css('left', -($(".show-small-img[alt='now']").index() - 2) * 76 +'px')
+            }else if ($(".show-small-img[alt='now']").index() == $('#small-img-roll').children().length - 1) {
+            $('#small-img-roll').css('left', -($('#small-img-roll').children().length - 4) * 76 +'px')
+            }else {
+            $('#small-img-roll').css('left','0')
+            }
+        }
+        });
+            
             }
         else{
             specs.push(mobilespec)
@@ -539,6 +634,11 @@ function makeTable(allmobile,mob_name){
         }
 
 }
+
+
+
+
+
 function createValDictForPhones(allmobile,mobilenames){
 
     slider_id_val_check_dict={};
@@ -1138,21 +1238,21 @@ function showchart_criteria(){
 
     var canvas_crit=document.getElementById('bar_chart_criteria').getContext('2d');
     myChart_crit = new Chart(canvas_crit, {
-    // type: 'horizontalBar',
-    type:'pie',
+    type: 'horizontalBar',
+    // type:'pie',
     showTooltips: false,
     data: main_data,
     
     options: {
         responsive: true,
-        // scales: {
-        //     xAxes: [{
-        //         ticks: {
-        //             beginAtZero:true,
-        //             // max: 100
-        //         }
-        //     }]
-        // },
+        scales: {
+            xAxes: [{
+                ticks: {
+                    beginAtZero:true,
+                    // max: 100
+                }
+            }]
+        },
         legend: {
             display: true,
             // position:'left',
@@ -1304,6 +1404,9 @@ $("#surveyElement").Survey({
 
 
 
+}
+function showCritWeights(){
+    $("#bar_chart_criteria").toggle();
 }
 
 </script>
