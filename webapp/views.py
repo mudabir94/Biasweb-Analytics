@@ -3540,8 +3540,9 @@ def getMobiledata(request):
             # mobiles_retrieved = list(mobiles_retrieved.values())   
             # mobiles_retrieved_list=mobiles_retrieved
             #///////////////////////
-            cat_obj=criteria_catalog_disp.objects.get(id=1)
-            catalogcrit_show_list=cat_obj.catalog_crit_display_order
+            # cat_obj=criteria_catalog_disp.objects.get(id=)
+            # catalogcrit_show_list=cat_obj.catalog_crit_display_order
+            catalogcrit_show_list=['price']
             sessionkey="user_"+userid+"__catalogcrit_show_list"
             request.session[sessionkey]=catalogcrit_show_list
             return JsonResponse(

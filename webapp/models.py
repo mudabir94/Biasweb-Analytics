@@ -222,10 +222,10 @@ class mobilephones(models.Model):
     # imagepath1 = models.ImageField(null=True, blank=True, upload_to="webapp/img/sampleimages/")
     # imagepath2=  models.ImageField(null=True, blank=True, upload_to="webapp/img/sampleimages/")
     imagepath1=models.CharField(max_length=300,null=True,blank=True)
-    # sideimage1=models.CharField(max_length=300,null=True,blank=True)
-    # sideimage2=models.CharField(max_length=300,null=True,blank=True)
-    # sideimage3=models.CharField(max_length=300,null=True,blank=True)
-    # sideimage4=models.CharField(max_length=300,null=True,blank=True)
+    sideimage1=models.CharField(max_length=300,null=True,blank=True)
+    sideimage2=models.CharField(max_length=300,null=True,blank=True)
+    sideimage3=models.CharField(max_length=300,null=True,blank=True)
+    sideimage4=models.CharField(max_length=300,null=True,blank=True)
 
     # changed from back_camera
     battery=models.CharField(max_length=400,null=True)
