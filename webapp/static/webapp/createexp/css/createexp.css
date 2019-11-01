@@ -172,31 +172,36 @@
     cursor: grab;
 }
 #nextbtn_to_batch{
-    background: #105796;
+    background: #105796; 
     color: white; 
-    padding: 10px 10px; /* Some padding */
+    border: blue;
+    padding: 10px 10px;
     box-shadow: 0 0 0.5px 0.5px #105796;
     cursor: pointer;
-    border-radius: 8px;
+    border-radius: 8px; 
 
 }
 #exp_sel_phones_div{
-  color:palegoldenrod;
+  color:#009688;
 }
 #expphonelist_div{
-  color:palegoldenrod;
+  color:#009688;
 
 }
 #exp_select_phns_h4{
   font-family: 'Agency FB';
+  color:#009688;
+  font-weight: bold;
 
 }
 #crit_opt_h4{
   font-family: 'Agency FB';
+  color:#009688;
+  font-weight: bold;
 
 }
 .crit_option_sidebar_div{
-  color:palegoldenrod;
+  color:#009688;
 
 }
 #criteria_option_name{
@@ -205,6 +210,8 @@
 .exp_phonelist_span_h{
   font-family: 'Agency FB';
   font-size: larger;
+  color:#009688;
+
 
 }
 /* #create_exp_mobile_catalog{
@@ -342,4 +349,16 @@ body.loading .modal {
 #price_slider_div{
   margin-top:2pc;
   margin-botton:1pc;
+}
+.main_row_custom{
+  height:100%;
+}
+#exp_description_div{
+  color:black
+}
+
+.span_phname{
+  font-family: 'Agency FB';
+  font-size:larger;
+  color:black;
 }

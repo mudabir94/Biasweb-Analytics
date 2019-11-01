@@ -3,14 +3,15 @@
         <div class="col-md-12 sidenav_testing">        
          <!-- <a href="{%url 'mobileview' %}" class="custom_side_rows"> -->
                 <a href="#" onclick="mobileCatalog_pageLoader()" class="custom_side_rows">
-
-                        <span> Mobile Catalog  </span> 
+                        Start Experiment
                     </a>
-        <a href="{%url 'showfilter' %}" class="custom_side_rows"><span>ShowFilter</span></a>          
+        <!-- <a href="{%url 'filter' %}" class="custom_side_rows">ShowFilter</a>           -->
         </div>
 </div>
 <script>
         var exp_id='{{exp_id}}'
+        // It first sends an Ajax Call to SaveCurrentSubjExp Function in View. 
+        // On succes it send request to mobile_phone_view (Views.py)  to open mobile.html page. 
         function mobileCatalog_pageLoader(){
                 //  var exp_num=$(".active_li").attr("value")
                 var exp_num= exp_id

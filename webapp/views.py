@@ -34,7 +34,7 @@ from pandas.compat import StringIO
 from biasweb.experiment.controller import ExperimentController,SubjCont
 from biasweb.pythonscripts.experiment_admin import Experiment_Admin
 from biasweb.pythonscripts.getdata import get
-from biasweb.pythonscripts.insertcsvfiletotable import populate_Table
+# from biasweb.pythonscripts.insertcsvfiletotable import populate_Table
 from biasweb.utils.assign import Assigner
 
 #loading forms from forms.py file. 
@@ -59,6 +59,9 @@ from .models import (
                     StoreHoverPieChartLogs,
                     StoreNextPrevButtonLogs,
                     StoreCritWeightLogs,
+                    generalCriteriaData,
+                    customExpSessionTable,
+                    surveyForm,
                     )
 
 
@@ -66,6 +69,9 @@ from .models import selectedAdminPhones,criteria_catalog_disp,exStatusCd
 from django.views.decorators.cache import never_cache
 
 import datetime
+from functools import reduce
+import operator
+from django.db.models import Max
 
 #--------------------------------------------------------------------------------------------------
 role=1   #global variable used in adminsetup and globalFunc function. 
@@ -381,14 +387,13 @@ def getSelectedAdminPhones(request):
             })
 
 
-
+# It gets the phones id list and use the ids to exctract from mobilephones model. 
+# through which we extract size(length/Number) of mobiles and store in a global variable.
+# Last thing is to send exp_feat_levels list back to the page in sucess function. 
 def showMob(request):
     if request.method=="POST":
         if request.is_ajax:
-        # print("ajax",request.POST.get('data'))
-            ####print("PST",request.POST.get('d')) 
             mobiledata = request.POST.get('mobiledata')
-        ### print('JSONLOADS',eval(d))
             mobiledata_json = json.loads(mobiledata)
             print("mobiledata_json",mobiledata_json[0])
             query_array=[]
@@ -396,19 +401,19 @@ def showMob(request):
             for key,value in  enumerate(mobiledata_json):
                 print("key",key)
                 print ("val", value)
-                # query_array.append(' '+ 'id'+ '=' + value )
                 query_array.append(value)
-            #query=samsung_phone.objects.filter(id__in=(query_array))
             query=mobilephones.objects.filter(id__in=(query_array))
-                        # old_query = 'SELECT * FROM webapp_samsung_phone WHERE '+ ' or ' .join(query_array)
+          
             global comp_mobiles
             global sizeofmob
             global exp_under_test
-                # mobiles=samsung_phone.objects.raw(query)
+                
             comp_mobiles=query
             size_of_mobile=len(list(comp_mobiles))
             sizeofmob=size_of_mobile
             print(comp_mobiles)
+
+            
             dict = {'size_of_mobile':size_of_mobile}
             print("Uer Id",request.user.id)
             userobj=User.objects.get(pk=request.user.id)
@@ -443,13 +448,27 @@ numofmobiles=[]
 criteria_list=[]
 alternative_list=[]
 
+
+# Functionilty--
+# Two Methods.. 
+# Get and Post
+# GET Called when the page is loaded for first time or without ajax call. 
+#  If this is called for the first time, it'll store the page in logs storeuserpagelogs'
+    # Will Check Criteria Display Method and Alternatives Display Method and Revisablity Features
+    # Based on C. Feature criteria list will be exctracted from the tables that was selected by admin
+    # and will send to criteria_weights.html page. 
+# else 
+# Post is called through ajax request when we want to save the changes made by the user.
+# It saves the criterias values that are set by the user. 
+# The logs as well.  
+
 def criteriaWeights(request):
     global crit_list
     global criteria_weights_dict
     global exp_feat_levels
     global exp_under_test
     global critw_logs_dict
-    # No check if block is CDM (C.Full and C.Prune... )
+    # No check if block is CR (C.Full and C.Prune... )
 
     template_name='webapp/criteriaweights.html'
    
@@ -457,18 +476,36 @@ def criteriaWeights(request):
         print("storeuserpagelogs",storeuserpagelogs)
 
         if "criteriaweights" in storeuserpagelogs:
-            print("storeuserpagelogs",storeuserpagelogs)
-            print("exp_feat_levels",exp_feat_levels)
+            flag="true"
+       
             adm = [idx for idx in exp_feat_levels if idx.startswith("A.")] 
-            print("adm",adm)
+            # if revisabilty is on then pagevisited should be false. 
+             
+            reviseability = [idx for idx in exp_feat_levels if idx.startswith("R.")] 
+            print("res -- R",reviseability[0])
+            crit_list=[]
+            if reviseability[0]=="R.1":
+                crit = [idx for idx in exp_feat_levels if idx.startswith("C.")] 
+                crit=crit[0].lower()
+                exp_obj=exp.objects.get(id=exp_under_test)
+                ExpCriteria_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1,cOrder_id=crit)
+                print("ExpCriteria_obj",ExpCriteria_obj)
+                crit_list_obj=ExpCriteria_obj.values_list('pCriteria__criteria_name',flat=True)
+                print("crit_list_obj",crit_list_obj)
+                crit_list=list(crit_list_obj)
+                crit_list.insert(0,"imagepath1")
+                crit_list.append("Others")
+                flag="false"
 
             data={
+                'crit_list':crit_list,
                 "ADM":adm[0],
-                "pagevisited":"True",
+                "pagevisited":flag,
                 'userid':request.user.id,
                 }
             return render(request,template_name,data)
         else:
+            flag="false"
             storeuserpagelogs["criteriaweights"]=[datetime.datetime.now(),exp_under_test,request.user.id]
 
             print("NOT AJAX CRITERIA WIETNGTS")
@@ -501,7 +538,7 @@ def criteriaWeights(request):
                 'crit_list':crit_list,
                 "ADM":adm[0],
                 'userid':request.user.id,
-                "pagevisited":"False",
+                "pagevisited":flag,
 
                 
             }
@@ -518,7 +555,9 @@ def criteriaWeights(request):
             print("criteria_weights_dict",criteria_weights_dict)
             data={}
             return JsonResponse(data) 
-
+# When the page is loaded  both of its GET and POST functions are called respectively through ajax. 
+# GET Method send back Interactivity and Revisiablity features. 
+# POST Methond sends back  multiple list and dict needed to populate the page. 
 def compareMobileOneByOneDirect(request):
     template_name='webapp/comparemobile1by1direct.html'
       
@@ -527,6 +566,7 @@ def compareMobileOneByOneDirect(request):
     global catalogcrit_show_list
     global criteria_weights_dict
     global exp_under_test
+    global exp_feat_levels
 
 
     if request.method=="GET":
@@ -538,7 +578,6 @@ def compareMobileOneByOneDirect(request):
             exp_obj=exp.objects.get(id=exp_under_test)
             Sub_obj=Subject.objects.get(user=userobj,exp=exp_obj)
             print("blocks",Sub_obj.block.levels_set)
-            global exp_feat_levels
             interactivity = [idx for idx in exp_feat_levels if idx.startswith("I.")] 
             print("res -- I",interactivity[0])
             
@@ -568,12 +607,30 @@ def compareMobileOneByOneDirect(request):
         alternative_list=[]
         data={}
         criteria_list=[]
+        # survey_obj=surveyForm.objects.get(exp=expobj)
+        survey_obj=surveyForm.objects.get(id=1)
+        surveydata=survey_obj.surveydata    
+    
         # criteria_list=['imagepath1']
         print("crit_list",crit_list)
 
         if crit_list:
             for crit in crit_list:
                 criteria_list.append(crit)
+        else:
+            crit = [idx for idx in exp_feat_levels if idx.startswith("C.")] 
+            crit=crit[0].lower()
+            exp_obj=exp.objects.get(id=exp_under_test)
+            ExpCriteria_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1,cOrder_id=crit)
+            print("ExpCriteria_obj",ExpCriteria_obj)
+            crit_list_obj=ExpCriteria_obj.values_list('pCriteria__criteria_name',flat=True)
+            print("crit_list_obj",crit_list_obj)
+            crit_list=list(crit_list_obj)
+            crit_list.insert(0,"imagepath1")
+            crit_list.append("Others")
+            for crit in crit_list:
+                criteria_list.append(crit)
+
         test_mobiles = comp_mobiles
         for m in test_mobiles:
             print('m objest',m)
@@ -600,7 +657,8 @@ def compareMobileOneByOneDirect(request):
                 'numofmobiles':numofmobiles,
                 'criteria_list':criteria_list,
                 'alternative_list':alternative_list,
-                "criteria_weights_dict":json.dumps(criteria_weights_dict)
+                "criteria_weights_dict":json.dumps(criteria_weights_dict),
+                "surveydata":surveydata,
             }
         return JsonResponse(data)
 
@@ -676,19 +734,30 @@ def compareMobileTwoByTwoDirect(request):
 
 def compareMobileSpecsFilterVer(request):
     if request.method=="GET":
+        
+        
         return render(request,'webapp/2by2comapremobilespecsfiltver.html')
     if request.method=="POST":
+       
         if request.is_ajax: 
+            # survey_obj=surveyForm.objects.get(exp=expobj)
+            survey_obj=surveyForm.objects.get(id=2)
+            surveydata=survey_obj.surveydata
+
             mobile={}
             allmobile={}
             
             global comp_mobiles
             global exp_under_test
-            alternative_list=[]
-            res = [idx for idx in exp_feat_levels if idx.startswith("C.")] 
-            res=res[0].lower()
             exp_obj=exp.objects.get(id=exp_under_test)
-            ExpCriteria_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1,cOrder_id=res)
+            # survey_obj=surveyForm.objects.get(exp=expobj)
+            survey_obj=surveyForm.objects.get(id=2)
+            surveydata=survey_obj.surveydata
+
+            alternative_list=[]
+            crit_check = [idx for idx in exp_feat_levels if idx.startswith("C.")] 
+            crit_check=crit_check[0].lower()
+            ExpCriteria_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1,cOrder_id=crit_check)
             print("ExpCriteria_obj",ExpCriteria_obj)
             crit_list=ExpCriteria_obj.values_list('pCriteria__criteria_name',flat=True)
             crit_list=list(crit_list)
@@ -724,13 +793,23 @@ def compareMobileSpecsFilterVer(request):
                 mobile={}
                 print("alternative_list",alternative_list)
                 # features=['price','resolution','size']
+                if "2by2comapremobilespecsfiltver" in storeuserpagelogs:
+                    flag="true"
+                else:
+                    flag="false"
+
+                    storeuserpagelogs["2by2comapremobilespecsfiltver"]=[datetime.datetime.now(),exp_under_test,request.user.id]
+
                 data={
+                    'userid':request.user.id,
+                    "pagevisited":flag,
                     'allmobiles':allmobile,
                     'numofmobiles':numofmobiles,
                     'criteria_list':criteria_list,
                     'alternative_list':alternative_list,
                     'interactivity':interactivity[0],
-                    "reviseability":reviseability[0]
+                    "reviseability":reviseability[0],
+                    "surveydata":surveydata,
                 }
             # code returns on this one. 
             # if allmobile:
@@ -1048,6 +1127,7 @@ class defaultCriteria_Setup(TemplateView):
                 postedFLevels = json.loads(featlevels_dic)
                 cataloglist=request.POST.get('cataloglist')
                 cataloglist = json.loads(cataloglist)
+                
                 criteria_catalog_disp.objects.filter(id=1).update(catalog_crit_display_order=cataloglist)
                 # global catalogcrit_show_list
 
@@ -1055,6 +1135,7 @@ class defaultCriteria_Setup(TemplateView):
                 print("postedFLevels",postedFLevels)
                 print("default_crit_show_dict",default_crit_show_dict)
                 print("default_crit_hide_dict",default_crit_hide_dict)
+                
                 final_def_blocks_to_send = request.POST.get('final_def_blocks_to_send')
                 postedDefFLevels=json.loads(final_def_blocks_to_send)
                 print("final_def_blocks_to_send",final_def_blocks_to_send)
@@ -1098,8 +1179,8 @@ class defaultCriteria_Setup(TemplateView):
                         print(key,":",s)
                         p_levList.append('Def.'+str(key))
                         for count, i in enumerate(s):
-                            print("count",count)
-                            print("ii",i)
+                            # print("count",count)
+                            # print("ii",i)
                             
                             try:
                                 pCObj=PhoneCriteria.objects.get(criteria_name=i)
@@ -1118,8 +1199,8 @@ class defaultCriteria_Setup(TemplateView):
                         p_levList.append('Def.'+str(key))
                         for count, i in enumerate(s):
                             try:
-                                print("count",count)
-                                print("ii",i)
+                                # print("count",count)
+                                # print("ii",i)
                                 pCObj=PhoneCriteria.objects.get(criteria_name=i)
                                 expOSets=ExpCriteriaOrder()
                                 expOSets.exp=expCont.exp
@@ -1172,8 +1253,8 @@ class orderCriteria_Setup(TemplateView):
             co_set_hide_dict={}
             # try:
             #     exp_obj=Experiment.objects.get(custom_exp_id=existCusId)
-            #     if (ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_Cdm.Def").exists()):
-            #         co_obj_list=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_Cdm.Def")
+            #     if (ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_Cr.Def").exists()):
+            #         co_obj_list=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_Cr.Def")
             #         co_obj_list =co_obj_list.values_list("cOrder_id").distinct()
             #         co_obj_list = [item[0].split("_") for item in co_obj_list]
             #         co_obj_list = [item[0] for item in co_obj_list]
@@ -1182,18 +1263,18 @@ class orderCriteria_Setup(TemplateView):
             #         if len(co_set_list)>1:
                         
             #             for co in co_set_list:
-            #                 ECO_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains=co+"_Cdm.Def",sh_hd=1,pCriteria_id__status="default",pCriteria_id__priority="mendatory").order_by("id")
+            #                 ECO_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains=co+"_Cr.Def",sh_hd=1,pCriteria_id__status="default",pCriteria_id__priority="mendatory").order_by("id")
             #                 print("ECO_KNE",ECO_obj)
             #                 mandatory=list(ECO_obj.values_list("pCriteria_id__criteria_name",flat=True))
             #                 print("Man",mandatory)
             #                 # print("ExpCrtOrd",ExpCrtOrd.values_list("pCriteria_id__criteria_name",flat=True))
-            #                 ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains=co+"_Cdm.Def",sh_hd=0,pCriteria_id__status="default").order_by("id")
+            #                 ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains=co+"_Cr.Def",sh_hd=0,pCriteria_id__status="default").order_by("id")
             #                 feature_to_hide=list(ExpCrtOrd.values_list("pCriteria_id__criteria_name",flat=True))
             #                 # list comprehension
             #                 feature_to_hide = [item[0] for item in feature_to_hide]
             #                 co_set_hide_dict[co]=feature_to_hide
             #                 print("hide",feature_to_hide)
-            #                 ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains=co+"_Cdm.Def",sh_hd=1,pCriteria_id__status="default").order_by("id")
+            #                 ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains=co+"_Cr.Def",sh_hd=1,pCriteria_id__status="default").order_by("id")
             #                 feature_to_display=list(ExpCrtOrd.values_list("pCriteria_id__criteria_name","position"))
             #                 feature_to_display = [item[0] for item in feature_to_display]
             #                 co_set_show_dict[co]=feature_to_display
@@ -1205,15 +1286,15 @@ class orderCriteria_Setup(TemplateView):
             #                 flag="true"
 
             #         else:
-            #             ECO_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_Cdm.Def",sh_hd=1,pCriteria_id__status="default",pCriteria_id__priority="mendatory").order_by("id")
+            #             ECO_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_Cr.Def",sh_hd=1,pCriteria_id__status="default",pCriteria_id__priority="mendatory").order_by("id")
             #             print("ECO_KNE",ECO_obj)
             #             mandatory=list(ECO_obj.values_list("pCriteria_id__criteria_name",flat=True))
             #             print("Man",mandatory)
             #             # print("ExpCrtOrd",ExpCrtOrd.values_list("pCriteria_id__criteria_name",flat=True))
-            #             ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_Cdm.Def",sh_hd=0,pCriteria_id__status="default").order_by("id")
+            #             ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_Cr.Def",sh_hd=0,pCriteria_id__status="default").order_by("id")
             #             feature_to_hide=list(ExpCrtOrd.values_list("pCriteria_id__criteria_name",flat=True))
             #             print("hide",feature_to_hide)
-            #             ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_Cdm.Def",sh_hd=1,pCriteria_id__status="default").order_by("id")
+            #             ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id__icontains="_Cr.Def",sh_hd=1,pCriteria_id__status="default").order_by("id")
             #             feature_to_display=list(ExpCrtOrd.values_list("pCriteria_id__criteria_name","position"))
             #             feature_to_display = [item[0] for item in feature_to_display]
             #             print("display",feature_to_display)
@@ -1350,7 +1431,7 @@ class orderCriteria_Setup(TemplateView):
                 }
                 return JsonResponse(data)
 
-class Cdm_On_Co_On_CriteriaSetup(TemplateView):
+class Cr_On_Co_On_CriteriaSetup(TemplateView):
     def get(self,request):
         role_name=['']
         print(request.user.id)
@@ -1401,20 +1482,39 @@ class Cdm_On_Co_On_CriteriaSetup(TemplateView):
                 postedFLevels = json.loads(featlevels_dic)
                 cataloglist=request.POST.get('cataloglist')
                 cataloglist = json.loads(cataloglist)
-                criteria_catalog_disp.objects.filter(id=1).update(catalog_crit_display_order=cataloglist)
 
+
+                criteria_catalog_disp.objects.filter(id=1).update(catalog_crit_display_order=cataloglist)
+                
+                print("postedFLevels",postedFLevels)
                 print("crit_order_dict",crit_order_dict)
                 print("crit_hide_dict",crit_hide_dict)
-                print("featlevels_dic",featlevels_dic)
+
+
+                final_def_blocks_to_send = request.POST.get('final_def_blocks_to_send')
+                postedDefFLevels=json.loads(final_def_blocks_to_send)
+                print("final_def_blocks_to_send",final_def_blocks_to_send)
+
 
                 expCont = getExpController(request)
                 existExpId = expCont.exp.id
                 existCusId=expCont.exp.custom_exp_id
-                expCont.setFSet(newFLevels=postedFLevels,prompt=False)
-                block_set = expCont.generateBlocks()
-                block_list = list(block_set.all().values('serial_no','levels_set'))
-                print('<<<<<<TO DISPLAY ON PAGE>>>>>>')
-                print(block_list)
+
+                if postedFLevels:
+                    expCont.setFSet(newFLevels=postedFLevels,prompt=False)
+                    block_set = expCont.generateBlocks()
+                    block_list = list(block_set.all().values('serial_no','levels_set'))
+                    print('<<<<<<TO DISPLAY ON PAGE>>>>>>')
+                else:
+                    block_list=""
+                print("block_list",block_list)
+                if postedDefFLevels:
+                # call expCont.setDefFSet(newDefFLevels=postedDefFLevels,prompt=False)
+                    expCont.setDefFSet(newDefFLevels=postedDefFLevels,prompt=False)
+                    
+
+
+              
                 # save orderset Details in expCriteriaOrder
                 exp_obj=Experiment.objects.get(custom_exp_id=existCusId)
                 
@@ -1471,7 +1571,7 @@ class Cdm_On_Co_On_CriteriaSetup(TemplateView):
                 }
                 return JsonResponse(data)
 
-class cdmCriteria_Setup(TemplateView):
+class CrCriteriaSetup(TemplateView):
     def get(self,request):
         flag="true"
         role_name=['']
@@ -1496,24 +1596,24 @@ class cdmCriteria_Setup(TemplateView):
             # try:
             #     exp_obj=Experiment.objects.get(custom_exp_id=existCusId)            
             #     print("exp_obj",exp_obj)
-            #     if (ExpCriteriaOrder.objects.filter(exp=exp_obj,fvp__contains="Cdm.Active").exists()):
-            #         print("CDM Active")
+            #     if (ExpCriteriaOrder.objects.filter(exp=exp_obj,fvp__contains="Cr.Active").exists()):
+            #         print("CR Active")
 
-            #         ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1,fvp__contains="Cdm.Active",pCriteria_id__status="default",pCriteria_id__priority="mendatory").order_by("id")
+            #         ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1,fvp__contains="Cr.Active",pCriteria_id__status="default",pCriteria_id__priority="mendatory").order_by("id")
             #         mandatory=list(ExpCrtOrd.values_list("pCriteria_id__criteria_name",flat=True))
             #         print("Man",mandatory)
             #         # print("ExpCrtOrd",ExpCrtOrd.values_list("pCriteria_id__criteria_name",flat=True))
-            #         ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=0,fvp__contains="Cdm.Active",pCriteria_id__status="default").order_by("id")
+            #         ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=0,fvp__contains="Cr.Active",pCriteria_id__status="default").order_by("id")
             #         feature_to_hide=list(ExpCrtOrd.values_list("pCriteria_id__criteria_name",flat=True))
             #         # feature_to_hide = [item[0] for item in feature_to_hide]
             #         print("hide",feature_to_hide)
-            #         ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1,fvp__contains="Cdm.Active",pCriteria_id__status="default").order_by("id")
+            #         ExpCrtOrd=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1,fvp__contains="Cr.Active",pCriteria_id__status="default").order_by("id")
             #         feature_to_display=list(ExpCrtOrd.values_list("pCriteria_id__criteria_name","position"))
             #         feature_to_display = [item[0] for item in feature_to_display]
             #         print("display",feature_to_display)
             #         flag="true"
             #     else:
-            #         print("CDM Else")
+            #         print("CR Else")
 
             #         feature_mand=PhoneCriteria.objects.filter(status="default",priority="mendatory").order_by('id')
             #         mandatory=list(feature_mand.values_list("criteria_name",flat=True))
@@ -1526,7 +1626,7 @@ class cdmCriteria_Setup(TemplateView):
             #         feature_to_hide=list()
             #         flag="true"
             # except:
-            print("CDM Exception")
+            print("CR Exception")
             feature_mand=PhoneCriteria.objects.filter(status="default",priority="mendatory").order_by('id')
             mandatory=list(feature_mand.values_list("criteria_name",flat=True))
             feature_to_display=PhoneCriteria.objects.filter(status="default").order_by('id')
@@ -1555,10 +1655,10 @@ class cdmCriteria_Setup(TemplateView):
             return JsonResponse(data)
     def post(self,request): 
            if request.is_ajax:
-                cdm_crit_show_dict = request.POST.get('cdm_crit_show_dict')
-                cdm_crit_show_dict= json.loads(cdm_crit_show_dict)
-                cdm_crit_hide_dict = request.POST.get('cdm_crit_hide_dict')
-                cdm_crit_hide_dict= json.loads(cdm_crit_hide_dict)
+                cr_crit_show_dict = request.POST.get('cr_crit_show_dict')
+                cr_crit_show_dict= json.loads(cr_crit_show_dict)
+                cr_crit_hide_dict = request.POST.get('cr_crit_hide_dict')
+                cr_crit_hide_dict= json.loads(cr_crit_hide_dict)
                 featlevels_dic=request.POST.get('featlevels_dic')
                 postedFLevels = json.loads(featlevels_dic)
                 cataloglist=request.POST.get('cataloglist')
@@ -1568,18 +1668,14 @@ class cdmCriteria_Setup(TemplateView):
                 postedDefFLevels=json.loads(final_def_blocks_to_send)
                 print("final_def_blocks_to_send",final_def_blocks_to_send)
                 
-                print("cdm_crit_show_dict",cdm_crit_show_dict)
-                print("cdm_crit_hide_dict",cdm_crit_hide_dict)
+                print("cr_crit_show_dict",cr_crit_show_dict)
+                print("cr_crit_hide_dict",cr_crit_hide_dict)
                 
                 expCont = getExpController(request)
                 existExpId = expCont.exp.id
                 existCusId=expCont.exp.custom_exp_id
                 
-                # expCont.setFSet(newFLevels=postedFLevels,prompt=False)
-                # block_set = expCont.generateBlocks()
-                # block_list = list(block_set.all().values('serial_no','levels_set'))
-                # print('<<<<<<TO DISPLAY ON PAGE>>>>>>')
-                # print(block_list)
+                
                 # save orderset Details in expCriteriaOrder
                 # Check to see if the exp obj already exists in the table. if it does then we need to update position and show_hide prop of  the rows containing the exp id. 
                 # 1. based on the exp obj check if exp exists. if it does then 
@@ -1608,7 +1704,7 @@ class cdmCriteria_Setup(TemplateView):
                 else:
                     pass
                 p_levList=list()
-                for key,s in cdm_crit_show_dict.items():
+                for key,s in cr_crit_show_dict.items():
                         print(key,":",s)
                         for count, i in enumerate(s):
                             print("count",count)
@@ -1620,13 +1716,13 @@ class cdmCriteria_Setup(TemplateView):
                                 expOSets.exp=expCont.exp
                                 expOSets.cOrder_id=key
                                 expOSets.pCriteria=pCObj
-                                expOSets.fvp="Cdm.Active_"+str(key)
+                                expOSets.fvp="Cr.Active_"+str(key)
                                 expOSets.position=count+1
                                 expOSets.sh_hd=1
                                 expOSets.save()
                             except (PhoneCriteria.DoesNotExist):
                                 pass
-                for key,s in cdm_crit_hide_dict.items():
+                for key,s in cr_crit_hide_dict.items():
                         print(key,":",s)
                         for count, i in enumerate(s):
                             try:
@@ -1634,7 +1730,7 @@ class cdmCriteria_Setup(TemplateView):
                                 expOSets=ExpCriteriaOrder()
                                 expOSets.exp=expCont.exp
                                 expOSets.cOrder_id=key
-                                expOSets.fvp="Cdm.Active_"+str(key)
+                                expOSets.fvp="Cr.Active_"+str(key)
                                 expOSets.pCriteria=pCObj
                                 expOSets.position=0
                                 expOSets.sh_hd=0
@@ -1807,8 +1903,18 @@ class showFilter(TemplateView):
         Cpu=['octa-core','quad-core']
         back_camera=['16 MP','13 MP','8 MP','5.0 MP','3.7 MP','2 MP','1.9 MP','VGA']
         battery=['3600 mAh','3300 mAh','3000 mAh','2600 mAh','2400 mAh','2350']
-        return render(request,'webapp/filter_test.html',{'mobiles':mobiles,'Colors':Colors,
-        'os':OS,'size':Size,'feat':feat,'cpu':Cpu,'back_cm':back_camera,'battery':battery})
+        data={ 
+            'mobiles':mobiles,
+            'Colors':Colors,
+            'os':OS,
+            'size':Size,
+            'feat':feat,
+            'cpu':Cpu,
+            'back_cm':back_camera,
+            'battery':battery
+        }
+        data={}
+        return render(request,'webapp/showfilter.html',data)
 filter_features=[]
 class filter(TemplateView):
    
@@ -1816,39 +1922,84 @@ class filter(TemplateView):
         global filter_features
         if request.is_ajax():
             print("IN AJAX REQUEST")
-            all_data_dic={}
-            price=['100000','120000']
-            Size=['5','5.5','5.3','6.5','7']
-            Colors=['black','white','gold']
-            OS=['android v8.0 oreo','android v7.1.1 (nougat)','android v4.4 (kitkat)','android v6.0 (marshmallow)',
-            'android v5.0.2 (lollipop)','android v5.1 (lollipop)','android v4.3 (jelly bean)']
-            # size=['0','1','3','4','4.1','4.2','4.3','4.4','4.5','4.6','4.7','4.8','4.9','5','5.1','5.2','5.3','5.4','5.5','5.6','5.7','5.8','5.9','6','6.1','6.2','6.3','6.4','6.5','6.6','6.7','6.8','6.9','7']
-            Cpu=['octa-core','quad-core']
-            backcam=['16 MP','13 MP','8 MP','5.0 MP','3.7 MP','2 MP','1.9 MP','VGA']
-            battery=['3600 mAh','3300 mAh','3000 mAh','2600 mAh','2400 mAh','2350']
-            mobilecompany=['samsung','I Phone']
-            Chip=['Exynos 9810 Octa','Exynos 8895 Octa','Qualcomm Snapdragon 805','Exynos8890Octa','Quad-core (2 x 2.15 GHz Kryo + 2 x 1.6 GHz Kryo)','Exynos 7885 Octa','QualcommMSM8996Snapdragon820','Exynos7420','Exynos 7420 Octa','Exynos 7880 Octa','QualcommMSM8953Snapdragon625','Mediatek MT6757 Helio P20','Exynos 7870 SoC','Exynos 7870','1.4 GHz Quad-Core Cortex-A53','QualcommMSM816Snapdragon410','QualcommMSM8917Snapdragon425','1.2 GHz Quad-core Cortex-A53','Spreadtrum SC9830','MediatekMT6737T','Exynos3475','Spreadtrum SC9830','Spreadtrum','','']
-            resolution=['720 x 1280','540 x 960','480 x 800','1440 x 2960','1080 x 2220','1080 x 1920']      
-            weight=['163','195','173','174','155','191','157','172','132','0','181','169','179','135','160','170','143','159','146','156','138','131','122','126','153']  
-            dimensions=['147.6 x 68.7 x 8.4 mm','162.5 x 74.6 x 8.5 mm','159.5 x 73.4 x 8.1 mm','151.3 x 82.4 x 8.3 mm','148.9 x 68.1 x 8 mm','159.9 x 75.7 x 8.3 mm','150.9 x 72.6 x 7.7 mm','149.2 x 70.6 x 8.4 mm','143.4 x 70.8 x 6.9 mm','142.1 x 70.1 x 7 mm','153.2 x 76.1 x 7.6 mm','156.8 x 77.6 x 7.9 mm','146.1 x 71.4 x 7.9 mm','152.4 x 74.7 x 7.9 mm','146.8 x 75.3 x 8.9 mm','146.8 x 75.3 x 8.9 mm','156.7 x 78.8 x 8.1 mm','135.4 x 66.2 x 7.9 mm']
-            all_data_dic['price']=price
-            all_data_dic['Size']=Size
-            all_data_dic['Colors']=Colors
-            all_data_dic['OS']=OS
-            all_data_dic['Cpu']=Cpu
-            all_data_dic['backcam']=backcam
-            all_data_dic['battery']=battery
+            all_data_dict={}
+            criterias_in_integer=['price',"Size","Weight"]
+            # price=['100000','120000']
+            # Size=['5','5.5','5.3','6.5','7']
+            # Colors=['black','white','gold']
+            # OS=['android v8.0 oreo','android v7.1.1 (nougat)','android v4.4 (kitkat)','android v6.0 (marshmallow)',
+            # 'android v5.0.2 (lollipop)','android v5.1 (lollipop)','android v4.3 (jelly bean)']
+            # # size=['0','1','3','4','4.1','4.2','4.3','4.4','4.5','4.6','4.7','4.8','4.9','5','5.1','5.2','5.3','5.4','5.5','5.6','5.7','5.8','5.9','6','6.1','6.2','6.3','6.4','6.5','6.6','6.7','6.8','6.9','7']
+            # Cpu=['octa-core','quad-core']
+            # backcam=['16 MP','13 MP','8 MP','5.0 MP','3.7 MP','2 MP','1.9 MP','VGA']
+            # battery=['3600 mAh','3300 mAh','3000 mAh','2600 mAh','2400 mAh','2350']
+            # Brand=['samsung','I Phone']
+            # Chip=['Exynos 9810 Octa','Exynos 8895 Octa','Qualcomm Snapdragon 805','Exynos8890Octa','Quad-core (2 x 2.15 GHz Kryo + 2 x 1.6 GHz Kryo)','Exynos 7885 Octa','QualcommMSM8996Snapdragon820','Exynos7420','Exynos 7420 Octa','Exynos 7880 Octa','QualcommMSM8953Snapdragon625','Mediatek MT6757 Helio P20','Exynos 7870 SoC','Exynos 7870','1.4 GHz Quad-Core Cortex-A53','QualcommMSM816Snapdragon410','QualcommMSM8917Snapdragon425','1.2 GHz Quad-core Cortex-A53','Spreadtrum SC9830','MediatekMT6737T','Exynos3475','Spreadtrum SC9830','Spreadtrum','','']
+            # resolution=['720 x 1280','540 x 960','480 x 800','1440 x 2960','1080 x 2220','1080 x 1920']      
+            # weight=['163','195','173','174','155','191','157','172','132','0','181','169','179','135','160','170','143','159','146','156','138','131','122','126','153']  
+            # dimensions=['147.6 x 68.7 x 8.4 mm','162.5 x 74.6 x 8.5 mm','159.5 x 73.4 x 8.1 mm','151.3 x 82.4 x 8.3 mm','148.9 x 68.1 x 8 mm','159.9 x 75.7 x 8.3 mm','150.9 x 72.6 x 7.7 mm','149.2 x 70.6 x 8.4 mm','143.4 x 70.8 x 6.9 mm','142.1 x 70.1 x 7 mm','153.2 x 76.1 x 7.6 mm','156.8 x 77.6 x 7.9 mm','146.1 x 71.4 x 7.9 mm','152.4 x 74.7 x 7.9 mm','146.8 x 75.3 x 8.9 mm','146.8 x 75.3 x 8.9 mm','156.7 x 78.8 x 8.1 mm','135.4 x 66.2 x 7.9 mm']
+            # all_data_dic['price']=price
+            # all_data_dic['Size']=Size
+            # all_data_dic['Colors']=Colors
+            # all_data_dic['OS']=OS
+            # all_data_dic['Cpu']=Cpu
+            # all_data_dic['backcam']=backcam
+            # all_data_dic['battery']=battery
+            # all_data_dic['Brand']=battery
+            # all_data_dic['Ram']=["1GB","2GB","3GB","4GB"]
+            # all_data_dic['Memory']=["1GB","2GB","3GB","4GB"]
+            print(filter_features)
+            gcritdt_obj=generalCriteriaData.objects.filter(criteria__in=filter_features)
+            gcritdt_obj_list=list(gcritdt_obj.values_list("criteria__criteria_name","valuelist",'inputtype'))
+            # criteria_name=gcritdt_obj_list[0][0]
+            # value_list=gcritdt_obj_list[0][1]
+            # value_list = [ float(x) for x in value_list ]
+            # inputtype=gcritdt_obj_list[0][2]
+            # all_data_dict[criteria_name]=[]
+            # all_data_dict[criteria_name].append(value_list)
+            # all_data_dict[criteria_name].append(inputtype)
+            # min=value_list[0]
+            # max=value_list[-1]
+            # templist=[]
+            # templist.append(min)
+            # templist.append(max)
+            # all_data_dict[criteria_name].append(templist)
 
-            filter_features = list(filter_features.values())
-            print(":filter",filter_features)
-            data_filter_feature={}
-            for i in filter_features:
-                print("i:",i['feature'])
-                data_filter_feature[i['feature']]=all_data_dic[i['feature']]
+
+            # print("criteria_name",criteria_name)
+            # print("value_list",value_list)
+            # print("inputtype",inputtype)
+            for obj in gcritdt_obj_list:
+                criteria_name=obj[0]
+                value_list=obj[1]
+
+                if criteria_name in criterias_in_integer:
+                    value_list = [ float(x) for x in value_list ]
+
+                inputtype=obj[2]
+                if inputtype=="slider":
+                    # get min and max of valuelist. and store in a list. 
+                    min=value_list[0]
+                    max=value_list[-1]
+                    templist=[]
+                    templist.append(min)
+                    templist.append(max)
+                    all_data_dict[criteria_name]=[]
+                    all_data_dict[criteria_name].append(value_list)
+                    all_data_dict[criteria_name].append(inputtype)
+                    all_data_dict[criteria_name].append(templist)
+                else:
+                    all_data_dict[criteria_name]=[]
+                    all_data_dict[criteria_name].append(value_list)
+                    all_data_dict[criteria_name].append(inputtype)
+            print(all_data_dict)
+
+
 
             data={
-                'feat':filter_features,
-                'data_filter_feature':data_filter_feature
+                "all_data_dict":all_data_dict,
+                # 'feat':filter_features,
+                # 'data_filter_feature':data_filter_feature
                 }
             return JsonResponse(data)
         else:
@@ -1861,22 +2012,26 @@ class filter(TemplateView):
             print(role)
             
             if role=='Super_Admin':
-                roles=1
-                filter_features=sort_feature.objects.filter(~Q(sh_hd = 0),roles=roles).order_by('position')
-                # feat=sort_feature.objects.filter(~Q(sh_hd = 0),roles=roles).order_by('position')
-
-                ft=sort_feature.objects.filter(Q(sh_hd = 0),roles=roles).order_by('position')
-                print("In super admin",filter_features)
+                pass
+                # roles=1
+                # filter_features=sort_feature.objects.filter(~Q(sh_hd = 0),roles=roles).order_by('position')
+                # ft=sort_feature.objects.filter(Q(sh_hd = 0),roles=roles).order_by('position')
+                # print("In super admin",filter_features)
             elif role=='Subject':
+                exp_obj=Experiment.objects.get(id=134)
+
+                ExpCritObj=ExpCriteriaOrder.objects.filter(exp=exp_obj,cOrder_id="c.pruned",sh_hd=1)
+                pcriteria_list=list(ExpCritObj.values_list("pCriteria",flat=True))
+                filter_features=pcriteria_list
+                
                 # global role
-                roles=2
-                filter_features=sort_feature.objects.filter(~Q(sh_hd = 0),roles=roles).order_by('position')
-                ft=sort_feature.objects.filter(Q(sh_hd = 0),roles=roles).order_by('position')
+                # roles=2
+                # filter_features=sort_feature.objects.filter(~Q(sh_hd = 0),roles=roles).order_by('position')
+                # ft=sort_feature.objects.filter(Q(sh_hd = 0),roles=roles).order_by('position')
             # else:
             #     print("in mobile redirect")
             #     return redirect('/mobileanl/mobile')
-
-            return render(request,'webapp/filter_test.html')
+            return render(request,'webapp/showfilter.html')
     
     def post(self,request):
         # print("ssss",(request.POST['first_choice_value']))
@@ -1916,13 +2071,12 @@ class filter(TemplateView):
         # filter_d={}
         if request.is_ajax():
             count=0
-            d = request.POST.get('filt_opt_sel')
+            element_data_dict = request.POST.get('element_data_dict')
             #print('d',d)
-            filt_opt_sel = json.loads(d)
+            element_data_dict = json.loads(element_data_dict)
             # print("filt_opt_sel",filt_opt_sel)
-            filter_d=filt_opt_sel
+            filter_d=element_data_dict
             # return render(request,'webapp/mobile.html')  
-            data={'success':"success"}
             
 
 
@@ -2011,7 +2165,14 @@ class filter(TemplateView):
                 
                 sizeofmob=len(list(filt_mobiles))
                 print(sizeofmob)
+            print(filt_mobiles)
+        
+            filt_mobiles=filt_mobiles
             print("sizeofmob",sizeofmob)
+            data={
+                'filt_mobiles':"filt_mobiles",
+                }
+
             return JsonResponse(data)
 
             
@@ -2093,20 +2254,25 @@ def filteredMobileView(request):
                 template_sidebar='webapp/sidebartemplates/sidebartemp_superadmin.html'
                 return render(request,template_name,{'mobiles':ex_mobile,'template_sidebar':template_sidebar})
             else:
-                # print("mobiles",filt_mobiles)
-                uid = request.user.username
-                print(uid)
-                tuser = User.objects.get(username=uid)
-                exp_list = tuser.subject_set.values_list('exp', flat=True) 
-                exp_active = max(exp_list)                
-                phoneobjs=selectedAdminPhones.objects.filter(exp=exp_active)
+                print("mobiles",filt_mobiles)
+                # uid = request.user.id
+                # print(uid)
+                # tuser = User.objects.get(username=uid)
+                # exp_list = tuser.subject_set.values_list('exp', flat=True) 
+                # exp_active = max(exp_list)    
+                # mobilephones.objects.filter()            
+                # phoneobjs=selectedAdminPhones.objects.filter(exp=134)
                 # print(phoneobjs)
-                plist=[]
-                for pob in phoneobjs:
-                    print(pob)
-                    plist.append(pob.mob.id)
-                # print(plist)
-                filt_mobiles=mobilephones.objects.filter(pk__in=plist)
+                # plist=[]
+                # for pob in phoneobjs:
+                #     print(pob)
+                #     plist.append(pob.mob.id)
+                # # print(plist)
+                # print("SS",filt_mobiles[0].id)
+                mobile_id_list=[]
+                for mobile in filt_mobiles:
+                    mobile_id_list.append(mobile.id)
+                filt_mobiles=mobilephones.objects.filter(pk__in=mobile_id_list)
                 paginator = Paginator(filt_mobiles,9)
                 page = request.GET.get('page')
                 ex_mobile = paginator.get_page(page)
@@ -2539,10 +2705,14 @@ def deleteAllSubjects(request):
 
 def getExpController(request):
     try:
-        sess_expId = request.session['sess_expId']
-        print("session>>>>>>>>>>>>>>",request.session['sess_expId'])
+        cest_obj=customExpSessionTable.objects.aggregate(Max('expid'))
+        print("cest_obj",cest_obj)
+        print("cest_obj['expid__max']",cest_obj['expid__max'])
+        sess_expId=cest_obj['expid__max']
+        # sess_expId = request.session['sess_expId']
+        # print("session>>>>>>>>>>>>>>",request.session['sess_expId'])
 
-        print('SESSION ID',sess_expId)
+        # print('SESSION ID',sess_expId)
     except KeyError:
         print("session_________")
 
@@ -2582,9 +2752,17 @@ def getExpController(request):
         print('expAdminId',expAdminId)
         expCont = ExperimentController(a_id=expAdminId)
         print('NEW Exp id',expCont.exp.id)
-        request.session['sess_expId'] = expCont.exp.id
-        request.session['sess_custExpId'] = expCont.exp.custom_exp_id
-        print('request.session',request.session['sess_custExpId'] )
+        # New  Session Maintenance
+        cest_obj=customExpSessionTable()
+        cest_obj.expid=expCont.exp.id
+        cest_obj.cusexpid=expCont.exp.custom_exp_id
+        cest_obj.save()
+        print("cest_obj",cest_obj)
+        print("CEST Obj expid",cest_obj.expid)
+        # Default Session Maintenance
+        # request.session['sess_expId'] = expCont.exp.id
+        # request.session['sess_custExpId'] = expCont.exp.custom_exp_id
+        # print('request.session',request.session['sess_custExpId'] )
         print("SAVED NEW EXPERIMENT TO SESSION---->>>>>>")
 
     return expCont
@@ -2606,7 +2784,7 @@ def checkExpController(request):
 
 
 def pickleExpController(expCont):
-    pickle.dump(expCont, open('expCont4.p','wb'))
+    pickle.dump(expCont, open("expCont4.p",'wb'))
 
 def getSavedSubjectDataExpCont(request):
     if request.method == 'POST':
@@ -2618,7 +2796,6 @@ def getSavedSubjectDataExpCont(request):
                 'subject_data':subject_data
             }
             return JsonResponse(data)
-
 def importSubjects(request):
     expCont = getExpController(request)
     if request.is_ajax:
@@ -2695,16 +2872,30 @@ def assignToBlocks(request):
         #create to_json dictionary of blocks (by batches, ie. index-wise, then row-wise)
         return JsonResponse(data, safe=False)
 def removeSessionObj(request):
+    #Custom Session Maintenance 
     try:
-        filepath = Path("C:/biasweb/expCont4.p")
-    except FileNotFoundError:
-        filepath=None
-    else:
-        if filepath.exists():
-            os.remove('C:/biasweb/expCont4.p')
-        if request.session['sess_expId']:
-            del request.session['sess_expId']
-        return HttpResponse()
+
+        cest_obj=customExpSessionTable.objects.aggregate(Max('expid'))
+        print("cest_obj",cest_obj)
+        sess_expId=cest_obj['expid__max']
+        obj=customExpSessionTable.objects.get(expid=sess_expId)
+        obj.delete()
+    except: 
+        print("Nothing Found")
+    data={}
+    return JsonResponse(data)
+
+    # Default/Old session maintainance
+    # try:
+    #     filepath = Path("C:/biasweb/expCont4.p")
+    # except FileNotFoundError:
+    #     filepath=None
+    # else:
+    #     if filepath.exists():
+    #         os.remove('C:/biasweb/expCont4.p')
+    #     if request.session['sess_expId']:
+    #         del request.session['sess_expId']
+    #     return HttpResponse()
 
 
 def importExcel(request):
@@ -2863,15 +3054,29 @@ class createExperiment(TemplateView):
                 creat_exp_template_sidebar='webapp/sidebartemplates/createExpSideBars/crtExpsidebartemp_exp.html'
             elif role=='Platform_Admin':
                 pass
+            # Custom exp session maintenance
             try:
-                sess_expId = request.session['sess_expId']
-                print("sesid",sess_expId)
-            except KeyError:
+                cest_obj=customExpSessionTable.objects.aggregate(Max('expid'))
+                print("cest_obj",cest_obj)
+                sess_expId=cest_obj['expid__max']
+                obj=customExpSessionTable.objects.get(expid=sess_expId)
+                sess_custExpId=obj.cusexpid
+            except:
                 sess_expId = ""
-            try:
-                sess_custExpId = request.session['sess_custExpId']
-            except KeyError:
                 sess_custExpId = "123"
+
+
+
+            # Defualt exp session maintenance
+            # try:
+            #     sess_expId = request.session['sess_expId']
+            #     print("sesid",sess_expId)
+            # except KeyError:
+            #     sess_expId = ""
+            # try:
+            #     sess_custExpId = request.session['sess_custExpId']
+            # except KeyError:
+            #     sess_custExpId = "123"
             
             return render(request,self.template_name,
             {  'creat_exp_template_sidebar':creat_exp_template_sidebar,
@@ -3158,6 +3363,8 @@ def getMobiledata(request):
             role=userobj.role_id_id
             roleobj=Role.objects.get(pk=role)
             role=roleobj.role_name
+            pagevisited="false"
+
             if role=='Super_Admin':
                 # // This is the default code to retrieve all
                 mobiles_retrieved=mobilephones.objects.all().order_by('-id')
@@ -3165,6 +3372,9 @@ def getMobiledata(request):
                 mobiles_retrieved_list=mobiles_retrieved
                 #///////////////////////
             elif role=='Subject':
+                flag="false"
+                global exp_feat_levels
+
                 exp_list = userobj.subject_set.values_list('exp', flat=True) 
                 # Getting the status codes that are active.
                 exStatusCd_list=exStatusCd.objects.filter(status_code__gte=11)
@@ -3181,34 +3391,44 @@ def getMobiledata(request):
                 Sub_obj=Subject.objects.get(user=userobj,exp=exp_obj)
                 print("blocks",Sub_obj.block.levels_set)
                 datetime.datetime.now()
-                storeuserpagelogs["mobile"]=[datetime.datetime.now(),exp_under_test,request.user.id]
-                # res = [idx for idx in Sub_obj.block.levels_set if idx.startswith("P.")]
-                # print("res",res)
-                # if res:
-                #     # seeing the block e.g/ P.default,P.0,P.1,P.2 send the query
-                #     phoneobjs=selectedAdminPhones.objects.filter(exp=exp_obj,pset_id__in=res).order_by("-id")
-                #     mobiles_retrieved = list(phoneobjs.values_list('mob',flat=True))   
-                #     mobiles_retrieved=list(mobilephones.objects.filter(id__in=mobiles_retrieved).values())
-                #     mobiles_retrieved_list=mobiles_retrieved
-                # else:
-                #     mobiles_retrieved=mobilephones.objects.all().order_by('-id')
-                #     mobiles_retrieved = list(mobiles_retrieved.values())   
-                #     mobiles_retrieved_list=mobiles_retrieved
-                phoneobjs=selectedAdminPhones.objects.filter(exp=exp_obj)
+                print("storeuserpagelogs",storeuserpagelogs)
+                if "mobile" in storeuserpagelogs:
+                    reviseability = [idx for idx in exp_feat_levels if idx.startswith("R.")] 
+                    print("res -- R",reviseability[0])
+                    if reviseability[0]=="R.0":
+                        flag="true"
+                        pagevisited=flag
 
-                global exp_feat_levels
+                else:
+                    pagevisited=flag
+                    storeuserpagelogs["mobile"]=[datetime.datetime.now(),exp_under_test,request.user.id]
+                
+                # phoneobjs=selectedAdminPhones.objects.filter(exp=exp_obj)
+
                 if 'P.All' not in exp_feat_levels:
                     print("pset id not P.All")
-                    print(phoneobjs)
-                    plist=[]
-                    for pob in phoneobjs:
-                        print(pob)
-                        plist.append(pob.mob.id)
-                    # print(plist)
-                    mobiles_retrieved=mobilephones.objects.filter(pk__in=plist)
-                    mobiles_retrieved = list(mobiles_retrieved.values())   
-                    mobiles_retrieved_list=mobiles_retrieved
-                    print("filt_mobiles",filt_mobiles)
+                    # print(phoneobjs)
+                    # plist=[]
+                    # for pob in phoneobjs:
+                    #     print(pob)
+                    #     plist.append(pob.mob.id)
+                    # # print(plist)
+                    # mobiles_retrieved=mobilephones.objects.filter(pk__in=plist)
+                    # mobiles_retrieved = list(mobiles_retrieved.values())   
+                    # mobiles_retrieved_list=mobiles_retrieved
+                    # print("filt_mobiles",filt_mobiles)
+                    res = [idx for idx in Sub_obj.block.levels_set if idx.startswith("P.")]
+                    print("res",res)
+                    if res:
+                        # seeing the block e.g/ P.default,P.0,P.1,P.2 send the query
+                        phoneobjs=selectedAdminPhones.objects.filter(exp=exp_obj,pset_id__in=res).order_by("-id")
+                        mobiles_retrieved = list(phoneobjs.values_list('mob',flat=True))   
+                        mobiles_retrieved=list(mobilephones.objects.filter(id__in=mobiles_retrieved).values())
+                        mobiles_retrieved_list=mobiles_retrieved
+                    else:
+                        mobiles_retrieved=mobilephones.objects.all().order_by('-id')
+                        mobiles_retrieved = list(mobiles_retrieved.values())   
+                        mobiles_retrieved_list=mobiles_retrieved
                   
                 else:
                     print("pset id  P.All")
@@ -3227,7 +3447,7 @@ def getMobiledata(request):
             cat_obj=criteria_catalog_disp.objects.get(id=1)
             catalogcrit_show_list=cat_obj.catalog_crit_display_order
             return JsonResponse(
-                {
+                {   "pagevisited":pagevisited,
                     'mobilephones':mobiles_retrieved_list,
                     'catalogcrit_show_list':catalogcrit_show_list,
 
@@ -3281,11 +3501,17 @@ def SavePhoneSets_P0(request):
             expCont = getExpController(request)
             print("Return from getExpController")
             existExpId = expCont.exp.id
+            print("existExpId",existExpId)
             exp_obj=Experiment.objects.get(custom_exp_id=expCont.exp.custom_exp_id)
+            try:
+                obj=selectedAdminPhones.objects.get(exp=exp_obj)
+                rows=selectedAdminPhones.objects.filter(exp=exp_obj)          
+                for r in rows:
+                    r.detele()
+            except:
+                print("nothing in selectedAdminPhones")
 
-            if (selectedAdminPhones.objects.filter(exp=exp_obj).exists()):
-                selectedAdminPhones.objects.filter(exp=exp_obj).delete()          
-            
+           
             expPSets = selectedAdminPhones()
             expPSets.exp = expCont.exp
             expPSets.pset_id= "P.All"
@@ -3309,12 +3535,20 @@ def SavePhoneSets(request):
                 postedFLevels = json.loads(featlevels_dic)
                 expCont = getExpController(request)
                 existExpId = expCont.exp.id
-              
+                try:
+                    # delete P.All If it Exsists
+                    obj=selectedAdminPhones.objects.get(exp=exp_obj,pset_id="P.All")
+                    obj.delete()
+                except:
+                    print("deleted P.All")
+
+                    
                 print("existExpId",existExpId)
 
                 expCont.setFSet(newFLevels=postedFLevels,prompt=False)
                 block_set = expCont.generateBlocks()
                 block_list = list(block_set.all().values('serial_no','levels_set'))
+
                 print('<<<<<<TO DISPLAY ON PAGE>>>>>>')
                 print(block_list)
                 p_levList = list()
@@ -3340,7 +3574,13 @@ def SavePhoneSets(request):
                 else:
                     exp_obj=Experiment.objects.get(custom_exp_id=expCont.exp.custom_exp_id)
                     # Updation check. 
+                    # sap_obj=selectedAdminPhones.objects.get(exp=exp_obj)
+
+                    # if sap_obj.pset_id=='P.All':
+                    #     sap_obj.delete()
                     if (selectedAdminPhones.objects.filter(exp=exp_obj).exists()):
+                        
+                            
                         sap_objs=selectedAdminPhones.objects.filter(exp=exp_obj)
                         pset_list=set(sap_objs.values_list('pset_id', flat=True))
                         pset_list=list(pset_list)
@@ -3578,3 +3818,32 @@ def submitData(request):
             data={}
             return JsonResponse(data)
 
+
+
+
+class createSurveyForm(TemplateView):
+    template_name='webapp/crudexperiment/survey_form.html'
+    def get(self,request):
+        data={}
+        return render(request,self.template_name,data)
+
+    def post(self,request):
+        pass
+class saveSurveyForm(TemplateView):
+    def get(self,request):
+        data={}
+        pass
+    def post(self,request):
+        if request.method=='POST':
+            main_dict=request.POST.get('main_dict')
+            main_dict=json.loads(main_dict)
+            print("main_dict",main_dict)
+
+            survey_obj=surveyForm()
+            print("ssss")
+            survey_obj.surveydata=json.dumps(main_dict)
+            survey_obj.save()
+        data={}
+        return JsonResponse(data)
+
+    

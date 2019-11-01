@@ -1,36 +1,40 @@
 {% extends "webapp/newbase.html" %}
 {% block content %}
 {%load static from staticfiles%}
-<div class="container-fluid text-center">    
-    <div class="row content">
+<div class="container-fluid text-center" >    
+    <div class="row content maincontentblur"  id='maincontent'>
         <div class="col-md-2 sidenav" >
+                <div id="dialog" title="Basic dialog">
+                        <p>Now You will be asked to set criteria weights.</p>
+                </div>
+                <div id="save-dialog" title="Basic dialog">
+                    <p>Your Changes are saved</p>
+            </div>
         </div>
-        <div class=" col-md-8 text-left"  >
-            <div class="row is-flex">
-                <div class="col">
-                    <h1 id="main_heading">Set Criteria Weights</h1>
-                    <ul class="crit_list">
-                        
+        <div class=" col-md-8" >
+            <div class="row is-flex" style="background: rgb(245, 244, 244);">
+                <div class="col-md-4" style="position: relative"  id="crit_list">
                     {%for crit in crit_list%}
-                    <li  rel="{{crit}}" style="padding-top:20px"> 
-                            <span id="{{crit}}_span"></span>
-
-                        <div class="row is-flex">
-                            {%if crit == "imagepath1" %}
-                            <div class="col-md-3">Look and Feel</div>
-                            {%else%}
-                            <div class="col-md-3">{{crit}}</div>
-                            {%endif%}
-                            <div class="col-md-9"><input id="{{crit}}" class="slider"></input></div>
+                        {%if crit == "imagepath1" %}
+                        <div class='criteria_lists zoom'>
+                            <label class='crit_labels' rel ='{{crit}}'onclick='activateSlider($(this))'>Look & Feel</label>
                         </div>
-                    
-                    
-
-                    </li>
+                        {%else%}
+                        <div class='criteria_lists zoom'>
+                            <label class='crit_labels' rel ='{{crit}}'  onclick='activateSlider($(this))'>{{crit}}</label>
+                        </div>
+                        {%endif%}
                     {%endfor%}
 
-                    </ul>
                 </div>
+                <div class="col-md-6 center " id='main-critw-div'>
+                    <h3 id="main_heading"><b>Set Criteria Weights</b></h3>
+                    <div id='critera_div'>
+                       
+                    </div>
+                </div>
+                <div class="col-md-2"></div>
+
                
          </div>              
 
@@ -38,8 +42,8 @@
         </div>
         
         <div class="col-md-2 sidenav" >
-                <button id="savebutton" onclick="SaveWeights()">Save</button>
-                <button  onclick="NextPage()">Next</button>
+                <button id="savecrit_button" style="font-size: large;"  onclick="SaveWeights()" > Save</button>
+                <button id="next_button" style="font-size: large;" class="btn-danger" onclick="NextPage()">Next</button>
 
         </div>
     
@@ -59,86 +63,93 @@
     var pagevisited="{{pagevisited}}"
 
 $(document).ready(function(){ 
-    
-
+    $('#save-dialog').hide();
     // localStorage.removeItem("critlist_val_dict");
 
     // GET CRIT LIST and run the slider.... 
   
-    if (pagevisited!=="True"){
-    $(".crit_list li").each(function(i)
-    {
-         console.log($(this).attr('rel')) // This is your rel value
-         crit_list.push($(this).attr('rel'));
-    });
-  
-    critlist_val_dict=JSON.parse(window.localStorage.getItem("critlist_val_dict")); 
-    if (critlist_val_dict!=null){
-    console.log("critlist_val_dict",critlist_val_dict["criteria_weights"])
-    console.log("crit_list",crit_list)
-    }
-    else{
-    critlist_val_dict={}
-    }
+    if (pagevisited!=="true"){
+        console.log('d')
+        $("#crit_list label").each(function(i)
+        {
+            console.log("crit_list",$(this).attr('rel')) // This is your rel value
+            crit_list.push($(this).attr('rel'));
+        });
     
-   
-    for (var c in crit_list){
-        console.log("criteria_list",crit_list[c])
-        var value=[5];
-        if(critlist_val_dict==null){
-            critlist_val_dict={}
-        }
-        if (critlist_val_dict!==undefined){
-            // console.log("CHECK2",critlist_val_dict.criteria_weights)
-            if (critlist_val_dict["criteria_weights"]!=undefined){
-                value=[parseInt(critlist_val_dict["criteria_weights"][c][1])];
-            }
-        }
+        critlist_val_dict=JSON.parse(window.localStorage.getItem("critlist_val_dict")); 
+        // if (critlist_val_dict!=null){
+        // console.log("critlist_val_dict",critlist_val_dict["criteria_weights"])
+        // console.log("crit_list",crit_list)
+        // }
+        // else{
+        // critlist_val_dict={}
+        // }
         
-        var slider = new rSlider({
+        // if(critlist_val_dict==null){
+        //         critlist_val_dict={}
+                
+        //     }
+        //     if (critlist_val_dict!==undefined){
+        //         // console.log("CHECK2",critlist_val_dict.criteria_weights)
+        //         if (critlist_val_dict["criteria_weights"]!=undefined){
+        //             value=[parseInt(critlist_val_dict["criteria_weights"][c][1])];
+        //         }
+        //     }
+    if(critlist_val_dict==null){
+        critlist_val_dict={}
 
-        target:crit_list[c] ,
-        values: [1,2,3,4,5,6,7,8,9,10],
-        widget:false,
-        labels:[1,2,3,4,5,6,7,8,9,10],
-        labels:true,
-        set:value,
-        tooltip:true,
-        onChange: function (event) {
-            console.log("EVENT",event)
-            console.log("THIS",this.target)
-            document.getElementById(this.target+'_span').innerHTML=event;
-            if  (critw_logs_dict[this.target]===undefined){
-                critw_logs_dict[this.target]=[]
-            }
-            else{
-                critw_logs_dict[this.target].push([userid,event,new Date($.now())])
+        for (var c in crit_list){
+            console.log("criteria_list",crit_list[c])
+            var value=[5];
+            critlist_val_dict[crit_list[c]]=value
+         }
+         console.log("critlist_val_dict",critlist_val_dict);
+    }
+   
+            
+           
+       
+    
+        $( function() {
+        $( "#dialog" ).dialog({
+        resizable: false,
+        height: "auto",
+        width: 400,
+        modal: true,
+        // open: function(event, ui){
+        //     setTimeout("$('#dialog').dialog( 'close' );",5000);
+            
 
-            }
-            console.log("critw_logs_dict",critw_logs_dict)
+        // },
+        buttons: {
+            "ok": function() {
+                var maincontent=$('#maincontent')
+                maincontent.attr('class',"row content")
+                $( this ).dialog( "close" );
 
-            // if (critlist_val_dict[this.target]===undefined){
-            //     critlist_val_dict[this.target]=[]
+
+            },
+            // Cancel: function() {
+            //   $( this ).dialog( "close" );
             // }
-            // else{
-            //     critlist_val_dict[this.target]=event;
-            // }
-            // console.log("critlist_val_dict",critlist_val_dict)
         }
         });
-
-    }
-   
+  } );
     }
     else{
         $("#main_heading").empty();
-        $("#main_heading").append("Sorry you can't go back. Please Go to the next page ");
+        $('#dialog').hide();
+        $("#savecrit_button").hide();
+        var maincontent=$('#maincontent')
+        maincontent.attr('class',"row content")
+        $("#main_heading").append("Sorry Criteria Weights can't be shown now.");
         $("#savebutton").hide();
     }
+    
  }); 
 
 function SaveWeights(){
-    // console.log("Time",new Date($.now()));
+    console.log("Time",new Date($.now()));
     console.log("critw_logs_dict",critw_logs_dict)
     countSaveButtonEvents();
     console.log("storesavebuttonlogs",storesavebuttonlogs);
@@ -152,11 +163,7 @@ function SaveWeights(){
             temp_final_list.push(temp_slider_id_val_check_list);
             temp_slider_id_val_check_list=[];
     }
-    criteria_weights=["criteria_weights"]
-    if (critlist_val_dict==null){
-        critlist_val_dict={}
-    }
-    critlist_val_dict[criteria_weights[0]]=temp_final_list
+   
     console.log("critlist_val_dict",critlist_val_dict)
     $.ajax({
     type: 'POST',
@@ -171,21 +178,78 @@ function SaveWeights(){
     url: "{% url 'criteria_weights' %}",
     success: function(data){
 
+       
+        $( "#save-dialog" ).dialog({
+        resizable: false,
+        height: "auto",
+        width: 400,
+        modal: true,
+        open: function(event, ui){
+            setTimeout("$('#save-dialog').dialog( 'close' );",1000);
+            
+
+        },
+        buttons: {
+            // "ok": function() {
+              
+            //     $( this ).dialog( "close" );
+
+
+            // },
+            // Cancel: function() {
+            //   $( this ).dialog( "close" );
+            // }
+        }
+        });
     }
     
     });
 }
 function NextPage(){
+    console.log("ADM",ADM);
 
-    alert(ADM)
-    if (ADM=="A.1by1"){
-                window.location="{%url 'comparemobile_1by1_direct'%}"
+    // var input_class=document.getElementsByClassName('slider');
+    // var temp_slider_id_val_check_list=[];
+    // var temp_final_list=[];
+    // for (var i=0;i<input_class.length;i++){
+        
+    //         temp_slider_id_val_check_list.push(input_class[i].id) 
+    //         temp_slider_id_val_check_list.push(input_class[i].value)  
+    //         temp_final_list.push(temp_slider_id_val_check_list);
+    //         temp_slider_id_val_check_list=[];
+    // }
+    // criteria_weights=["criteria_weights"]
+    // if (critlist_val_dict==null){
+    //     critlist_val_dict={}
+    // }
+    // critlist_val_dict[criteria_weights[0]]=temp_final_list
+    // console.log("critlist_val_dict",critlist_val_dict)
+    // $.ajax({
+    // type: 'POST',
+    // dataType: "json",
+    // 'data': {
+    //     "critw_logs_dict":JSON.stringify(critw_logs_dict),
+    //     'critlist_val_dict':JSON.stringify(critlist_val_dict),
+    //     'csrfmiddlewaretoken': '{{ csrf_token }}',
 
-            }
-            else if  (ADM=="A.2by2"){
-                window.location="{%url 'comparemobile_2by2_direct'%}"
-            }
-    
+    // },
+    // // the ajax call is sent to subdetails url name in the post function.  
+    //     url: "{% url 'criteria_weights' %}",
+    //     success: function(data){
+
+    //     }
+    // });
+    // if (Object.keys(critlist_val_dict).length === 0){
+    //     alert("Please save the changes before you continue")
+    //     return;
+    // }
+    if (ADM==="A.1by1"){
+        window.location="{%url 'comparemobile_1by1_direct'%}"
+    }
+    else if  (ADM==="A.2by2"){
+        window.location="{%url 'comparemobile_2by2_direct'%}"
+    }
+
     // $.ajax({
     // type: 'GET',
     // dataType: "json",
@@ -216,13 +280,79 @@ function NextPage(){
 function  countSaveButtonEvents(){
     storesavebuttonlogs[new Date($.now())]=[userid]
     }
+function activateSlider(element){
+    crit=$(element).attr('rel');
+    ele=$('#crit_list').find('.selected_zoom');
+    $(ele).attr('class','criteria_lists zoom');    
+    $(element).parent().attr('class','criteria_lists selected_zoom');
 
+
+
+    console.log("CriteriaQQQQ",crit);
+    value=critlist_val_dict[crit]
+    console.log("VALUE",value);
+
+    $("#critera_div").empty();
+    var critera_div=$("#critera_div");
+    var row=$('<div class="row is-flex"></div');
+        var col1=$('<div class="col-md-3">');
+            if (crit==='imagepath1'){
+                crit="Look And Feel"
+            }
+            var label=$("<label class='crit_labels'>"+crit+"</label>")
+        col1.append(label)
+        var col2=$("<div class='col-md-8'></div>");
+            input=$('<input id="'+crit+'" class="slider"></input>')
+        col2.append(input);
+        var col3=$("<div class='col-md-1'></div>");
+            span=$('<span id="'+crit+'_span"></span>')
+        col3.append(span);
+    row.append(col1);
+    row.append(col2);
+    row.append(col3);
+critera_div.append(row);
+
+    var slider = new rSlider({
+
+                target:crit ,
+                values: [1,2,3,4,5,6,7,8,9,10],
+                widget:false,
+                labels:[1,2,3,4,5,6,7,8,9,10],
+                labels:true,
+                set:value,
+                tooltip:true,
+                onChange: function (event) {
+                    console.log("EVENT",event)
+                    console.log("THIS",this.target)
+                    document.getElementById(this.target+'_span').innerHTML=event;
+                   
+                    console.log("critw_logs_dict",critw_logs_dict)
+                    if (this.target==='Look And Feel')
+                    {
+                        target='imagepath1'
+                    }
+                    else{
+                        target=this.target;
+                    }
+                    if (critlist_val_dict[target]===undefined){
+                        critlist_val_dict[target]=[]
+                    }
+                    else{
+                        event=parseInt(event)
+                        critlist_val_dict[target]=[event];
+                    }
+                    console.log("critlist_val_dict",critlist_val_dict)
+                }
+                });
+
+
+}
 </script>
 
 <script>
         // Warning before leaving the page (back button, or outgoinglink)
         window.onbeforeunload = function() {
-            window.localStorage.setItem("critlist_val_dict",JSON.stringify( critlist_val_dict));
+        window.localStorage.setItem("critlist_val_dict",JSON.stringify( critlist_val_dict));
         }
 </script>  
 {%endblock%}

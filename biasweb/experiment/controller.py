@@ -41,7 +41,7 @@ class ExperimentController:
         self.idField = None
         self.assigner = Assigner()
         self.defFlevels={}
-
+        print("EXPERIMENT ID")
         # check is to be made if the user wants to save the current exp so that its status changes from design mode to active and the previous exps status changes to inactive.
         if e_id:
             self.exp = Experiment.objects.get(id=e_id)
@@ -54,22 +54,16 @@ class ExperimentController:
             # populate self.defFLevels & self.fLevels
             #TODO: CREATE setDefFSet() and getDefFSet()
         else:
-            print("In else")
+            print("Experiment Id not Found/Created")
             self.exp.status = DESIGN_MODE
             self.exp.status_code=exStatusCd.objects.get(id=1)
-            print("exp.status_code",self.exp.status_code)
             self.exp.owner = User.objects.get(custom_id=a_id)      #TODO@MUDABIR - NEED TO MODIFY EXPERIMENT ADMIN IMPLEMENTATION
-            print(" self.exp.owner", self.exp.owner)
-            print("A_ID***********",a_id)
-
+            
             self.exp.custom_exp_id = 'TBA' #can only be created after Experient table assigns an id
-            print("self.exp.custom_exp_id",self.exp.custom_exp_id)
             self.exp.capacity = cap            #Capacity to budget for experiment
-            print("Capacity")
             self.saveExperiment()
 
             self.exp.custom_exp_id = a_id
-            print(" self.exp.custom_exp_id***********", self.exp.custom_exp_id)
 
             #print('self.exp.custom_exp_id',self.exp.custom_exp_id)
             exp_id = self.exp.id
@@ -79,6 +73,10 @@ class ExperimentController:
             self.fSet = self.exp.experiment_feature_set
             self.defFSet =self.exp.experiment_feature_set
 
+            print(" self.exp.owner", self.exp.owner)
+            print("exp.status_code",self.exp.status_code)
+            print("self.exp.custom_exp_id",self.exp.custom_exp_id)
+            print("self.exp.custom_exp_id***********", self.exp.custom_exp_id)
             print("self.exp.experiment_feature_set",self.exp.experiment_feature_set)
             # self.defFSet = self.exp.exp_defaults_set  #TODO TO BE TESTED!!
 
@@ -154,14 +152,17 @@ class ExperimentController:
                 nLev = None
                 if newFLevels:
                     nLev = newFLevels[f]
+                    print("nLev",nLev)
                 self.addFeature(fSymbol=f, newLevList=nLev, byPrompt=prompt)
         #2. compare the existing fSet with proposed, and identify diffs
             curFSet = list(self.fSet.values_list('p_feature__feature_symbol', flat=True))
             dropFList = list(set(curFSet)-set(newFSet))
-            #3. delete any features not required
-            # for d in dropFList:
-            #     self.delFeature(d)
-        #self.fSet.bulk_create(self.fInSet)
+            print("curFSet",curFSet)
+            print("dropFList",dropFList)
+            # 3. delete any features not required
+            for d in dropFList:
+                self.delFeature(d)
+        # self.fSet.bulk_create(self.fInSet)
 
     def addDefFeature(self, DefFSymbol, newDefLevList = None, byPrompt = False):
         pf = PFeature.objects.filter(feature_symbol=DefFSymbol)[0]
@@ -190,7 +191,9 @@ class ExperimentController:
 
     def addFeature(self, fSymbol, newLevList = None, byPrompt = False):
         #ADD EXTRA ATTRIBUTE OF "DEFAULT"
+        print("fSymbol",fSymbol)
         pf = PFeature.objects.filter(feature_symbol=fSymbol)[0]
+        print("PLATFORM OBJ",pf)
         if newLevList:
             #EDIT TASK: A new list is given for an existing feature in fSet
             print("New Levels for ",fSymbol," are: ",newLevList)
@@ -278,6 +281,8 @@ class ExperimentController:
     #only for setting fLevels afresh by unpacking QuerySet
         for f in self.fSet.all():
             self.fLevels[f.p_feature.feature_symbol] = f.chosen_levels
+        
+
         return self.fLevels
 
     # def setFeatureLevels(self, fLevels):
@@ -495,7 +500,7 @@ class ExperimentController:
         
         
     def saveSubjects(self, dSub=None, writeXL=False, fName=None):
-        roleSubj_id = Role.objects.get(role_name="Subject").id
+        roleSubj_Obj = Role.objects.get(role_name="Subject")
         if isinstance(dSub,pd.DataFrame):
             self.subjData = dSub
         #WRITE TO DATABASE
@@ -516,7 +521,7 @@ class ExperimentController:
                     subjUser = scf().save(commit=False, pwd=c_id)
                     subjUser.username = c_id
                     subjUser.custom_id = c_id
-                    subjUser.role_id = roleSubj_id
+                    subjUser.role_id = roleSubj_Obj
                     subjUser.save()
                     subj_id = subjUser.id
                 #TODO@SHAZIB: CHECK IF SUBJECT USER EXISTS IN EXPERIMENT

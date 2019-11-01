@@ -15,8 +15,10 @@
     top:5px;width:100%;border-radius:3px
 }
 .rs-container .rs-selected{
-        background-color:rgb(148, 0, 14);
-        border:1px solid rgb(148, 0, 14);
+        background-color:#009688;
+        border:1px solid #009688;
+        /* background-color:rgb(148, 0, 14); */
+        /* border:1px solid rgb(148, 0, 14); */
         transition:all .2s linear;width:0
 }
 .rs-container.disabled .rs-selected{

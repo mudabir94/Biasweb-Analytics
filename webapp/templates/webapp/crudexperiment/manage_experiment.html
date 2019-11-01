@@ -3,7 +3,7 @@
 {%load static from staticfiles%}
 <div class="container-fluid text-center "> 
         <div class="row is-flex content">
-                <div class="col-md-2" >
+                <div class="col-md-2 sidenav" >
                         <div class='container-fluid'>
                                 {% with template_sidebar=template_sidebar %}
                                 {% include template_sidebar %}
@@ -15,10 +15,10 @@
                     
                     <div class="row is-flex  custom_row">
                         <div class='col'>
-                            <div class="row is-flex custom_row">
+                            <div class="row is-flex custom_row" id="list_n_button_div">
                                 <div class='col'>
-                                    <div class="rowcustom_row">Experiment List</div>
-                                    <div class="rowcustom_row">
+                                    <div class="row custom_row">Experiment List</div>
+                                    <div class="row custom_row">
                                         <div id="list_exp_id_div"></div>
                                     </div>
                                 </div>
@@ -26,16 +26,16 @@
                                         <div class="row custom_row">Status Button</div>
                                         <div class="row custom_row">
                                             <!-- <button class="" onclick="exp_Filter_By_Statuses($(this))" value="ALL">ALL</button> -->
-                                            <button class="" id="DESIGN_MODE_BTN" onclick="exp_Filter_By_Statuses($(this))" value="DESIGN_MODE">DESIGN MODE</button>
-                                            <button class="" onclick="exp_Filter_By_Statuses($(this))" value="UNASSIGNED">UNASSIGNED</button>
-                                            <button class="" onclick="exp_Filter_By_Statuses($(this))" value="READY">READY</button>
-                                            <button class="" onclick="exp_Filter_By_Statuses($(this))" value="CLOSED">CLOSED</button>
-                                            <button class="" onclick="exp_Filter_By_Statuses($(this))" value="SUSPENDED">SUSPENDED</button>
-                                            <button class="" onclick="exp_Filter_By_Statuses($(this))" value="CANCELLED">CANCELLED</button>
-                                            <button class="" onclick="exp_Filter_By_Statuses($(this))" value="ANALYZED">ANALYZED</button>
-                                            <button class="" onclick="exp_Filter_By_Statuses($(this))" value="HOLD"> HOLD</button>
-                                            <button class="" onclick="exp_Filter_By_Statuses($(this))" value="OPEN">OPEN</button>
-                                            <button class="" onclick="exp_Filter_By_Statuses($(this))" value="ACTIVE">ACTIVE</button>
+                                            <button class="btn" id="DESIGN_MODE_BTN" onclick="exp_Filter_By_Statuses($(this))" value="DESIGN_MODE">DESIGN MODE</button>
+                                            <button class="btn" onclick="exp_Filter_By_Statuses($(this))" value="UNASSIGNED">UNASSIGNED</button>
+                                            <button class="btn" onclick="exp_Filter_By_Statuses($(this))" value="READY">READY</button>
+                                            <button class="btn" onclick="exp_Filter_By_Statuses($(this))" value="CLOSED">CLOSED</button>
+                                            <button class="btn" onclick="exp_Filter_By_Statuses($(this))" value="SUSPENDED">SUSPENDED</button>
+                                            <button class="btn" onclick="exp_Filter_By_Statuses($(this))" value="CANCELLED">CANCELLED</button>
+                                            <button class="btn" onclick="exp_Filter_By_Statuses($(this))" value="ANALYZED">ANALYZED</button>
+                                            <button class="btn" onclick="exp_Filter_By_Statuses($(this))" value="HOLD"> HOLD</button>
+                                            <button class="btn" onclick="exp_Filter_By_Statuses($(this))" value="OPEN">OPEN</button>
+                                            <button class="btn" onclick="exp_Filter_By_Statuses($(this))" value="ACTIVE">ACTIVE</button>
 
                                         </div>
                                 </div>
@@ -54,7 +54,7 @@
                     <div class="row is-flex custom_row"></div>
                         <div id="expcritorder_div"></div>
                     </div>
-                <div class="col-md-2" ></div>
+                <div class="col-md-2 sidenav" ></div>
         </div>
         
 </div>
@@ -98,12 +98,12 @@ exp_li_orginal_values_dict={}
 function exp_Filter_By_Statuses(element){
     var element_value=$(element).val()
     var clss=$(element).attr('class');
-    if (clss===""){
-        $(element).attr('class',"active");
+    if (clss==="btn"){
+        $(element).attr('class',"btn active_btn");
         status_query_list.push(element_value)
     }
     else{
-        $(element).attr('class',"");
+        $(element).attr('class',"btn");
         var index=status_query_list.indexOf(element_value);
         status_query_list.splice(index,1);
         console.log("status_query_list")
@@ -181,7 +181,7 @@ function li_Ret_Id_Detail(element){
                 var h6=document.createElement("h6");
                 h6.innerText="Id:"
                 var input_idcol1=document.createElement("input");
-                input_idcol1.setAttribute("class","input_id_cols")
+                input_idcol1.setAttribute("class","input_id_cols ")
                 input_idcol1.value=element_value;
                 input_idcol1.disabled=true;
                 
@@ -237,6 +237,8 @@ function li_Ret_Id_Detail(element){
                 h6.innerText="Status:"
                 var select_elem=document.createElement("select");
                 select_elem.setAttribute("id","select_elem");
+                select_elem.setAttribute("class","custom_form_control")
+
                 for (code in statusCode_list){
                 var option = document.createElement("option");
                 option.value = statusCode_list[code][1];;
@@ -266,6 +268,7 @@ function li_Ret_Id_Detail(element){
                 descp_col2.setAttribute("class","col-md-8");
                 descp_col2.id="descp_col2";
                 var textarea=document.createElement("textarea");
+                textarea.setAttribute("class","custom_form_control")
                 textarea.id="descp_area";
                 textarea.value=exp_obj.desc;
                 descp_col2.append(textarea)
@@ -280,12 +283,12 @@ function li_Ret_Id_Detail(element){
                 save_col2.setAttribute("class","col-md-4");
                 save_col2.id="save_col2"
                 
-                var save_button=document.createElement("button");
-                save_button.id="save_button";
-                save_button.innerHTML="SAVE"
-                save_button.value=element_value;
-                save_col2.append(save_button);
-                save_button.setAttribute("onclick","save_exp_state($(this))");
+                var save_button_manage=document.createElement("button");
+                save_button_manage.id="save_button_manage";
+                save_button_manage.innerHTML="SAVE"
+                save_button_manage.value=element_value;
+                save_col2.append(save_button_manage);
+                save_button_manage.setAttribute("onclick","save_exp_state($(this))");
                 save_row_div.append(save_col1);
                 save_row_div.append(save_col2);
 
@@ -339,7 +342,7 @@ function li_Html_Genertor(data,flag){
             ul.append(li);
         }
         status_query_list.push("DESIGN_MODE");
-        $("#DESIGN_MODE_BTN").attr("class","active");
+        $("#DESIGN_MODE_BTN").attr("class","btn active_btn");
         element=$("#"+first_in_list+"_li");
         
         li_Ret_Id_Detail($(element));
@@ -435,6 +438,8 @@ function save_exp_state(element){
                         crit_exp_wrt_statuscode={}
                         crit_exp_wrt_statuscode=data['crit_exp_wrt_statuscode']
                         console.log(crit_exp_wrt_statuscode)
+                        window.location.reload();
+
                     }
             });
     
@@ -453,7 +458,7 @@ function expCrit_Html_Generator(flag){
         $("#expcritorder_div").empty(); 
         var expcriterias=crit_exp_wrt_statuscode[active_li_status][active_li_id]
         console.log("expcriterias",expcriterias)
-        $("#expcritorder_div").append(expcriterias)
+        // $("#expcritorder_div").append(expcriterias)
         // console.log("expCrit_Html_Generator",$("#"+active_in_list+"_li"))
 
     }

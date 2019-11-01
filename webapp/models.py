@@ -3,8 +3,6 @@ from django.db.models import CharField, Model
 from django_mysql.models import ListCharField
 from django.contrib.auth.models import AbstractUser
 from django_mysql.models import ListCharField,ListTextField
-
-
 import datetime
 
 # Create your models here.
@@ -205,7 +203,7 @@ class mobilephones(models.Model):
     Brand= models.CharField(max_length=200, null= True)
     Mobile_Name= models.CharField(max_length=300, null= True)
     Whats_new= models.TextField( null= True)
-    price=models.IntegerField( null= True)
+    price=models.FloatField( null= True,blank=True)
     Memory=models.CharField(max_length=500, null= True,blank=True)
     Ram=models.CharField(max_length=500, null= True,blank=True)
     Cpu=models.CharField(max_length=500, null= True)
@@ -307,6 +305,7 @@ class samsung_phone(models.Model):
         return self.name
     class Meta:
         verbose_name_plural="samsungphone"
+# This Model is not used anywhere now. 
 class sort_feature(models.Model):
     f_id=models.IntegerField(null=True)
     feature=models.CharField(max_length=200,null=True)
@@ -320,6 +319,7 @@ class sort_feature(models.Model):
         return self.feature
     class Meta:
         verbose_name_plural="Sort Feature"
+
 
 class userscoreRecord (models.Model):
     column_id=models.IntegerField(null=True)
@@ -360,9 +360,9 @@ class PhoneCriteria(models.Model):
 
 class ExpCriteriaOrder(models.Model):
     exp = models.ForeignKey(experiment, on_delete=models.CASCADE,null=True)
-    block = models.ForeignKey(Block, on_delete=models.CASCADE,null=True)
+    block = models.ForeignKey(Block, on_delete=models.CASCADE,null=True,blank=True)
     cOrder_id = models.CharField(max_length=10,null=True)
-    fvp=models.CharField(max_length=10,null=True)
+    fvp=models.CharField(max_length=25,null=True)
     #NEED TO KEEP A RECORD OF THE EXISTING SET OF AVAILABLE CRITERIA IN THE MOBILE PHONES TABLE
     pCriteria = models.ForeignKey(PhoneCriteria, on_delete=models.CASCADE,null=True)
 
@@ -391,3 +391,28 @@ class StoreCritWeightLogs(models.Model):
     value=models.FloatField(null=True,blank=True)
     criteria_name=models.CharField(max_length=45,null=True,blank=True)
     time=models.CharField(max_length=100,null=True,blank=True)
+
+class generalCriteriaData(models.Model):
+    criteria = models.ForeignKey(PhoneCriteria, on_delete=models.CASCADE,null=True,blank=True)
+    valuelist=ListCharField(
+        base_field=models.CharField(max_length=20),
+        size=10,
+        max_length=(10*21),
+        null=True,
+        blank=True
+    )
+    inputtype=models.CharField(max_length=20,default="-")
+class customExpSessionTable(models.Model):
+    expid=models.IntegerField(null=True,blank=True)
+    cusexpid=models.CharField(null=True,blank=True,max_length=100)
+    status=models.CharField(null=True,blank=True,max_length=20)
+
+class surveyForm(models.Model):
+    exp = models.ForeignKey(experiment, on_delete=models.CASCADE,null=True,blank=True)
+    surveydata=ListCharField(
+        base_field=models.CharField(max_length=30),
+        size=10,
+        max_length=(10*40),
+        null=True,
+        blank=True
+    )
