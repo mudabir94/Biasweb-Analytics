@@ -12,5 +12,4 @@ webapp/migrations/
 node_modules
 package-lock.json
 *.sqlite3
-node_modules
-/node_modules
+
