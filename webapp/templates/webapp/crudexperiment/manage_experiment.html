@@ -154,6 +154,11 @@ function li_Ret_Id_Detail(element){
     descp_row_div.setAttribute("class","row custom_row");
     descp_row_div.id="descp_row_div";
     main_row_div.append(descp_row_div);
+    var criteria_list_parameter_div=document.createElement("div");
+    criteria_list_parameter_div.setAttribute("class","row custom_row");
+    criteria_list_parameter_div.id="criteria_list_parameter_div";
+    main_row_div.append(criteria_list_parameter_div);
+
     var save_row_div=document.createElement("div");
     save_row_div.setAttribute("class","row custom_row");
     save_row_div.id="save_row_div";
@@ -274,6 +279,25 @@ function li_Ret_Id_Detail(element){
                 descp_col2.append(textarea)
                 descp_row_div.append(descp_col1);
                 descp_row_div.append(descp_col2)
+                
+                var criteria_list_parameter_div_col1=document.createElement("div");
+                criteria_list_parameter_div_col1.setAttribute("class","col-md-4");
+                criteria_list_parameter_div_col1.id="criteria_list_parameter_div_col1";
+                var h6=document.createElement("h6");
+                h6.innerText="Set Criteria List Parameter";
+                criteria_list_parameter_div_col1.append(h6);
+
+                var criteria_list_parameter_div_col2=document.createElement("div");
+                criteria_list_parameter_div_col2.setAttribute("class","col-md-4");
+                criteria_list_parameter_div_col2.id="criteria_list_parameter_div_col2";  
+                var input=document.createElement("input");
+                input.setAttribute("class","custom_form_control")
+                input.id="criteria_list_parameter_div_input";  
+                criteria_list_parameter_div_col2.append(input)
+                criteria_list_parameter_div.append(criteria_list_parameter_div_col1)    
+                criteria_list_parameter_div.append(criteria_list_parameter_div_col2)    
+
+
 
                 var save_col1=document.createElement("div");
                 save_col1.setAttribute("class","col-md-8");
@@ -426,6 +450,8 @@ function save_exp_state(element){
                 console.log(exp_detail_wrt_status_dict); 
                 console.log("updated_detail_wrt_status");
                 console.log(updated_detail_wrt_status);
+                var criteria_list_parameter_input=$('#criteria_list_parameter_input').val();
+                console.log("criteria_list_parameter_input",criteria_list_parameter_input)
        $.ajax({
                 type:"POST",
                 dataType:"json",

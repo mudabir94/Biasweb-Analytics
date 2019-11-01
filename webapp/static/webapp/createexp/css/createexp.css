@@ -175,10 +175,12 @@
     background: #105796; 
     color: white; 
     border: blue;
-    padding: 10px 10px;
-    box-shadow: 0 0 0.5px 0.5px #105796;
+    padding: 10px 0px;
+    /* box-shadow: 0 0 0.5px 0.5px #105796; */
     cursor: pointer;
-    border-radius: 8px; 
+    border-radius: 0px; 
+    font-size:10px;
+    width:inherit;
 
 }
 #exp_sel_phones_div{
@@ -270,8 +272,8 @@
   color: white; /* White text */
 }
 #feat_lvl_div{
-  margin-top: 5%;
-  margin-right: 8%;
+ 
+  background-color:white;
 }
 #main_row_co{
   margin-top: 5%;

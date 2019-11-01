@@ -97,8 +97,8 @@
             <!-- CUSTOM NAV ROW DIV -->
            
             <!--FEATURES LEVELS ROW DIV -->
-            <div class='row-fluid' id='feat_lvl_div'>
-                <div class='row'>
+            <div class='row-fluid' id='feat_lvl_div' >
+                <div class='row' >
                     <div class='col-md-3' id="ft_levels_div">
                             <p1><b>Select features to enable:</b></p1>
                     {% for feature in platformfeatobj%}
@@ -121,14 +121,14 @@
                             <button id="sendfeatlvl_btn" onclick='sendFeatureLevels()'> Set Feature Levels </button>
                         </div> 
                     </div>
-                    <div class=col-md-5>
+                    <div class=col-md-2>
                         <div id='defaultfeatLevel_tablediv'>
                             <hr>
                             <h4>Status Report Default</h4>
 
                         </div>
                     </div>
-                    <div class='col-md-3'  >
+                    <div class='col-md-6'  >
                         <div class='row'>
                             <div class='col-md-12'>
                             </div>
@@ -3446,7 +3446,7 @@ function dummysendFeatureLevels(){
     $("#defaultfeatLevel_tablediv").append("<h4>Status Report Default</h4>")
     for ( var indx in temp_block_feat_dict_def){
         featlevels=temp_block_feat_dict_def[indx]
-        row_div=$("<div class='row'></div>");
+        row_div=$("<div ></div>");
         $(row_div).append(featlevels);
         $("#defaultfeatLevel_tablediv").append(row_div);
     }

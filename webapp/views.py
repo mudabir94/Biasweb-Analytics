@@ -206,10 +206,11 @@ class Home(TemplateView):
 
 
 
-
-
-
-
+            userid=str(request.user.id)
+            sessionkey="user_"+userid+"__exp_feat_levels"
+            request.session[sessionkey]=exp_feat_levels
+            print("sessionkey",sessionkey)
+            print("exp feat level in session",request.session[sessionkey])
 
             template_sidebar='webapp/sidebartemplates/sidebartemp_subject.html'
             template_main_homepage="webapp/main_content_temps/homepage_main/subject_hp.html"
@@ -404,26 +405,40 @@ def showMob(request):
                 query_array.append(value)
             query=mobilephones.objects.filter(id__in=(query_array))
           
-            global comp_mobiles
+            # global comp_mobiles
             global sizeofmob
-            global exp_under_test
-                
+            # global exp_under_test
+
+            userid=str(request.user.id)
+    
             comp_mobiles=query
+
             size_of_mobile=len(list(comp_mobiles))
             sizeofmob=size_of_mobile
-            print(comp_mobiles)
 
+            sessionkey="user_"+userid+"__exp_under_test"
+            exp_under_test=request.session[sessionkey]
+
+            sessionkey="user_"+userid+"__mobiledata"
+            request.session[sessionkey]=mobiledata_json
+            print("mobiledata-->",request.session[sessionkey])
+
+            sessionkey="user_"+userid+"__sizeofmob"
+            request.session[sessionkey]=sizeofmob
+            print("sizeofmob-->",request.session[sessionkey])
             
             dict = {'size_of_mobile':size_of_mobile}
-            print("Uer Id",request.user.id)
-            userobj=User.objects.get(pk=request.user.id)
 
+            userobj=User.objects.get(pk=userid)
             exp_obj=exp.objects.get(id=exp_under_test)
             Sub_obj=Subject.objects.get(user=userobj,exp=exp_obj)
             print("Sub_obj",Sub_obj)
            
 
-            global exp_feat_levels
+            # global exp_feat_levels
+            sessionkey="user_"+userid+"__exp_feat_levels"
+            exp_feat_levels=request.session[sessionkey]
+
 
             data={
                 # 'dict':json.dumps(dict),
@@ -463,18 +478,25 @@ alternative_list=[]
 # The logs as well.  
 
 def criteriaWeights(request):
-    global crit_list
-    global criteria_weights_dict
-    global exp_feat_levels
-    global exp_under_test
+    # global crit_list
+    # global criteria_weights_dict
+    # global exp_feat_levels
+    userid=str(request.user.id)
+    sessionkey="user_"+userid+"__exp_feat_levels"
+    exp_feat_levels=request.session[sessionkey]
+
+    # global exp_under_test
     global critw_logs_dict
+    sessionkey="user_"+userid+"__exp_under_test"
+    exp_under_test=request.session[sessionkey]
     # No check if block is CR (C.Full and C.Prune... )
 
     template_name='webapp/criteriaweights.html'
    
     if request.method=="GET":
         print("storeuserpagelogs",storeuserpagelogs)
-
+        reviseability = [idx for idx in exp_feat_levels if idx.startswith("R.")] 
+        print("res -- R",reviseability[0])
         if "criteriaweights" in storeuserpagelogs:
             flag="true"
        
@@ -495,6 +517,10 @@ def criteriaWeights(request):
                 crit_list=list(crit_list_obj)
                 crit_list.insert(0,"imagepath1")
                 crit_list.append("Others")
+
+                sessionkey="user_"+userid+"__crit_list"
+                request.session[sessionkey]=crit_list
+
                 flag="false"
 
             data={
@@ -524,6 +550,10 @@ def criteriaWeights(request):
             crit_list=list(crit_list_obj)
             crit_list.insert(0,"imagepath1")
             crit_list.append("Others")
+
+            sessionkey="user_"+userid+"__crit_list"
+            request.session[sessionkey]=crit_list
+
             userobj=User.objects.get(pk=request.user.id)
             print("exp_under_test",exp_under_test)
             exp_obj=exp.objects.get(id=exp_under_test)
@@ -533,12 +563,17 @@ def criteriaWeights(request):
             # res1 = [idx for idx in Sub_obj.block.levels_set if idx.startswith("A.")] 
             adm = [idx for idx in exp_feat_levels if idx.startswith("A.")] 
             print("adm",adm)
-
+            revs=reviseability[0]
+            if revs=='R.1':
+                revs=True
+            else:
+                revs=False
             data={
-                'crit_list':crit_list,
+                'crit_list':json.dumps(crit_list),
                 "ADM":adm[0],
                 'userid':request.user.id,
                 "pagevisited":flag,
+                'res':revs,
 
                 
             }
@@ -552,6 +587,8 @@ def criteriaWeights(request):
             
             print("critlist_val_dict",critlist_val_dict)
             criteria_weights_dict=critlist_val_dict
+            sessionkey="user_"+userid+"__criteria_weights_dict"
+            request.session[sessionkey]=criteria_weights_dict
             print("criteria_weights_dict",criteria_weights_dict)
             data={}
             return JsonResponse(data) 
@@ -560,13 +597,27 @@ def criteriaWeights(request):
 # POST Methond sends back  multiple list and dict needed to populate the page. 
 def compareMobileOneByOneDirect(request):
     template_name='webapp/comparemobile1by1direct.html'
-      
-    global crit_list
-    global comp_mobiles
-    global catalogcrit_show_list
-    global criteria_weights_dict
-    global exp_under_test
-    global exp_feat_levels
+    userid=str(request.user.id)
+  
+    # global crit_list
+    sessionkey="user_"+userid+"__crit_list"
+    crit_list=request.session[sessionkey]
+    # global comp_mobiles
+    # global catalogcrit_show_list
+    sessionkey="user_"+userid+"__catalogcrit_show_list"
+    catalogcrit_show_list=request.session[sessionkey]
+    # global criteria_weights_dict
+    sessionkey="user_"+userid+"__criteria_weights_dict"
+    criteria_weights_dict=request.session[sessionkey]
+    # global exp_under_test
+    # global exp_feat_levels
+    userid=str(request.user.id)
+    sessionkey="user_"+userid+"__exp_under_test"
+    exp_under_test=request.session[sessionkey]
+
+    sessionkey="user_"+userid+"__exp_feat_levels"
+    exp_feat_levels=request.session[sessionkey]
+
 
 
     if request.method=="GET":
@@ -600,8 +651,7 @@ def compareMobileOneByOneDirect(request):
             return render(request,template_name,data)
 
     elif request.method=="POST":
-        print("criteria_weights_dict",criteria_weights_dict)
-        print("POSSSST")
+        # print("criteria_weights_dict",criteria_weights_dict)
         mobile={}
         allmobile={}
         alternative_list=[]
@@ -610,7 +660,16 @@ def compareMobileOneByOneDirect(request):
         # survey_obj=surveyForm.objects.get(exp=expobj)
         survey_obj=surveyForm.objects.get(id=1)
         surveydata=survey_obj.surveydata    
-    
+        query_array=[]
+        sessionkey="user_"+userid+"__mobiledata"
+        mobiledata_json=request.session[sessionkey]
+        for key,value in  enumerate(mobiledata_json):
+            print("key",key)
+            print ("val", value)
+            query_array.append(value)
+        query=mobilephones.objects.filter(id__in=(query_array))
+        comp_mobiles=query
+
         # criteria_list=['imagepath1']
         print("crit_list",crit_list)
 
@@ -663,11 +722,24 @@ def compareMobileOneByOneDirect(request):
         return JsonResponse(data)
 
 def compareMobileTwoByTwoDirect(request):
+    userid=request.user.id
     # global crit_list
+    sessionkey="user_"+userid+"__crit_list"
+    crit_list=request.session[sessionkey]
     # global comp_mobiles
+    sessionkey="user_"+userid+"__comp_mobiles"
+    comp_mobiles=request.session[sessionkey]
     # global catalogcrit_show_list
+    sessionkey="user_"+userid+"__catalogcrit_show_list"
+    catalogcrit_show_list=request.session[sessionkey]
+    sessionkey="user_"+userid+"__criteria_weights_dict"
+    criteria_weights_dict=request.session[sessionkey]
     # global criteria_weights_dict
-    global exp_under_test
+    # global exp_under_test
+    sessionkey="user_"+userid+"__exp_under_test"
+    exp_under_test=request.session[sessionkey]
+
+
     template_name='webapp/comparemobile2by2direct.html'
     if request.method=="GET":
         if request.is_ajax():
@@ -675,7 +747,7 @@ def compareMobileTwoByTwoDirect(request):
             exp_obj=exp.objects.get(id=exp_under_test)
             Sub_obj=Subject.objects.get(user=userobj,exp=exp_obj)
             print("blocks",Sub_obj.block.levels_set)
-            global exp_feat_levels
+            # global exp_feat_levels
             interactivity = [idx for idx in exp_feat_levels if idx.startswith("I.")] 
             print("res -- I",interactivity[0])
             
@@ -738,7 +810,8 @@ def compareMobileSpecsFilterVer(request):
         
         return render(request,'webapp/2by2comapremobilespecsfiltver.html')
     if request.method=="POST":
-       
+        userid=str(request.user.id)
+
         if request.is_ajax: 
             # survey_obj=surveyForm.objects.get(exp=expobj)
             survey_obj=surveyForm.objects.get(id=2)
@@ -747,9 +820,21 @@ def compareMobileSpecsFilterVer(request):
             mobile={}
             allmobile={}
             
-            global comp_mobiles
-            global exp_under_test
+            # global comp_mobiles
+            query_array=[]
+            sessionkey="user_"+userid+"__mobiledata"
+            mobiledata_json=request.session[sessionkey]
+            for key,value in  enumerate(mobiledata_json):
+                print("key",key)
+                print ("val", value)
+                query_array.append(value)
+            query=mobilephones.objects.filter(id__in=(query_array))
+            comp_mobiles=query
+            # global exp_under_test
+            sessionkey="user_"+userid+"__exp_under_test"
+            exp_under_test=request.session[sessionkey]
             exp_obj=exp.objects.get(id=exp_under_test)
+
             # survey_obj=surveyForm.objects.get(exp=expobj)
             survey_obj=surveyForm.objects.get(id=2)
             surveydata=survey_obj.surveydata
@@ -1132,9 +1217,9 @@ class defaultCriteria_Setup(TemplateView):
                 # global catalogcrit_show_list
 
                 # catalogcrit_show_list=cataloglist
-                print("postedFLevels",postedFLevels)
-                print("default_crit_show_dict",default_crit_show_dict)
-                print("default_crit_hide_dict",default_crit_hide_dict)
+                # print("postedFLevels",postedFLevels)
+                # print("default_crit_show_dict",default_crit_show_dict)
+                # print("default_crit_hide_dict",default_crit_hide_dict)
                 
                 final_def_blocks_to_send = request.POST.get('final_def_blocks_to_send')
                 postedDefFLevels=json.loads(final_def_blocks_to_send)
@@ -1347,10 +1432,13 @@ class orderCriteria_Setup(TemplateView):
                 crit_hide_dict=json.loads(crit_hide_dict)
                 featlevels_dic=request.POST.get('featlevels_dic')
                 postedFLevels = json.loads(featlevels_dic)
-                print("crit_order_dict",crit_order_dict)
-                print("crit_hide_dict",crit_hide_dict)
-                print("featlevels_dic",featlevels_dic)
-
+                # print("crit_order_dict",crit_order_dict)
+                # print("crit_hide_dict",crit_hide_dict)
+                # print("featlevels_dic",featlevels_dic)
+                final_def_blocks_to_send = request.POST.get('final_def_blocks_to_send')
+                postedDefFLevels=json.loads(final_def_blocks_to_send)
+                print("final_def_blocks_to_send",final_def_blocks_to_send)
+                
                 expCont = getExpController(request)
                 existExpId = expCont.exp.id
                 existCusId=expCont.exp.custom_exp_id
@@ -3359,7 +3447,11 @@ def getMobiledata(request):
             # IF BLOCK HAS P.1/P.0 or P.Default then fetch Mobile data from selected admins.
             
             # Assuming P.Default is active
-            userobj=User.objects.get(pk=request.user.id)
+            userid=str(request.user.id)
+            sessionkey="user_"+userid+"__exp_under_test"
+            exp_under_test=request.session[sessionkey]
+            
+            userobj=User.objects.get(pk=userid)
             role=userobj.role_id_id
             roleobj=Role.objects.get(pk=role)
             role=roleobj.role_name
@@ -3373,8 +3465,12 @@ def getMobiledata(request):
                 #///////////////////////
             elif role=='Subject':
                 flag="false"
-                global exp_feat_levels
 
+                # global exp_feat_levels
+                userid=str(request.user.id)
+                sessionkey="user_"+userid+"__exp_feat_levels"
+                exp_feat_levels=request.session[sessionkey]
+                print("exp_feat_levels-----<<>>>",exp_feat_levels)
                 exp_list = userobj.subject_set.values_list('exp', flat=True) 
                 # Getting the status codes that are active.
                 exStatusCd_list=exStatusCd.objects.filter(status_code__gte=11)
@@ -3446,6 +3542,8 @@ def getMobiledata(request):
             #///////////////////////
             cat_obj=criteria_catalog_disp.objects.get(id=1)
             catalogcrit_show_list=cat_obj.catalog_crit_display_order
+            sessionkey="user_"+userid+"__catalogcrit_show_list"
+            request.session[sessionkey]=catalogcrit_show_list
             return JsonResponse(
                 {   "pagevisited":pagevisited,
                     'mobilephones':mobiles_retrieved_list,
@@ -3725,10 +3823,16 @@ def SavePhoneSets(request):
 def SaveCurrentSubjExp(request):
     if request.method=="POST":
         if request.is_ajax:
-            global exp_under_test
+            userid=str(request.user.id)
+
+            # global exp_under_test
             exp_under_test= request.POST.get('exp_num')
             exp_under_test=json.loads(exp_under_test)
+            sessionkey="user_"+userid+"__exp_under_test"
+            request.session[sessionkey]=exp_under_test
+
             print("exp_under_test",exp_under_test)
+            
             data={"success":"success"}
             return JsonResponse(data)
 
