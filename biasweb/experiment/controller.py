@@ -41,20 +41,19 @@ class ExperimentController:
         self.idField = None
         self.assigner = Assigner()
         self.defFlevels={}
-        print("EXPERIMENT ID")
         # check is to be made if the user wants to save the current exp so that its status changes from design mode to active and the previous exps status changes to inactive.
         if e_id:
             self.exp = Experiment.objects.get(id=e_id)
             self.fSet = self.exp.experiment_feature_set.select_related('p_feature')
             self.fLevels = self.retrieveFLevels()
             self.defFSet = self.exp.experiment_feature_set.select_related('p_feature')  #ONLY FEATURES TO BE KEPT OUT OF BLOCKS AND IN DEFAULTS
-
+            print("self.defFSet--->",self.defFSet)
             #self.defFSet = self.exp.exp_defaults_set.select_related('p_feature')
             #TODO: SEPARATE THE DEFAULTS FROM THE BLOCK LEVELS
             # populate self.defFLevels & self.fLevels
             #TODO: CREATE setDefFSet() and getDefFSet()
         else:
-            print("Experiment Id not Found/Created")
+            print("Experiment Id  Not Found-- Creating>>")
             self.exp.status = DESIGN_MODE
             self.exp.status_code=exStatusCd.objects.get(id=1)
             self.exp.owner = User.objects.get(custom_id=a_id)      #TODO@MUDABIR - NEED TO MODIFY EXPERIMENT ADMIN IMPLEMENTATION
@@ -73,11 +72,11 @@ class ExperimentController:
             self.fSet = self.exp.experiment_feature_set
             self.defFSet =self.exp.experiment_feature_set
 
-            print(" self.exp.owner", self.exp.owner)
-            print("exp.status_code",self.exp.status_code)
-            print("self.exp.custom_exp_id",self.exp.custom_exp_id)
-            print("self.exp.custom_exp_id***********", self.exp.custom_exp_id)
-            print("self.exp.experiment_feature_set",self.exp.experiment_feature_set)
+            # print(" self.exp.owner", self.exp.owner)
+            # print("exp.status_code",self.exp.status_code)
+            # print("self.exp.custom_exp_id",self.exp.custom_exp_id)
+            # print("self.exp.custom_exp_id***********", self.exp.custom_exp_id)
+            # print("self.exp.experiment_feature_set",self.exp.experiment_feature_set)
             # self.defFSet = self.exp.exp_defaults_set  #TODO TO BE TESTED!!
 
             self.saveExperiment()
@@ -127,12 +126,16 @@ class ExperimentController:
                 nLev = None
                 if newDefFLevels:
                     nLev = newDefFLevels[f]
+                    print("nLev",nLev)
                 self.addDefFeature(DefFSymbol=f, newDefLevList=nLev, byPrompt=prompt)
             curDefFSet = list(self.defFSet.values_list('p_feature__feature_symbol', flat=True))
+            print("Current default Features",curDefFSet)
             dropDefFList = list(set(curDefFSet)-set(newDefSet))
-            #3. delete any features not required
-            # for d in dropDefFList:
-            #     self.delDefFeature(d)
+            print("dropDefFList",dropDefFList)
+            # 3. delete any features not required
+            for d in dropDefFList:
+                print("D",d)
+                self.delDefFeature(d)
 
         
     
@@ -223,11 +226,16 @@ class ExperimentController:
             return newEF
     def delDefFeature(self,DefFSymbol):
         expF = self.getDefFeature(DefFSymbol)
+        print("expF",expF)
         if expF:
             fName = expF.p_feature.feature_name
-            expF.delete()
-            del self.defFlevels[DefFSymbol]
-            print("DELETED",fName)
+            print("Fname",fName)
+            # del self.defFlevels[DefFSymbol]
+            expF.default_levels=None
+            expF.save()
+            # expF.delete()
+            print("self.defFlevels[DefFSymbol]",self.defFlevels)
+            print("DELETED Feature",fName)
 
 
     def delFeature(self,fSymbol):

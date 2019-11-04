@@ -174,7 +174,7 @@ class Home(TemplateView):
             exp_defaultlevel=list(experiment_feature.objects.filter(used_in=exp_obj).values_list('default_levels',flat=True))
             exp_chosenlevel_list=[]
             exp_defaultlevel_list=[]
-            global exp_feat_levels
+            # global exp_feat_levels
             exp_feat_levels=[]
             print("Blocks",Sub_obj.block.levels_set)
             print("CHOSEN LEVELS",exp_chosenlevel)
@@ -657,8 +657,9 @@ def compareMobileOneByOneDirect(request):
         alternative_list=[]
         data={}
         criteria_list=[]
-        # survey_obj=surveyForm.objects.get(exp=expobj)
-        survey_obj=surveyForm.objects.get(id=1)
+        exp_obj=exp.objects.get(id=exp_under_test)
+        survey_obj=surveyForm.objects.get(exp=exp_obj)
+        ## survey_obj=surveyForm.objects.get(id=1)
         surveydata=survey_obj.surveydata    
         query_array=[]
         sessionkey="user_"+userid+"__mobiledata"
@@ -1212,6 +1213,7 @@ class defaultCriteria_Setup(TemplateView):
                 postedFLevels = json.loads(featlevels_dic)
                 cataloglist=request.POST.get('cataloglist')
                 cataloglist = json.loads(cataloglist)
+                p_all_phoneset_flag=request.POST.get('p_all_phoneset_flag')
                 
                 criteria_catalog_disp.objects.filter(id=1).update(catalog_crit_display_order=cataloglist)
                 # global catalogcrit_show_list
@@ -1223,14 +1225,12 @@ class defaultCriteria_Setup(TemplateView):
                 
                 final_def_blocks_to_send = request.POST.get('final_def_blocks_to_send')
                 postedDefFLevels=json.loads(final_def_blocks_to_send)
-                print("final_def_blocks_to_send",final_def_blocks_to_send)
+                print("final_def_blocks_to_send####",final_def_blocks_to_send)
                 
                 expCont = getExpController(request)
                 existExpId = expCont.exp.id
                 existCusId=expCont.exp.custom_exp_id
               
-
-                
                 # thats it. 
                 if postedFLevels:
                     expCont.setFSet(newFLevels=postedFLevels,prompt=False)
@@ -1252,6 +1252,30 @@ class defaultCriteria_Setup(TemplateView):
                 # 1. based on the exp obj check if exp exists. if it does then 
                 # 2. With the help of dict see the criteria_name, and fetch that row and update it the new position, sh_hd
                 exp_obj=Experiment.objects.get(custom_exp_id=existCusId)
+
+                if p_all_phoneset_flag=="True":
+                    try:
+                    # delete Pset  If it Exsists
+                        selectedAdminPhones.objects.filter(exp=exp_obj).exclude(pset_id="P.Default").delete()
+                    except:
+                        print(" P Sets Not Found ")
+                    # try:
+                    #     obj=selectedAdminPhones.objects.get(exp=exp_obj)
+                    #     rows=selectedAdminPhones.objects.filter(exp=exp_obj)          
+                    #     for r in rows:
+                    #         r.detele()
+                    # except:
+                    #     print("nothing in selectedAdminPhones")
+
+            
+                    expPSets = selectedAdminPhones()
+                    expPSets.exp = expCont.exp
+                    expPSets.pset_id= "P.All"
+                    # expPSets.mob = p_set.get(id=m)
+                    expPSets.p_order = 0
+                    expPSets.save()
+
+
                 if (ExpCriteriaOrder.objects.filter(exp=exp_obj).exists()):
                     ECO_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj)
                     ECO_obj.delete()
@@ -1432,9 +1456,8 @@ class orderCriteria_Setup(TemplateView):
                 crit_hide_dict=json.loads(crit_hide_dict)
                 featlevels_dic=request.POST.get('featlevels_dic')
                 postedFLevels = json.loads(featlevels_dic)
-                # print("crit_order_dict",crit_order_dict)
-                # print("crit_hide_dict",crit_hide_dict)
-                # print("featlevels_dic",featlevels_dic)
+                p_all_phoneset_flag=request.POST.get('p_all_phoneset_flag')
+
                 final_def_blocks_to_send = request.POST.get('final_def_blocks_to_send')
                 postedDefFLevels=json.loads(final_def_blocks_to_send)
                 print("final_def_blocks_to_send",final_def_blocks_to_send)
@@ -1465,7 +1488,29 @@ class orderCriteria_Setup(TemplateView):
                     expCont.setDefFSet(newDefFLevels=postedDefFLevels,prompt=False)
                 
                 exp_obj=Experiment.objects.get(custom_exp_id=existCusId)
-                
+                if p_all_phoneset_flag=="True":
+                    try:
+                    # delete Pset  If it Exsists
+                        selectedAdminPhones.objects.filter(exp=exp_obj).exclude(pset_id="P.Default").delete()
+                    except:
+                        print(" P Sets Not Found ")
+                    # try:
+                    #     obj=selectedAdminPhones.objects.get(exp=exp_obj)
+                    #     rows=selectedAdminPhones.objects.filter(exp=exp_obj)          
+                    #     for r in rows:
+                    #         r.detele()
+                    # except:
+                    #     print("nothing in selectedAdminPhones")
+
+            
+                    expPSets = selectedAdminPhones()
+                    expPSets.exp = expCont.exp
+                    expPSets.pset_id= "P.All"
+                    # expPSets.mob = p_set.get(id=m)
+                    expPSets.p_order = 0
+                    expPSets.save()
+
+
                 p_levList=list()
                 if (ExpCriteriaOrder.objects.filter(exp=exp_obj).exists()):
                     ECO_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj)
@@ -1570,6 +1615,7 @@ class Cr_On_Co_On_CriteriaSetup(TemplateView):
                 postedFLevels = json.loads(featlevels_dic)
                 cataloglist=request.POST.get('cataloglist')
                 cataloglist = json.loads(cataloglist)
+                p_all_phoneset_flag=request.POST.get('p_all_phoneset_flag')
 
 
                 criteria_catalog_disp.objects.filter(id=1).update(catalog_crit_display_order=cataloglist)
@@ -1605,7 +1651,29 @@ class Cr_On_Co_On_CriteriaSetup(TemplateView):
               
                 # save orderset Details in expCriteriaOrder
                 exp_obj=Experiment.objects.get(custom_exp_id=existCusId)
-                
+                if p_all_phoneset_flag=="True":
+                    try:
+                    # delete Pset  If it Exsists
+                        selectedAdminPhones.objects.filter(exp=exp_obj).exclude(pset_id="P.Default").delete()
+                    except:
+                        print(" P Sets Not Found ")
+                    # try:
+                    #     obj=selectedAdminPhones.objects.get(exp=exp_obj)
+                    #     rows=selectedAdminPhones.objects.filter(exp=exp_obj)          
+                    #     for r in rows:
+                    #         r.detele()
+                    # except:
+                    #     print("nothing in selectedAdminPhones")
+
+            
+                    expPSets = selectedAdminPhones()
+                    expPSets.exp = expCont.exp
+                    expPSets.pset_id= "P.All"
+                    # expPSets.mob = p_set.get(id=m)
+                    expPSets.p_order = 0
+                    expPSets.save()
+
+
                 p_levList=list()
                 if (ExpCriteriaOrder.objects.filter(exp=exp_obj).exists()):
                     ECO_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj)
@@ -1754,6 +1822,9 @@ class CrCriteriaSetup(TemplateView):
                 criteria_catalog_disp.objects.filter(id=1).update(catalog_crit_display_order=cataloglist)
                 final_def_blocks_to_send = request.POST.get('final_def_blocks_to_send')
                 postedDefFLevels=json.loads(final_def_blocks_to_send)
+                p_all_phoneset_flag=request.POST.get('p_all_phoneset_flag')
+
+                
                 print("final_def_blocks_to_send",final_def_blocks_to_send)
                 
                 print("cr_crit_show_dict",cr_crit_show_dict)
@@ -1786,6 +1857,29 @@ class CrCriteriaSetup(TemplateView):
                 print("---------------88888888888888888888888888---------------")
 
                 exp_obj=Experiment.objects.get(custom_exp_id=existCusId)
+                if p_all_phoneset_flag=="True":
+                    try:
+                    # delete Pset  If it Exsists
+                        selectedAdminPhones.objects.filter(exp=exp_obj).exclude(pset_id="P.Default").delete()
+                    except:
+                        print(" P Sets Not Found ")
+                    # try:
+                    #     obj=selectedAdminPhones.objects.get(exp=exp_obj)
+                    #     rows=selectedAdminPhones.objects.filter(exp=exp_obj)          
+                    #     for r in rows:
+                    #         r.detele()
+                    # except:
+                    #     print("nothing in selectedAdminPhones")
+
+            
+                    expPSets = selectedAdminPhones()
+                    expPSets.exp = expCont.exp
+                    expPSets.pset_id= "P.All"
+                    # expPSets.mob = p_set.get(id=m)
+                    expPSets.p_order = 0
+                    expPSets.save()
+                
+                
                 if (ExpCriteriaOrder.objects.filter(exp=exp_obj).exists()):
                     ECO_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj)
                     ECO_obj.delete()
@@ -2793,60 +2887,56 @@ def deleteAllSubjects(request):
 
 def getExpController(request):
     try:
+
         cest_obj=customExpSessionTable.objects.aggregate(Max('expid'))
-        print("cest_obj",cest_obj)
-        print("cest_obj['expid__max']",cest_obj['expid__max'])
+        print("create exp session obj found",cest_obj)
         sess_expId=cest_obj['expid__max']
+        print("sess_expId",sess_expId)
         # sess_expId = request.session['sess_expId']
         # print("session>>>>>>>>>>>>>>",request.session['sess_expId'])
 
         # print('SESSION ID',sess_expId)
-    except KeyError:
-        print("session_________")
-
+    except:
         sess_expId = None
     if sess_expId:
         print("----->>>>>RETRIEVED EXP ID:",sess_expId,"FROM SESSION<<<<<<-----")
-        print(request.user.custom_id,":",request.user.username)
         expAdminId = request.user.custom_id
         expCont = ExperimentController(a_id=expAdminId,e_id=sess_expId)
         
-        print("Exp Custom Id:",expCont.exp.custom_exp_id)
-        print("The following features are ALREADY enabled:")
+        # print("Exp Custom Id:",expCont.exp.custom_exp_id)
+        # print("The following features are ALREADY enabled:")
         print(list(expCont.exp.experiment_feature_set.all()))
         try:
-            print('in try pickle expCont')
+            # print('in try pickle expCont')
             pickledExpCont = pickle.load( open("expCont4.p", "rb") )
-            print('pickledExpCont.subjData')
-            print(pickledExpCont.subjData)
+            # print('pickledExpCont.subjData')
+            # print(pickledExpCont.subjData)
         except:
             print('in except pickled ExpCont=None')
             pickledExpCont = None
         if pickledExpCont:
-            print('in if condition if pickle exsists')
+            # print('in if condition if pickle exsists')
             expCont.subjData = pickledExpCont.subjData
             expCont.assigner.df = expCont.subjData
-            print('IN GETEXP CONT expCont.assigner.df',expCont.assigner.df.head())
+            # print('IN GETEXP CONT expCont.assigner.df',expCont.assigner.df.head())
             expCont.idField = pickledExpCont.idField
             #POSSIBLY TRANSFER OTEHR THINGS AS WELL
             #CAN'T USE THE PICKLED EXP CONT DIRECTLY AS all funcitons are not transferred as expected
         else:
-            print('in else cond to save obj in pickle')
+            # print('in else cond to save obj in pickle')
             pickleExpController(expCont)
     else: #CREATE
         print('CREATING NEW EXPERIMENT  ')
-        print("request.user.custom_id________",request.user.custom_id)
         expAdminId = request.user.custom_id
-        print('expAdminId',expAdminId)
         expCont = ExperimentController(a_id=expAdminId)
-        print('NEW Exp id',expCont.exp.id)
+        print('New Exp ID',expCont.exp.id)
         # New  Session Maintenance
         cest_obj=customExpSessionTable()
         cest_obj.expid=expCont.exp.id
         cest_obj.cusexpid=expCont.exp.custom_exp_id
         cest_obj.save()
         print("cest_obj",cest_obj)
-        print("CEST Obj expid",cest_obj.expid)
+        print("expid",cest_obj.expid)
         # Default Session Maintenance
         # request.session['sess_expId'] = expCont.exp.id
         # request.session['sess_custExpId'] = expCont.exp.custom_exp_id
@@ -3071,7 +3161,7 @@ class createExperiment(TemplateView):
 
             # mobiles_retrieved=samsung_phone.objects.filter(price_in_pkr__range=(price_range_values[0], price_range_values[1]))
             if not brandnames:
-                mobiles_retrieved=mobilephones.objects.filter(price__range=(price_range_values[0], price_range_values[1])).order_by('-id') 
+                mobiles_retrieved=mobilephones.objects.filter(price__range=(price_range_values[0], price_range_values[1])).order_by('id') 
               
             else:
                 mobiles_retrieved=mobilephones.objects.filter(price__range=(price_range_values[0], price_range_values[1]),Brand__in=brandnames).order_by('id') 
@@ -3594,21 +3684,17 @@ def retSpecMobilePhone(request):
 
 def SavePhoneSets_P0(request):
     if request.method=="POST":
-        if request.is_ajax:
-            print("P0 here")
-            
+        if request.is_ajax:            
             expCont = getExpController(request)
             print("Return from getExpController")
             existExpId = expCont.exp.id
             print("existExpId",existExpId)
             exp_obj=Experiment.objects.get(custom_exp_id=expCont.exp.custom_exp_id)
             try:
-                obj=selectedAdminPhones.objects.get(exp=exp_obj)
-                rows=selectedAdminPhones.objects.filter(exp=exp_obj)          
-                for r in rows:
-                    r.detele()
+            # delete Pset  If it Exsists
+                selectedAdminPhones.objects.filter(exp=exp_obj).exclude(pset_id="P.Default").delete()
             except:
-                print("nothing in selectedAdminPhones")
+                print(" P Sets Not Found ")
 
            
             expPSets = selectedAdminPhones()
@@ -3634,12 +3720,15 @@ def SavePhoneSets(request):
                 postedFLevels = json.loads(featlevels_dic)
                 expCont = getExpController(request)
                 existExpId = expCont.exp.id
+                exp_obj=Experiment.objects.get(custom_exp_id=expCont.exp.custom_exp_id)
+
                 try:
                     # delete P.All If it Exsists
                     obj=selectedAdminPhones.objects.get(exp=exp_obj,pset_id="P.All")
                     obj.delete()
                 except:
-                    print("deleted P.All")
+                    print(" P.All Not Found")
+                
 
                     
                 print("existExpId",existExpId)
@@ -3654,6 +3743,11 @@ def SavePhoneSets(request):
                 print("P>DEF",phoneset_dic)
                 if 'P.Default' in phoneset_dic.keys():
                     print("PHONESET DICT--<",phoneset_dic)
+                    try:
+                    # delete P.Default If it Exsists
+                        selectedAdminPhones.objects.filter(exp=exp_obj).exclude(pset_id="P.Default").delete()
+                    except:
+                        print(" P Sets Not Found ")
                     exp_obj=Experiment.objects.get(custom_exp_id=expCont.exp.custom_exp_id)
                     # if (selectedAdminPhones.objects.filter(exp=exp_obj).exists()):
                     #     selectedAdminPhones.objects.filter(exp=exp_obj).delete()
@@ -3670,8 +3764,16 @@ def SavePhoneSets(request):
                             expPSets.p_order = count
                             expPSets.save()
 
+                
                 else:
+                    
                     exp_obj=Experiment.objects.get(custom_exp_id=expCont.exp.custom_exp_id)
+                    try:
+                    # delete P.Default If it Exsists
+                        selectedAdminPhones.objects.filter(exp=exp_obj,pset_id="P.Default").delete()
+                    except:
+                        print(" P.Default Not Found ")
+
                     # Updation check. 
                     # sap_obj=selectedAdminPhones.objects.get(exp=exp_obj)
 
@@ -3928,8 +4030,16 @@ def submitData(request):
 
 class createSurveyForm(TemplateView):
     template_name='webapp/crudexperiment/survey_form.html'
+    explist=[]
     def get(self,request):
-        data={}
+        self.explist=[]
+        expObjs=Experiment.objects.all()
+        for obj in expObjs:
+            self.explist.append(obj.id)
+        print("explist",self.explist)
+        data={
+            "explist":self.explist,
+        }
         return render(request,self.template_name,data)
 
     def post(self,request):
@@ -3942,12 +4052,22 @@ class saveSurveyForm(TemplateView):
         if request.method=='POST':
             main_dict=request.POST.get('main_dict')
             main_dict=json.loads(main_dict)
+            expselected=request.POST.get('expselected')
+            print("expselected",expselected)
             print("main_dict",main_dict)
+            expObj=Experiment.objects.get(id=int(expselected))
 
-            survey_obj=surveyForm()
-            print("ssss")
-            survey_obj.surveydata=json.dumps(main_dict)
-            survey_obj.save()
+            try:
+                # update
+                surveyObj=surveyForm.objects.get(exp=expObj)
+                surveyObj.surveydata=json.dumps(main_dict)
+                surveyObj.save()
+            except:
+                # create
+                survey_obj=surveyForm()
+                survey_obj.surveydata=json.dumps(main_dict)
+                survey_obj.exp=expObj
+                survey_obj.save()
         data={}
         return JsonResponse(data)
 

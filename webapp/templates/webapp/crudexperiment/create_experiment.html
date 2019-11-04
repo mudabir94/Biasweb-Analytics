@@ -3416,7 +3416,8 @@ function dummysendFeatureLevels(){
 
                     }
                     console.log("P",block_feat_dict_def)
-                    SavePhoneSet_P0();
+                    p_all_phoneset_flag="True"
+                    // SavePhoneSet_P0();
 
                 }
             all_unchecked=true
@@ -3476,7 +3477,7 @@ function dummysendFeatureLevels(){
 
     sendFeatureLevels();
 }
-
+var p_all_phoneset_flag="False";
 
 
 function sendFeatureLevels(){ 
@@ -3684,6 +3685,7 @@ else if (block_feat_dict['CR']!==undefined && block_feat_dict['CO']===undefined)
 
     CO_CR_COMB="CR_on_CO_off";
     if (current_save_state===CO_CR_COMB){
+
         console.log("Doing Nothing")
     }
     else{
@@ -3771,6 +3773,7 @@ else if (block_feat_dict['CR']===undefined && block_feat_dict['CO']!==undefined)
     crit_hide_dict={};
     CO_CR_COMB="CR_off_CO_on"
     if (current_save_state===CO_CR_COMB){
+
         console.log("Doing Nothing")
     }
     else{
@@ -3854,6 +3857,7 @@ else if (block_feat_dict['CR']!==undefined && block_feat_dict['CO']!==undefined)
     
     CO_CR_COMB="CR_on_CO_on";
     if (current_save_state===CO_CR_COMB){
+
         console.log("Doing Nothing")
     }
     else{
@@ -6653,6 +6657,8 @@ function get_data_Ajax_Co(colist){
                                         type: 'POST',
                                         dataType: "json",
                                         'data': {
+                                        "p_all_phoneset_flag":p_all_phoneset_flag,
+
                                         'featlevels_dic': JSON.stringify(block_feat_dict,undefined,''),
                                         'crit_order_dict':JSON.stringify(crit_order_dict),
                                         'crit_hide_dict':JSON.stringify(crit_hide_dict),
@@ -7292,6 +7298,7 @@ function get_data_Ajax_Co(colist){
                                 type: 'POST',
                                 dataType: "json",
                                 'data': {
+                                "p_all_phoneset_flag":p_all_phoneset_flag,
                                 'featlevels_dic': JSON.stringify(block_feat_dict,undefined,''),
                                 "final_def_blocks_to_send":JSON.stringify(final_def_blocks_to_send),
 
@@ -7997,6 +8004,8 @@ function get_data_Ajax_Co(colist){
                                 type: 'POST',
                                 dataType: "json",
                                 'data': {
+                                "p_all_phoneset_flag":p_all_phoneset_flag,
+
                                 'featlevels_dic': JSON.stringify(block_feat_dict,undefined,''),
                                 'cr_crit_show_dict': JSON.stringify(cr_crit_show_dict,undefined,''),
                                 'cr_crit_hide_dict': JSON.stringify(cr_crit_hide_dict,undefined,''),
@@ -10217,6 +10226,8 @@ function get_data_Ajax_Co(colist){
                                         type: 'POST',
                                         dataType: "json",
                                         'data': {
+                                        "p_all_phoneset_flag":p_all_phoneset_flag,
+   
                                         'featlevels_dic': JSON.stringify(block_feat_dict,undefined,''),
                                         'crit_order_dict':JSON.stringify(crit_order_dict),
                                         'crit_hide_dict':JSON.stringify(crit_hide_dict),
