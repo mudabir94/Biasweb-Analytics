@@ -113,7 +113,7 @@
         if (element.checked == true){
         console.log(element.id);
          
-            if (arr.length ===3){
+            if (arr.length ===5){
                 alert("Array full ");
                 element.checked=false;
             }
@@ -124,7 +124,43 @@
         else {            
             arr.pop(element.id);
         }
-        function myfunc(){ 
+        
+       
+        $(document).ready(function () {
+                // alert(JSON.stringify(arr));
+
+                if(arr.length>1){
+                var elem=document.getElementById('comparebtn_id');
+                    if (elem===null)  {
+                       
+                        var btn = document.createElement("BUTTON");
+                        btn.id="comparebtn_id";
+                        var t = document.createTextNode("Compare");  
+                        btn.appendChild(t);
+                        btn.onclick=myfunc;
+                        document.getElementById('lc').appendChild(btn);     
+                         $('#comparebtn_id').addClass('btn'); 
+                         $('#comparebtn_id').addClass('btn-success');   
+                         $('#comparebtn_id').addClass('btn-success-edit');        
+                        
+                    }
+                }
+                else if (arr.length <=1 ){
+                    console.log("in condition");
+                    var elem=document.getElementById('comparebtn_id');
+                    
+                   if (elem!==null){
+                    document.getElementById('comparebtn_id').remove();
+                   }
+                }
+                $('.sidenav_testing').hide();                    
+
+
+        
+        });
+ }
+ 
+ function myfunc(){ 
             console.log("button clicked",arr);
 
             $.ajax({
@@ -178,39 +214,8 @@
             // get arr and send it to view. 
             // according to the id display the result in a table
         }
-        $(document).ready(function () {
-                // alert(JSON.stringify(arr));
-
-                if(arr.length>2){
-                var elem=document.getElementById('comparebtn_id');
-                    if (elem===null)  {
-                       
-                        var btn = document.createElement("BUTTON");
-                        btn.id="comparebtn_id";
-                        var t = document.createTextNode("Compare");  
-                        btn.appendChild(t);
-                        btn.onclick=myfunc;
-                        document.getElementById('lc').appendChild(btn);     
-                         $('#comparebtn_id').addClass('btn'); 
-                         $('#comparebtn_id').addClass('btn-success');   
-                         $('#comparebtn_id').addClass('btn-success-edit');        
-                        
-                    }
-                }
-                else if (arr.length <=2 ){
-                    console.log("in condition");
-                    var elem=document.getElementById('comparebtn_id');
-                    
-                   if (elem!==null){
-                    document.getElementById('comparebtn_id').remove();
-                   }
-                }
-                $('.sidenav_testing').hide();                    
-
-
-        
-        });
- }
+       
+ 
  $(document).ready(function () {
                 $(".sidenav_testing").hide();
                 $.ajax({

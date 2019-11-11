@@ -20,9 +20,10 @@
                     <div class='row' id='custom_nav_div' >
                         <div class='col'><button id='ftlvl' class='custom_nav_btn active 'onclick='showFeatureLvls($(this))'><span class="custom_span">Feature Levels</span></button> </div>
                         <div class='col'><button id='btchmng' class='custom_nav_btn'onclick='showBatchManagement()'><span class="custom_span">Manage Batch</span> </button></div>
-                        <div class='col'><button id='blkmng' class='custom_nav_btn' onclick='showBlockManagement()'><span class="custom_span">Manage Block</span></button></div>
+
                         <div class='col'><button id='create_exp_mobile_catalog' class='custom_nav_btn' onclick='mobileCatalog()'><span class="custom_span">Phone Set Management</span></button></div>
                         <div class='col'><button id='def_crit_list_btn' class='custom_nav_btn' onclick='showCritrtia()'><span class="custom_span">Criteria List</span></button></div>
+                        <div class='col'><button id='blkmng' class='custom_nav_btn' onclick='showBlockManagement()'><span class="custom_span">Manage Block</span></button></div>
 
                     </div>    
                 </div>
@@ -123,8 +124,8 @@
                     </div>
                     <div class=col-md-2>
                         <div id='defaultfeatLevel_tablediv'>
-                            <hr>
                             <h4>Status Report Default</h4>
+                            <hr>
 
                         </div>
                     </div>
@@ -698,6 +699,8 @@ if(exp_id===""){
         checkbox_id_dict=JSON.parse(window.localStorage.getItem("checkbox_id_dict")); 
         //* block list contains the combinations of feature levels that will be used for display as a table*
         var blockList = JSON.parse(window.localStorage.getItem("blockList")); 
+        block_feat_dict_def= JSON.parse(window.localStorage.getItem("block_feat_dict_def")); 
+        console.log("block_feat_dict_def<<<<<<<<<<<<<<",block_feat_dict_def)
 
         console.log("Feature_levels_dict",block_feat_dict)
         console.log("checkbox_id_dict",checkbox_id_dict)
@@ -730,6 +733,7 @@ if(exp_id===""){
         else{
             /* Strong implementation which will create Outer checkboxes and tick the ones already selected */
              showcheckboxes_stored();
+             checkAllFeaturesEnabled();
         }
 
         // Showing saved subject data. 
@@ -1032,7 +1036,7 @@ function getSavedSubjectDataExpCont(){
     }); 
 }
 
-
+var session_defaultdic={}
 function defaultFeatLevel_Table(){
     var defaultdic={};
     defaultdic['I']=['I.1'];
@@ -3342,8 +3346,10 @@ var CO_CR_COMB="";
 var status_report_dictionary={}
 var block_feat_dict_def={}
 var final_def_blocks_to_send={}
+var temp_block_feat_dict_def={};
+
 function dummysendFeatureLevels(){
-    var temp_block_feat_dict_def={};
+    temp_block_feat_dict_def={};
     // all outerchecks are unchecked?
     all_unchecked=false;
     var feat_key="";
@@ -3428,6 +3434,10 @@ function dummysendFeatureLevels(){
             all_unchecked=false
         }
     });
+    
+    
+    
+    
     if(count!==total_feat_len){all_unchecked=true}
 
     // if (all_unchecked===true){
@@ -3443,8 +3453,9 @@ function dummysendFeatureLevels(){
        
     $("#defaultfeatLevel_tablediv").empty()
     var featlevels="default"
-    $("#defaultfeatLevel_tablediv").append("<hr>");
     $("#defaultfeatLevel_tablediv").append("<h4>Status Report Default</h4>")
+    $("#defaultfeatLevel_tablediv").append("<hr>");
+
     for ( var indx in temp_block_feat_dict_def){
         featlevels=temp_block_feat_dict_def[indx]
         row_div=$("<div ></div>");
@@ -3604,18 +3615,17 @@ if (block_feat_dict['CR']===undefined && block_feat_dict['CO']===undefined){
                 var col_md_12_div=document.createElement('DIV');
                 col_md_12_div.setAttribute('class','col-md-12');
                 row_d1.append(col_md_12_div)
+                var div=document.createElement('DIV');
+                div.setAttribute('style','padding-left:5px;');
+
                 var p_text=document.createElement('p');
                 p_text.innerHTML="You haven't selected criteria display"
-                col_md_12_div.append(p_text)
-                var row_d2=document.createElement('div');
-                row_d2.setAttribute('class','row');
-                row_div.append(row_d2);
-                var col_md_12_div2=document.createElement('DIV');
-                col_md_12_div2.setAttribute('class','col-md-12');
-                row_d2.append(col_md_12_div2);
+                div.append(p_text)
+               
                 var p_text=document.createElement('p');
                 p_text.innerHTML="Do wish to proceed with defualt(Full) Criterias and Ordering?";
-                col_md_12_div.append(p_text);
+                div.append(p_text)
+                col_md_12_div.append(div);
                 // var input = document.createElement("INPUT");
                 // input.setAttribute("type", "number");
                 // input.id='inputset_num_co';
@@ -4034,32 +4044,7 @@ function sendFilePath(id){
 
 <script src="{% static 'webapp/createexp/DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js' %}"></script>
 <link rel="stylesheet" type="text/css" src="{% static 'webapp/createexp/DataTables/DataTables-1.10.18/cs/jquery.dataTables.min.css' %}"/>
-<script>
-    // Warning before leaving the page (back button, or outgoinglink)
-    window.onbeforeunload = function() {
-        window.localStorage.setItem("slider_set_dict", JSON.stringify(slider_set_dict));
-        window.localStorage.setItem("brand_set_dict", JSON.stringify(brand_set_dict));
-        window.localStorage.setItem("phoneset_dic", JSON.stringify(phoneset_dic));
-        window.localStorage.setItem("phonename_dic", JSON.stringify(phonename_dic));
-        window.localStorage.setItem("crit_order_dict", JSON.stringify(crit_order_dict));
-        window.localStorage.setItem("crit_hide_dict", JSON.stringify(crit_hide_dict));
-        
-        // if (Object.keys(default_crit_show_dict).length !== 0){
-        //     window.localStorage.setItem("default_crit_show_dict", JSON.stringify(default_crit_show_dict));
-        //     }
-            
-        // if (Object.keys(default_crit_hide_dict).length !== 0){
 
-        //     window.localStorage.setItem("default_crit_hide_dict", JSON.stringify(default_crit_hide_dict));
-        // }
-
-
-       return "Do you really want to leave our brilliant application?";
-       //if we return nothing here (just calling return;) then there will be no pop-up question at all
-       //return;
-    };
-   
-</script>
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/jszip.js"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/xlsx.js"></script> -->
@@ -10671,20 +10656,21 @@ function get_data_Ajax_Co(colist){
         
                 var div_row=document.createElement('div');
                 div_row.setAttribute("class",'row');
+                div_row.setAttribute("id","sortables_div")
                 temp.append(div_row);    
                 var div_col_md_6_1=document.createElement('div');
-                div_col_md_6_1.setAttribute("class","col");
+                div_col_md_6_1.setAttribute("class","col-md-9");
                 div_row.append(div_col_md_6_1);
                 var btn_btn_primary=document.createElement('button');
                 btn_btn_primary.setAttribute("class","sortable_custom_show_btns");
                 btn_btn_primary.innerHTML=d[0];
                 btn_btn_primary.title=d[0];
-
                 div_col_md_6_1.append(btn_btn_primary);
                 var div_col_md_6_2=document.createElement('div');
-                div_col_md_6_2.setAttribute("class","col");
+                div_col_md_6_2.setAttribute("class","col-md-3");
+                div_col_md_6_2.setAttribute("id","cl-hide");
                 div_row.append(div_col_md_6_2);
-                div_col_md_6_2.appendChild(btn);
+                div_col_md_6_2.append(btn);
                 cr_off_co_on_TreeView();
     }
     function hideFromDisplay(id) {
@@ -10906,9 +10892,11 @@ function get_data_Ajax_Co(colist){
         
                 var div_row=document.createElement('div');
                 div_row.setAttribute("class",'row');
+                div_row.setAttribute("id","sortables_div")
+
                 temp.append(div_row);    
                 var div_col_md_6_1=document.createElement('div');
-                div_col_md_6_1.setAttribute("class","col");
+                div_col_md_6_1.setAttribute("class","col-md-9");
                 div_row.append(div_col_md_6_1);
                 var btn_btn_primary=document.createElement('button');
                 btn_btn_primary.setAttribute('class','sortable_custom_show_btns');
@@ -10917,9 +10905,11 @@ function get_data_Ajax_Co(colist){
 
                 div_col_md_6_1.append(btn_btn_primary);
                 var div_col_md_6_2=document.createElement('div');
-                div_col_md_6_2.setAttribute("class","col");
+                div_col_md_6_2.setAttribute("class","col-md-3");
+                div_col_md_6_2.setAttribute("id","cl-hide");
+
                 div_row.append(div_col_md_6_2);
-                div_col_md_6_2.appendChild(btn);
+                div_col_md_6_2.append(btn);
            
          }
         
@@ -11137,9 +11127,11 @@ function get_data_Ajax_Co(colist){
         
                 var div_row=document.createElement('div');
                 div_row.setAttribute("class",'row');
+                div_row.setAttribute("id","sortables_div")
+
                 temp.append(div_row);    
                 var div_col_md_6_1=document.createElement('div');
-                div_col_md_6_1.setAttribute("class","col");
+                div_col_md_6_1.setAttribute("class","col-md-9");
                 div_row.append(div_col_md_6_1);
                 var btn_btn_primary=document.createElement('button');
                 btn_btn_primary.setAttribute('class','sortable_custom_show_btns');
@@ -11147,9 +11139,11 @@ function get_data_Ajax_Co(colist){
                 btn_btn_primary.title=data[0];
                 div_col_md_6_1.append(btn_btn_primary);
                 var div_col_md_6_2=document.createElement('div');
-                div_col_md_6_2.setAttribute("class","col");
+                div_col_md_6_2.setAttribute("class","col-md-3");
+                div_col_md_6_2.setAttribute("id","cl-hide");
+
                 div_row.append(div_col_md_6_2);
-                div_col_md_6_2.appendChild(btn);
+                div_col_md_6_2.append(btn);
 
 
 
@@ -11572,9 +11566,11 @@ function get_data_Ajax_Co(colist){
         
                 var div_row=document.createElement('div');
                 div_row.setAttribute("class",'row');
+                div_row.setAttribute("id","sortables_div")
+
                 temp.append(div_row);    
                 var div_col_md_6_1=document.createElement('div');
-                div_col_md_6_1.setAttribute("class","col");
+                div_col_md_6_1.setAttribute("class","col-md-9");
                 div_row.append(div_col_md_6_1);
                 var btn_btn_primary=document.createElement('button');
                 btn_btn_primary.setAttribute('class','sortable_custom_show_btns');
@@ -11582,9 +11578,11 @@ function get_data_Ajax_Co(colist){
                 btn_btn_primary.title=data[0];
                 div_col_md_6_1.append(btn_btn_primary);
                 var div_col_md_6_2=document.createElement('div');
-                div_col_md_6_2.setAttribute("class","col");
+                div_col_md_6_2.setAttribute("class","col-md-3");
+                div_col_md_6_2.setAttribute("id","cl-hide");
+
                 div_row.append(div_col_md_6_2);
-                div_col_md_6_2.appendChild(btn);
+                div_col_md_6_2.append(btn);
                 def_crit_cr_on_co_off_TreeView();
 
 
@@ -12208,9 +12206,11 @@ function get_data_Ajax_Co(colist){
         
                 var div_row=document.createElement('div');
                 div_row.setAttribute("class",'row');
+                div_row.setAttribute("id","sortables_div")
+
                 temp.append(div_row);    
                 var div_col_md_6_1=document.createElement('div');
-                div_col_md_6_1.setAttribute("class","col");
+                div_col_md_6_1.setAttribute("class","col-md-9");
                 div_row.append(div_col_md_6_1);
                 var btn_btn_primary=document.createElement('button');
                 btn_btn_primary.setAttribute("class","sortable_custom_show_btns");
@@ -12219,9 +12219,11 @@ function get_data_Ajax_Co(colist){
 
                 div_col_md_6_1.append(btn_btn_primary);
                 var div_col_md_6_2=document.createElement('div');
-                div_col_md_6_2.setAttribute("class","col");
+                div_col_md_6_2.setAttribute("class","col-md-3");
+                div_col_md_6_2.setAttribute("id","cl-hide");
+
                 div_row.append(div_col_md_6_2);
-                div_col_md_6_2.appendChild(btn);
+                div_col_md_6_2.append(btn);
                 cr_on_co_on_TreeView();
 
            
@@ -12247,9 +12249,11 @@ function get_data_Ajax_Co(colist){
                 ul_sortable.append(li_sortable);
                 var div_row=document.createElement('div');
                 div_row.setAttribute("class",'row');
+                div_row.setAttribute("id","sortables_div")
+
                 li_sortable.append(div_row);    
                 var div_col_md_6_1=document.createElement('div');
-                div_col_md_6_1.setAttribute("class","col");
+                div_col_md_6_1.setAttribute("class","col-md-9");
                 div_row.append(div_col_md_6_1);
                 var btn_btn_primary=document.createElement('button');
                 btn_btn_primary.setAttribute("class","sortable_custom_show_btns");
@@ -12264,7 +12268,9 @@ function get_data_Ajax_Co(colist){
                 }
                 div_col_md_6_1.appendChild(btn_btn_primary);
                 var div_col_md_6_2=document.createElement('div');
-                div_col_md_6_2.setAttribute('class',"col");
+                div_col_md_6_2.setAttribute('class',"col-md-3");
+                div_col_md_6_2.setAttribute("id","cl-hide");
+
                 div_row.append(div_col_md_6_2);
                     // check if i present in mandatory list. If it does dont show the hide button
                 if (flg==="true"){
@@ -12300,7 +12306,7 @@ function get_data_Ajax_Co(colist){
 
                         }
                         btn_show_hide.innerHTML="Hide";
-                        div_col_md_6_2.appendChild(btn_show_hide);
+                        div_col_md_6_2.append(btn_show_hide);
                     
                     }
                 
@@ -12474,6 +12480,127 @@ function submitDescription(){
         });
     }
 
+}
+</script>
+<script>
+    // Warning before leaving the page (back button, or outgoinglink)
+    window.onbeforeunload = function() {
+        window.localStorage.setItem("slider_set_dict", JSON.stringify(slider_set_dict));
+        window.localStorage.setItem("brand_set_dict", JSON.stringify(brand_set_dict));
+        window.localStorage.setItem("phoneset_dic", JSON.stringify(phoneset_dic));
+        window.localStorage.setItem("phonename_dic", JSON.stringify(phonename_dic));
+        window.localStorage.setItem("crit_order_dict", JSON.stringify(crit_order_dict));
+        window.localStorage.setItem("crit_hide_dict", JSON.stringify(crit_hide_dict));
+        window.localStorage.setItem("block_feat_dict_def", JSON.stringify(block_feat_dict_def));
+
+        
+        // if (Object.keys(default_crit_show_dict).length !== 0){
+        //     window.localStorage.setItem("default_crit_show_dict", JSON.stringify(default_crit_show_dict));
+        //     }
+            
+        // if (Object.keys(default_crit_hide_dict).length !== 0){
+
+        //     window.localStorage.setItem("default_crit_hide_dict", JSON.stringify(default_crit_hide_dict));
+        // }
+
+
+       return "Do you really want to leave our brilliant application?";
+       //if we return nothing here (just calling return;) then there will be no pop-up question at all
+       //return;
+    };
+   function checkAllFeaturesEnabled(){
+    temp_block_feat_dict_def={}
+    console.log("block_feat_dict_def-----",block_feat_dict_def)
+    $("#feat_lvl_div :input").not(':button').each(function() {
+        console.log($(this).prop("checked"));
+        if($(this).prop("checked")==false){
+            if ($(this).val()==="I"){
+                    feat_key=$(this).val();
+                    if (temp_block_feat_dict_def[feat_key]===undefined){
+                        temp_block_feat_dict_def[feat_key]=block_feat_dict_def[feat_key];
+                        // block_feat_dict_def[feat_key]=["I.0","I.1"];
+                        // block_feat_dict[feat_key]=["I.0","I.1"];
+                    }
+                    console.log("I",block_feat_dict_def);
+                }
+            else if ($(this).val()==="R"){
+                    feat_key=$(this).val()
+                    if (temp_block_feat_dict_def[feat_key]===undefined){
+                        temp_block_feat_dict_def[feat_key]=block_feat_dict_def[feat_key];
+
+                    // block_feat_dict_def[feat_key]=["R.0","R.1"];
+                    // block_feat_dict[feat_key]=["R.0","R.1"];
+                    }
+                    console.log("R",block_feat_dict_def)
+                }
+            else if ($(this).val()==="W"){
+                    feat_key=$(this).val()
+                    if (temp_block_feat_dict_def[feat_key]===undefined){
+                        temp_block_feat_dict_def[feat_key]=block_feat_dict_def[feat_key];
+
+                    // block_feat_dict_def[feat_key]=["W.direct"]
+                    // block_feat_dict[feat_key]=["W.direct"]
+                    }
+                    console.log("W",block_feat_dict_def)
+
+                }
+            else if ($(this).val()==="A"){
+                    feat_key=$(this).val()
+                    if (temp_block_feat_dict_def[feat_key]===undefined){
+                        temp_block_feat_dict_def[feat_key]=block_feat_dict_def[feat_key];
+
+                        // block_feat_dict_def[feat_key]=["A.1by1","A.2by2"];
+                        // block_feat_dict[feat_key]=["A.1by1","A.2by2"]
+
+                    }
+                    console.log("A",block_feat_dict_def)
+
+                }
+            else if ($(this).val()==="CR"){
+                    feat_key=$(this).val();
+                    if (temp_block_feat_dict_def[feat_key]===undefined){
+                         temp_block_feat_dict_def[feat_key]=block_feat_dict_def[feat_key];
+
+                        // block_feat_dict_def[feat_key]=["C.def"];
+                        // block_feat_dict[feat_key]=["C.def"]
+
+                    }
+                    console.log("C",block_feat_dict_def)
+                    
+                }
+            else if ($(this).val()==="P"){
+                    feat_key=$(this).val();
+                    if (temp_block_feat_dict_def[feat_key]===undefined){
+                        temp_block_feat_dict_def[feat_key]=block_feat_dict_def[feat_key];
+
+                        // block_feat_dict_def[feat_key]=["P.All"];
+                        // block_feat_dict[feat_key]=["P.All"]
+
+                    }
+                    console.log("P",block_feat_dict_def)
+                    p_all_phoneset_flag="True"
+                    // SavePhoneSet_P0();
+
+                }
+            all_unchecked=true
+        }
+        else{
+            delete temp_block_feat_dict_def[$(this).val()];
+            all_unchecked=false
+        }
+    });
+    console.log("temp_block_f---",temp_block_feat_dict_def)
+    $("#defaultfeatLevel_tablediv").empty()
+    var featlevels="default"
+    $("#defaultfeatLevel_tablediv").append("<h4>Status Report Default</h4>")
+    $("#defaultfeatLevel_tablediv").append("<hr>");
+
+    for ( var indx in temp_block_feat_dict_def){
+        featlevels=temp_block_feat_dict_def[indx]
+        row_div=$("<div ></div>");
+        $(row_div).append(featlevels);
+        $("#defaultfeatLevel_tablediv").append(row_div);
+    }
 }
 </script>
 {%endblock%}

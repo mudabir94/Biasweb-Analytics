@@ -61,7 +61,7 @@ from .models import (
                     StoreCritWeightLogs,
                     generalCriteriaData,
                     customExpSessionTable,
-                    surveyForm,
+                    surveyForm,criteriaBasicInfo
                     )
 
 
@@ -497,6 +497,8 @@ def criteriaWeights(request):
         print("storeuserpagelogs",storeuserpagelogs)
         reviseability = [idx for idx in exp_feat_levels if idx.startswith("R.")] 
         print("res -- R",reviseability[0])
+        interactivity = [idx for idx in exp_feat_levels if idx.startswith("I.")] 
+        print("int -- I",interactivity[0])
         if "criteriaweights" in storeuserpagelogs:
             flag="true"
        
@@ -509,6 +511,8 @@ def criteriaWeights(request):
             if reviseability[0]=="R.1":
                 crit = [idx for idx in exp_feat_levels if idx.startswith("C.")] 
                 crit=crit[0].lower()
+                if crit=="c.def":
+                    crit="default"
                 exp_obj=exp.objects.get(id=exp_under_test)
                 ExpCriteria_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1,cOrder_id=crit)
                 print("ExpCriteria_obj",ExpCriteria_obj)
@@ -522,12 +526,23 @@ def criteriaWeights(request):
                 request.session[sessionkey]=crit_list
 
                 flag="false"
+                revs=reviseability[0]
+                if revs=='R.1':
+                    revs="True"
+                else:
+                    revs="False"
+                if interactivity[0]=="I.1":
+                    inter="True"
+                else:
+                    inter="False"
 
             data={
                 'crit_list':crit_list,
                 "ADM":adm[0],
                 "pagevisited":flag,
                 'userid':request.user.id,
+                "revs":revs,
+                "inter":inter,
                 }
             return render(request,template_name,data)
         else:
@@ -539,10 +554,13 @@ def criteriaWeights(request):
             # check if c.full or c.prune in res1
             print("exp_feat_levels",exp_feat_levels)
             
-            res = [idx for idx in exp_feat_levels if idx.startswith("C.")] 
-            res=res[0].lower()
+            crit = [idx for idx in exp_feat_levels if idx.startswith("C.")] 
+            crit=crit[0].lower()
+            print("CRITERIA ___________________",crit)
+            if crit=="c.def":
+                crit="default"
             exp_obj=exp.objects.get(id=exp_under_test)
-            ExpCriteria_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1,cOrder_id=res)
+            ExpCriteria_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1,cOrder_id=crit)
             print("ExpCriteria_obj",ExpCriteria_obj)
             crit_list_obj=ExpCriteria_obj.values_list('pCriteria__criteria_name',flat=True)
             print("crit_list_obj",crit_list_obj)
@@ -565,15 +583,23 @@ def criteriaWeights(request):
             print("adm",adm)
             revs=reviseability[0]
             if revs=='R.1':
-                revs=True
+                revs="True"
             else:
-                revs=False
+                revs="False"
+            if interactivity[0]=="I.1":
+                inter="True"
+            else:
+                inter="False"
+            criteria_info_dictionary={}
+            criteria_info_dictionary['Looks & Feel']=["How important the looks of the phone is for you?"]
             data={
                 'crit_list':json.dumps(crit_list),
                 "ADM":adm[0],
                 'userid':request.user.id,
                 "pagevisited":flag,
                 'res':revs,
+                "inter":inter,
+                # "criteria_info_dictionary":json.dumps(criteria_info_dictionary)
 
                 
             }
@@ -595,6 +621,24 @@ def criteriaWeights(request):
 # When the page is loaded  both of its GET and POST functions are called respectively through ajax. 
 # GET Method send back Interactivity and Revisiablity features. 
 # POST Methond sends back  multiple list and dict needed to populate the page. 
+
+def getCritInfo(request):
+    
+    if request.method=="GET":
+        criteria_info_dictionary={}
+        critInfoObjs=criteriaBasicInfo.objects.all()
+        for obj in critInfoObjs:
+            criteria_info_dictionary[obj.criteria_name]=[]
+            criteria_info_dictionary[obj.criteria_name].append(obj.basic_info)
+            criteria_info_dictionary[obj.criteria_name].append(obj.more_detail)
+        data={
+            "criteria_info_dictionary":json.dumps(criteria_info_dictionary),
+        }
+        return JsonResponse(data)
+
+            
+
+
 def compareMobileOneByOneDirect(request):
     template_name='webapp/comparemobile1by1direct.html'
     userid=str(request.user.id)
@@ -680,6 +724,9 @@ def compareMobileOneByOneDirect(request):
         else:
             crit = [idx for idx in exp_feat_levels if idx.startswith("C.")] 
             crit=crit[0].lower()
+            if crit=="c.def":
+                crit="default"
+           
             exp_obj=exp.objects.get(id=exp_under_test)
             ExpCriteria_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1,cOrder_id=crit)
             print("ExpCriteria_obj",ExpCriteria_obj)
@@ -795,7 +842,6 @@ def compareMobileTwoByTwoDirect(request):
             numofmobiles=len(allmobile)
             mobile={}
             print("alternative_list",alternative_list)
-            # features=['price','resolution','size']
             data={
                 'allmobiles':allmobile,
                 'numofmobiles':numofmobiles,
@@ -841,9 +887,12 @@ def compareMobileSpecsFilterVer(request):
             surveydata=survey_obj.surveydata
 
             alternative_list=[]
-            crit_check = [idx for idx in exp_feat_levels if idx.startswith("C.")] 
-            crit_check=crit_check[0].lower()
-            ExpCriteria_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1,cOrder_id=crit_check)
+            crit = [idx for idx in exp_feat_levels if idx.startswith("C.")] 
+            crit=crit[0].lower()
+            if crit=="c.def":
+                crit="default"
+          
+            ExpCriteria_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1,cOrder_id=crit)
             print("ExpCriteria_obj",ExpCriteria_obj)
             crit_list=ExpCriteria_obj.values_list('pCriteria__criteria_name',flat=True)
             crit_list=list(crit_list)
@@ -3186,7 +3235,7 @@ class createExperiment(TemplateView):
             # samsung_phones= samsung_phone.objects.all()
             phonecritlist=[]
 
-            exclfields=['selectedadminphones','id','imagepath1','imagepath2','Whats_new',"Mobile_Name","price_in_usd"]
+            exclfields=['selectedadminphones','id','rating','imagepath1','sideimage1','sideimage2','sideimage3','sideimage4','Whats_new',"Mobile_Name","price_in_usd"]
             # Get the mobile phone fields and then save the fields in phone criteria
             [phonecritlist.append(f.name) for f in mobilephones._meta.get_fields() if f.name not in exclfields]
             print(phonecritlist)

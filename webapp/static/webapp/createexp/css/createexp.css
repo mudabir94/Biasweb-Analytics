@@ -45,7 +45,7 @@
   background-color: rgba(0, 0, 0, 0.664); 
   border: 1px solid rgba(0, 0, 0, 0.664);
   color: white; /* White text */
-  padding: 5px 10px;  /* Some padding */
+  padding: 3px 0px;  /* Some padding */
   cursor: pointer; /* Pointer/hand icon */
   float: left; /* Float the buttons side by side */
 }
@@ -53,7 +53,7 @@
   background-color: rgba(60, 138, 24, 0.863); /* Green background */
   border: 1px solid rgba(60, 138, 24, 0.863);/* Green border */
   color: white; /* White text */
-  padding: 5px 15px; /* Some padding */
+  padding: 3px 0px; /* Some padding */
   cursor: pointer; /* Pointer/hand icon */
   float: left; /* Float the buttons side by side */
 }
@@ -61,7 +61,7 @@
   background-color: rgba(19, 15, 238, 0.87); 
   border: 1px solid rgba(19, 15, 238, 0.87);
   color: white; /* White text */
-  padding: 5px 15px; /* Some padding */
+  padding: 3px 0px; /* Some padding */
   cursor: pointer; /* Pointer/hand icon */
   float: left; /* Float the buttons side by side */
 }
@@ -69,7 +69,7 @@
   background-color: rgba(19, 15, 238, 0.87); 
   border: 1px solid rgba(19, 15, 238, 0.87);
   color: white; /* White text */
-  padding:5px 15px; /* Some padding */
+  padding:3px 0px; /* Some padding */
   cursor: pointer; /* Pointer/hand icon */
   float: left; /* Float the buttons side by side */
 }
@@ -77,7 +77,7 @@
   background-color: rgba(19, 15, 238, 0.87); 
   border: 1px solid rgba(19, 15, 238, 0.87);
   color: white; /* White text */
-  padding: 5px 15px; /* Some padding */
+  padding: 3px 0px; /* Some padding */
   cursor: pointer; /* Pointer/hand icon */
   float: left; /* Float the buttons side by side */
 }
@@ -85,7 +85,7 @@
   background-color: rgba(0, 0, 0, 0.664); 
   border: 1px solid rgba(0, 0, 0, 0.664);
   color: white; /* White text */
-  padding: 5px 15px;
+  padding: 3px 0px;
   cursor: pointer; /* Pointer/hand icon */
   float: left; /* Float the buttons side by side */
 }
@@ -93,7 +93,7 @@
   background-color: rgba(60, 138, 24, 0.863); /* Green background */
   border: 1px solid rgba(60, 138, 24, 0.863);/* Green border */
   color: white; /* White text */
-  padding: 5px 15px; /* Some padding */
+  padding: 3px 0px; /* Some padding */
   cursor: pointer; /* Pointer/hand icon */
   float: left; /* Float the buttons side by side */
 }
@@ -138,8 +138,8 @@
   color: white; /* White text */
   padding: 10px 24px; /* Some padding */
   cursor: pointer; /* Pointer/hand icon */
-  float: left; /* Float the buttons side by side */
-  width:100%;
+  /* float: left; 
+  width:100%; */
 }
 
   .active{
@@ -164,7 +164,7 @@
     box-shadow: 0 0 0.5px 0.5px rgba(60, 138, 24, 0.863);
     border: 1px solid rgba(60, 138, 24, 0.863);
     cursor: pointer;
-    font-size: 13px;
+    font-size: 10px;
     border-radius: 2pc;
 
 }
@@ -333,7 +333,7 @@ body.loading .modal {
   display: block;
 }
 .custom_span {
-  font-size: 13px !important;
+  font-size: 9px !important;
     font-weight: 700 !important;
     color: #4c4d4e !important;
 }

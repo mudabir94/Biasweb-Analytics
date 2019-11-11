@@ -109,8 +109,10 @@
             }).on('mouseleave', function() {
                 layer.hide();
                 showPanel.hide();
-                $("#charts_div").show();
-
+                if (Interactivity_On==true){
+                    $("#charts_div").show();
+                }
+                
             });
         });
     }

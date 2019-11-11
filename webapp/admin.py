@@ -13,7 +13,7 @@ from .models import Subject,experiment_feature,Batch,Block,ExpCriteriaOrder,crit
 
 from .models import StoreHoverBarChartLogs,StoreHoverPieChartLogs,StoreNextPrevButtonLogs,StoreCritWeightLogs
 from .models import customExpSessionTable
-from .models import surveyForm
+from .models import surveyForm,criteriaBasicInfo
 class MyUserChangeForm(UserChangeForm):
     class Meta(UserChangeForm.Meta):
         model = User
@@ -152,7 +152,9 @@ class customExpSessionTableAdmin(admin.ModelAdmin):
 
 class surveyFormAdmin(admin.ModelAdmin):
     list_display=('id',"exp","surveydata")
-
+    
+class criteriaBasicInfoAdmin(admin.ModelAdmin):
+    list_display=("id","criteria_name","basic_info","more_detail")
 
 admin.site.register(User, MyUserAdmin)
 admin.site.register(ExpCriteriaOrder, ExpCriteriaOrderAdmin)
@@ -191,3 +193,5 @@ admin.site.register(generalCriteriaData, generalCriteriaDataAdmin)
 
 admin.site.register(customExpSessionTable, customExpSessionTableAdmin)
 admin.site.register(surveyForm, surveyFormAdmin)
+admin.site.register(criteriaBasicInfo, criteriaBasicInfoAdmin)
+

@@ -70,7 +70,7 @@
 
                                                 </div>
 
-                                                <canvas id="bar_chart_criteria"  style="background:rgba(158, 193, 248, 0.431);width:initial;height:200px;"></canvas>
+                                                <canvas id="bar_chart_criteria"  style="background:rgba(158, 193, 248, 0.431);width:initial;height:100%;"></canvas>
                                             
                                         </div>       
                             </div>
@@ -149,6 +149,7 @@ $(document).ready(function(){
                             alert(reviseability_data)
                             if (interactivity_data=="I.0"){
                                 Interactivity_On=false
+                                $("#charts_div").hide();
                             }
                             else if (interactivity_data=="I.1"){
                                 Interactivity_On=true
@@ -259,7 +260,9 @@ $(document).ready(function(){
                         var sub_crit_row_divs=$("#sub_crit_row_divs_0");
                         getCriterias(sub_crit_row_divs);
                         CalculateWeightsWithAlts();
-                        showchart_criteria();
+                        if (Interactivity_On===true){
+                            showchart_criteria();
+                        }
                         var red = Math.floor(Math.random() * 255);
                         var green = Math.floor(Math.random() * 255);
                         var blue = Math.floor(Math.random() * 255);
@@ -380,7 +383,10 @@ function activateSlider(crt){
                     }
                     CalculateWeightsWithAlts();
                     if (showchartcount===0){
+                        if (Interactivity_On===true){
+
                         show_FinalChart();
+                        }
                     }
                     console.log("myChart",myChart);
                     
@@ -518,7 +524,10 @@ function makeTable(allmobile,mob_name){
 
             $(small_img_div).append(leftarrow);
             $("#imagediv").append(small_img_div);
-            $('.show').zoomImage();
+            if (Interactivity_On==true){
+                $('.show').zoomImage();
+
+            }
 
             $('.show-small-img:first-of-type').css({'border':'solid 1px #951b25','padding':'2px'})
             $('.show-small-img:first-of-type').attr('alt','now').siblings().removeAttr('alt');

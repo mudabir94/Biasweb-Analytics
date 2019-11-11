@@ -419,3 +419,8 @@ class surveyForm(models.Model):
         null=True,
         blank=True
     )
+class criteriaBasicInfo(models.Model):
+    criteria_name=models.CharField(null=True,blank=True,max_length=100)
+    basic_info=models.TextField(null=True,blank=True)
+    more_detail=models.TextField(null=True,blank=True)
+    

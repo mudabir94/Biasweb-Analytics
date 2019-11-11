@@ -1,16 +1,32 @@
 body {
-    font-family: 'Roboto';font-size: 25px;
+    font-family: 'Roboto';
+    font-size: 10px !important;
 }
 .latest-product-section {
     padding-top: 100px;
     padding-bottom: 100px;
 }
+h1 {
+    font-size: 18px !important;
+}
 h2 {
-    font-size: 30px;
+    font-size: 16px !important;
+}
+h3 {
+    font-size: 14px !important;
+}
+h4 {
+    font-size: 12px !important;
+}
+h5 {
+    font-size: 11px !important;
+}
+h6 {
+    font-size: 10px !important;
 }
 p {
 
-    font-size: 15px;
+    font-size: 10px !important;
     font-weight: 400;
     color: #a6a7aa;
     margin-bottom: 15px;
@@ -59,3 +75,153 @@ a:active, a:focus, a:hover {
     padding-top: 15px;
     text-transform: uppercase;
 }
+
+.or {
+    position: absolute;
+    top: 180px;
+    left: 280px;
+    width: 40px;
+    height: 40px;
+    background: #DDD;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    line-height: 40px;
+    text-align: center;
+  }
+  
+  .right {
+    position: absolute;
+    top: 0;
+    right: 0;
+    box-sizing: border-box;
+    padding: 40px;
+    width: 300px;
+    height: 400px;
+    background: url('https://goo.gl/YbktSj');
+    background-size: cover;
+    background-position: center;
+    border-radius: 0 2px 2px 0;
+  }
+  
+  .right .loginwith {
+    display: block;
+    margin-bottom: 40px;
+    font-size: 28px;
+    color: #FFF;
+    text-align: center;
+  }
+  
+  button.social-signin {
+    margin-bottom: 20px;
+    width: 220px;
+    height: 36px;
+    border: none;
+    border-radius: 2px;
+    color: #FFF;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    transition: 0.2s ease;
+    cursor: pointer;
+  }
+  
+  button.social-signin:hover,
+  button.social-signin:focus {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    transition: 0.2s ease;
+  }
+  
+  button.social-signin:active {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+    transition: 0.2s ease;
+  }
+  
+  button.social-signin.facebook {
+    background: #32508E;
+  }
+  
+  button.social-signin.twitter {
+    background: #55ACEE;
+  }
+  
+  button.social-signin.google {
+    background: #DD4B39;
+  }
+  .my_table >tbody >tr >td:first-child {
+   
+  }
+  .my_table >tbody >tr >td:nth-child(2) {
+    width: 50px;
+   }
+   .my_table >tbody >tr >td:nth-child(3) {
+   
+   }
+   .margin-b-20 >img
+   {
+     width: 100px;
+     height: 150px;
+     display: block;
+     margin: 0 auto;
+   }
+   .latest-product-section
+  {
+    background-color:white;
+  }
+  .btn-success-edit
+  {
+    margin-top: 10px;
+  }
+  
+  .barbutton{
+    
+    width:100%;
+  }
+  .loading_gif{
+    display: block;
+      width: 16px;
+      height: 16px;
+      background: red
+  }
+  /* .custom_side_rows {
+    background-color: #5276ff;
+    border: 1px solid #5276ff; 
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+    width: auto;
+    color: white !important; 
+    margin: 10px;
+    padding: 10px 10px; 
+    cursor: pointer;
+  }
+  .custom_side_rows:hover {
+    background-color:  #ffffff !important;
+          
+    color: #009688 !important;
+    
+    border-color: #009688;  
+  } */
+  /* .custom_side_rows span:hover {
+    color: #000 !important;
+  } */
+  .navbar-brand:hover{
+    color:#009688 !important;
+  }
+
+  #login-box {
+    position: relative;
+    margin: 5% auto;
+    width: 600px;
+    height: 400px;
+    background: #FFF;
+    border-radius: 2px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4) ;
+  }
+  
+  .left {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    box-sizing: border-box !important;
+    padding: 40px !important;
+    width: 300px !important;
+    height: 400px !important;
+  }

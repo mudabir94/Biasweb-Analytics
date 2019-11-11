@@ -7,9 +7,11 @@
                 <div id="dialog" title="Set Criteria Weights">
                         <p>Please set the weights of criterias</p>
                 </div>
-                <div id="save-dialog" title="Basic dialog">
+                <div id="save-dialog" title="Saved">
                     <p>Your Changes are saved</p>
-            </div>
+                </div>
+                <div id="crit_detail_info_div" title="Criteria Information">
+                </div>
         </div>
         <div class=" col-md-10" >
             <div class="row is-flex" style="background: rgb(245, 244, 244);">
@@ -50,7 +52,7 @@
     </div>
     
     </div>
-<script>
+<script type="text/javascript">
     var critlist_val_dict=null
     var crit_list={{crit_list |safe}}
     var ADM='{{ADM}}'
@@ -63,9 +65,32 @@
     var subcritcount=0;
     var crit_divs_visited=[];
     var Reviseability_On="{{res}}";
+    var Interactivity_On="{{inter}}"
+    
+    
+    var criteria_info_dictionary={}
+    // criteria_info_dictionary['Looks & Feel']=["How important the looks of the phone is for you?"]
+    // criteria_info_dictionary['Brand']=["How important is the brand of the phone is for you?"]
+    // criteria_info_dictionary['price']=["How important is the price of the phone is for you? "]
+    // criteria_info_dictionary['Memory']=["How important the Memory (32GB/64GB etc) of the phone is for you?"]
+    // criteria_info_dictionary['Ram']=["How important the Ram (2GB/3GB/4GB etc) is for you?"]
+    // criteria_info_dictionary['Cpu']=["How important the Cpu (Processing Speed) of the phone is for you?"]
+    // criteria_info_dictionary['Dimensions']=["How much value do you give for the dimensions of the phone?"]
+    // criteria_info_dictionary['Gpu']=["How important is the GPU (Graphics Processing Unit ) is for you?"]
+    // criteria_info_dictionary['Size']=["How important the Size  of the phone is for you?"]
+    // criteria_info_dictionary['Chip']=["Do you value Chip when buying the phone?"]
+    // criteria_info_dictionary['Colors']=["How important the Colors of the phone is for you?"]
+    // criteria_info_dictionary['rating']=["Do you consider rating of the phone before buying?"]
+    // criteria_info_dictionary['OS']=["How important the OS (Android/Apple) of the phone is for you"]
+    // criteria_info_dictionary['battery']=["How important is the battery life (1 day/2 days etc.) of the phone is for you"]
+    // criteria_info_dictionary['backcam']=["How important is the Back Camera of the phone is for you"]
+    // criteria_info_dictionary['Others']=["It includes other critierias that are not asked? How would you rate them as a whole?"]
+
+
 
 $(document).ready(function(){ 
     $('#save-dialog').hide();
+    $("#crit_detail_info_div").hide();
     $("#bar_chart_graph_div_two").hide();
     if (Reviseability_On==="False"){
         Reviseability_On=false
@@ -74,6 +99,15 @@ $(document).ready(function(){
         Reviseability_On=true
 
     }
+    if (Interactivity_On==="False"){
+        Interactivity_On=false
+        $("#side_crit_list_two").css("display","none !important");
+
+    }
+    else{
+        Interactivity_On=true
+    }
+    alert(Interactivity_On)
     // localStorage.removeItem("critlist_val_dict");
     // GET CRIT LIST and run the slider.... 
     // crit_list=JSON.parse(crit_list)
@@ -169,7 +203,21 @@ $(document).ready(function(){
         $("#main_heading").append("Sorry Criteria Weights can't be shown now.");
         $("#savebutton").hide();
     }
-    
+ 
+ 
+    $.ajax({
+    type: 'GET',
+    dataType: "json",
+    'data': {
+    },
+    // the ajax call is sent to subdetails url name in the post function.  
+    url: "{% url 'get_crit_info' %}",
+    success: function(data){
+        criteria_info_dictionary=JSON.parse(data['criteria_info_dictionary'])
+        console.log("criteria_info_dictionary",criteria_info_dictionary)
+        }
+    });
+ 
  }); 
  //  'rgba(96, 208, 11, 0.3)', light green
     //  'rgba(8, 0, 153, 0.3)',    dark blue
@@ -194,7 +242,13 @@ $(document).ready(function(){
     "rgba(255, 171, 182, 0.5)",     
     'rgba(255,400,300, 0.5)', 
     'rgba(50, 150, 205, 0.5)',   
-    "rgba(255, 1, 1, 0.5)", 
+    "rgba(255, 1, 1, 0.5)",
+    "rgba(255, 130, 150, 0.5)", 
+    "rgba(1, 1, 255, 0.5)", 
+    "rgba(11, 120, 255, 0.5)", 
+    "rgba(200,200, 200, 0.5)", 
+    "rgba(1, 200, 200, 0.5)", 
+
    
     ]
 function genrateBarColors(){
@@ -207,8 +261,11 @@ function genrateBarColors(){
         crit_backg_col.push(colors_list[c])
         crit_bor_col.push(colors_list[c])
         }
-        showchart_criteria();
-        show_FinalChart();
+        if (Interactivity_On==true){
+            showchart_criteria();
+            show_FinalChart();
+        }
+        
 }
 function SaveWeights(){
     if (Reviseability_On==false){
@@ -313,9 +370,14 @@ function activateSlider(crt){
             var div1=$("<div>")
                 input=$('<input id="'+crit+'" class="slider"></input>')
             div1.append(input);
-            var div2=$("<div>This text is for information of the criteria</div>")
+            var div2=$("<div>"+criteria_info_dictionary[crit][0]+"</div>")
+            var div3=$("<div>")
+                var moredetail_btn=$("<button id='"+crit+"_moredetail' onclick='showCriteriaDetails($(this))'>More detail about criteria</button>")
+            div3.append(moredetail_btn)    
         col2.append(div1);
         col2.append(div2);
+        col2.append(div3);
+
         var col3=$("<div class='col-md-1'></div>");
             span=$('<span id="'+crit+'_span"></span>')
         col3.append(span);
@@ -361,15 +423,44 @@ function activateSlider(crt){
                    
                     index=crit_name_list.indexOf(target)
                     console.log("index",index)
-                    console.log("label",myChart.data.datasets[0].data[index])
-                    myChart.data.datasets[0].data[index]=event;
-                    myChart.update();
-                    showchart_criteria();
+                    if (Interactivity_On==true){
+                        console.log("label",myChart.data.datasets[0].data[index])
+                        myChart.data.datasets[0].data[index]=event;
+                        myChart.update();
+                        showchart_criteria();
+                        }
                     }
                 });
 
 }
-
+function showCriteriaDetails(ele){
+    id=$(ele).attr('id')
+    arr=id.split("_")
+    crit=arr[0]
+    console.log("more details",criteria_info_dictionary[crit][1])
+    $( "#crit_detail_info_div" ).empty();
+    var p=$("<p>")
+    p.append(criteria_info_dictionary[crit][1])
+    $( "#crit_detail_info_div" ).append(p);
+    $( "#crit_detail_info_div" ).html();
+    $( "#crit_detail_info_div" ).dialog({
+        resizable: false,
+        height: "auto",
+        width: 700,
+        modal: true,
+        // open: function(event, ui){
+        // },
+        buttons: {
+            "ok": function() {
+              
+                $( this ).dialog( "close" );
+            },
+            // Cancel: function() {
+            //   $( this ).dialog( "close" );
+            // }
+        }
+    });
+}
 function getCriterias(element){
     element_id=$(element).attr('id')
 
