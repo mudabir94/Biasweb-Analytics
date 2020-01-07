@@ -4,6 +4,16 @@
 #next_button{
 
 }
+.more_detail_btn:focus{
+  outline: none
+}
+.more_detail_btn{
+
+  border: none;
+  background-color: #d1daf9;
+  font-size:24px
+
+}
 
 .maincontentblur{
     filter: blur(10px);

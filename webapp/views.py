@@ -4119,5 +4119,13 @@ class saveSurveyForm(TemplateView):
                 survey_obj.save()
         data={}
         return JsonResponse(data)
-
+def saveSurveyResult(request):
+    if request.method=="POST":
+        resultdata=request.POST.get("resultdata")
+        resultdata=json.loads(resultdata)
+        print("resultdata",resultdata)
+        data={
+            's':"success",
+        }
+        return JsonResponse(data)
     

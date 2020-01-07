@@ -413,12 +413,19 @@ class customExpSessionTable(models.Model):
 class surveyForm(models.Model):
     exp = models.ForeignKey(experiment, on_delete=models.CASCADE,null=True,blank=True)
     surveydata=ListCharField(
-        base_field=models.CharField(max_length=30),
-        size=10,
-        max_length=(10*40),
+        base_field=models.CharField(max_length=300),
+        size=30,
+        max_length=(300*50),
         null=True,
         blank=True
     )
+    # resultdata=ListCharField(
+    #     base_field=models.CharField(max_length=30),
+    #     size=10,
+    #     max_length=(10*40),
+    #     null=True,
+    #     blank=True
+    # )
 class criteriaBasicInfo(models.Model):
     criteria_name=models.CharField(null=True,blank=True,max_length=100)
     basic_info=models.TextField(null=True,blank=True)

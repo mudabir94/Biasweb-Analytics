@@ -101,6 +101,6 @@ urlpatterns = [
 
     url(r'^savesurveyform/' , views.saveSurveyForm.as_view() , name='savesurveyform') ,
     url(r'^get_crit_info/' , views.getCritInfo, name='get_crit_info') ,
-
+    url(r'^savesurveyresult/' , views.saveSurveyResult, name='savesurveyresult') ,
 
 ]

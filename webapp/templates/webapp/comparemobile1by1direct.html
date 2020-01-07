@@ -64,13 +64,13 @@
  
                                                     </div>
                                                     <div class='col-md-4'  id='change-criteria-weights_div'>
-                                                            <a style="color:red"  href="{%url 'criteria_weights'%}" > Change Criteria Weights</a>                                           </div>
-                                                            <button onclick='showCritWeights()'>Show Criteria Weights Chart</button>
+                                                            <a id="change_crit_wght_link" style="color:red"  href="{%url 'criteria_weights'%}" > Change Criteria Weights</a>                                           </div>
+                                                            <button id="show_crit_wght_btn" onclick='showCritWeights()'>Show Criteria Weights Chart</button>
                                                     </div>
 
                                                 </div>
 
-                                                <canvas id="bar_chart_criteria"  style="background:rgba(158, 193, 248, 0.431);width:initial;height:100%;"></canvas>
+                                                <canvas id="bar_chart_criteria"  style="background:white;width:initial;height:100%;"></canvas>
                                             
                                         </div>       
                             </div>
@@ -123,6 +123,42 @@
     var crit_divs_visted=[];
     var alpha=0.5;
     var mobilephonecolordict={}
+    var colors_list_criteria=[
+    "rgba(1, 1, 1, 0.5)", 
+    "rgba(255, 209, 112, 0.5)",
+    "rgba(0,129,199, 0.5)",  
+    "rgba(88,109,91, 0.5)" , 
+    "rgba(169, 87, 25, 0.5)" ,  
+    "rgba(76,99,148, 0.5)", 
+    "rgba(247, 0, 0, 0.5)",          
+    "rgba(144,210,216, 0.5)",       
+    "rgba(255,155,131, 0.5)",     
+    'rgba(151,99,147, 0.5)', 
+    'rgba(226,124,0, 0.5)',   
+    "rgba(255, 1, 1, 0.5)",
+    "rgba(82,132,60, 0.5)", 
+    "rgba(1, 1, 255, 0.5)", 
+    "rgba(11, 120, 255, 0.5)", 
+    "rgba(128,130,132, 0.5)", 
+    "rgba(226,124,0, 0.5)", 
+    'rgba(43,79,24, 0.5)',  
+    "rgba(255, 162, 250, 0.5)",
+    "rgba(1, 200, 200, 0.5)", 
+    ]
+    var colors_list_phones=[
+    "rgba(1, 1, 1, 0.5)", 
+    "rgba(255, 209, 112, 0.5)",
+    "rgba(0,129,199, 0.5)",  
+    "rgba(88,109,91, 0.5)" , 
+    "rgba(169, 87, 25, 0.5)" ,  
+    "rgba(76,99,148, 0.5)", 
+    "rgba(247, 0, 0, 0.5)",          
+    "rgba(144,210,216, 0.5)",       
+    "rgba(255,155,131, 0.5)",     
+    'rgba(151,99,147, 0.5)', 
+    'rgba(226,124,0, 0.5)',   
+    "rgba(255, 1, 1, 0.5)",
+    ]
 
 $(document).ready(function(){
     $('#checkdiv_np').hide();
@@ -269,13 +305,19 @@ $(document).ready(function(){
       
                         for (var c=0;c<alternatives_list.length;c++){
             
-                        var rgba='rgba('+red+','+ green+','+blue+','+ alpha+')'
-                        var red = Math.floor(Math.random() * 255);
-                        var green = Math.floor(Math.random() * 255);
-                        var blue = Math.floor(Math.random() * 255);
-                        final_backg_col.push(rgba)
-                        final_bor_col.push(rgba)
-                        mobilephonecolordict[alternatives_list[c]]=rgba;
+                            // var rgba='rgba('+red+','+ green+','+blue+','+ alpha+')'
+                            // var red = Math.floor(Math.random() * 255);
+                            // var green = Math.floor(Math.random() * 255);
+                            // var blue = Math.floor(Math.random() * 255);
+                            // final_backg_col.push(rgba)
+                            // final_bor_col.push(rgba)
+                            // mobilephonecolordict[alternatives_list[c]]=rgba;
+                            final_backg_col.push(colors_list_phones[c])
+                            final_bor_col.push(colors_list_phones[c])
+                            mobilephonecolordict[alternatives_list[c]]=colors_list_phones[c];
+    
+                        
+
                         }
                         activeMobilePage();
                         mobilelabelid='#'+alternatives_list[0].replace(/ /g,'-')+'_color';
@@ -475,7 +517,7 @@ function getCriterias(element){
 
 
 }
-
+var atsumbitpage=false;
 function makeTable(allmobile,mob_name){
 
     var specs=[];
@@ -508,11 +550,17 @@ function makeTable(allmobile,mob_name){
                         var img2=$("<img  src='/static/webapp/img/frontDisplay/j3highresoimage.jpg' class='show-small-img' alt=''></img>")
                         var img3=$("<img  src='/static/webapp/img/frontDisplay/j3highresoimage2.jpg' class='show-small-img' alt=''></img>")
                         var img4=$("<img  src='/static/webapp/img/frontDisplay/j3highresoimage2.jpg' class='show-small-img' alt=''></img>")
+                        var img5=$("<img  src='/static/webapp/img/frontDisplay/j3highresoimage.jpg' class='show-small-img' alt=''></img>")
+                        var img6=$("<img  src='/static/webapp/img/frontDisplay/j3highresoimage2.jpg' class='show-small-img' alt=''></img>")
+                        var img7=$("<img  src='/static/webapp/img/frontDisplay/j3highresoimage2.jpg' class='show-small-img' alt=''></img>")
 
                     $(small_img_roll).append(img1);
                     $(small_img_roll).append(img2);
                     $(small_img_roll).append(img3);
                     $(small_img_roll).append(img4);
+                    $(small_img_roll).append(img5);
+                    $(small_img_roll).append(img6);
+                    $(small_img_roll).append(img7);
 
                 small_container.append(small_img_roll);
                 var rightarrow=$("<img  src='/static/webapp/Product-Gallery-Image-Zoom/images/online_icon_right@2x.png' class='icon-right' alt='' id='next-img'></img>")
@@ -524,13 +572,17 @@ function makeTable(allmobile,mob_name){
 
             $(small_img_div).append(leftarrow);
             $("#imagediv").append(small_img_div);
-            if (Interactivity_On==true){
+    $(document).ready(function(){
+ 
+
+
+        if (Interactivity_On==true){
                 $('.show').zoomImage();
 
             }
 
-            $('.show-small-img:first-of-type').css({'border':'solid 1px #951b25','padding':'2px'})
-            $('.show-small-img:first-of-type').attr('alt','now').siblings().removeAttr('alt');
+        $('.show-small-img:first-of-type').css({'border':'solid 1px #951b25','padding':'2px'})
+        $('.show-small-img:first-of-type').attr('alt','now').siblings().removeAttr('alt');
             
         $('.show-small-img').click(function () {
         $('#show-img').attr('src', $(this).attr('src'))
@@ -579,6 +631,7 @@ function makeTable(allmobile,mob_name){
             }
         }
         });
+    });
             
             }
         else{
@@ -624,7 +677,29 @@ function makeTable(allmobile,mob_name){
             var text = document.createTextNode("Submit");
             submit_button.appendChild(text);
             $(submit_button).appendTo('#nextbtn_div');
-            // $("#side_crit_list_compmob_one").hide();
+            if (Reviseability_On===false){
+                $("#prevbtn_div").hide()
+            }
+            $("#side_crit_list_compmob_one").hide();
+            $("#show_crit_wght_btn").hide();
+            $("#change_crit_wght_link").hide();
+            $("#bar_chart_criteria").show();
+            console.log("mobile_crit_sum_list----->",mobile_crit_sum_list)
+            max_no=Math.max.apply(Math,mobile_crit_sum_list); // 3
+            index=mobile_crit_sum_list.indexOf(max_no);
+            console.log("max_no",index)
+            var mobilename=alternatives_list[index];
+                mobilename=mobilename.replace(/ /g,'-')
+
+                labelid=mobilename+'_color'
+                    $('.mobile_label_color').each(function () {
+                        $(this).attr('style','background:none');
+                        if ($(this).attr('id')===labelid){
+                            $(this).attr('style','background:'+mobilephonecolordict[alternatives_list[index]]+'');
+                        }
+                })
+                $("#mobilenameheadingdiv").append(mobilename+" is the phone that is has the highest Score.");
+                atsumbitpage=true
         }
         else{
             $('#nextbtn_div').empty();
@@ -756,34 +831,25 @@ function nextMobile(){
 
 
 function prevMobile(){
+    atsumbitpage=false;
+    $("#side_crit_list_compmob_one").show();
+    $("#show_crit_wght_btn").show();
+    $("#change_crit_wght_link").show();
     var mobilename=alternatives_list[nextmob_index-1];
     mobilename=mobilename.replace(/ /g,'-')
 
     labelid=mobilename+'_color'
         $('.mobile_label_color').each(function () {
-            console.log("LABEL IDS---------->",$(this).attr('id'))
             $(this).attr('style','background:none');
-            console.log("L id>>>>>>>>>",labelid)
             if ($(this).attr('id')===labelid){
                 $(this).attr('style','background:'+mobilephonecolordict[alternatives_list[nextmob_index-1]]+'');
-
             }
     })
 
-
-
-
-
     pageloadedfrompressingnextorprev=true
     storenextprevbuttonlogs[new Date($.now())]=['prev',userid,alternatives_list[nextmob_index]];
-    console.log("storenextprevbuttonlogs",storenextprevbuttonlogs);
 
-
-    console.log("mob_index--2",nextmob_index)
-
-    
     nextmob_index-=1
-    console.log("mob_index--2--2",nextmob_index)
     $("#mobilenameheadingdiv").empty();
     $("#imagediv").empty();
     $("#criteria_div").empty();
@@ -1113,74 +1179,80 @@ function show_FinalChart(){
              }
         },
         onClick: function(e){
+        if (atsumbitpage===false){
         var element = this.getElementAtEvent(e);
         console.log("element",element)
         // totalcriteria=crit_name_list.length;
-        if(element.length > 0){
-            // active_bar_color_dict
-            selected_label=element[0]._model.label;
-            selected_index=element[0]._index;
-            if (chart_bar_ele_dict[selected_index]===undefined){
-                chart_bar_ele_dict[selected_index]=element;
-            }
-            
-
-            background_color=element[0]._chart.controller.config.data.datasets[0]._meta[1].data[element[0]._index]._model.backgroundColor;
-            if (active_bar_color_dict[selected_index]===undefined){
-                active_bar_color_dict[selected_index]=background_color;
-            
-            }
-            background_color=background_color.replace('rgba(','');
-            background_color=background_color.replace(')','');
-            background_color=background_color.split(',');
-            background_color.pop()
-
-            console.log("background_color",background_color)
-            new_color="rgba("
-            for (var col in background_color){
-                console.log("Coloumn",background_color[col])
-                new_color += background_color[col]
-                console.log("col",col)
-                if (col<2){
-                    new_color +=",";
+            if(element.length > 0){
+                // active_bar_color_dict
+                selected_label=element[0]._model.label;
+                selected_index=element[0]._index;
+                if (chart_bar_ele_dict[selected_index]===undefined){
+                    chart_bar_ele_dict[selected_index]=element;
                 }
-                else{
-                    console.log("ELESE")
-                    new_color +=",";
-
-                    new_color +="0.9";
-                }
-            }
-            new_color +=")"
-            console.log("NEW COLOR",new_color)
-
-            // element[0]._chart.controller.config.data.datasets[0]._meta[11].data[element[0]._index]._model.backgroundColor = "rgb(255,0,0)";
-            
-            // myChart.chart.controller.config.data.datasets[0]._meta[11].data[element[0]._index]._model.backgroundColor = "rgb(255,0,0)";
-            myChart.data.datasets[0].backgroundColor[selected_index]=new_color;
-
-            console.log("MY CHART",myChart)
-            console.log("active_bar_color_dict",active_bar_color_dict);
-            for (var key in active_bar_color_dict ){
-                if (key!=selected_index){
-                    myChart.data.datasets[0].backgroundColor[key]=active_bar_color_dict[key]
-                }
-            }
-
-
-            myChart.update();
-            nextmob_index=selected_index;
-            index=nextmob_index
-            if (selected_index>nextmob_index){
                 
-                nextMobileChartClick(index);
-            }else{
-                nextMobileChartClick(index);
+
+                background_color=element[0]._chart.controller.config.data.datasets[0]._meta[1].data[element[0]._index]._model.backgroundColor;
+                if (active_bar_color_dict[selected_index]===undefined){
+                    active_bar_color_dict[selected_index]=background_color;
+                
+                }
+                background_color=background_color.replace('rgba(','');
+                background_color=background_color.replace(')','');
+                background_color=background_color.split(',');
+                background_color.pop()
+
+                console.log("background_color",background_color)
+                new_color="rgba("
+                for (var col in background_color){
+                    console.log("Coloumn",background_color[col])
+                    new_color += background_color[col]
+                    console.log("col",col)
+                    if (col<2){
+                        new_color +=",";
+                    }
+                    else{
+                        console.log("ELESE")
+                        new_color +=",";
+
+                        new_color +="0.9";
+                    }
+                }
+                new_color +=")"
+                console.log("NEW COLOR",new_color)
+
+                // element[0]._chart.controller.config.data.datasets[0]._meta[11].data[element[0]._index]._model.backgroundColor = "rgb(255,0,0)";
+                
+                // myChart.chart.controller.config.data.datasets[0]._meta[11].data[element[0]._index]._model.backgroundColor = "rgb(255,0,0)";
+                myChart.data.datasets[0].backgroundColor[selected_index]=new_color;
+
+                console.log("MY CHART",myChart)
+                console.log("active_bar_color_dict",active_bar_color_dict);
+                for (var key in active_bar_color_dict ){
+                    if (key!=selected_index){
+                        myChart.data.datasets[0].backgroundColor[key]=active_bar_color_dict[key]
+                    }
+                }
+
+
+                myChart.update();
+                nextmob_index=selected_index;
+                index=nextmob_index
+                if (selected_index>nextmob_index){
+                    
+                    nextMobileChartClick(index);
+                }else{
+                    nextMobileChartClick(index);
+
+                }
 
             }
-
-          }
-        },
+        }
+        else {
+            return;
+        } 
+          
+    },
        
 
     },
@@ -1205,20 +1277,27 @@ function showchart_criteria(){
    }
    var data=data_per;
    if (crit_backg_col.length===0 && crit_bor_col.length===0){
-        var red = Math.floor(Math.random() * 255);
-        var green = Math.floor(Math.random() * 255);
-        var blue = Math.floor(Math.random() * 255);
+        // var red = Math.floor(Math.random() * 255);
+        // var green = Math.floor(Math.random() * 255);
+        // var blue = Math.floor(Math.random() * 255);
 
-        var alpha=1;
-        for (var c=1;c<crit_name_list.length+1;c++){
+        // var alpha=1;
+        // for (var c=1;c<crit_name_list.length+1;c++){
             
-            var rgba='rgba('+red+','+ green+','+blue+','+ alpha+')'
-            var red = Math.floor(Math.random() * 255);
-            var green = Math.floor(Math.random() * 255);
-            var blue = Math.floor(Math.random() * 255);
-            crit_backg_col.push(rgba)
-            crit_bor_col.push(rgba)
-            }
+        //     var rgba='rgba('+red+','+ green+','+blue+','+ alpha+')'
+        //     var red = Math.floor(Math.random() * 255);
+        //     var green = Math.floor(Math.random() * 255);
+        //     var blue = Math.floor(Math.random() * 255);
+        //     crit_backg_col.push(rgba)
+        //     crit_bor_col.push(rgba)
+        //     }
+        for (var c=0;c<crit_name_list.length;c++){
+        
+       
+            crit_backg_col.push(colors_list_criteria[c])
+            crit_bor_col.push(colors_list_criteria[c])
+          
+        }
     }
     var backgroundColor=crit_backg_col;
     var borderColor=crit_bor_col;
@@ -1306,53 +1385,29 @@ function showchart_criteria(){
 
 
 function submitData(){
- console.log("storehoveronbarlog",storehoveronbarlog);
- console.log("storehoveronpielog",storehoveronpielog);
- console.log("alt_crit_logs_dict",alt_crit_logs_dict);
- console.log("storenextprevbuttonlogs",storenextprevbuttonlogs);
- console.log("criteria_weights_dict",criteria_weights_dict);
- $.ajax({
-                type: 'POST',
-                dataType: "json",
-                'data': {
-                    "storehoveronbarlog":JSON.stringify(storehoveronbarlog),
-                    "storehoveronpielog":JSON.stringify(storehoveronpielog),
-                    "alt_crit_logs_dict":JSON.stringify(alt_crit_logs_dict),
-                    "storenextprevbuttonlogs":JSON.stringify(storenextprevbuttonlogs),
+    $('#charts_div').hide();
+    $("#prev_button").hide();
+    $("#criteria_div").empty();
+    $("#submit_data").remove();
+    $(".allmobilelist").hide();
+    $("#mobilenameheadingdiv").hide();
+                
 
-                'csrfmiddlewaretoken': '{{ csrf_token }}',
-                },
-                url: "{% url 'submit_data' %}",
-                success: function(data){
-                    console.log("SUCCESS")
-                    $('#charts_div').hide();
-                    $("#prev_button").hide();
-                    $("#comparison_table").empty();
-                    $("#submit_data").remove();
-                    
-                    // var submit_form=document.createElement("BUTTON");
-                    // submit_form.setAttribute("class","btn btn btn-success");
-                    // submit_form.setAttribute("onclick","submitForm()");
-                    // submit_form.id="submit_form"
-                    // var text = document.createTextNode("Submit Form");
-                    // submit_form.appendChild(text);
-                    // $(submit_form).appendTo('#nextbtn_div');
+    var comparison_table=$("#criteria_div");
+    var survey_element=$("<div id='surveyElement'></div>")
+    var survey_result=$('<div id="surveyResult"></div>')
+    comparison_table.append(survey_element);
+    comparison_table.append(survey_result);
 
-                    var comparison_table=$("#comparison_table");
-                    var survey_element=$("<div id='surveyElement'></div>")
-                    var survey_result=$('<div id="surveyResult"></div>')
-                    comparison_table.append(survey_element);
-                    comparison_table.append(survey_result);
+    $.material.init();
 
-                    $.material.init();
-
-Survey.defaultBootstrapMaterialCss.navigationButton = "btn btn-green";
-Survey.defaultBootstrapMaterialCss.rating.item = "btn btn-default my-rating";
-Survey.StylesManager.applyTheme("bootstrapmaterial");
+    Survey.defaultBootstrapMaterialCss.navigationButton = "btn btn-green";
+    Survey.defaultBootstrapMaterialCss.rating.item = "btn btn-default my-rating";
+    Survey.StylesManager.applyTheme("bootstrapmaterial");
 
 
 
-var json = { pages: [
+    var json = { pages: [
         {questions: [
             { type: "matrix", name: "Quality", title: "Please indicate if you agree or disagree with the following statements",
                 columns: [{ value: 1, text: "Strongly Disagree" }, 
@@ -1388,14 +1443,32 @@ var json = { pages: [
                     title: "Thank you for taking our survey. Your survey is almost complete, please enter your email address in the box below if you wish to participate in our drawing, then press the 'Submit' button."}
             ]}
     ]
-};
-json=surveydata;
-window.survey = new Survey.Model(json);
+    };
+
+
+
+    json=surveydata;
+    window.survey = new Survey.Model(json);
 
 
     survey.onComplete.add(function(result) {
         document.querySelector('#surveyResult').textContent =
             "Result JSON:\n" + JSON.stringify(result.data, null, 3);
+            
+            $.ajax({
+                            type: 'POST',
+                            dataType: "json",
+                            'data': {
+                                "resultdata":JSON.stringify(result.data),
+                                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                            },
+                            url: "{% url 'savesurveyresult' %}",
+                            success: function(data){
+                                console.log("PPPPPPPPPPPPPPPPPPPPPPPPP")
+                            
+                            }
+                    });
+
     });
 
 
@@ -1403,6 +1476,25 @@ $("#surveyElement").Survey({
     model: survey 
 });
 
+
+
+
+
+ $.ajax({
+                type: 'POST',
+                dataType: "json",
+                'data': {
+                    "storehoveronbarlog":JSON.stringify(storehoveronbarlog),
+                    "storehoveronpielog":JSON.stringify(storehoveronpielog),
+                    "alt_crit_logs_dict":JSON.stringify(alt_crit_logs_dict),
+                    "storenextprevbuttonlogs":JSON.stringify(storenextprevbuttonlogs),
+
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                },
+                url: "{% url 'submit_data' %}",
+                success: function(data){
+                    console.log("SUCCESS")
+                 
 
 
     

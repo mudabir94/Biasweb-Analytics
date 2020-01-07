@@ -105,18 +105,13 @@
             }).on('mouseenter', function() {
                 layer.show();
                 showPanel.show();
-                $("#charts_div").hide();
                 $("#mobile_info_div").hide();
             }).on('mouseleave', function() {
                 layer.hide();
                 showPanel.hide();
                 $("#mobile_info_div").show();
 
-                if (Interactivity_On==true){
-                    $("#charts_div").show();
-
-                }
-                
+              
             });
         });
     }

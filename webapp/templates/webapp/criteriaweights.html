@@ -15,18 +15,18 @@
         </div>
         <div class=" col-md-10" >
             <div class="row is-flex" style="background: rgb(245, 244, 244);">
-                <div class="col-md-4"   id="side_crit_list_one">
+                <div class="col-md-3"   id="side_crit_list_one">
                  <h1>Criteria List</h1>
 
                 </div>
-                <div class="col-md-4 center " id='main-critw-div'>
+                <div class="col-md-5 center " id='main-critw-div'>
                     <h3 id="main_heading"><b>Set Criteria Weights</b></h3>
                     <div id='critera_div'></div>
                     
                 </div>
                 <div class="col-md-4" id="side_crit_list_two">
                     <div id="graph_div_one">
-                        <canvas id="bar_chart_graph_div_one" width="inherit"height="200" style="background:white"></canvas>
+                        <canvas id="bar_chart_graph_div_one" width="inherit"height="200"; style="background:white;"></canvas>
 
                     </div>
                     <div id='graph_div_two'>
@@ -232,24 +232,25 @@ $(document).ready(function(){
     // "rgba(67, 171, 182, 0.3)"       sea green
  var colors_list=[
     "rgba(1, 1, 1, 0.5)", 
-    "rgba(226, 21, 249, 0.5)" ,
     "rgba(255, 209, 112, 0.5)",
-    "rgba(255, 162, 250, 0.5)",   
+    "rgba(0,129,199, 0.5)",  
+    "rgba(88,109,91, 0.5)" , 
     "rgba(169, 87, 25, 0.5)" ,  
-    "rgba(1, 1, 1, 0.5)", 
+    "rgba(76,99,148, 0.5)", 
     "rgba(247, 0, 0, 0.5)",          
-    "rgba(149, 149, 149, 0.5)",       
-    "rgba(255, 171, 182, 0.5)",     
-    'rgba(255,400,300, 0.5)', 
-    'rgba(50, 150, 205, 0.5)',   
+    "rgba(144,210,216, 0.5)",       
+    "rgba(255,155,131, 0.5)",     
+    'rgba(151,99,147, 0.5)', 
+    'rgba(226,124,0, 0.5)',   
     "rgba(255, 1, 1, 0.5)",
-    "rgba(255, 130, 150, 0.5)", 
+    "rgba(82,132,60, 0.5)", 
     "rgba(1, 1, 255, 0.5)", 
     "rgba(11, 120, 255, 0.5)", 
-    "rgba(200,200, 200, 0.5)", 
+    "rgba(128,130,132, 0.5)", 
+    "rgba(226,124,0, 0.5)", 
+    'rgba(43,79,24, 0.5)',  
+    "rgba(255, 162, 250, 0.5)",
     "rgba(1, 200, 200, 0.5)", 
-
-   
     ]
 function genrateBarColors(){
     crit_backg_col=[];
@@ -366,19 +367,19 @@ function activateSlider(crt){
         }
             var label=$("<label class='crit_labels'>"+crit+"</label>")
         col1.append(label)
-        var col2=$("<div class='col-md-8'></div>");
+        var col2=$("<div class='col-md-7'></div>");
             var div1=$("<div>")
                 input=$('<input id="'+crit+'" class="slider"></input>')
             div1.append(input);
-            var div2=$("<div>"+criteria_info_dictionary[crit][0]+"</div>")
-            var div3=$("<div>")
-                var moredetail_btn=$("<button id='"+crit+"_moredetail' onclick='showCriteriaDetails($(this))'>More detail about criteria</button>")
+            var div2=$("<div>"+criteria_info_dictionary[crit][0]+"</button></div>")
+            var div3=$("<div class= 'col-md-8 offset-md-4'>")
+                var moredetail_btn=$("<button class='more_detail_btn fa fa-info-circle ' id='"+crit+"_moredetail' onclick='showCriteriaDetails($(this))'>  More Detail</button>")
             div3.append(moredetail_btn)    
         col2.append(div1);
         col2.append(div2);
         col2.append(div3);
 
-        var col3=$("<div class='col-md-1'></div>");
+        var col3=$("<div class='col-md-2'></div>");
             span=$('<span id="'+crit+'_span"></span>')
         col3.append(span);
     row.append(col1);
