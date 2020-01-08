@@ -1,28 +1,156 @@
+
+{% load static from staticfiles%}
 <div class="row">
     <div class="col-md-12">
   
       <div class="row dashboard-icon-rows">
-          <div class="col-md-4" >
-              <div class="dashboard-icons" ></div>
+          <div class="col-md-3" >
+              <a href="{% url 'createexp'%}" >
+                  <div class="dashboard-icons" >
+                    <div class="sub_dashboard_icon_1" style="padding-top: 40px;padding-bottom: 40px;padding-left: 30px;padding-right: 30px;width: inherit;height: inherit;" >
+                      <div style="width:initial;height: initial;display:flex;flex-direction: column;" >
+                        
+                          <img src="{% static 'webapp/img/homeicons/create.png' %}"  style="width:inherit;height: inherit;"/>
+                      
+                          <span style="width:inherit;height: inherit;display: inline-block;text-align: center;font-size: 0.8rem;word-wrap: break-word;text-shadow: 2px 2px #009688;text-decoration: none;text-transform: uppercase;color: aliceblue;;">Create Experiment</span>
+                     
+                      </div>
+                      
+                    </div>
+                  </div>
+
+              </a>
+             
           </div>
-          <div class="col-md-4">
-            <div class='dashboard-icons'></div>
+          <div class="col-md-3">
+              <a href="{% url 'manageexp'%}" >
+                  <div class="dashboard-icons" >
+                    <div class="sub_dashboard_icon_1" style="padding-top: 40px;padding-bottom: 40px;padding-left: 30px;padding-right: 30px;width: inherit;height: inherit;" >
+                      <div style="width:initial;height: initial;display:flex;flex-direction: column;" >
+                        
+                          <img src="{% static 'webapp/img/homeicons/edit.png' %}"  style="width:inherit;height: inherit;"/>
+                      
+                          <span style="width:inherit;height: inherit;display: inline-block;text-align: center;font-size: 0.8rem;word-wrap: break-word;text-shadow: 2px 2px #009688;text-decoration: none;text-transform: uppercase;color: aliceblue;;">
+                           Manage Experiment
+                          </span>
+                     
+                      </div>
+                      
+                    </div>
+                  </div>
+
+              </a>
           </div>
-          <div class="col-md-4">
-            <div class='dashboard-icons'></div>
+          <div class="col-md-3">
+              <a href="#" >
+                  <div class="dashboard-icons" >
+                    <div class="sub_dashboard_icon_1" style="padding-top: 40px;padding-bottom: 40px;padding-left: 30px;padding-right: 30px;width: inherit;height: inherit;" >
+                      <div style="width:initial;height: initial;display:flex;flex-direction: column;" >
+                        
+                          <img src="{% static 'webapp/img/homeicons/delete.png' %}"  style="width:inherit;height: inherit;"/>
+                      
+                          <span style="width:inherit;height: inherit;display: inline-block;text-align: center;font-size: 0.8rem;word-wrap: break-word;text-shadow: 2px 2px #009688;text-decoration: none;text-transform: uppercase;color: aliceblue;;">
+                            Delete Experiment
+                          </span>
+                     
+                      </div>
+                      
+                    </div>
+                  </div>
+
+              </a>
+          </div>
+          <div class="col-md-3">
+              <a href="{% url 'createsurveyform'%}" >
+                  <div class="dashboard-icons" >
+                    <div class="sub_dashboard_icon_1" style="padding-top: 40px;padding-bottom: 40px;padding-left: 30px;padding-right: 30px;width: inherit;height: inherit;" >
+                      <div style="width:initial;height: initial;display:flex;flex-direction: column;" >
+                        
+                          <img src="{% static 'webapp/img/homeicons/survey.png' %}"  style="width:inherit;height: inherit;"/>
+                      
+                          <span style="width:inherit;height: inherit;display: inline-block;text-align: center;font-size: 0.8rem;word-wrap: break-word;text-shadow: 2px 2px #009688;text-decoration: none;text-transform: uppercase;color: aliceblue;;">
+                            Create Survey</span>
+                     
+                      </div>
+                      
+                    </div>
+                  </div>
+
+              </a>
+          </div>
+      </div>
+      <!-- <div class="row dashboard-icon-rows">
+          <div class="col-md-3" >
+              <a href="{% url 'createexp'%}" >
+                  <div class="dashboard-icons" >
+                    <div class="sub_dashboard_icon_1" style="padding-top: 40px;padding-bottom: 40px;padding-left: 30px;padding-right: 30px;width: inherit;height: inherit;" >
+                      <div style="width:initial;height: initial;display:flex;flex-direction: column;" >
+                        
+                          <img src="{% static 'webapp/img/homeicons/create.png' %}"  style="width:inherit;height: inherit;"/>
+                      
+                          <span style="width:inherit;height: inherit;display: inline-block;text-align: center;font-size: 0.8rem;word-wrap: break-word;text-shadow: 2px 2px #009688;text-decoration: none;text-transform: uppercase;color: aliceblue;;">Create Experiment</span>
+                     
+                      </div>
+                      
+                    </div>
+                  </div>
+
+              </a>
+             
+          </div>
+          <div class="col-md-3">
+              <a href="{% url 'createexp'%}" >
+                  <div class="dashboard-icons" >
+                    <div class="sub_dashboard_icon_1" style="padding-top: 40px;padding-bottom: 40px;padding-left: 30px;padding-right: 30px;width: inherit;height: inherit;" >
+                      <div style="width:initial;height: initial;display:flex;flex-direction: column;" >
+                        
+                          <img src="{% static 'webapp/img/homeicons/create.png' %}"  style="width:inherit;height: inherit;"/>
+                      
+                          <span style="width:inherit;height: inherit;display: inline-block;text-align: center;font-size: 0.8rem;word-wrap: break-word;text-shadow: 2px 2px #009688;text-decoration: none;text-transform: uppercase;color: aliceblue;;">Create Experiment</span>
+                     
+                      </div>
+                      
+                    </div>
+                  </div>
+
+              </a>
+          </div>
+          <div class="col-md-3">
+              <a href="{% url 'createexp'%}" >
+                  <div class="dashboard-icons" >
+                    <div class="sub_dashboard_icon_1" style="padding-top: 40px;padding-bottom: 40px;padding-left: 30px;padding-right: 30px;width: inherit;height: inherit;" >
+                      <div style="width:initial;height: initial;display:flex;flex-direction: column;" >
+                        
+                          <img src="{% static 'webapp/img/homeicons/create.png' %}"  style="width:inherit;height: inherit;"/>
+                      
+                          <span style="width:inherit;height: inherit;display: inline-block;text-align: center;font-size: 0.8rem;word-wrap: break-word;text-shadow: 2px 2px #009688;text-decoration: none;text-transform: uppercase;color: aliceblue;;">Create Experiment</span>
+                     
+                      </div>
+                      
+                    </div>
+                  </div>
+
+              </a>
+          </div>
+          <div class="col-md-3">
+              <a href="{% url 'createexp'%}" >
+                  <div class="dashboard-icons" >
+                    <div class="sub_dashboard_icon_1" style="padding-top: 40px;padding-bottom: 40px;padding-left: 30px;padding-right: 30px;width: inherit;height: inherit;" >
+                      <div style="width:initial;height: initial;display:flex;flex-direction: column;" >
+                        
+                          <img src="{% static 'webapp/img/homeicons/create.png' %}"  style="width:inherit;height: inherit;"/>
+                      
+                          <span style="width:inherit;height: inherit;display: inline-block;text-align: center;font-size: 0.8rem;word-wrap: break-word;text-shadow: 2px 2px #009688;text-decoration: none;text-transform: uppercase;color: aliceblue;;">Create Experiment</span>
+                     
+                      </div>
+                      
+                    </div>
+                  </div>
+
+              </a>
           </div>
       </div>
 
-      <div class="row dashboard-icon-rows" >
-          <div class="col-md-4" >
-              <div class="dashboard-icons" ></div>
-          </div>
-          <div class="col-md-4">
-            <div class='dashboard-icons'></div>
-          </div>
-          <div class="col-md-4">
-            <div class='dashboard-icons'></div>
-          </div>
-      </div>
+      -->
   </div>
 </div>

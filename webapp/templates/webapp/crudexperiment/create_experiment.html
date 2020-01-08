@@ -364,11 +364,11 @@
                      <div class='col-md-1'></div>
             </div> -->
             <!--  -->
-            <div class='row-fluid' id='dataDiv' style="background:lawngreen" >
+            <div class='row-fluid' id='dataDiv'  >
                   
                             <div class='row-fluid'>
                                 <div id='dataDiv-label'>  
-                                    <label> Uploaded data from file. </label>
+                                    
                                 </div>
                               
                             </div>
@@ -1386,6 +1386,7 @@ function showBatchManagement(){
     $("#ol4").hide();
     $('#batchmngprvbtn_div').hide();
     $('#dispFileFeatLvldiv').show();
+    $("#dataDiv").show();
 
 }
 function HideALL(){
@@ -1801,11 +1802,13 @@ function  showFileDataTable(rows){
                     console.log(table)
                     $("#showfiledatadiv").html('');
                     $(table).appendTo("#showfiledatadiv");
-                    $('#showfiledataTable').DataTable({
-                            "bLengthChange": false,
-                            "bFilter": false,
-                            "pageLength": 5,
-                            "pagingType": "full_numbers"
+                    $(table).DataTable({
+                            // "bLengthChange": false,
+                            // "bFilter": false,
+                            // "pageLength": 5,
+                            // "pagingType": "full_numbers"\
+                            paging:true,
+
                             });
                     $('#dataDiv').show();
 
@@ -1882,7 +1885,8 @@ function assignToBlocks(){
             // for(var i in data){
             //     console.log("data:",i,data[i]);
             // }
-            var blocks=JSON.parse(data['blocks']);
+            if (data['blocks']!=="Empty"){
+                var blocks=JSON.parse(data['blocks']);
             var block_table_extended=document.getElementById('blocks_table');
 
             var block_table_extended_thead=block_table_extended.tHead;
@@ -1926,25 +1930,25 @@ function assignToBlocks(){
 
             console.log('block_table_extended',block_table_extended.tBodies[0].rows[block_table_extended.tBodies[0].rows.length-1].cells[1].innerHTML);
            
-                    var newRow   = block_table_extended_tbody.insertRow(block_table_extended_tbody_row_length);
-                    var newCell  = newRow.insertCell(0);
-                    newCell.innerHTML='';
-                    var newCell  = newRow.insertCell(1);
-                    newCell.innerHTML='Batch Totals';
-                    for (var cells in blocks['Total']){
-                        var newCell  = newRow.insertCell(-1);
-                        newCell.innerHTML= blocks['Total'][cells];
-                    }
-                    // $('#blocks_table').DataTable({"pageLength": 5 });
-                    // $('#blocks_table').appendTo('#blocksBreakUpDiv')
-                    $('#blocksBreakUpDiv').append('#blocks_table');
-                    // $("#block_assign_row_div").hide();
-                    if(data['blocks']!=="Empty"){
-                        alert('Blocks Created in Feature LEVELS')
-                        
-                    } else {
-                        alert('PLEASE IMPORT SUBJECTS FIRST')
-                    }
+                var newRow   = block_table_extended_tbody.insertRow(block_table_extended_tbody_row_length);
+                var newCell  = newRow.insertCell(0);
+                newCell.innerHTML='';
+                var newCell  = newRow.insertCell(1);
+                newCell.innerHTML='Batch Totals';
+                for (var cells in blocks['Total']){
+                    var newCell  = newRow.insertCell(-1);
+                    newCell.innerHTML= blocks['Total'][cells];
+                }
+                // $('#blocks_table').DataTable({"pageLength": 5 });
+                // $('#blocks_table').appendTo('#blocksBreakUpDiv')
+                $('#blocksBreakUpDiv').append('#blocks_table');
+                // $("#block_assign_row_div").hide();
+                if(data['blocks']!=="Empty"){
+                    alert('Blocks Created in Feature LEVELS')
+                    
+                } else {
+                    alert('PLEASE IMPORT SUBJECTS FIRST')
+                }
             }
             showFeatureLvls();
             var bllmng=document.getElementById('blkmng');
@@ -1954,6 +1958,10 @@ function assignToBlocks(){
             ftlvl.setAttribute("class","custom_nav_btn active")
             console.log("block_table_extended_tbody_row_length", block_table_extended.tBodies[0].rows.length);
 
+            }
+            else{
+                alert("Please Create Batches First!")
+            }
             
         }
                      
@@ -2694,6 +2702,7 @@ function chooseFileFunc(){
   else{
     $('#upload').prop('disabled',false);
     alert('val not empty')
+    $('#upload').val("upload")
     // Empty all possible divs that are displayed. 
     hide_emptyAllDivs_ImportSubjects();
     // send an ajax call that will delete the exsisting subjects from the database of that experiment. 
@@ -4039,11 +4048,6 @@ function sendFilePath(id){
       }
 </script>
 <!-- <script src="https://code.jquery.com/jquery-3.3.1.js"></script> -->
-<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
-
-
-<script src="{% static 'webapp/createexp/DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js' %}"></script>
-<link rel="stylesheet" type="text/css" src="{% static 'webapp/createexp/DataTables/DataTables-1.10.18/cs/jquery.dataTables.min.css' %}"/>
 
 <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/jszip.js"></script>
 
@@ -12464,7 +12468,7 @@ function submitDescription(){
     $('#text_area_desp').val();
     console.log( $('#text_area_desp').val())
     exp_description=$('#text_area_desp').val();
-    alert(exp_id)
+    
     if (exp_id!==""){
         alert(exp_id)
         $.ajax({
@@ -12478,6 +12482,9 @@ function submitDescription(){
                 url: "{% url 'addexpdiscp' %}",
                         success: function(data){}
         });
+    }
+    else{
+        alert("Please first create the experiment before submitting")
     }
 
 }

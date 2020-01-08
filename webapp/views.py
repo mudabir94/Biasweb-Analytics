@@ -3091,8 +3091,10 @@ def assignToBlocks(request):
             print("blocksBreakUp",blocksBreakUp)
         else:
             blocksBreakUp = "Empty"
+            print("NO Batches found")
 
-        data = {    'exp_id':expCont.exp.id,
+        data = {   
+                     'exp_id':expCont.exp.id,
                     'custom_exp_id':expCont.exp.custom_exp_id,
                     'blocks':blocksBreakUp
         }

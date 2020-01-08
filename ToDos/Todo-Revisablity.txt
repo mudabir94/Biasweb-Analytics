@@ -21,3 +21,4 @@ and shows currently active comparisons in a larger size (to know what is current
     c. For complete interactivity implementation, also criteria page should have Chart (what type, this is homework)
     problem is that revisability needs to be natural and Pie Chart doesn't look natural if I want to go back and forth.
 
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> DONE <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
