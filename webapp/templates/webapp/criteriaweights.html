@@ -5,10 +5,10 @@
     <div class="row content maincontentblur"  id='maincontent'>
         <div class="col-md-1 sidenav" >
                 <div id="dialog" title="Set Criteria Weights">
-                        <p>Please set the weights of criterias</p>
+                        <p class="dialog_p">Please set the weights of criterias</p>
                 </div>
                 <div id="save-dialog" title="Saved">
-                    <p>Your Changes are saved</p>
+                    <p class="dialog_p">Your Changes are saved</p>
                 </div>
                 <div id="crit_detail_info_div" title="Criteria Information">
                 </div>
@@ -440,7 +440,7 @@ function showCriteriaDetails(ele){
     crit=arr[0]
     console.log("more details",criteria_info_dictionary[crit][1])
     $( "#crit_detail_info_div" ).empty();
-    var p=$("<p>")
+    var p=$("<p class='dialog_p'>")
     p.append(criteria_info_dictionary[crit][1])
     $( "#crit_detail_info_div" ).append(p);
     $( "#crit_detail_info_div" ).html();

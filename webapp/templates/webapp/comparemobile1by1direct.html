@@ -342,11 +342,11 @@ function activeMobilePage(){
     var ul=$('<ul></ul>')
     for (var mob in alternatives_list){
         var li=$("<li></li>");
-        var row=$('<div ></div>');
+        var row=$('<div id="label_div-'+mob+'" ></div>');
                 // var div=$('<div style="margin-top:4px;background:'+mobilephonecolordict[alternatives_list[mob]]+';width:15px;height:15px;border:solid;border-color:black;border-width:thin"></div>')
                 // console.log("MOB->>>>>>>>",final_backg_col[mob])
                 mobname=alternatives_list[mob].replace(/ /g,'-')
-                var label=$('<label class="mobile_label_color" id="'+mobname+'_color" >'+alternatives_list[mob]+'</label>')
+                var label=$('<label class="mobile_label_color" onclick="labelPhoneSelected($(this))" id="'+mobname+'_color" >'+alternatives_list[mob]+'</label>')
             
         // row.append(div)
         row.append(label)
@@ -893,7 +893,6 @@ function prevMobile(){
                 }
             }
         myChart.update();
-
 }
 
 
@@ -903,8 +902,7 @@ function nextMobileChartClick(index){
    // pageloadedfrompressingnextorprev=true;
    if (Reviseability_On==false){
 
-   
-       len=crit_divs_visted.length
+       len=crit_divs_visted.length;
        
        if (len<subcritcount){
            alert ("Please See all Criterias before Moving Further.")
@@ -913,12 +911,10 @@ function nextMobileChartClick(index){
    }
    if (alternatives_list[index]!==undefined){
        var mobilename=alternatives_list[index];
-       mobilename=mobilename.replace(/ /g,'-')
-       labelid=mobilename+'_color'
+       mobilename=mobilename.replace(/ /g,'-');
+       labelid=mobilename+'_color';
            $('.mobile_label_color').each(function () {
-               console.log("LABEL IDS---------->",$(this).attr('id'))
                $(this).attr('style','background:none');
-               console.log("L id>>>>>>>>>",labelid)
                if ($(this).attr('id')===labelid){
                    $(this).attr('style','background:'+mobilephonecolordict[alternatives_list[index]]+'');
                }
@@ -1149,7 +1145,7 @@ function show_FinalChart(){
             }]
         },
         legend: {
-            display: true,
+            display: false,
             labels: {
                 fontColor: 'rgb(255, 99, 132)',
                 fontSize:13,
@@ -1180,8 +1176,9 @@ function show_FinalChart(){
         },
         onClick: function(e){
         if (atsumbitpage===false){
+            console.log("E",e)
         var element = this.getElementAtEvent(e);
-        console.log("element",element)
+        console.log("element--->",element)
         // totalcriteria=crit_name_list.length;
             if(element.length > 0){
                 // active_bar_color_dict
@@ -1238,13 +1235,15 @@ function show_FinalChart(){
                 myChart.update();
                 nextmob_index=selected_index;
                 index=nextmob_index
-                if (selected_index>nextmob_index){
-                    
-                    nextMobileChartClick(index);
-                }else{
-                    nextMobileChartClick(index);
+                nextMobileChartClick(index);
 
-                }
+                // if (selected_index>nextmob_index){
+                    
+                //     nextMobileChartClick(index);
+                // }else{
+                //     nextMobileChartClick(index);
+
+                // }
 
             }
         }
@@ -1508,6 +1507,18 @@ $("#surveyElement").Survey({
 }
 function showCritWeights(){
     $("#bar_chart_criteria").toggle();
+}
+function labelPhoneSelected(ele){
+    parentId=ele.parent().attr("id");
+    arr=parentId.split('-');
+    console.log('parentId',parentId);
+    index=parseInt(arr[1]);
+    selected_index=index
+    nextmob_index=selected_index;
+
+    nextMobileChartClick(index);
+
+
 }
 
 </script>

@@ -47,4 +47,5 @@ filter: blur(10px);
     }
 .mobile_label_color{
   color:black;
+  cursor: pointer;
 }
