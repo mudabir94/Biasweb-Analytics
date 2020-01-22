@@ -7,7 +7,7 @@ from import_export.admin import ImportExportActionModelAdmin
 
 from .models import User,MobilePhones_Test
 from .models import signup_table,blog,mobilephones,experiment
-from .models import samsung_phone,sort_feature,userscoreRecord,Role,platform_feature
+from .models import samsung_phone,sort_feature,Role,platform_feature
 from .models import selectedAdminPhones,PhoneCriteria,exStatusCd,exp_fdefaults
 from .models import Subject,experiment_feature,Batch,Block,ExpCriteriaOrder,criteria_catalog_disp,generalCriteriaData
 
@@ -167,7 +167,6 @@ admin.site.register(MobilePhones_Test,MobilePhones_TestAdmin)
 
 admin.site.register(sort_feature,sort_featureAdmin)
 admin.site.register(mobilephones,mobilephonesAdmin)
-admin.site.register(userscoreRecord)
 admin.site.register(signup_table)
 admin.site.register(blog)
 

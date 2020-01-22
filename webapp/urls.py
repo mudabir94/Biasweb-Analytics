@@ -97,7 +97,10 @@ urlpatterns = [
 #---------------------------------------------------------------------------------------------
 # Temprary...
     url(r'^submit_data/' , views.submitData , name='submit_data') ,
+    
     url(r'^createsurveyform/' , views.createSurveyForm.as_view() , name='createsurveyform') ,
+    url(r'^retrievesurveyform/' , views.retrieveSurveyForm , name='retrievesurveyform') ,
+
 
     url(r'^savesurveyform/' , views.saveSurveyForm.as_view() , name='savesurveyform') ,
     url(r'^get_crit_info/' , views.getCritInfo, name='get_crit_info') ,

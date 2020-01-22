@@ -15,7 +15,7 @@
                 <h3>Choose Experiment</h3>
             </div>
             <div>
-                <ul>
+                <ul id="createsSurvey_ul">
                     {% for item in explist %}
 
                     <li onclick='selectedExp($(this))'>{{ item }}</li>
@@ -26,23 +26,28 @@
         </div>
 
         <div class="col-md-7 text-center"  > 
-            <div class="row">
-                <div class='col-md-12'>
-                    <h2 id=""><strong>Create Survey Form</strong></h2>
-                </div>
-            </div>
-            <div class="row" id= "instructions">
-                <div class='col-md-12'>
-                </br></br></br></br>
-                    <h4 id="">To Add questions to the survey , please press the Add New Question button on the right panel !!!</h4>
-                </div>
-            </div>
+            <div id="createsSurvey">
+                <div class="row">
+                    <div class='col-md-12'>
+                        <h2 id=""><strong>Create Survey Form</strong></h2>
+                        <button type="button" class="btn" style="padding: 6px; border-radius: 4px; color: #fff;background-color: #337ab7; border-color: #2e6da4;" onclick="addQuestion()">Add New Question</button>
 
-            <div class='allquestions' >
+                    </div>
+                </div>
+                <div class="row" id= "instructions">
+                    <div class='col-md-12'>
+                    </br></br></br></br>
+                        <h4 id="">To Add questions to the survey , please press the Add New Question button on the right panel !!!</h4>
+                    </div>
+                </div>
+
+                <div class='allquestions' >
+                </div>
             </div>
+            <div id="previewSurvey"></div>
         </div>
-        <div class="col-md-2" style='background-color:#c6c8ca'>
-            <button type="button" class="btn" style="padding: 6px; border-radius: 4px; color: #fff;background-color: #337ab7; border-color: #2e6da4;" onclick="addQuestion()">Add New Question</button>
+        <div class="col-md-2"  id="survey_sidebardiv" style='background-color:#c6c8ca'>
+            <button type="button" class="btn" style="padding: 6px; border-radius: 4px; color: #fff;background-color: #f9b57a; border-color: #f9b57a;" onclick="showSurveyForm()">Create Survey Form</button>
             <button type="button" class="btn btn-success" style="padding: 6px; margin: auto; border-radius: 4px; color: #fff;background-color: #5cb85c; border-color: #4cae4c;" onclick="saveQuestion()">Save & Preview</button>
         </div>  
     </div>
@@ -737,16 +742,57 @@ function saveQuestion(){
             url: "{% url 'savesurveyform' %}",
             success: function(data){
                 console.log("sucees")
+                $("#createSurvey").hide();
+                previewSurvey=$("#previewSurvey");
+                var survey_element=$("<div id='surveyElement'></div>")
+                var survey_result=$('<div id="surveyResult"></div>')
+                previewSurvey.append(survey_element);
+                previewSurvey.append(survey_result);
+
+                $.material.init();
+
+                Survey.defaultBootstrapMaterialCss.navigationButton = "btn btn-green";
+                Survey.defaultBootstrapMaterialCss.rating.item = "btn btn-default my-rating";
+                Survey.StylesManager.applyTheme("bootstrapmaterial");
+                json=main_dict;
+                window.survey = new Survey.Model(json);
+                
+                $("#surveyElement").Survey({ 
+                    model: survey 
+                });
+
+                survey.onComplete.add(function(result) {
+                    prevsurveydata=main_dict
+                    window.location="{%url 'createsurveyform' %}"
+
+                });
+
+
             }
     });
     
-$('.allquestions').remove()
+$('.allquestions').empty()
+
+}
+
+function showSurveyForm(){
+    $("#createsSurvey").show();
+    $("#previewSurvey").empty();
 
 }
 function addQuestion(){
     questioncount++;
-    $('#instructions').remove()
-
+    $('#instructions').remove();
+    $("#previewSurvey").empty();
+    // if createSurvey is not visible.
+    // and addquestion class is not empty then alert the user to click createSurvey form first. 
+    if($("#createsSurvey").is(':hidden')===true){
+        if(  $('.allquestions').children().length > 0 ){
+            alert("Please Press Create Survey Form first to Proceed!")
+            return;
+        }
+    }
+    
     var allquestions=$(".allquestions");
         var row_question_class=$("<div class='row questionClass'>")
             var col_md_12=$("<div class='col-md-12' id='ques_"+questioncount+"'>")
@@ -792,11 +838,99 @@ function removeQuestion(element){
 
 function selectedExp(ele){
     // $(this).css("background-color","#FFFF00");
+    $("#previewSurvey").empty()
     $(".active_li").removeClass("active_li");
+    $('.allquestions').empty()
+
     $(ele).attr("class","active_li");
     console.log("ele",$(ele).text())
     expselected=$(ele).text()
+    $.ajax({
+        
+        type: 'GET',
+        dataType: "json",
+        'data': {
+            "expselected":expselected,
+
+        },
+        url: "{% url 'retrievesurveyform' %}",
+        success: function(data){
+            $("#pressurveybtn").remove()
+            if (data['status']==="found"){
+                console.log(JSON.parse(data['surveydata']))
+                prevsurveydata=JSON.parse(data['surveydata'])
+                survey_sidebardiv=$("#survey_sidebardiv");
+                    button=$('<button type="button" id="pressurveybtn" class="btn" style="padding: 6px; border-radius: 4px; color: #fff;background-color:#c264e1; " onclick="populatePrevSurveyForm($(this))">Previously Set Survey</button>')
+                survey_sidebardiv.append(button)
+            }
+            
+       
+
+        }
+    });
 }
+var prevsurveydata;
+
+$(document).ready(function(){
+
+    $( "#createsSurvey_ul li" ).first().addClass( "active_li" );
+    expselected=$( "#createsSurvey_ul li" ).first().text()
+    $.ajax({
+        
+        type: 'GET',
+        dataType: "json",
+        'data': {
+            "expselected":expselected,
+
+        },
+        url: "{% url 'retrievesurveyform' %}",
+        success: function(data){
+            if (data['status']==="found"){
+                console.log(JSON.parse(data['surveydata']))
+                prevsurveydata=JSON.parse(data['surveydata'])
+                survey_sidebardiv=$("#survey_sidebardiv");
+                    button=$('<button type="button" id="pressurveybtn" class="btn" style="padding: 6px; border-radius: 4px; color: #fff;background-color: #c264e1;" onclick="populatePrevSurveyForm($(this))">Previously Set Survey</button>')
+                    survey_sidebardiv.append(button)
+            }
+            
+       
+
+        }
+    });
+});
+function populatePrevSurveyForm(ele){
+    console.log("prevdata",prevsurveydata)
+    $("#createsSurvey").hide();
+    $('#instructions').remove()
+
+    previewSurvey=$("#previewSurvey");
+    var survey_element=$("<div id='surveyElement'></div>")
+    var survey_result=$('<div id="surveyResult"></div>')
+    previewSurvey.append(survey_element);
+    previewSurvey.append(survey_result);
+
+    $.material.init();
+
+    Survey.defaultBootstrapMaterialCss.navigationButton = "btn btn-green";
+    Survey.defaultBootstrapMaterialCss.rating.item = "btn btn-default my-rating";
+    Survey.StylesManager.applyTheme("bootstrapmaterial");
+    json=prevsurveydata;
+    
+    window.survey = new Survey.Model(json);
+    
+    $("#surveyElement").Survey({ 
+        model: survey 
+    });
+
+    survey.onComplete.add(function(result) {
+
+
+    });
+
+}
+   
+
 </script>
+
 
 {%endblock%}

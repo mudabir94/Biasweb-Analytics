@@ -51,7 +51,6 @@ from .models import (
                     Subject,
                     samsung_phone,
                     sort_feature, 
-                    userscoreRecord,
                     ExpCriteriaOrder,
                     PhoneCriteria,
                     experiment_feature,
@@ -4019,7 +4018,16 @@ def submitData(request):
 
             storenextprevbuttonlogs=request.POST.get('storenextprevbuttonlogs')
             storenextprevbuttonlogs=json.loads(storenextprevbuttonlogs)
-            # print("storehoveronbarlog",storehoveronbarlog)
+
+            mobile_crit_sum_list= request.POST.get('mobile_crit_sum_list')
+            mobile_crit_sum_list=json.loads(mobile_crit_sum_list)
+
+            alt_labels_chart= request.POST.get('alt_labels_chart')
+            alt_labels_chart=json.loads(alt_labels_chart)
+
+            print("mobile_crit_sum_list",mobile_crit_sum_list)
+            print("alt_labels_chart",alt_labels_chart)
+
             # print("storehoveronpielog",storehoveronpielog)
             # print("alt_crit_logs_dict",alt_crit_logs_dict)
             # print("storenextprevbuttonlogs",storenextprevbuttonlogs)
@@ -4027,10 +4035,10 @@ def submitData(request):
 
            
             for key in storehoveronbarlog:
-                print("key",key)
-                print("storehoveronpielog[key][0]",storehoveronbarlog[key][0])
-                print("storehoveronpielog[key][1]",storehoveronbarlog[key][1])
-                print("storehoveronpielog[key][2]",storehoveronbarlog[key][2])
+                # print("key",key)
+                # print("storehoveronpielog[key][0]",storehoveronbarlog[key][0])
+                # print("storehoveronpielog[key][1]",storehoveronbarlog[key][1])
+                # print("storehoveronpielog[key][2]",storehoveronbarlog[key][2])
 
                 # userid=storehoveronbarlog[key][0]
                 shbcl_obj=StoreHoverBarChartLogs()
@@ -4040,10 +4048,10 @@ def submitData(request):
                 shbcl_obj.time=key
                 shbcl_obj.save()
             for key in storehoveronpielog:
-                print("key",key)
-                print("storehoveronpielog[key][0]",storehoveronpielog[key][0])
-                print("storehoveronpielog[key][1]",storehoveronpielog[key][1])
-                print("storehoveronpielog[key][2]",storehoveronpielog[key][2])
+                # print("key",key)
+                # print("storehoveronpielog[key][0]",storehoveronpielog[key][0])
+                # print("storehoveronpielog[key][1]",storehoveronpielog[key][1])
+                # print("storehoveronpielog[key][2]",storehoveronpielog[key][2])
 
                 # userid=storehoveronbarlog[key][0]
                 shpcl_obj=StoreHoverPieChartLogs()
@@ -4053,10 +4061,10 @@ def submitData(request):
                 shpcl_obj.time=key
                 shpcl_obj.save()
             for key in storenextprevbuttonlogs:
-                print("key",key)
-                print("storenextprevbuttonlogs[key][0]",storenextprevbuttonlogs[key][0])
-                print("storenextprevbuttonlogs[key][1]",storenextprevbuttonlogs[key][1])
-                print("storenextprevbuttonlogs[key][2]",storenextprevbuttonlogs[key][2])
+                # print("key",key)
+                # print("storenextprevbuttonlogs[key][0]",storenextprevbuttonlogs[key][0])
+                # print("storenextprevbuttonlogs[key][1]",storenextprevbuttonlogs[key][1])
+                # print("storenextprevbuttonlogs[key][2]",storenextprevbuttonlogs[key][2])
 
                 # userid=storehoveronbarlog[key][0]
                 snpbcl_obj=StoreNextPrevButtonLogs()
@@ -4073,6 +4081,14 @@ def submitData(request):
             #     scwl_obj.criteria_name=key
             #     scwl_obj.time=critw_logs_dict[key][2]
             #     scwl_obj.save()
+            scoredict={}
+            for name,score in zip(alt_labels_chart,mobile_crit_sum_list):
+                print("NAME",name)
+                print("SCORE",score)
+                scoredict[name]=[score]
+            
+
+
             data={}
             return JsonResponse(data)
 
@@ -4130,4 +4146,33 @@ def saveSurveyResult(request):
             's':"success",
         }
         return JsonResponse(data)
+
+def retrieveSurveyForm(request):
+    if request.method=="GET":
+        expselected=request.GET.get("expselected")
+        print("Exp selected",expselected)
+        try:
+            expObj=Experiment.objects.get(id=int(expselected))
+        except:
+            print("No experiment found")
+            status=""
+            data ={"status":status}
+            return JsonResponse(data)
+        try:
+            surveyObj=surveyForm.objects.get(exp=expObj)
+            surveydata=surveyObj.surveydata
+            status="found"
+            data ={"status":status,"surveydata":surveydata}
+            return JsonResponse(data)
+        except:
+            print("No Survey found")
+            status=""
+            data ={"status":status}
+            return JsonResponse(data)
+
+
+
+
+
+
     

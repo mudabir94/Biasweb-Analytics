@@ -38,11 +38,9 @@
                             </div>
                             </div>
                             <div class='col-md-4' >
-                                        <div class='row'  id="mobilenameheadingdiv"></div>
+                                        <div  id="mobilenameheadingdiv"></div>
 
-                                        <div  id='imagediv'>
-                                         
-                                        </div>
+                                        <div  id='imagediv'></div>
                             </div>
                             <div class='col-md-4' id="charts_div">
                                     <!-- <div id="chartContainer" style="height: 300px; width: 100%;"></div> -->
@@ -685,6 +683,8 @@ function makeTable(allmobile,mob_name){
             $("#change_crit_wght_link").hide();
             $("#bar_chart_criteria").show();
             console.log("mobile_crit_sum_list----->",mobile_crit_sum_list)
+            const allEqual=mobile_crit_sum_list.every( (val, i, arr) => val === arr[0] )  
+            if (!allEqual){
             max_no=Math.max.apply(Math,mobile_crit_sum_list); // 3
             index=mobile_crit_sum_list.indexOf(max_no);
             console.log("max_no",index)
@@ -698,8 +698,30 @@ function makeTable(allmobile,mob_name){
                             $(this).attr('style','background:'+mobilephonecolordict[alternatives_list[index]]+'');
                         }
                 })
-                $("#mobilenameheadingdiv").append(mobilename+" is the phone that is has the highest Score.");
-                atsumbitpage=true
+            $("#mobilenameheadingdiv").empty()
+            var mobilenameheadingdiv=$("#mobilenameheadingdiv")
+                var div=$("<div id='finalresultdiv'></div>");
+                    var div1=$("<div id='finalresult_subdiv'></div>");
+                        var div2=$("<div id='finalresult_subdiv2'></div>")
+                            var span=$("<span id='finalresult_spanheading'>"+mobilename+"</span>")
+                        div2.append(span)
+                        var div3=$("<div id='finalresult_subdiv3'></div>")
+                            var text=$("<text id='finalresult_textbody'>"
+                            +"It has the Highest Score "
+                            +"<b>"+mobile_crit_sum_list[index]+"</b>"+
+                            "</text>")
+                        div3.append(text)
+                    div1.append(div2)
+                    div1.append(div3)
+                div.append(div1);
+            mobilenameheadingdiv.append(div);
+
+            atsumbitpage=true
+            }
+            else{
+                  $("#mobilenameheadingdiv").append("All phone scores have equal scores.");
+            atsumbitpage=true
+            }
         }
         else{
             $('#nextbtn_div').empty();
@@ -1383,7 +1405,7 @@ function showchart_criteria(){
 
 
 
-function submitData(){
+ function submitData(){
     $('#charts_div').hide();
     $("#prev_button").hide();
     $("#criteria_div").empty();
@@ -1391,7 +1413,6 @@ function submitData(){
     $(".allmobilelist").hide();
     $("#mobilenameheadingdiv").hide();
                 
-
     var comparison_table=$("#criteria_div");
     var survey_element=$("<div id='surveyElement'></div>")
     var survey_result=$('<div id="surveyResult"></div>')
@@ -1451,8 +1472,9 @@ function submitData(){
 
 
     survey.onComplete.add(function(result) {
-        document.querySelector('#surveyResult').textContent =
-            "Result JSON:\n" + JSON.stringify(result.data, null, 3);
+        document.querySelector('#surveyResult')
+        // .textContent =    "Result JSON:\n" ;
+            // + JSON.stringify(result.data, null, 3);
             
             $.ajax({
                             type: 'POST',
@@ -1462,9 +1484,8 @@ function submitData(){
                                 'csrfmiddlewaretoken': '{{ csrf_token }}',
                             },
                             url: "{% url 'savesurveyresult' %}",
-                            success: function(data){
-                                console.log("PPPPPPPPPPPPPPPPPPPPPPPPP")
-                            
+                            success:  function(data){
+                                window.location="{%url 'homepage'%}"
                             }
                     });
 
@@ -1487,18 +1508,14 @@ $("#surveyElement").Survey({
                     "storehoveronpielog":JSON.stringify(storehoveronpielog),
                     "alt_crit_logs_dict":JSON.stringify(alt_crit_logs_dict),
                     "storenextprevbuttonlogs":JSON.stringify(storenextprevbuttonlogs),
-
-                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                    "mobile_crit_sum_list":JSON.stringify(mobile_crit_sum_list),
+                    "alt_labels_chart":JSON.stringify(alt_labels_chart),
+                    'csrfmiddlewaretoken': '{{ csrf_token }}',
                 },
                 url: "{% url 'submit_data' %}",
-                success: function(data){
+                success:  function(data){
                     console.log("SUCCESS")
-                 
 
-
-    
-                    
-                    
                 }
         });
 
