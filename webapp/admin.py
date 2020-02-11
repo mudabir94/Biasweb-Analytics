@@ -153,8 +153,13 @@ class customExpSessionTableAdmin(admin.ModelAdmin):
 class surveyFormAdmin(admin.ModelAdmin):
     list_display=('id',"exp","surveydata")
     
-class criteriaBasicInfoAdmin(admin.ModelAdmin):
-    list_display=("id","criteria_name","basic_info","more_detail")
+class criteriaBasicInfoResource(resources.ModelResource):
+    class meta:
+        model=criteriaBasicInfo
+class criteriaBasicInfoAdmin(ImportExportActionModelAdmin):
+    list_display=('id',"criteria_name","basic_info","more_detail")
+
+
 
 admin.site.register(User, MyUserAdmin)
 admin.site.register(ExpCriteriaOrder, ExpCriteriaOrderAdmin)
