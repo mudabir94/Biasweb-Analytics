@@ -1669,8 +1669,8 @@ class Cr_On_Co_On_CriteriaSetup(TemplateView):
                 criteria_catalog_disp.objects.filter(id=1).update(catalog_crit_display_order=cataloglist)
                 
                 print("postedFLevels",postedFLevels)
-                print("crit_order_dict",crit_order_dict)
-                print("crit_hide_dict",crit_hide_dict)
+                print("crit_order_dict----------------",crit_order_dict)
+                print("crit_hide_dict-----------------",crit_hide_dict)
 
 
                 final_def_blocks_to_send = request.POST.get('final_def_blocks_to_send')

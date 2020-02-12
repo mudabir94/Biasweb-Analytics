@@ -3418,9 +3418,33 @@ function dummysendFeatureLevels(){
                         // block_feat_dict[feat_key]=["C.def"]
 
                     }
-                    console.log("C",block_feat_dict_def)
+                    console.log("CR",block_feat_dict_def)
                     
                 }
+            else if ($(this).val()==="CO"){
+                    feat_key=$(this).val();
+                    if (temp_block_feat_dict_def[feat_key]===undefined){
+                         temp_block_feat_dict_def[feat_key]=block_feat_dict_def[feat_key];
+
+                        // block_feat_dict_def[feat_key]=["C.def"];
+                        // block_feat_dict[feat_key]=["C.def"]
+
+                    }
+                    console.log("CO",block_feat_dict_def)
+                    
+                }
+            else if ($(this).val()==="CD"){
+                    feat_key=$(this).val();
+                    if (temp_block_feat_dict_def[feat_key]===undefined){
+                         temp_block_feat_dict_def[feat_key]=block_feat_dict_def[feat_key];
+
+                        // block_feat_dict_def[feat_key]=["C.def"];
+                        // block_feat_dict[feat_key]=["C.def"]
+
+                    }
+                    console.log("CD",block_feat_dict_def)
+                    
+            }
             else if ($(this).val()==="P"){
                     feat_key=$(this).val();
                     if (temp_block_feat_dict_def[feat_key]===undefined){
@@ -6637,6 +6661,8 @@ function get_data_Ajax_Co(colist){
     }
     function saveOrderSet(){
         console.log("crit_order_dict",crit_order_dict);
+        var crit_show_dict=crit_order_dict;
+        var crit_hide_dict_temp=crit_hide_dict
         console.log("crit_hide_dict",crit_hide_dict);
         current_save_state="CR_off_CO_on"
         // make an ajax call that will send the two dicts to server. 
@@ -6649,8 +6675,8 @@ function get_data_Ajax_Co(colist){
                                         "p_all_phoneset_flag":p_all_phoneset_flag,
 
                                         'featlevels_dic': JSON.stringify(block_feat_dict,undefined,''),
-                                        'crit_order_dict':JSON.stringify(crit_order_dict),
-                                        'crit_hide_dict':JSON.stringify(crit_hide_dict),
+                                        'crit_order_dict':JSON.stringify(crit_show_dict),
+                                        'crit_hide_dict':JSON.stringify(crit_hide_dict_temp),
                                         "final_def_blocks_to_send":JSON.stringify(final_def_blocks_to_send),
 
                                         'csrfmiddlewaretoken': '{{ csrf_token }}',
@@ -10203,7 +10229,11 @@ function get_data_Ajax_Co(colist){
    }
     function Save_Cr_CO_On(){
         current_save_state="CR_on_CO_on"
-        console.log("crit_order_dict",crit_order_dict);
+        console.log("crit_order_dict>>>>>>>>>>>>>>>CR_on_CO_on",crit_order_dict);
+        var crit_show_dict=crit_order_dict
+        var crit_hide_dict_temp=crit_hide_dict
+        console.log("crit_show_dict>>>>>>>>>>>>>>>CR_on_CO_on",crit_show_dict);
+
         console.log("crit_hide_dict",crit_hide_dict);
         // make an ajax call that will send the two dicts to server. 
         dummysendFeatureLevels();
@@ -10218,8 +10248,8 @@ function get_data_Ajax_Co(colist){
                                         "p_all_phoneset_flag":p_all_phoneset_flag,
    
                                         'featlevels_dic': JSON.stringify(block_feat_dict,undefined,''),
-                                        'crit_order_dict':JSON.stringify(crit_order_dict),
-                                        'crit_hide_dict':JSON.stringify(crit_hide_dict),
+                                        'crit_order_dict':JSON.stringify(crit_show_dict),
+                                        'crit_hide_dict':JSON.stringify(crit_hide_dict_temp),
                                         'cataloglist':JSON.stringify(cataloglist),
                                         "final_def_blocks_to_send":JSON.stringify(final_def_blocks_to_send),
 
@@ -12577,6 +12607,30 @@ function submitDescription(){
                     console.log("C",block_feat_dict_def)
                     
                 }
+            else if ($(this).val()==="CO"){
+                    feat_key=$(this).val();
+                    if (temp_block_feat_dict_def[feat_key]===undefined){
+                         temp_block_feat_dict_def[feat_key]=block_feat_dict_def[feat_key];
+
+                        // block_feat_dict_def[feat_key]=["C.def"];
+                        // block_feat_dict[feat_key]=["C.def"]
+
+                    }
+                    console.log("CO",block_feat_dict_def)
+                    
+                }
+            else if ($(this).val()==="CD"){
+                    feat_key=$(this).val();
+                    if (temp_block_feat_dict_def[feat_key]===undefined){
+                         temp_block_feat_dict_def[feat_key]=block_feat_dict_def[feat_key];
+
+                        // block_feat_dict_def[feat_key]=["C.def"];
+                        // block_feat_dict[feat_key]=["C.def"]
+
+                    }
+                    console.log("CD",block_feat_dict_def)
+                    
+            }
             else if ($(this).val()==="P"){
                     feat_key=$(this).val();
                     if (temp_block_feat_dict_def[feat_key]===undefined){

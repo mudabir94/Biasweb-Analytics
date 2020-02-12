@@ -362,7 +362,7 @@ class PhoneCriteria(models.Model):
 class ExpCriteriaOrder(models.Model):
     exp = models.ForeignKey(experiment, on_delete=models.CASCADE,null=True)
     block = models.ForeignKey(Block, on_delete=models.CASCADE,null=True,blank=True)
-    cOrder_id = models.CharField(max_length=10,null=True)
+    cOrder_id = models.CharField(max_length=25,null=True)
     fvp=models.CharField(max_length=25,null=True)
     #NEED TO KEEP A RECORD OF THE EXISTING SET OF AVAILABLE CRITERIA IN THE MOBILE PHONES TABLE
     pCriteria = models.ForeignKey(PhoneCriteria, on_delete=models.CASCADE,null=True)
