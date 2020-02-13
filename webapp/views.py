@@ -512,7 +512,15 @@ def criteriaWeights(request):
                 crit=crit[0].lower()
                 if crit=="c.def":
                     crit="default"
+                print("CRITERIA __>> ", crit)
                 exp_obj=exp.objects.get(id=exp_under_test)
+                expCritTestObjs=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1)
+
+                if expCritTestObjs[0].cOrder_id != crit:
+                    print("cOrder_id",expCritTestObjs[0].cOrder_id)
+                    corderid=expCritTestObjs[0].cOrder_id
+                    crit=corderid
+
                 ExpCriteria_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1,cOrder_id=crit)
                 print("ExpCriteria_obj",ExpCriteria_obj)
                 crit_list_obj=ExpCriteria_obj.values_list('pCriteria__criteria_name',flat=True)
@@ -559,6 +567,12 @@ def criteriaWeights(request):
             if crit=="c.def":
                 crit="default"
             exp_obj=exp.objects.get(id=exp_under_test)
+            expCritTestObjs=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1)
+            if expCritTestObjs[0].cOrder_id != crit:
+                print("cOrder_id",expCritTestObjs[0].cOrder_id)
+                corderid=expCritTestObjs[0].cOrder_id
+                crit=corderid
+                
             ExpCriteria_obj=ExpCriteriaOrder.objects.filter(exp=exp_obj,sh_hd=1,cOrder_id=crit)
             print("ExpCriteria_obj",ExpCriteria_obj)
             crit_list_obj=ExpCriteria_obj.values_list('pCriteria__criteria_name',flat=True)
@@ -701,9 +715,14 @@ def compareMobileOneByOneDirect(request):
         data={}
         criteria_list=[]
         exp_obj=exp.objects.get(id=exp_under_test)
-        survey_obj=surveyForm.objects.get(exp=exp_obj)
-        ## survey_obj=surveyForm.objects.get(id=1)
-        surveydata=survey_obj.surveydata    
+        try:
+            survey_obj=surveyForm.objects.get(exp=exp_obj)
+            ## survey_obj=surveyForm.objects.get(id=1)
+            surveydata=survey_obj.surveydata 
+        except:
+            surveydata={}
+            surveydata=json.dumps(surveydata)
+
         query_array=[]
         sessionkey="user_"+userid+"__mobiledata"
         mobiledata_json=request.session[sessionkey]
