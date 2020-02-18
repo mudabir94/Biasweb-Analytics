@@ -280,6 +280,8 @@ class criteria_catalog_disp(models.Model):
         max_length=(10*21),
         null=True
     )
+        exp = models.ForeignKey(experiment, on_delete=models.CASCADE,null=True,blank=True)
+
 
 class samsung_phone(models.Model):
     Mobile_Companny= models.CharField(max_length=200, null= True)

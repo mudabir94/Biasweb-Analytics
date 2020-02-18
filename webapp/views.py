@@ -1281,8 +1281,8 @@ class defaultCriteria_Setup(TemplateView):
                 cataloglist=request.POST.get('cataloglist')
                 cataloglist = json.loads(cataloglist)
                 p_all_phoneset_flag=request.POST.get('p_all_phoneset_flag')
-                
-                criteria_catalog_disp.objects.filter(id=1).update(catalog_crit_display_order=cataloglist)
+                print("cataloglist",cataloglist)
+               
                 # global catalogcrit_show_list
 
                 # catalogcrit_show_list=cataloglist
@@ -1388,6 +1388,16 @@ class defaultCriteria_Setup(TemplateView):
                                 expOSets.save()
                             except (PhoneCriteria.DoesNotExist):
                                 pass
+                if cataloglist:
+                    try:
+                        critCatDspObj=criteria_catalog_disp.objects.filter(exp=expCont.exp)
+                        critCatDspObj.update(catalog_crit_display_order=cataloglist)
+                    except:
+                        print("Creating new Criteria Catalog")
+                        critCatDspObj=criteria_catalog_disp()
+                        critCatDspObj.catalog_crit_display_order=cataloglist
+                        critCatDspObj.exp=expCont.exp
+                        critCatDspObj.save()
                                     
 
 
@@ -1524,7 +1534,8 @@ class orderCriteria_Setup(TemplateView):
                 featlevels_dic=request.POST.get('featlevels_dic')
                 postedFLevels = json.loads(featlevels_dic)
                 p_all_phoneset_flag=request.POST.get('p_all_phoneset_flag')
-
+                cataloglist=request.POST.get('cataloglist')
+                cataloglist = json.loads(cataloglist)
                 final_def_blocks_to_send = request.POST.get('final_def_blocks_to_send')
                 postedDefFLevels=json.loads(final_def_blocks_to_send)
                 print("final_def_blocks_to_send",final_def_blocks_to_send)
@@ -1621,6 +1632,16 @@ class orderCriteria_Setup(TemplateView):
                                 expOSets.save()
                             except (PhoneCriteria.DoesNotExist):
                                 pass
+                if cataloglist:
+                    try:
+                        critCatDspObj=criteria_catalog_disp.objects.filter(exp=expCont.exp)
+                        critCatDspObj.update(catalog_crit_display_order=cataloglist)
+                    except:
+                        print("Creating new Criteria Catalog")
+                        critCatDspObj=criteria_catalog_disp()
+                        critCatDspObj.catalog_crit_display_order=cataloglist
+                        critCatDspObj.exp=expCont.exp
+                        critCatDspObj.save()
 
                             
                 data={
@@ -1685,7 +1706,6 @@ class Cr_On_Co_On_CriteriaSetup(TemplateView):
                 p_all_phoneset_flag=request.POST.get('p_all_phoneset_flag')
 
 
-                criteria_catalog_disp.objects.filter(id=1).update(catalog_crit_display_order=cataloglist)
                 
                 print("postedFLevels",postedFLevels)
                 print("crit_order_dict----------------",crit_order_dict)
@@ -1784,6 +1804,16 @@ class Cr_On_Co_On_CriteriaSetup(TemplateView):
                                 expOSets.save()
                             except (PhoneCriteria.DoesNotExist):
                                 pass
+                if cataloglist:
+                    try:
+                        critCatDspObj=criteria_catalog_disp.objects.filter(exp=expCont.exp)
+                        critCatDspObj.update(catalog_crit_display_order=cataloglist)
+                    except:
+                        print("Creating new Criteria Catalog")
+                        critCatDspObj=criteria_catalog_disp()
+                        critCatDspObj.catalog_crit_display_order=cataloglist
+                        critCatDspObj.exp=expCont.exp
+                        critCatDspObj.save()
 
                             
                 data={
@@ -1886,7 +1916,6 @@ class CrCriteriaSetup(TemplateView):
                 postedFLevels = json.loads(featlevels_dic)
                 cataloglist=request.POST.get('cataloglist')
                 cataloglist = json.loads(cataloglist)
-                criteria_catalog_disp.objects.filter(id=1).update(catalog_crit_display_order=cataloglist)
                 final_def_blocks_to_send = request.POST.get('final_def_blocks_to_send')
                 postedDefFLevels=json.loads(final_def_blocks_to_send)
                 p_all_phoneset_flag=request.POST.get('p_all_phoneset_flag')
@@ -1986,6 +2015,19 @@ class CrCriteriaSetup(TemplateView):
                                 expOSets.save()
                             except (PhoneCriteria.DoesNotExist):
                                 pass
+                if cataloglist:
+                    try:
+                        critCatDspObj=criteria_catalog_disp.objects.filter(exp=expCont.exp)
+                        print("Crit try found")
+                        critCatDspObj.update(catalog_crit_display_order=cataloglist)
+                        print("Crit try updated")
+
+                    except:
+                        print("Creating new Criteria Catalog")
+                        critCatDspObj=criteria_catalog_disp()
+                        critCatDspObj.catalog_crit_display_order=cataloglist
+                        critCatDspObj.exp=expCont.exp
+                        critCatDspObj.save()
 
 
                               
@@ -3699,9 +3741,11 @@ def getMobiledata(request):
             # mobiles_retrieved = list(mobiles_retrieved.values())   
             # mobiles_retrieved_list=mobiles_retrieved
             #///////////////////////
-            # cat_obj=criteria_catalog_disp.objects.get(id=)
-            # catalogcrit_show_list=cat_obj.catalog_crit_display_order
-            catalogcrit_show_list=['price']
+            try:
+                cat_obj=criteria_catalog_disp.objects.filter(exp=exp_obj)
+                catalogcrit_show_list=cat_obj.catalog_crit_display_order
+            except:
+                catalogcrit_show_list=['price']
             sessionkey="user_"+userid+"__catalogcrit_show_list"
             request.session[sessionkey]=catalogcrit_show_list
             return JsonResponse(

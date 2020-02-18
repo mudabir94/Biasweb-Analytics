@@ -135,7 +135,7 @@ class mobilephonesAdmin(ImportExportActionModelAdmin):
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>    
 #----------------------------------------------------------------------------
 class criteria_catalog_disp_Admin(admin.ModelAdmin):
-    list_display=('id','catalog_crit_display_order')  
+    list_display=('id','catalog_crit_display_order',"exp")  
       
 class StoreHoverBarChartLogsAdmin(admin.ModelAdmin):
     list_display=("id","user","value","phone_name","time")
