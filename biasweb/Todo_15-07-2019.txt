@@ -1,8 +1,0 @@
-1. Platform features - add default options to model as a field
-2. ISDEFAULT - Prevent default features from appearing as part of blocks
-3. Should write default features selection to the Exp Features table feild by turning on "isDefault" switch
-4. CDM
-a. --> Workflow should let Exp Admin first set Criteria Order/Display defaults
-b. --> 
-
-5. Need to fix user creation when importing batches - is not assigning a "ROLE"

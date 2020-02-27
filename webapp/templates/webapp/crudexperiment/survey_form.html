@@ -10,27 +10,44 @@
 
     <div class="row content">
         <!-- 1st SIDEBAR COL DIV -->
-        <div class="col-md-1" style='background-color:#c6c8ca'>
+        <div class="col-md-3" style='background-color:#c6c8ca'>
+            <div>
+                <h3>Choose Experiment</h3>
+            </div>
+            <div>
+                <ul id="createsSurvey_ul">
+                    {% for item in explist %}
+
+                    <li onclick='selectedExp($(this))'>{{ item }}</li>
+                    {% endfor %}
+                
+                </ul>
+            </div>
         </div>
 
-        <div class="col-md-9 text-center"  > 
-            <div class="row">
-                <div class='col-md-12'>
-                    <h2 id=""><strong>Create Survey Form</strong></h2>
-                </div>
-            </div>
-            <div class="row" id= "instructions">
-                <div class='col-md-12'>
-                </br></br></br></br>
-                    <h4 id="">To Add questions to the survey , please press the Add New Question button on the right panel !!!</h4>
-                </div>
-            </div>
+        <div class="col-md-7 text-center"  > 
+            <div id="createsSurvey">
+                <div class="row">
+                    <div class='col-md-12'>
+                        <h2 id=""><strong>Create Survey Form</strong></h2>
+                        <button type="button" class="btn" style="padding: 6px; border-radius: 4px; color: #fff;background-color: #337ab7; border-color: #2e6da4;" onclick="addQuestion()">Add New Question</button>
 
-            <div class='allquestions' >
+                    </div>
+                </div>
+                <div class="row" id= "instructions">
+                    <div class='col-md-12'>
+                    </br></br></br></br>
+                        <h4 id="">To Add questions to the survey , please press the Add New Question button on the right panel !!!</h4>
+                    </div>
+                </div>
+
+                <div class='allquestions' >
+                </div>
             </div>
+            <div id="previewSurvey"></div>
         </div>
-        <div class="col-md-2" style='background-color:#c6c8ca'>
-            <button type="button" class="btn" style="padding: 6px; border-radius: 4px; color: #fff;background-color: #337ab7; border-color: #2e6da4;" onclick="addQuestion()">Add New Question</button>
+        <div class="col-md-2"  id="survey_sidebardiv" style='background-color:#c6c8ca'>
+            <button type="button" class="btn" style="padding: 6px; border-radius: 4px; color: #fff;background-color: #f9b57a; border-color: #f9b57a;" onclick="showSurveyForm()">Create Survey Form</button>
             <button type="button" class="btn btn-success" style="padding: 6px; margin: auto; border-radius: 4px; color: #fff;background-color: #5cb85c; border-color: #4cae4c;" onclick="saveQuestion()">Save & Preview</button>
         </div>  
     </div>
@@ -38,211 +55,265 @@
 
 
 <script>
-    function selectFunc(element){
-        
-        selectedValue=$(element).find(":selected").val()
-        console.log("great grandfather id ",$(element).parent().parent().parent().attr('id'))
-        great_grandfather_id=$(element).parent().parent().parent().attr('id')
-        if  (selectedValue==='matrix'){
-            $('#sub_ques_row_'+great_grandfather_id).remove()
+var questioncount=0
+var expselected=""
+function selectFunc(element){
+    
+    selectedValue=$(element).find(":selected").val()
+    console.log("great grandfather id ",$(element).parent().parent().parent().attr('id'))
+    great_grandfather_id=$(element).parent().parent().parent().attr('id')
+    if  (selectedValue==='matrix'){
+        $('#sub_ques_row_'+great_grandfather_id).remove()
 
-            var col_md_12_ques_one=$("#"+great_grandfather_id)
+        var col_md_12_ques_one=$("#"+great_grandfather_id)
 
-            var main_row_div= $("<div class='row' id='sub_ques_row_"+great_grandfather_id+"'></div>");
-            $(col_md_12_ques_one).append(main_row_div);
+        var main_row_div= $("<div class='row' id='sub_ques_row_"+great_grandfather_id+"'></div>");
+        $(col_md_12_ques_one).append(main_row_div);
 
-            var sub_ques_col=$("<div class='col-md-12' id='sub_ques_col_"+great_grandfather_id+"'></div>");
-            $(main_row_div).append(sub_ques_col);
+        var sub_ques_col=$("<div class='col-md-12' id='sub_ques_col_"+great_grandfather_id+"'></div>");
+        $(main_row_div).append(sub_ques_col);
 
-            var row_div_one=$("<div class='row'></div>");
-            // Question Name
-            var col_one__row_div_one=$("<div class='col-md-12'></div>");
-                var row__col_one__row_div_one=$("<div class='row'></div>");
+        var row_div_one=$("<div class='row'></div>");
+        // Question Name
+        var col_one__row_div_one=$("<div class='col-md-12'></div>");
+            var row__col_one__row_div_one=$("<div class='row'></div>");
+                colmd1=$("<div class='col-md-3'></div>")
+                colmd2=$("<div class='col-md-4'></div>")
+
+                quest_name_label=$("<label for='quest_name_tag' class='custom_label_css textcolor' >Question Tag</label>");
+                colmd1.append(quest_name_label)
+
+                quest_name_input=$("<input class='input_field' id='quest_name_input' class='custom_input_css'>")
+                colmd2.append(quest_name_input)
+
+            row__col_one__row_div_one.append(colmd1);
+            row__col_one__row_div_one.append(colmd2);
+        col_one__row_div_one.append(row__col_one__row_div_one);
+
+        $(row_div_one).append(col_one__row_div_one);
+
+    var row_div_two=$("<div class='row'></div>");
+        // Question Title
+        var col_one__row_div_two=$("<div class='col-md-12'></div>");
+            var row__col_one__row_div_two=$("<div class='row'></div>");
+                colmd1=$("<div class='col-md-3'></div>")
+                colmd2=$("<div class='col-md-8'></div>")
+
+                quest_title_label=$("<label class='custom_label_css textcolor'>Title</label>");
+                colmd1.append(quest_title_label);
+                quest_title_input=$("<input class='input_field custom_input_css' id='quest_title_input'></input>")
+                colmd2.append(quest_title_input);
+
+            row__col_one__row_div_two.append(colmd1)
+            row__col_one__row_div_two.append(colmd2)
+        col_one__row_div_two.append(row__col_one__row_div_two)
+
+        $(row_div_two).append(col_one__row_div_two);
+
+
+    var row_div_three=$("<div class='row' id='noofcolrowdiv__"+great_grandfather_id+"'></div>");
+        // No of columns
+    var coldiv=$("<div class='col-md-12'></div>")
+        var row=$("<div class='row' ></div>")
+            var col_one__row_div_three=$("<div class='col-md-12'></div>");
+                var row__col_one__row_div_three=$("<div class='row'></div>");
                     colmd1=$("<div class='col-md-3'></div>")
-                    colmd2=$("<div class='col-md-4'></div>")
+                    colmd2=$("<div class='col-md-1'></div>")
+                    colmd3=$("<div class='col-md-6'></div>")
 
-                    quest_name_label=$("<label for='quest_name_tag' class='custom_label_css textcolor' >Question Tag</label>");
-                    colmd1.append(quest_name_label)
+                    No_of_col_label=$("<label class='custom_label_css textcolor'>Number of Columns</label>");
+                    colmd1.append(No_of_col_label);
+                    No_of_col_input=$("<input class='input_field custom_input_css' id='noofcol__"+great_grandfather_id+"'></input>")
+                    colmd2.append(No_of_col_input);
+                    no_of_col_button=$("<button type='button' style='padding: 6px; border-radius: 4px; color: #fff;background-color: #27a69a; border-color: #2e6da4;' id='submitcol__"+great_grandfather_id+"' class= 'btn btn-secondary' onclick='genColButton($(this))'>Generate</button>")
+                    colmd3.append(no_of_col_button);
 
-                    quest_name_input=$("<input class='input_field' id='quest_name_input' class='custom_input_css'>")
-                    colmd2.append(quest_name_input)
+                row__col_one__row_div_three.append(colmd1)
+                row__col_one__row_div_three.append(colmd2)
+                row__col_one__row_div_three.append(colmd3)
 
-                row__col_one__row_div_one.append(colmd1);
-                row__col_one__row_div_one.append(colmd2);
-            col_one__row_div_one.append(row__col_one__row_div_one);
+                col_one__row_div_three.append(row__col_one__row_div_three)
+            row.append(col_one__row_div_three)
+        coldiv.append(row)
+    $(row_div_three).append(coldiv);
 
-            $(row_div_one).append(col_one__row_div_one);
-
-        var row_div_two=$("<div class='row'></div>");
-            // Question Title
-            var col_one__row_div_two=$("<div class='col-md-12'></div>");
-                var row__col_one__row_div_two=$("<div class='row'></div>");
+    var row_div_four=$("<div class='row' id='noofrowsdiv__"+great_grandfather_id+"'></div>");
+        // No of rows
+    var coldiv=$("<div class='col-md-12'></div>")
+        var row=$("<div class='row' ></div>")
+            var col_one__row_div_four=$("<div class='col-md-12'></div>");
+                var row__col_one__row_div_four=$("<div class='row'></div>");
                     colmd1=$("<div class='col-md-3'></div>")
-                    colmd2=$("<div class='col-md-8'></div>")
+                    colmd2=$("<div class='col-md-1'></div>")
+                    colmd3=$("<div class='col-md-6'></div>")
 
-                    quest_title_label=$("<label class='custom_label_css textcolor'>Title</label>");
-                    colmd1.append(quest_title_label);
-                    quest_title_input=$("<input class='input_field custom_input_css' id='quest_title_input'></input>")
-                    colmd2.append(quest_title_input);
+                    No_of_row_label=$("<label class='custom_label_css textcolor'>Number of Rows</label>");
+                    colmd1.append(No_of_row_label);
+                    No_of_row_input=$("<input class='input_field custom_input_css' id='noofrows__"+great_grandfather_id+"'></input>")
+                    colmd2.append(No_of_row_input);
+                    no_of_row_button=$("<button type='button' style='padding: 6px; border-radius: 4px; color: #fff;background-color: #27a69a; border-color: #2e6da4;' id='submitrow__"+great_grandfather_id+"' class= 'btn btn-secondary' onclick='genRowButton($(this))'>Generate</button>")
+                    colmd3.append(no_of_row_button);
 
-                row__col_one__row_div_two.append(colmd1)
-                row__col_one__row_div_two.append(colmd2)
-            col_one__row_div_two.append(row__col_one__row_div_two)
+                row__col_one__row_div_four.append(colmd1)
+                row__col_one__row_div_four.append(colmd2)
+                row__col_one__row_div_four.append(colmd3)
 
-            $(row_div_two).append(col_one__row_div_two);
+                col_one__row_div_four.append(row__col_one__row_div_four)
+            row.append(col_one__row_div_four)
+        coldiv.append(row)
+    $(row_div_four).append(coldiv);
 
-
-        var row_div_three=$("<div class='row' id='noofcolrowdiv__"+great_grandfather_id+"'></div>");
-            // No of columns
-        var coldiv=$("<div class='col-md-12'></div>")
-            var row=$("<div class='row' ></div>")
-                var col_one__row_div_three=$("<div class='col-md-12'></div>");
-                    var row__col_one__row_div_three=$("<div class='row'></div>");
-                        colmd1=$("<div class='col-md-3'></div>")
-                        colmd2=$("<div class='col-md-1'></div>")
-                        colmd3=$("<div class='col-md-6'></div>")
-
-                        No_of_col_label=$("<label class='custom_label_css textcolor'>Number of Columns</label>");
-                        colmd1.append(No_of_col_label);
-                        No_of_col_input=$("<input class='input_field custom_input_css' id='noofcol__"+great_grandfather_id+"'></input>")
-                        colmd2.append(No_of_col_input);
-                        no_of_col_button=$("<button type='button' style='padding: 6px; border-radius: 4px; color: #fff;background-color: #27a69a; border-color: #2e6da4;' id='submitcol__"+great_grandfather_id+"' class= 'btn btn-secondary' onclick='genColButton($(this))'>Generate</button>")
-                        colmd3.append(no_of_col_button);
-
-                    row__col_one__row_div_three.append(colmd1)
-                    row__col_one__row_div_three.append(colmd2)
-                    row__col_one__row_div_three.append(colmd3)
-
-                    col_one__row_div_three.append(row__col_one__row_div_three)
-                row.append(col_one__row_div_three)
-            coldiv.append(row)
-        $(row_div_three).append(coldiv);
-
-        var row_div_four=$("<div class='row' id='noofrowsdiv__"+great_grandfather_id+"'></div>");
-            // No of rows
-        var coldiv=$("<div class='col-md-12'></div>")
-            var row=$("<div class='row' ></div>")
-                var col_one__row_div_four=$("<div class='col-md-12'></div>");
-                    var row__col_one__row_div_four=$("<div class='row'></div>");
-                        colmd1=$("<div class='col-md-3'></div>")
-                        colmd2=$("<div class='col-md-1'></div>")
-                        colmd3=$("<div class='col-md-6'></div>")
-
-                        No_of_row_label=$("<label class='custom_label_css textcolor'>Number of Rows</label>");
-                        colmd1.append(No_of_row_label);
-                        No_of_row_input=$("<input class='input_field custom_input_css' id='noofrows__"+great_grandfather_id+"'></input>")
-                        colmd2.append(No_of_row_input);
-                        no_of_row_button=$("<button type='button' style='padding: 6px; border-radius: 4px; color: #fff;background-color: #27a69a; border-color: #2e6da4;' id='submitrow__"+great_grandfather_id+"' class= 'btn btn-secondary' onclick='genRowButton($(this))'>Generate</button>")
-                        colmd3.append(no_of_row_button);
-
-                    row__col_one__row_div_four.append(colmd1)
-                    row__col_one__row_div_four.append(colmd2)
-                    row__col_one__row_div_four.append(colmd3)
-
-                    col_one__row_div_four.append(row__col_one__row_div_four)
-                row.append(col_one__row_div_four)
-            coldiv.append(row)
-        $(row_div_four).append(coldiv);
-
-     
-        $(sub_ques_col).append(row_div_one);
-        $(sub_ques_col).append(row_div_two);
-        $(sub_ques_col).append(row_div_three);
-        $(sub_ques_col).append(row_div_four);
+    
+    $(sub_ques_col).append(row_div_one);
+    $(sub_ques_col).append(row_div_two);
+    $(sub_ques_col).append(row_div_three);
+    $(sub_ques_col).append(row_div_four);
 
 
-      
+    
 }
-        else if (selectedValue==='rating'){
-            $('#sub_ques_row_'+great_grandfather_id).remove()
+    else if (selectedValue==='rating'){
+        $('#sub_ques_row_'+great_grandfather_id).remove()
 
-            var col_md_12_ques_one=$("#"+great_grandfather_id)
+        var col_md_12_ques_one=$("#"+great_grandfather_id)
 
-            var main_row_div= $("<div class='row' id='sub_ques_row_"+great_grandfather_id+"'></div>");
-            $(col_md_12_ques_one).append(main_row_div);
+        var main_row_div= $("<div class='row' id='sub_ques_row_"+great_grandfather_id+"'></div>");
+        $(col_md_12_ques_one).append(main_row_div);
 
-            var sub_ques_col=$("<div class='col-md-12' id='sub_ques_col_"+great_grandfather_id+"'></div>");
-            $(main_row_div).append(sub_ques_col);
+        var sub_ques_col=$("<div class='col-md-12' id='sub_ques_col_"+great_grandfather_id+"'></div>");
+        $(main_row_div).append(sub_ques_col);
 
-            var row_div_one=$("<div class='row'></div>");
-            // Question Name
-            var col_one__row_div_one=$("<div class='col-md-12'></div>");
-                var row__col_one__row_div_one=$("<div class='row'></div>");
-                    colmd1=$("<div class='col-md-3'></div>")
-                    colmd2=$("<div class='col-md-4'></div>")
+        var row_div_one=$("<div class='row'></div>");
+        // Question Name
+        var col_one__row_div_one=$("<div class='col-md-12'></div>");
+            var row__col_one__row_div_one=$("<div class='row'></div>");
+                colmd1=$("<div class='col-md-3'></div>")
+                colmd2=$("<div class='col-md-4'></div>")
 
-                    quest_name_label=$("<label for='quest_name_tag' class='custom_label_css textcolor'>Question Tag</label>");
-                    colmd1.append(quest_name_label)
+                quest_name_label=$("<label for='quest_name_tag' class='custom_label_css textcolor'>Question Tag</label>");
+                colmd1.append(quest_name_label)
 
-                    quest_name_input=$("<input class='input_field' id='quest_name_input' class='custom_input_css'>")
-                    colmd2.append(quest_name_input)
+                quest_name_input=$("<input class='input_field' id='quest_name_input' class='custom_input_css'>")
+                colmd2.append(quest_name_input)
 
-                row__col_one__row_div_one.append(colmd1);
-                row__col_one__row_div_one.append(colmd2);
-            col_one__row_div_one.append(row__col_one__row_div_one);
+            row__col_one__row_div_one.append(colmd1);
+            row__col_one__row_div_one.append(colmd2);
+        col_one__row_div_one.append(row__col_one__row_div_one);
+
+    $(row_div_one).append(col_one__row_div_one);
+
+    var row_div_two=$("<div class='row'></div>");
+        // Question Title
+        var col_one__row_div_two=$("<div class='col-md-12'></div>");
+            var row__col_one__row_div_two=$("<div class='row'></div>");
+                colmd1=$("<div class='col-md-3'></div>")
+                colmd2=$("<div class='col-md-8'></div>")
+
+                quest_title_label=$("<label class='custom_label_css textcolor'>Title</label>");
+                colmd1.append(quest_title_label);
+                quest_title_input=$("<input class='input_field custom_input_css' id='quest_title_input'></input>")
+                colmd2.append(quest_title_input);
+
+            row__col_one__row_div_two.append(colmd1)
+            row__col_one__row_div_two.append(colmd2)
+        col_one__row_div_two.append(row__col_one__row_div_two)
+
+    $(row_div_two).append(col_one__row_div_two);
+    
+    var row_div_three=$("<div class='row'></div>");
+        // Rate descriptions
+        var col_one__row_div_three=$("<div class='col-md-6'></div>");
+            var row__col_one__row_div_three=$("<div class='row'></div>");
+                colmd1=$("<div class='col-md-6'></div>")
+                colmd2=$("<div class='col-md-4'></div>")
+
+                rate_descrip_label=$("<label class='custom_label_css textcolor'>Minimum Rate Description</label>");
+                colmd1.append(rate_descrip_label);
+                rate_descrip_input=$("<input class='input_field custom_input_css' id='min_rate_descrip_input'></input>")
+                colmd2.append(rate_descrip_input);
+
+            row__col_one__row_div_three.append(colmd1)
+            row__col_one__row_div_three.append(colmd2)
+        col_one__row_div_three.append(row__col_one__row_div_three)
+
+    $(row_div_three).append(col_one__row_div_three);
+
+        var col_two__row_div_three=$("<div class='col-md-6'></div>");
+            var row__col_two__row_div_three=$("<div class='row'></div>");
+                colmd1=$("<div class='col-md-6'></div>")
+                colmd2=$("<div class='col-md-4'></div>")
+
+                max_rate_descrip_label=$("<label class='custom_label_css textcolor'>Maximum Rate Description</label>");
+                colmd1.append(max_rate_descrip_label);
+                max_rate_descrip_input=$("<input class='input_field custom_input_css' id='max_rate_descrip_input'></input>")
+                colmd2.append(max_rate_descrip_input);
+
+            row__col_two__row_div_three.append(colmd1)
+            row__col_two__row_div_three.append(colmd2)
+        col_two__row_div_three.append(row__col_two__row_div_three)
+
+    $(row_div_three).append(col_two__row_div_three);
+
+
+
+$(sub_ques_col).append(row_div_one);
+$(sub_ques_col).append(row_div_two);
+$(sub_ques_col).append(row_div_three);
+
+    }
+    else if (selectedValue==='comment') {
+        $('#sub_ques_row_'+great_grandfather_id).remove()
+
+        var col_md_12_ques_one=$("#"+great_grandfather_id)
+
+        var main_row_div= $("<div class='row' id='sub_ques_row_"+great_grandfather_id+"''></div>");
+        $(col_md_12_ques_one).append(main_row_div);
+
+        var sub_ques_col=$("<div class='col-md-12' id='sub_ques_col_"+great_grandfather_id+"'></div>");
+        $(main_row_div).append(sub_ques_col);
+
+        var row_div_one=$("<div class='row'></div>");
+        // Question Name
+        var col_one__row_div_one=$("<div class='col-md-12'></div>");
+            var row__col_one__row_div_one=$("<div class='row'></div>");
+                colmd1=$("<div class='col-md-3'></div>")
+                colmd2=$("<div class='col-md-4'></div>")
+
+                quest_name_label=$("<label for='quest_name_tag' class='custom_label_css textcolor'>Question Tag</label>");
+                colmd1.append(quest_name_label)
+
+                quest_name_input=$("<input class='input_field' id='quest_name_input' class='custom_input_css'>")
+                colmd2.append(quest_name_input)
+
+            row__col_one__row_div_one.append(colmd1);
+            row__col_one__row_div_one.append(colmd2);
+        col_one__row_div_one.append(row__col_one__row_div_one);
 
         $(row_div_one).append(col_one__row_div_one);
 
         var row_div_two=$("<div class='row'></div>");
-            // Question Title
-            var col_one__row_div_two=$("<div class='col-md-12'></div>");
-                var row__col_one__row_div_two=$("<div class='row'></div>");
-                    colmd1=$("<div class='col-md-3'></div>")
-                    colmd2=$("<div class='col-md-8'></div>")
+        // Question Title
+        var col_one__row_div_two=$("<div class='col-md-12'></div>");
+            var row__col_one__row_div_two=$("<div class='row'></div>");
+                colmd1=$("<div class='col-md-3'></div>")
+                colmd2=$("<div class='col-md-8'></div>")
 
-                    quest_title_label=$("<label class='custom_label_css textcolor'>Title</label>");
-                    colmd1.append(quest_title_label);
-                    quest_title_input=$("<input class='input_field custom_input_css' id='quest_title_input'></input>")
-                    colmd2.append(quest_title_input);
+                quest_title_label=$("<label class='custom_label_css textcolor'>Title</label>");
+                colmd1.append(quest_title_label);
+                quest_title_input=$("<input class='input_field custom_input_css ' id='quest_title_input'></input>")
+                colmd2.append(quest_title_input);
 
-                row__col_one__row_div_two.append(colmd1)
-                row__col_one__row_div_two.append(colmd2)
-            col_one__row_div_two.append(row__col_one__row_div_two)
+            row__col_one__row_div_two.append(colmd1)
+            row__col_one__row_div_two.append(colmd2)
+        col_one__row_div_two.append(row__col_one__row_div_two)
 
         $(row_div_two).append(col_one__row_div_two);
-        
-        var row_div_three=$("<div class='row'></div>");
-            // Rate descriptions
-            var col_one__row_div_three=$("<div class='col-md-6'></div>");
-                var row__col_one__row_div_three=$("<div class='row'></div>");
-                    colmd1=$("<div class='col-md-6'></div>")
-                    colmd2=$("<div class='col-md-4'></div>")
 
-                    rate_descrip_label=$("<label class='custom_label_css textcolor'>Minimum Rate Description</label>");
-                    colmd1.append(rate_descrip_label);
-                    rate_descrip_input=$("<input class='input_field custom_input_css' id='min_rate_descrip_input'></input>")
-                    colmd2.append(rate_descrip_input);
+        $(sub_ques_col).append(row_div_one);
+        $(sub_ques_col).append(row_div_two);
 
-                row__col_one__row_div_three.append(colmd1)
-                row__col_one__row_div_three.append(colmd2)
-            col_one__row_div_three.append(row__col_one__row_div_three)
-
-        $(row_div_three).append(col_one__row_div_three);
-
-            var col_two__row_div_three=$("<div class='col-md-6'></div>");
-                var row__col_two__row_div_three=$("<div class='row'></div>");
-                    colmd1=$("<div class='col-md-6'></div>")
-                    colmd2=$("<div class='col-md-4'></div>")
-
-                    max_rate_descrip_label=$("<label class='custom_label_css textcolor'>Maximum Rate Description</label>");
-                    colmd1.append(max_rate_descrip_label);
-                    max_rate_descrip_input=$("<input class='input_field custom_input_css' id='max_rate_descrip_input'></input>")
-                    colmd2.append(max_rate_descrip_input);
-
-                row__col_two__row_div_three.append(colmd1)
-                row__col_two__row_div_three.append(colmd2)
-            col_two__row_div_three.append(row__col_two__row_div_three)
-
-        $(row_div_three).append(col_two__row_div_three);
-
-
-
-    $(sub_ques_col).append(row_div_one);
-    $(sub_ques_col).append(row_div_two);
-    $(sub_ques_col).append(row_div_three);
-
-        }
-        else if (selectedValue==='comment') {
+}
+    else if (selectedValue==='radiogroup') {
             $('#sub_ques_row_'+great_grandfather_id).remove()
 
             var col_md_12_ques_one=$("#"+great_grandfather_id)
@@ -281,7 +352,88 @@
 
                     quest_title_label=$("<label class='custom_label_css textcolor'>Title</label>");
                     colmd1.append(quest_title_label);
-                    quest_title_input=$("<input class='input_field custom_input_css ' id='quest_title_input'></input>")
+                    quest_title_input=$("<input class='input_field custom_input_css' id='quest_title_input'></input>")
+                    colmd2.append(quest_title_input);
+
+                row__col_one__row_div_two.append(colmd1)
+                row__col_one__row_div_two.append(colmd2)
+            col_one__row_div_two.append(row__col_one__row_div_two)
+
+            $(row_div_two).append(col_one__row_div_two);
+            
+    var row_div_three=$("<div class='row' id='noofchoicesrowdiv__"+great_grandfather_id+"'></div>");
+
+    var coldiv=$("<div class='col-md-12'></div>")
+        var row=$("<div class='row' ></div>")
+            var col_one__row_div_three=$("<div class='col-md-12'></div>");
+                var row__col_one__row_div_three=$("<div class='row'></div>");
+                    colmd1=$("<div class='col-md-3'></div>")
+                    colmd2=$("<div class='col-md-1'></div>")
+                    colmd3=$("<div class='col-md-6'></div>")
+
+                    No_of_col_label=$("<label class='custom_label_css textcolor'>Number of Choices</label>");
+                    colmd1.append(No_of_col_label);
+                    No_of_col_input=$("<input class='input_field custom_input_css' id='noofchoices__"+great_grandfather_id+"'></input>")
+                    colmd2.append(No_of_col_input);
+                    no_of_col_button=$("<button type='button' style='padding: 6px; border-radius: 4px; color: #fff;background-color: #27a69a; border-color: #2e6da4;' id='submitchoices__"+great_grandfather_id+"' class= 'btn btn-secondary' onclick='genChoiceButton($(this))'>Generate</button>")
+                    colmd3.append(no_of_col_button);
+
+                row__col_one__row_div_three.append(colmd1)
+                row__col_one__row_div_three.append(colmd2)
+                row__col_one__row_div_three.append(colmd3)
+
+                col_one__row_div_three.append(row__col_one__row_div_three)
+            row.append(col_one__row_div_three)
+        coldiv.append(row)
+    $(row_div_three).append(coldiv);
+
+
+            $(sub_ques_col).append(row_div_one);
+            $(sub_ques_col).append(row_div_two);
+            $(sub_ques_col).append(row_div_three);
+
+
+    }
+    else if (selectedValue==='text') {
+            $('#sub_ques_row_'+great_grandfather_id).remove()
+
+            var col_md_12_ques_one=$("#"+great_grandfather_id)
+
+            var main_row_div= $("<div class='row' id='sub_ques_row_"+great_grandfather_id+"''></div>");
+            $(col_md_12_ques_one).append(main_row_div);
+
+            var sub_ques_col=$("<div class='col-md-12' id='sub_ques_col_"+great_grandfather_id+"'></div>");
+            $(main_row_div).append(sub_ques_col);
+
+            var row_div_one=$("<div class='row'></div>");
+            // Question Name
+            var col_one__row_div_one=$("<div class='col-md-12'></div>");
+                var row__col_one__row_div_one=$("<div class='row'></div>");
+                    colmd1=$("<div class='col-md-3'></div>")
+                    colmd2=$("<div class='col-md-4'></div>")
+
+                    quest_name_label=$("<label for='quest_name_tag' class='custom_label_css textcolor'>Question Tag</label>");
+                    colmd1.append(quest_name_label)
+
+                    quest_name_input=$("<input class='input_field' id='quest_name_input' class='custom_input_css'>")
+                    colmd2.append(quest_name_input)
+
+                row__col_one__row_div_one.append(colmd1);
+                row__col_one__row_div_one.append(colmd2);
+            col_one__row_div_one.append(row__col_one__row_div_one);
+
+            $(row_div_one).append(col_one__row_div_one);
+
+            var row_div_two=$("<div class='row'></div>");
+            // Question Title
+            var col_one__row_div_two=$("<div class='col-md-12'></div>");
+                var row__col_one__row_div_two=$("<div class='row'></div>");
+                    colmd1=$("<div class='col-md-3'></div>")
+                    colmd2=$("<div class='col-md-8'></div>")
+
+                    quest_title_label=$("<label class='custom_label_css textcolor'>Title</label>");
+                    colmd1.append(quest_title_label);
+                    quest_title_input=$("<input class='input_field custom_input_css' id='quest_title_input'></input>")
                     colmd2.append(quest_title_input);
 
                 row__col_one__row_div_two.append(colmd1)
@@ -292,447 +444,355 @@
 
             $(sub_ques_col).append(row_div_one);
             $(sub_ques_col).append(row_div_two);
-
     }
-        else if (selectedValue==='radiogroup') {
-                $('#sub_ques_row_'+great_grandfather_id).remove()
-
-                var col_md_12_ques_one=$("#"+great_grandfather_id)
-
-                var main_row_div= $("<div class='row' id='sub_ques_row_"+great_grandfather_id+"''></div>");
-                $(col_md_12_ques_one).append(main_row_div);
-
-                var sub_ques_col=$("<div class='col-md-12' id='sub_ques_col_"+great_grandfather_id+"'></div>");
-                $(main_row_div).append(sub_ques_col);
-
-                var row_div_one=$("<div class='row'></div>");
-                // Question Name
-                var col_one__row_div_one=$("<div class='col-md-12'></div>");
-                    var row__col_one__row_div_one=$("<div class='row'></div>");
-                        colmd1=$("<div class='col-md-3'></div>")
-                        colmd2=$("<div class='col-md-4'></div>")
-
-                        quest_name_label=$("<label for='quest_name_tag' class='custom_label_css textcolor'>Question Tag</label>");
-                        colmd1.append(quest_name_label)
-
-                        quest_name_input=$("<input class='input_field' id='quest_name_input' class='custom_input_css'>")
-                        colmd2.append(quest_name_input)
-
-                    row__col_one__row_div_one.append(colmd1);
-                    row__col_one__row_div_one.append(colmd2);
-                col_one__row_div_one.append(row__col_one__row_div_one);
-
-                $(row_div_one).append(col_one__row_div_one);
-
-                var row_div_two=$("<div class='row'></div>");
-                // Question Title
-                var col_one__row_div_two=$("<div class='col-md-12'></div>");
-                    var row__col_one__row_div_two=$("<div class='row'></div>");
-                        colmd1=$("<div class='col-md-3'></div>")
-                        colmd2=$("<div class='col-md-8'></div>")
-
-                        quest_title_label=$("<label class='custom_label_css textcolor'>Title</label>");
-                        colmd1.append(quest_title_label);
-                        quest_title_input=$("<input class='input_field custom_input_css' id='quest_title_input'></input>")
-                        colmd2.append(quest_title_input);
-
-                    row__col_one__row_div_two.append(colmd1)
-                    row__col_one__row_div_two.append(colmd2)
-                col_one__row_div_two.append(row__col_one__row_div_two)
-
-                $(row_div_two).append(col_one__row_div_two);
-                
-        var row_div_three=$("<div class='row' id='noofchoicesrowdiv__"+great_grandfather_id+"'></div>");
-
-        var coldiv=$("<div class='col-md-12'></div>")
-            var row=$("<div class='row' ></div>")
-                var col_one__row_div_three=$("<div class='col-md-12'></div>");
-                    var row__col_one__row_div_three=$("<div class='row'></div>");
-                        colmd1=$("<div class='col-md-3'></div>")
-                        colmd2=$("<div class='col-md-1'></div>")
-                        colmd3=$("<div class='col-md-6'></div>")
-
-                        No_of_col_label=$("<label class='custom_label_css textcolor'>Number of Choices</label>");
-                        colmd1.append(No_of_col_label);
-                        No_of_col_input=$("<input class='input_field custom_input_css' id='noofchoices__"+great_grandfather_id+"'></input>")
-                        colmd2.append(No_of_col_input);
-                        no_of_col_button=$("<button type='button' style='padding: 6px; border-radius: 4px; color: #fff;background-color: #27a69a; border-color: #2e6da4;' id='submitchoices__"+great_grandfather_id+"' class= 'btn btn-secondary' onclick='genChoiceButton($(this))'>Generate</button>")
-                        colmd3.append(no_of_col_button);
-
-                    row__col_one__row_div_three.append(colmd1)
-                    row__col_one__row_div_three.append(colmd2)
-                    row__col_one__row_div_three.append(colmd3)
-
-                    col_one__row_div_three.append(row__col_one__row_div_three)
-                row.append(col_one__row_div_three)
-            coldiv.append(row)
-        $(row_div_three).append(coldiv);
-
-
-                $(sub_ques_col).append(row_div_one);
-                $(sub_ques_col).append(row_div_two);
-                $(sub_ques_col).append(row_div_three);
-
-
-        }
-        else if (selectedValue==='text') {
-                $('#sub_ques_row_'+great_grandfather_id).remove()
-
-                var col_md_12_ques_one=$("#"+great_grandfather_id)
-
-                var main_row_div= $("<div class='row' id='sub_ques_row_"+great_grandfather_id+"''></div>");
-                $(col_md_12_ques_one).append(main_row_div);
-
-                var sub_ques_col=$("<div class='col-md-12' id='sub_ques_col_"+great_grandfather_id+"'></div>");
-                $(main_row_div).append(sub_ques_col);
-
-                var row_div_one=$("<div class='row'></div>");
-                // Question Name
-                var col_one__row_div_one=$("<div class='col-md-12'></div>");
-                    var row__col_one__row_div_one=$("<div class='row'></div>");
-                        colmd1=$("<div class='col-md-3'></div>")
-                        colmd2=$("<div class='col-md-4'></div>")
-
-                        quest_name_label=$("<label for='quest_name_tag' class='custom_label_css textcolor'>Question Tag</label>");
-                        colmd1.append(quest_name_label)
-
-                        quest_name_input=$("<input class='input_field' id='quest_name_input' class='custom_input_css'>")
-                        colmd2.append(quest_name_input)
-
-                    row__col_one__row_div_one.append(colmd1);
-                    row__col_one__row_div_one.append(colmd2);
-                col_one__row_div_one.append(row__col_one__row_div_one);
-
-                $(row_div_one).append(col_one__row_div_one);
-
-                var row_div_two=$("<div class='row'></div>");
-                // Question Title
-                var col_one__row_div_two=$("<div class='col-md-12'></div>");
-                    var row__col_one__row_div_two=$("<div class='row'></div>");
-                        colmd1=$("<div class='col-md-3'></div>")
-                        colmd2=$("<div class='col-md-8'></div>")
-
-                        quest_title_label=$("<label class='custom_label_css textcolor'>Title</label>");
-                        colmd1.append(quest_title_label);
-                        quest_title_input=$("<input class='input_field custom_input_css' id='quest_title_input'></input>")
-                        colmd2.append(quest_title_input);
-
-                    row__col_one__row_div_two.append(colmd1)
-                    row__col_one__row_div_two.append(colmd2)
-                col_one__row_div_two.append(row__col_one__row_div_two)
-
-                $(row_div_two).append(col_one__row_div_two);
-
-                $(sub_ques_col).append(row_div_one);
-                $(sub_ques_col).append(row_div_two);
-        }
-        else if (selectedValue==='multipletext') {
-                $('#sub_ques_row_'+great_grandfather_id).remove()
-
-                var col_md_12_ques_one=$("#"+great_grandfather_id)
-
-                var main_row_div= $("<div class='row' id='sub_ques_row_"+great_grandfather_id+"''></div>");
-                $(col_md_12_ques_one).append(main_row_div);
-
-                var sub_ques_col=$("<div class='col-md-12' id='sub_ques_col_"+great_grandfather_id+"'></div>");
-                $(main_row_div).append(sub_ques_col);
-
-                var row_div_one=$("<div class='row'></div>");
-                // Question Name
-                var col_one__row_div_one=$("<div class='col-md-12'></div>");
-                    var row__col_one__row_div_one=$("<div class='row'></div>");
-                        colmd1=$("<div class='col-md-3'></div>")
-                        colmd2=$("<div class='col-md-4'></div>")
-
-                        quest_name_label=$("<label for='quest_name_tag' class='custom_label_css textcolor'>Question Tag</label>");
-                        colmd1.append(quest_name_label)
-
-                        quest_name_input=$("<input class='input_field' id='quest_name_input' class='custom_input_css'>")
-                        colmd2.append(quest_name_input)
-
-                    row__col_one__row_div_one.append(colmd1);
-                    row__col_one__row_div_one.append(colmd2);
-                col_one__row_div_one.append(row__col_one__row_div_one);
-
-                $(row_div_one).append(col_one__row_div_one);
-
-                var row_div_two=$("<div class='row'></div>");
-                // Question Title
-                var col_one__row_div_two=$("<div class='col-md-12'></div>");
-                    var row__col_one__row_div_two=$("<div class='row'></div>");
-                        colmd1=$("<div class='col-md-3'></div>")
-                        colmd2=$("<div class='col-md-8'></div>")
-
-                        quest_title_label=$("<label class='custom_label_css textcolor'>Title</label>");
-                        colmd1.append(quest_title_label);
-                        quest_title_input=$("<input class='input_field custom_input_css textcolor' id='quest_title_input'></input>")
-                        colmd2.append(quest_title_input);
-
-                    row__col_one__row_div_two.append(colmd1)
-                    row__col_one__row_div_two.append(colmd2)
-                col_one__row_div_two.append(row__col_one__row_div_two)
-
-                $(row_div_two).append(col_one__row_div_two);
-
-                $(sub_ques_col).append(row_div_one);
-                $(sub_ques_col).append(row_div_two);
-        }
-        else{
+    else if (selectedValue==='multipletext') {
             $('#sub_ques_row_'+great_grandfather_id).remove()
 
+            var col_md_12_ques_one=$("#"+great_grandfather_id)
+
+            var main_row_div= $("<div class='row' id='sub_ques_row_"+great_grandfather_id+"''></div>");
+            $(col_md_12_ques_one).append(main_row_div);
+
+            var sub_ques_col=$("<div class='col-md-12' id='sub_ques_col_"+great_grandfather_id+"'></div>");
+            $(main_row_div).append(sub_ques_col);
+
+            var row_div_one=$("<div class='row'></div>");
+            // Question Name
+            var col_one__row_div_one=$("<div class='col-md-12'></div>");
+                var row__col_one__row_div_one=$("<div class='row'></div>");
+                    colmd1=$("<div class='col-md-3'></div>")
+                    colmd2=$("<div class='col-md-4'></div>")
+
+                    quest_name_label=$("<label for='quest_name_tag' class='custom_label_css textcolor'>Question Tag</label>");
+                    colmd1.append(quest_name_label)
+
+                    quest_name_input=$("<input class='input_field' id='quest_name_input' class='custom_input_css'>")
+                    colmd2.append(quest_name_input)
+
+                row__col_one__row_div_one.append(colmd1);
+                row__col_one__row_div_one.append(colmd2);
+            col_one__row_div_one.append(row__col_one__row_div_one);
+
+            $(row_div_one).append(col_one__row_div_one);
+
+            var row_div_two=$("<div class='row'></div>");
+            // Question Title
+            var col_one__row_div_two=$("<div class='col-md-12'></div>");
+                var row__col_one__row_div_two=$("<div class='row'></div>");
+                    colmd1=$("<div class='col-md-3'></div>")
+                    colmd2=$("<div class='col-md-8'></div>")
+
+                    quest_title_label=$("<label class='custom_label_css textcolor'>Title</label>");
+                    colmd1.append(quest_title_label);
+                    quest_title_input=$("<input class='input_field custom_input_css textcolor' id='quest_title_input'></input>")
+                    colmd2.append(quest_title_input);
+
+                row__col_one__row_div_two.append(colmd1)
+                row__col_one__row_div_two.append(colmd2)
+            col_one__row_div_two.append(row__col_one__row_div_two)
+
+            $(row_div_two).append(col_one__row_div_two);
+
+            $(sub_ques_col).append(row_div_one);
+            $(sub_ques_col).append(row_div_two);
     }
+    else{
+        $('#sub_ques_row_'+great_grandfather_id).remove()
+
 }
-    function genColButton(elem){
-        var buttonid=$(elem).attr('id');
-        arr=buttonid.split("__")
-        console.log("arr",arr)
-        console.log("buttonid",buttonid);
+}
+function genColButton(elem){
+    var buttonid=$(elem).attr('id');
+    arr=buttonid.split("__")
+    console.log("arr",arr)
+    console.log("buttonid",buttonid);
 
-        var columninput= $("#noofcol__"+arr[1]+"").val();
-        console.log("columnInput",columninput)
+    var columninput= $("#noofcol__"+arr[1]+"").val();
+    console.log("columnInput",columninput)
+
+    var colrowdiv=$("#noofcolrowdiv__"+arr[1])
+    $("#columnsdiv__"+arr[1]).remove();
+    var coldiv=$('<div class="col-md-12" id="columnsdiv__'+arr[1]+'""></div>')
+
+    for (i=0;i<columninput;i++){
+                var row=$('<div class="row"></div>');
+                    var colmd12=$("<div class='col-md-10'></div>");
+                        var label=$('<label class="textcolor" style= "padding: inherit">Column '+(i+1)+'</label>')
+                        var input=$("<input class ='generate_input' id='col_"+(i+1)+"_input'></input>")
+                    colmd12.append(label);
+                    colmd12.append(input);
+                row.append(colmd12);
+        coldiv.append(row)                
+    }
+    colrowdiv.append(coldiv);
+
     
-        var colrowdiv=$("#noofcolrowdiv__"+arr[1])
-        $("#columnsdiv__"+arr[1]).remove();
-        var coldiv=$('<div class="col-md-12" id="columnsdiv__'+arr[1]+'""></div>')
+}
+function genRowButton(elem){
+    var buttonid=$(elem).attr('id');
+    arr=buttonid.split("__")
 
-        for (i=0;i<columninput;i++){
-                    var row=$('<div class="row"></div>');
-                        var colmd12=$("<div class='col-md-10'></div>");
-                            var label=$('<label class="textcolor" style= "padding: inherit">Column '+(i+1)+'</label>')
-                            var input=$("<input class ='generate_input' id='col_"+(i+1)+"_input'></input>")
-                        colmd12.append(label);
-                        colmd12.append(input);
-                    row.append(colmd12);
-            coldiv.append(row)                
-        }
-        colrowdiv.append(coldiv);
+    var rowinput= $("#noofrows__"+arr[1]+"").val();    
+    var colrowdiv=$("#noofrowsdiv__"+arr[1])
+    $("#rowsdiv__"+arr[1]).remove();
+    var coldiv=$('<div class="col-md-12" id="rowsdiv__'+arr[1]+'""></div>')
+
+    for (i=0;i<rowinput;i++){
+                var row=$('<div class="row"></div>');
+                    var colmd12=$("<div class='col-md-10'></div>");
+                        var label=$('<label class="textcolor" style= "padding: inherit">Row '+(i+1)+'</label>')
+                        var input=$("<input class = 'generate_input' id='row_"+(i+1)+"_input'></input>")
+                    colmd12.append(label);
+                    colmd12.append(input);
+                row.append(colmd12);
+        coldiv.append(row)                
+    }
+    colrowdiv.append(coldiv);
+
+    
+}
+function genChoiceButton(elem){
+    var buttonid=$(elem).attr('id');
+    arr=buttonid.split("__")
+    console.log("arr",arr)
+    console.log("buttonid",buttonid);
+
+    var choicesinput= $("#noofchoices__"+arr[1]+"").val();
+    console.log("choicesinput",choicesinput)
+
+    var colrowdiv=$("#noofchoicesrowdiv__"+arr[1])
+    $("#choicesdiv__"+arr[1]).remove();
+    var coldiv=$('<div class="col-md-12" id="choicesdiv__'+arr[1]+'""></div>')
+
+    for (i=0;i<choicesinput;i++){
+                var row=$('<div class="row"></div>');
+                    var colmd12=$("<div class='col-md-10'></div>");
+                        var label=$('<label class="textcolor" style= "padding: inherit">Choice '+(i+1)+'</label>')
+                        var input=$("<input class= 'generate_input'id='choice_"+(i+1)+"_input'></input>")
+                    colmd12.append(label);
+                    colmd12.append(input);
+                row.append(colmd12);
+        coldiv.append(row)                
+    }
+    colrowdiv.append(coldiv);
+}
+function saveQuestion(){
+    var main_dict={}
+    var mainlist=[];
+    var sublist=[]
+    var subdict1={}
+    var sub_dict2={}
+    var count=0
+    var totalquestions=0
+    $('.questionClass').each(function(i){
+        totalquestions++;
+
+    });
+    console.log("totalquestions",totalquestions)
+
+    $('.questionClass').each(function(i){
+        count++;
+        var select =$(this).find('select[id^="selectbox_"]').val()
+        var title =$(this).find('#quest_title_input').val()
+        var name =$(this).find('#quest_name_input').val()
+
+        if(select==='matrix'){
+            column_list=[]
+            $('input[id^="col_"]').each(function(i){
+                temp_dict={};
+                id=$(this).attr('id');
+                arr=id.split("_")
+                value=arr[1]
+                text=$(this).val();
+                temp_dict['value']=text;
+                temp_dict['text']=text;
+
+                column_list.push(temp_dict)
+                console.log("colsss",$(this).val());
+            });
+            console.log("column_list",column_list)
+
+            row_list=[]
+            $('input[id^="row_"]').each(function(i){
+                var temp_dict={};
+                id=$(this).attr('id');
+                arr=id.split("_")
+                value=arr[1]
+                text=$(this).val();
+                temp_dict['value']=text;
+                temp_dict['text']=text;
+                row_list.push(temp_dict)
+                console.log("colsss",$(this).val());
+            });
+            console.log("row_list",row_list)
+
+            sub_dict2={}
+            sub_dict2['type']=select
+            sub_dict2['name']=name
+            sub_dict2['title']=title
+            sub_dict2['columns']=column_list
+            sub_dict2['rows']=row_list
+
+            sublist.push(sub_dict2);
+            console.log("sublist",sublist)
 
         
-    }
-    function genRowButton(elem){
-        var buttonid=$(elem).attr('id');
-        arr=buttonid.split("__")
-
-        var rowinput= $("#noofrows__"+arr[1]+"").val();    
-        var colrowdiv=$("#noofrowsdiv__"+arr[1])
-        $("#rowsdiv__"+arr[1]).remove();
-        var coldiv=$('<div class="col-md-12" id="rowsdiv__'+arr[1]+'""></div>')
-
-        for (i=0;i<rowinput;i++){
-                    var row=$('<div class="row"></div>');
-                        var colmd12=$("<div class='col-md-10'></div>");
-                            var label=$('<label class="textcolor" style= "padding: inherit">Row '+(i+1)+'</label>')
-                            var input=$("<input class = 'generate_input' id='row_"+(i+1)+"_input'></input>")
-                        colmd12.append(label);
-                        colmd12.append(input);
-                    row.append(colmd12);
-            coldiv.append(row)                
         }
-        colrowdiv.append(coldiv);
+        else if(select==='comment'){
+            sub_dict2={}
+            sub_dict2['type']=select
+            sub_dict2['name']=name
+            sub_dict2['title']=title
 
-        
-    }
-    function genChoiceButton(elem){
-        var buttonid=$(elem).attr('id');
-        arr=buttonid.split("__")
-        console.log("arr",arr)
-        console.log("buttonid",buttonid);
+            sublist.push(sub_dict2);
+            console.log("sublist",sublist)
 
-        var choicesinput= $("#noofchoices__"+arr[1]+"").val();
-        console.log("choicesinput",choicesinput)
-    
-        var colrowdiv=$("#noofchoicesrowdiv__"+arr[1])
-        $("#choicesdiv__"+arr[1]).remove();
-        var coldiv=$('<div class="col-md-12" id="choicesdiv__'+arr[1]+'""></div>')
 
-        for (i=0;i<choicesinput;i++){
-                    var row=$('<div class="row"></div>');
-                        var colmd12=$("<div class='col-md-10'></div>");
-                            var label=$('<label class="textcolor" style= "padding: inherit">Choice '+(i+1)+'</label>')
-                            var input=$("<input class= 'generate_input'id='choice_"+(i+1)+"_input'></input>")
-                        colmd12.append(label);
-                        colmd12.append(input);
-                    row.append(colmd12);
-            coldiv.append(row)                
+        }            
+        else if(select==='text'){
+            sub_dict2={}
+            sub_dict2['type']=select
+            sub_dict2['name']=name
+            sub_dict2['title']=title
+
+            sublist.push(sub_dict2);
+            console.log("sub_dict2",sub_dict2)
+            console.log("sublist",sublist)
+
+
         }
-        colrowdiv.append(coldiv);
-    }
-    function saveQuestion(){
-        var main_dict={}
-        var mainlist=[];
-        var sublist=[]
-        var subdict1={}
-        var sub_dict2={}
-        var count=0
-        var totalquestions=0
-        $('.questionClass').each(function(i){
-            totalquestions++;
+        else if(select==='multipletext'){
+            sub_dict2={}
+            sub_dict2['type']=select
+            sub_dict2['name']=name
+            sub_dict2['title']=title
 
-        });
-        console.log("totalquestions",totalquestions)
+            sublist.push(sub_dict2);
 
-        $('.questionClass').each(function(i){
-            count++;
-            var select =$(this).find('select[id^="selectbox_"]').val()
-            var title =$(this).find('#quest_title_input').val()
-            var name =$(this).find('#quest_name_input').val()
+        }
+        else if(select==='radiogroup'){
 
-            if(select==='matrix'){
-                column_list=[]
-                $('input[id^="col_"]').each(function(i){
-                    temp_dict={};
-                    id=$(this).attr('id');
-                    arr=id.split("_")
-                    value=arr[1]
-                    text=$(this).val();
-                    temp_dict['value']=value;
-                    temp_dict['text']=text;
+            choice_list=[]
+            $('input[id^="choice_"]').each(function(i){
+                temp_dict={};
+                id=$(this).attr('id');
+                arr=id.split("_")
+                value=arr[1]
+                text=$(this).val();
+                choice_list.push(text)
+            });
 
-                    column_list.push(temp_dict)
-                    console.log("colsss",$(this).val());
-                });
-                console.log("column_list",column_list)
-
-                row_list=[]
-                $('input[id^="row_"]').each(function(i){
-                    var temp_dict={};
-                    id=$(this).attr('id');
-                    arr=id.split("_")
-                    value=arr[1]
-                    text=$(this).val();
-                    temp_dict['value']='affordable';
-                    temp_dict['text']=text;
-                    row_list.push(temp_dict)
-                    console.log("colsss",$(this).val());
-                });
-                console.log("row_list",row_list)
-
-                sub_dict2={}
-                sub_dict2['type']=select
-                sub_dict2['name']=name
-                sub_dict2['title']=title
-                sub_dict2['columns']=column_list
-                sub_dict2['rows']=row_list
-
-                sublist.push(sub_dict2);
-                console.log("sublist",sublist)
+            sub_dict2={}
+            sub_dict2['type']=select
+            sub_dict2['name']=name
+            sub_dict2['title']=title
+            sub_dict2['choices']=choice_list
 
             
-            }
-            else if(select==='comment'){
-                sub_dict2={}
-                sub_dict2['type']=select
-                sub_dict2['name']=name
-                sub_dict2['title']=title
-
-                sublist.push(sub_dict2);
-                console.log("sublist",sublist)
+            sublist.push(sub_dict2);
+            console.log("sublist",sublist)
 
 
-            }            
-            else if(select==='text'){
-                sub_dict2={}
-                sub_dict2['type']=select
-                sub_dict2['name']=name
-                sub_dict2['title']=title
+        }
+        else if (select==='rating')
+        {    
 
-                sublist.push(sub_dict2);
-                console.log("sub_dict2",sub_dict2)
-                console.log("sublist",sublist)
+            sub_dict2={}
+            sub_dict2['type']=select
+            sub_dict2['name']=name
+            sub_dict2['title']=title;
+
+            var min_rate_description =$(this).find('#min_rate_descrip_input').val()
+            var max_rate_description =$(this).find('#max_rate_descrip_input').val()
+        
+            sub_dict2['mininumRateDescription']=min_rate_description
+            sub_dict2['maximumRateDescription']=max_rate_description
+
+            sublist.push(sub_dict2);
+            console.log("sublist",sublist)
 
 
-            }
-            else if(select==='multipletext'){
-                sub_dict2={}
-                sub_dict2['type']=select
-                sub_dict2['name']=name
-                sub_dict2['title']=title
+        }
+        else {
+        }
+        if (count===Math.round((totalquestions/2)) || count===totalquestions){
+            var subdict1={};
+            subdict1['questions']=[];
+            console.log("sublist--final",sublist)
+            subdict1['questions']=sublist;
+            mainlist.push(subdict1);
+            console.log("mainlist",mainlist)
+            sublist=[]
+        }
+    })
+    
+    main_dict['pages']=mainlist;
+    console.log("main_dict",main_dict)
 
-                sublist.push(sub_dict2);
+    $.ajax({
+        
+            type: 'POST',
+            dataType: "json",
+            'data': {
+                "expselected":expselected,
+                'main_dict':JSON.stringify(main_dict),
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+            },
+    // the ajax call is sent to subdetails url name in the post function.  
+            url: "{% url 'savesurveyform' %}",
+            success: function(data){
+                console.log("sucees")
+                $("#createSurvey").hide();
+                previewSurvey=$("#previewSurvey");
+                var survey_element=$("<div id='surveyElement'></div>")
+                var survey_result=$('<div id="surveyResult"></div>')
+                previewSurvey.append(survey_element);
+                previewSurvey.append(survey_result);
 
-            }
-            else if(select==='radiogroup'){
+                $.material.init();
 
-                choice_list=[]
-                $('input[id^="choice_"]').each(function(i){
-                    temp_dict={};
-                    id=$(this).attr('id');
-                    arr=id.split("_")
-                    value=arr[1]
-                    text=$(this).val();
-                    choice_list.push(text)
-                });
-
-                sub_dict2={}
-                sub_dict2['type']=select
-                sub_dict2['name']=name
-                sub_dict2['title']=title
-                sub_dict2['choices']=choice_list
-
+                Survey.defaultBootstrapMaterialCss.navigationButton = "btn btn-green";
+                Survey.defaultBootstrapMaterialCss.rating.item = "btn btn-default my-rating";
+                Survey.StylesManager.applyTheme("bootstrapmaterial");
+                json=main_dict;
+                window.survey = new Survey.Model(json);
                 
-                sublist.push(sub_dict2);
-                console.log("sublist",sublist)
+                $("#surveyElement").Survey({ 
+                    model: survey 
+                });
+
+                survey.onComplete.add(function(result) {
+                    prevsurveydata=main_dict
+                    window.location="{%url 'createsurveyform' %}"
+
+                });
 
 
             }
-            else if (select==='rating')
-            {    
+    });
+    
+$('.allquestions').empty()
 
-                sub_dict2={}
-                sub_dict2['type']=select
-                sub_dict2['name']=name
-                sub_dict2['title']=title;
+}
 
-                var min_rate_description =$(this).find('#min_rate_descrip_input').val()
-                var max_rate_description =$(this).find('#max_rate_descrip_input').val()
-            
-                sub_dict2['mininumRateDescription']=min_rate_description
-                sub_dict2['maximumRateDescription']=max_rate_description
+function showSurveyForm(){
+    $("#createsSurvey").show();
+    $("#previewSurvey").empty();
 
-                sublist.push(sub_dict2);
-                console.log("sublist",sublist)
-
-
-            }
-            else {
-            }
-            if (count===Math.round((totalquestions/2)) || count===totalquestions){
-                var subdict1={};
-                subdict1['questions']=[];
-                console.log("sublist--final",sublist)
-                subdict1['questions']=sublist;
-                mainlist.push(subdict1);
-                console.log("mainlist",mainlist)
-                sublist=[]
-            }
-        })
-       
-        main_dict['pages']=mainlist;
-        console.log("main_dict",main_dict)
-
-        $.ajax({
-            
-                type: 'POST',
-                dataType: "json",
-                'data': {
-                    'main_dict':JSON.stringify(main_dict),
-                    'csrfmiddlewaretoken': '{{ csrf_token }}',
-                },
-        // the ajax call is sent to subdetails url name in the post function.  
-                url: "{% url 'savesurveyform' %}",
-                success: function(data){
-                    console.log("sucees")
-                }
-        });
-        
-    $('.allquestions').remove()
-
-    }
-var questioncount=0
+}
 function addQuestion(){
     questioncount++;
-    $('#instructions').remove()
-
+    $('#instructions').remove();
+    $("#previewSurvey").empty();
+    // if createSurvey is not visible.
+    // and addquestion class is not empty then alert the user to click createSurvey form first. 
+    if($("#createsSurvey").is(':hidden')===true){
+        if(  $('.allquestions').children().length > 0 ){
+            alert("Please Press Create Survey Form first to Proceed!")
+            return;
+        }
+    }
+    
     var allquestions=$(".allquestions");
         var row_question_class=$("<div class='row questionClass'>")
             var col_md_12=$("<div class='col-md-12' id='ques_"+questioncount+"'>")
@@ -775,6 +835,102 @@ function addQuestion(){
 function removeQuestion(element){
     $(element).parent().parent().parent().parent().remove();
 }
+
+function selectedExp(ele){
+    // $(this).css("background-color","#FFFF00");
+    $("#previewSurvey").empty()
+    $(".active_li").removeClass("active_li");
+    $('.allquestions').empty()
+
+    $(ele).attr("class","active_li");
+    console.log("ele",$(ele).text())
+    expselected=$(ele).text()
+    $.ajax({
+        
+        type: 'GET',
+        dataType: "json",
+        'data': {
+            "expselected":expselected,
+
+        },
+        url: "{% url 'retrievesurveyform' %}",
+        success: function(data){
+            $("#pressurveybtn").remove()
+            if (data['status']==="found"){
+                console.log(JSON.parse(data['surveydata']))
+                prevsurveydata=JSON.parse(data['surveydata'])
+                survey_sidebardiv=$("#survey_sidebardiv");
+                    button=$('<button type="button" id="pressurveybtn" class="btn" style="padding: 6px; border-radius: 4px; color: #fff;background-color:#c264e1; " onclick="populatePrevSurveyForm($(this))">Previously Set Survey</button>')
+                survey_sidebardiv.append(button)
+            }
+            
+       
+
+        }
+    });
+}
+var prevsurveydata;
+
+$(document).ready(function(){
+
+    $( "#createsSurvey_ul li" ).first().addClass( "active_li" );
+    expselected=$( "#createsSurvey_ul li" ).first().text()
+    $.ajax({
+        
+        type: 'GET',
+        dataType: "json",
+        'data': {
+            "expselected":expselected,
+
+        },
+        url: "{% url 'retrievesurveyform' %}",
+        success: function(data){
+            if (data['status']==="found"){
+                console.log(JSON.parse(data['surveydata']))
+                prevsurveydata=JSON.parse(data['surveydata'])
+                survey_sidebardiv=$("#survey_sidebardiv");
+                    button=$('<button type="button" id="pressurveybtn" class="btn" style="padding: 6px; border-radius: 4px; color: #fff;background-color: #c264e1;" onclick="populatePrevSurveyForm($(this))">Previously Set Survey</button>')
+                    survey_sidebardiv.append(button)
+            }
+            
+       
+
+        }
+    });
+});
+function populatePrevSurveyForm(ele){
+    console.log("prevdata",prevsurveydata)
+    $("#createsSurvey").hide();
+    $('#instructions').remove()
+
+    previewSurvey=$("#previewSurvey");
+    var survey_element=$("<div id='surveyElement'></div>")
+    var survey_result=$('<div id="surveyResult"></div>')
+    previewSurvey.append(survey_element);
+    previewSurvey.append(survey_result);
+
+    $.material.init();
+
+    Survey.defaultBootstrapMaterialCss.navigationButton = "btn btn-green";
+    Survey.defaultBootstrapMaterialCss.rating.item = "btn btn-default my-rating";
+    Survey.StylesManager.applyTheme("bootstrapmaterial");
+    json=prevsurveydata;
+    
+    window.survey = new Survey.Model(json);
+    
+    $("#surveyElement").Survey({ 
+        model: survey 
+    });
+
+    survey.onComplete.add(function(result) {
+
+
+    });
+
+}
+   
+
 </script>
+
 
 {%endblock%}

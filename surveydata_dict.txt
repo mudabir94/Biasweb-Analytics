@@ -1,0 +1,19 @@
+{"pages": 
+[
+    {
+        "questions":
+        [
+            {"type": "matrix", "name": "Quality", "title": "Please indicate if you agree or disagree with the following statements", "columns": [{"value": "Strongly Disagree", "text": "Strongly Disagree"}, {"value": "Disagree", "text": "Disagree"}, {"value": "Neutral", "text": "Neutral"}, {"value": "Agree", "text": "Agree"}, {"value": "Strongly Agree", "text": "Strongly Agree"}], "rows": [{"value": "Product is affordable", "text": "Product is affordable"}, {"value": "Product does what it claims", "text": "Product does what it claims"}, {"value": "Product is better than other products on the market", "text": "Product is better than other products on the market"}, {"value": "Product is easy to use", "text": "Product is easy to use"}]}, 
+            {"type": "rating", "name": "satisfaction", "title": "How satisfied are you with the Product?", "mininumRateDescription": "Not Satisfied", "maximumRateDescription": "Completely satisfied"}
+        ]
+    }, 
+            
+    {
+        "questions": 
+        [
+            {"type": "radiogroup", "name": "price to competitors", "title": "Compared to our competitors, do you feel the Product is", "choices": ["Less expensive", "Priced about the same", "More expensive", "Not sure"]}, 
+            {"type": "text", "name": "email", "title": "\"Thank you for taking our survey. Your survey is almost complete, please enter your email address in the box below if you wish to participate in our drawing, then press the 'Submit' button."}
+        ]
+    }
+]
+}

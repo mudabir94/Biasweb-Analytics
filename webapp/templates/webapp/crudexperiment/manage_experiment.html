@@ -17,25 +17,25 @@
                         <div class='col'>
                             <div class="row is-flex custom_row" id="list_n_button_div">
                                 <div class='col'>
-                                    <div class="row custom_row">Experiment List</div>
+                                    <div class="row custom_row"><span class="heading_div" >Experiment List</span></div>
                                     <div class="row custom_row">
                                         <div id="list_exp_id_div"></div>
                                     </div>
                                 </div>
                                 <div class='col'>
-                                        <div class="row custom_row">Status Button</div>
-                                        <div class="row custom_row">
+                                        <div class="row custom_row"><span class="heading_div">Status Button</span></div>
+                                        <div class="row custom_row" style="display:flex;flex-direction: column;">
                                             <!-- <button class="" onclick="exp_Filter_By_Statuses($(this))" value="ALL">ALL</button> -->
-                                            <button class="btn" id="DESIGN_MODE_BTN" onclick="exp_Filter_By_Statuses($(this))" value="DESIGN_MODE">DESIGN MODE</button>
-                                            <button class="btn" onclick="exp_Filter_By_Statuses($(this))" value="UNASSIGNED">UNASSIGNED</button>
-                                            <button class="btn" onclick="exp_Filter_By_Statuses($(this))" value="READY">READY</button>
-                                            <button class="btn" onclick="exp_Filter_By_Statuses($(this))" value="CLOSED">CLOSED</button>
-                                            <button class="btn" onclick="exp_Filter_By_Statuses($(this))" value="SUSPENDED">SUSPENDED</button>
-                                            <button class="btn" onclick="exp_Filter_By_Statuses($(this))" value="CANCELLED">CANCELLED</button>
-                                            <button class="btn" onclick="exp_Filter_By_Statuses($(this))" value="ANALYZED">ANALYZED</button>
-                                            <button class="btn" onclick="exp_Filter_By_Statuses($(this))" value="HOLD"> HOLD</button>
-                                            <button class="btn" onclick="exp_Filter_By_Statuses($(this))" value="OPEN">OPEN</button>
-                                            <button class="btn" onclick="exp_Filter_By_Statuses($(this))" value="ACTIVE">ACTIVE</button>
+                                            <button class="toggle_btn " id="DESIGN_MODE_BTN" onclick="exp_Filter_By_Statuses($(this))" value="DESIGN_MODE">DESIGN MODE</button>
+                                            <button class="toggle_btn" onclick="exp_Filter_By_Statuses($(this))" value="UNASSIGNED">UNASSIGNED</button>
+                                            <button class="toggle_btn" onclick="exp_Filter_By_Statuses($(this))" value="READY">READY</button>
+                                            <button class="toggle_btn" onclick="exp_Filter_By_Statuses($(this))" value="CLOSED">CLOSED</button>
+                                            <button class="toggle_btn" onclick="exp_Filter_By_Statuses($(this))" value="SUSPENDED">SUSPENDED</button>
+                                            <button class="toggle_btn" onclick="exp_Filter_By_Statuses($(this))" value="CANCELLED">CANCELLED</button>
+                                            <button class="toggle_btn" onclick="exp_Filter_By_Statuses($(this))" value="ANALYZED">ANALYZED</button>
+                                            <button class="toggle_btn" onclick="exp_Filter_By_Statuses($(this))" value="HOLD"> HOLD</button>
+                                            <button class="toggle_btn" onclick="exp_Filter_By_Statuses($(this))" value="OPEN">OPEN</button>
+                                            <button class="toggle_btn" onclick="exp_Filter_By_Statuses($(this))" value="ACTIVE">ACTIVE</button>
 
                                         </div>
                                 </div>
@@ -43,7 +43,7 @@
                         </div>
                         
                         <div class='col' style="background: #8fbc8f8a;">
-                                <div class="row custom_row">Experiment Form</div>
+                                <div class="row custom_row"><span class="heading_div">Edit Experiment Info</span></div>
                                 <div class="row custom_row">
                                     <div id="exp_form_div">
                                     </div>
@@ -98,12 +98,12 @@ exp_li_orginal_values_dict={}
 function exp_Filter_By_Statuses(element){
     var element_value=$(element).val()
     var clss=$(element).attr('class');
-    if (clss==="btn"){
-        $(element).attr('class',"btn active_btn");
+    if (clss==="toggle_btn"){
+        $(element).attr('class',"toggle_btn active_btn");
         status_query_list.push(element_value)
     }
     else{
-        $(element).attr('class',"btn");
+        $(element).attr('class',"toggle_btn");
         var index=status_query_list.indexOf(element_value);
         status_query_list.splice(index,1);
         console.log("status_query_list")
@@ -154,6 +154,11 @@ function li_Ret_Id_Detail(element){
     descp_row_div.setAttribute("class","row custom_row");
     descp_row_div.id="descp_row_div";
     main_row_div.append(descp_row_div);
+    var criteria_list_parameter_div=document.createElement("div");
+    criteria_list_parameter_div.setAttribute("class","row custom_row");
+    criteria_list_parameter_div.id="criteria_list_parameter_div";
+    main_row_div.append(criteria_list_parameter_div);
+
     var save_row_div=document.createElement("div");
     save_row_div.setAttribute("class","row custom_row");
     save_row_div.id="save_row_div";
@@ -274,6 +279,25 @@ function li_Ret_Id_Detail(element){
                 descp_col2.append(textarea)
                 descp_row_div.append(descp_col1);
                 descp_row_div.append(descp_col2)
+                
+                var criteria_list_parameter_div_col1=document.createElement("div");
+                criteria_list_parameter_div_col1.setAttribute("class","col-md-4");
+                criteria_list_parameter_div_col1.id="criteria_list_parameter_div_col1";
+                var h6=document.createElement("h6");
+                h6.innerText="Set Criteria List Parameter";
+                criteria_list_parameter_div_col1.append(h6);
+
+                var criteria_list_parameter_div_col2=document.createElement("div");
+                criteria_list_parameter_div_col2.setAttribute("class","col-md-4");
+                criteria_list_parameter_div_col2.id="criteria_list_parameter_div_col2";  
+                var input=document.createElement("input");
+                input.setAttribute("class","custom_form_control")
+                input.id="criteria_list_parameter_div_input";  
+                criteria_list_parameter_div_col2.append(input)
+                criteria_list_parameter_div.append(criteria_list_parameter_div_col1)    
+                criteria_list_parameter_div.append(criteria_list_parameter_div_col2)    
+
+
 
                 var save_col1=document.createElement("div");
                 save_col1.setAttribute("class","col-md-8");
@@ -285,10 +309,14 @@ function li_Ret_Id_Detail(element){
                 
                 var save_button_manage=document.createElement("button");
                 save_button_manage.id="save_button_manage";
-                save_button_manage.innerHTML="SAVE"
+                span=document.createElement("span");
+                span.innerHTML="Save"
+                span.setAttribute("class","button_span")
+                // save_button_manage.innerHTML=span
                 save_button_manage.value=element_value;
                 save_col2.append(save_button_manage);
                 save_button_manage.setAttribute("onclick","save_exp_state($(this))");
+                save_button_manage.append(span)
                 save_row_div.append(save_col1);
                 save_row_div.append(save_col2);
 
@@ -327,7 +355,7 @@ function li_Html_Genertor(data,flag){
     
     var ul=document.createElement("ul");
 
-    ul.id="";
+    ul.id="mng_exp_ul_id";
     list_exp_id_div.append(ul)
     if (flag===true){
         first_in_list=data[0].id
@@ -342,7 +370,7 @@ function li_Html_Genertor(data,flag){
             ul.append(li);
         }
         status_query_list.push("DESIGN_MODE");
-        $("#DESIGN_MODE_BTN").attr("class","btn active_btn");
+        $("#DESIGN_MODE_BTN").attr("class","toggle_btn active_btn");
         element=$("#"+first_in_list+"_li");
         
         li_Ret_Id_Detail($(element));
@@ -426,6 +454,8 @@ function save_exp_state(element){
                 console.log(exp_detail_wrt_status_dict); 
                 console.log("updated_detail_wrt_status");
                 console.log(updated_detail_wrt_status);
+                var criteria_list_parameter_input=$('#criteria_list_parameter_input').val();
+                console.log("criteria_list_parameter_input",criteria_list_parameter_input)
        $.ajax({
                 type:"POST",
                 dataType:"json",
@@ -438,6 +468,8 @@ function save_exp_state(element){
                         crit_exp_wrt_statuscode={}
                         crit_exp_wrt_statuscode=data['crit_exp_wrt_statuscode']
                         console.log(crit_exp_wrt_statuscode)
+                        window.location.reload();
+
                     }
             });
     
@@ -456,7 +488,7 @@ function expCrit_Html_Generator(flag){
         $("#expcritorder_div").empty(); 
         var expcriterias=crit_exp_wrt_statuscode[active_li_status][active_li_id]
         console.log("expcriterias",expcriterias)
-        $("#expcritorder_div").append(expcriterias)
+        // $("#expcritorder_div").append(expcriterias)
         // console.log("expCrit_Html_Generator",$("#"+active_in_list+"_li"))
 
     }

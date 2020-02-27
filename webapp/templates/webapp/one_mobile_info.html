@@ -1,16 +1,204 @@
-{% extends "webapp/base.html" %}
-{%csrf_token%}
-{% block content %}
-{% load static from staticfiles%} 
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {%for m in singlemob %}
+    <title>{{m.Mobile_Name}}</title>
+    {% endfor %}		
+
+	<meta charset="utf-8" >
+	<meta name="viewport" content = "width=device-width, initial-scale=1.0">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+  {% load staticfiles %}
+ 	<!-- <link rel="stylesheet" href="{% static 'webapp/css/bootstrap.min.css' %}" type = "text/css"/> -->
+ <link rel="stylesheet" href="{% static 'webapp/css/style.css' %}" type = "text/css"/> 
+  <link rel="stylesheet" href="{% static 'webapp/css/formoid-solid-green.css' %}" type="text/css" />
+  <!-- <link rel="stylesheet" href="{% static 'webapp/css/webix.css' %}" type="text/css" /> -->
+  <link rel="stylesheet" href="{% static 'webapp/css/criteriaweight/criteriaweight.css' %}" type="text/css" /> 
+  <link rel="stylesheet" href="{% static 'webapp/css/mobile/mobile.css' %}" type="text/css" /> 
+
+  <link rel="stylesheet" href="{% static 'webapp/css/newstyle.css' %}" type="text/css" /> 
+  <link rel="stylesheet" href="{% static 'webapp/css/sidestyle.css' %}" type="text/css" />
+  <link rel="stylesheet" href="{% static 'webapp/css/one_mobile.css' %}" type = "text/css"/>
+  <link rel="stylesheet" href="{% static 'webapp/createexp/css/createexp.css' %}" type="text/css" />
+  <link rel="stylesheet" href="{% static 'webapp/bootstrap-4.1.3-dist/css/bootstrap.min.css' %}" type = "text/css"/>
+  <link rel="stylesheet" href="{% static 'webapp/css/1by1direct.css' %}" type="text/css" />
+  <link rel="stylesheet" href="{% static 'webapp/Product-Gallery-Image-Zoom/css/main.css' %}" type="text/css" />
+
+
+  <link rel="stylesheet" href="{% static 'webapp/css/rslider/rSlider.min.css' %}">
+    
+
+  <link rel="stylesheet" href="{% static 'webapp/css/jquery-ui.structure.css' %}" type="text/css" />
+
+  <!-- <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"> -->
+  <link rel="stylesheet" href="{% static 'webapp/css/jquery-ui.css' %}">
+
+  <link rel="stylesheet" href="{% static 'webapp/js/jquery_paginate/jquery.paginate.css' %}">
+  <link rel="stylesheet" href="{% static 'webapp/js/cpager/css/cPager.css' %}">
+  <link rel="stylesheet" href="{% static 'webapp/css/home/home.css' %}">
+  <link rel="stylesheet" href="{% static 'webapp/css/searchfilter/searchfilter.css' %}">
+
+
+  <!-- <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> -->
+  <!-- 2by2 tablecss syle -->
+  <!-- <link rel="stylesheet" href="{% static 'webapp/css/2by2tablecss.css' %}" type = "text/css"/> -->
+  <!-- for arrow icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <script type="text/javascript" src="{% static 'webapp/js/jquery1.12.4.js' %}" charset="utf-8"></script>
+  <script type="text/javascript" src="{% static 'webapp/js/jquerry-ui-1.12.4.js' %}" charset="utf-8"></script>
+  
+  <script type="text/javascript" src="{% static 'webapp/js/one_mobile.js' %}" charset="utf-8"></script>
+    
+  <script type="text/javascript" src="{% static 'webapp/bootstrap-4.1.3-dist/js/bootstrap.min.js' %}" charset="utf-8"></script>
+  <script src="{% static 'webapp/js/rslider2/rSlider.min.js' %}"></script>
+
+
+
+
+
+  <!-- Jquery plugin paginate -->
+  <!-- <script src="{% static 'webapp/js/jquery_paginate/jquery.paginate.js' %}"></script> -->
+  <!-- Jquery plugin pagination -->
+  <!-- <script src="{% static 'webapp/js/jquery-pagination/paginate.js' %}"></script>
+  <script src="{% static 'webapp/js/cpager/js/cPager.js' %}"></script> -->
+  <script src="{% static 'webapp/js/cpager/js/cPager.js' %}"></script>
+  <link rel="stylesheet" href="{% static 'webapp/js/cpager/css/cPager.css' %}">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+  <script src="{% static 'webapp/js/chartjs/Chart.min.js' %}"></script>
+
+  <!-- <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script> -->
+  <script src="{% static 'webapp/js/chartjs/canvasjs.min.js' %}"></script>
+
+  <!-- <script src="https://surveyjs.azureedge.net/1.1.6/survey.jquery.js"></script> -->
+  <!-- <script src="{% static 'webapp/js/chartjs/survey.jquery.js' %}"></script> -->
+  <script src="https://unpkg.com/bootstrap-material-design@0.5.10/dist/js/material.js"></script>
+  <script src="https://unpkg.com/bootstrap-material-design@0.5.10/dist/js/ripples.js"></script>
+  <!-- <script src="{% static 'webapp/js/chartjs/ripples.js' %}"></script> -->
+
+  <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@0.5.10/dist/css/bootstrap-material-design.css">
+  <!-- <script src="{% static 'webapp/js/chartjs/bootstrap-material-design.css' %}"></script> -->
+
+  <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@0.5.10/dist/css/ripples.css">
+  <!-- <script src="{% static 'webapp/js/chartjs/ripples.css' %}"></script> -->
+
+  <!-- for sidebar styleing w3school library -->
+  <script src="{% static 'webapp/Product-Gallery-Image-Zoom/scripts/zoom-image_onemobile.js' %}"></script>
+
+<!-- <script src="{% static 'webapp/Product-Gallery-Image-Zoom/scripts/main.js' %}"></script> -->
+
+   <style type="text/css"  media="screen">
+     /* ul li a:hover, ul li a:focus {
+ color:red;
+} */
+
+            /* Set height of the grid so .sidenav can be 100% (adjust if needed) */
+            .row.content {height: 1500px}
+            .button {
+               
+                border: 1px solid transparent !important;
+                background: transparent!important; 
+               
+               }
+            /* Set gray background color and 100% height */
+            .sidenav {
+               background-color: #c6c8ca ;
+;
+                height: 100%;
+            }
+            /* Set black background color, white text and some padding */
+            footer {
+                background-color: #202020;
+                color: white;
+                padding: 15px;
+            }
+            .navbar{
+                        margin-bottom: 0 !important;
+                        }
+            
+            /* On small screens, set height to 'auto' for sidenav and grid */
+            @media screen and (max-width: 767px) {
+                .sidenav {
+                height: auto;
+                padding: 15px;
+                }
+                .row.content {height: auto;} 
+            }
+          
+            .dashboard-icons{
+            width:100%;
+            border-radius: 2px;
+/* ccccccfd */
+            height:200px;
+            background:#ccccccfd;
+            box-shadow: 0 0 5px 3px #009688;
+            }
+            .dashboard-icon-rows{
+              padding:10px;
+            }
+            .dashboard-icons:hover{
+              background:#009688;
+            }
+    .imgClose
+    {
+      float:right;   
+    }
+    .error-notification .h2
+    {
+      padding-left:35px; 
+    }
+    .error-notification {
+        background-color:rgba(243, 232, 78, 0.918);
+        color:rgb(246, 0, 0);
+        display:none;
+        cursor:pointer;
+        padding:15px;
+        padding-top: 0;
+        position:absolute;
+        z-index:1;
+        font-size: 100%;
+    }
+
+    .error-notification h2 {
+        font-family:Trebuchet MS,Helvetica,sans-serif;
+        font-size:140%;
+        font-weight:bold;
+        margin-bottom:7px;
+    }
+
+
+    </style> 
+</head>
+<body>
 
 
 <div class="container content" id="cont">
     <div class="row">
         {%for m in singlemob %}
-           <div class="col item-photo">
-                <img style="max-width:100%;" src="{% static m.imagepath2 %}" />
-            </div>
-            <div class="col" style="border:0px solid gray">
+           <div class="col-md-3">
+                <div class="show" href="{% static m.sideimage1 %}">
+                    <img style="max-width:100%;" src="{% static m.sideimage1 %}" id="show-img" />
+                </div>
+                <div class="small-img">
+                          <img src='/static/webapp/Product-Gallery-Image-Zoom/images/online_icon_right@2x.png' class="icon-left" alt="" id="prev-img">
+                          <div class="small-container">
+                        
+                            <div id="small-img-roll">
+                              <img src="{% static m.sideimage1 %}" class="show-small-img" alt="">
+                              <img src="{% static m.sideimage1 %}" class="show-small-img" alt="">
+                              <img src="{% static m.sideimage1 %}" class="show-small-img" alt="">
+                              <img src="{% static m.sideimage1 %}" class="show-small-img" alt="">
+                              <img src="{% static m.sideimage1 %}" class="show-small-img" alt="">
+                              <img src="{% static m.sideimage1 %}" class="show-small-img" alt="">
+                            </div>
+                          </div>
+                          <img src='/static/webapp/Product-Gallery-Image-Zoom/images/online_icon_right@2x.png' class="icon-right" alt="" id="next-img">
+                        
+                        </div>
+                        
+                </div>
+            <div class="col-md-5" id="mobile_info_div" style="border:0px solid gray">
                 <h3>{{m.Mobile_Name}}</h3>    
                 <h5>{{m.Mobile_Companny}}</h5>
     
@@ -18,7 +206,6 @@
                 <h3 style="margin-top:0px;" id="ph"></h3>
                 <input type="hidden" id="price-text" value="{{m.price}}" />
     
-                <div class="section">
                     <h6 class="title-attr" style="margin-top:15px;" >COLOR</h6>                    
                     <div>
                        <!-- 
@@ -27,8 +214,6 @@
                        -->
                         <h4>{{m.Colors}}</h4>
                     </div>
-                </div>
-                <div class="section">
                         <h6 class="title-attr" style="margin-top:15px;">Resolution</h6>            
                         <div>
                            <!-- 
@@ -37,8 +222,6 @@
                            -->
                             <h4>{{m.Resolution}}</h4>
                         </div>
-                    </div>
-                    <div class="section">
                             <h6 class="title-attr" style="margin-top:15px;">Size</h6>                    
                             <div>
                                <!-- 
@@ -47,8 +230,23 @@
                                -->
                                 <p>{{m.Size}} inches </p>
                             </div>
-                        </div>
-                    	<div class="rating">
+                            <h6 class="title-attr" style="margin-top:15px;">Ram</h6>                    
+                            <div>
+                               <!-- 
+                                <div class="attr" style="width:25px;background:#5a5a5a;"></div>
+                                <div class="attr" style="width:25px;background:white;"></div>
+                               -->
+                                <p>{{m.Ram}} inches </p>
+                            </div>
+                            <h6 class="title-attr" style="margin-top:15px;">OS</h6>                    
+                            <div>
+                               <!-- 
+                                <div class="attr" style="width:25px;background:#5a5a5a;"></div>
+                                <div class="attr" style="width:25px;background:white;"></div>
+                               -->
+                                <p>{{m.OS}} inches </p>
+                            </div>
+                    	<!-- <div class="rating">
                                 
                             <h3>Rating</h3>
                             {% if m.rating == 0.0 %}
@@ -57,7 +255,7 @@
                                 {{m.rating}}
                                 {% endif %}
                              
-                        </div>
+                        </div> -->
                 <!--
                 <div class="section" style="padding-bottom:5px;">
                     <h6 class="title-attr"><small>CAPACIDAD</small></h6>                    
@@ -84,8 +282,8 @@
                 </div>                                         -->
             </div>                              
     
-            <div class="col">
-                <ul class="menu-items" id ="ulparaId">
+            <div class="col-md-4">
+                <!-- <ul class="menu-items" id ="ulparaId">
                     <li class="active"  onclick='desFunc("{{m.Whats_new}}")'>Whats New</li>
                     <li onclick='desFunc("{{m.Mobile_Companny}}")'>Mobile Company</li>
                     
@@ -94,7 +292,7 @@
                     <p style="padding:15px;" id="paragraphId">
                       {{m.Whats_new}}
                     </p>
-                </div>
+                </div> -->
                 
             </div>
         {% endfor %}		
@@ -108,7 +306,8 @@
 
     </div>    
      
-   
+</body>
+</html>  
 <script>  
 
 var a=  $("#ulparaId li.active");
@@ -131,8 +330,57 @@ var a=  $("#ulparaId li.active");
       var n=parseInt(document.getElementById('price-text').value);
       $(document).ready(function () {
         ph.innerHTML=n.toLocaleString('en-IN');
+        $('.show').zoomImage();
+        $('.show-small-img:first-of-type').css({'border':'solid 1px #951b25','padding':'2px'})
+        $('.show-small-img:first-of-type').attr('alt','now').siblings().removeAttr('alt');
+        $('.show-small-img').click(function () {
+        $('#show-img').attr('src', $(this).attr('src'))
+        $('#big-img').attr('src', $(this).attr('src'))
+        $(this).attr('alt','now').siblings().removeAttr('alt')
+        $(this).css({'border':'solid 1px #951b25','padding':'2px'}).siblings().css({'border':'none','padding':'0'})
+        if ($('#small-img-roll').children().length > 4) {
+            if ($(this).index() >= 3 && $(this).index() < $('#small-img-roll').children().length - 1){
+            $('#small-img-roll').css('left', -($(this).index() - 2) * 76 +'px')
+            }else if ($(this).index() == $('#small-img-roll').children().length - 1) {
+            $('#small-img-roll').css('left', -($('#small-img-roll').children().length - 4) * 76 +'px')
+            }else {
+            $('#small-img-roll').css('left','0')
+            }
+        }
+        });
+        $('#next-img').click(function (){
+
+        $('#show-img').attr('src', $(".show-small-img[alt='now']").next().attr('src'))
+        $('#big-img').attr('src', $(".show-small-img[alt='now']").next().attr('src'))
+        $(".show-small-img[alt='now']").next().css({'border':'solid 1px #951b25','padding':'2px'}).siblings().css({'border':'none','padding':'0'})
+        $(".show-small-img[alt='now']").next().attr('alt','now').siblings().removeAttr('alt')
+        if ($('#small-img-roll').children().length > 4) {
+            if ($(".show-small-img[alt='now']").index() >= 3 && $(".show-small-img[alt='now']").index() < $('#small-img-roll').children().length - 1){
+            $('#small-img-roll').css('left', -($(".show-small-img[alt='now']").index() - 2) * 76 +'px')
+            }else if ($(".show-small-img[alt='now']").index() == $('#small-img-roll').children().length - 1) {
+            $('#small-img-roll').css('left', -($('#small-img-roll').children().length - 4) * 76 +'px')
+            }else {
+            $('#small-img-roll').css('left','0')
+            }
+        }
+        });
+        $('#prev-img').click(function (){
+
+        $('#show-img').attr('src', $(".show-small-img[alt='now']").prev().attr('src'))
+        $('#big-img').attr('src', $(".show-small-img[alt='now']").prev().attr('src'))
+        $(".show-small-img[alt='now']").prev().css({'border':'solid 1px #951b25','padding':'2px'}).siblings().css({'border':'none','padding':'0'})
+        $(".show-small-img[alt='now']").prev().attr('alt','now').siblings().removeAttr('alt')
+        if ($('#small-img-roll').children().length > 4) {
+            if ($(".show-small-img[alt='now']").index() >= 3 && $(".show-small-img[alt='now']").index() < $('#small-img-roll').children().length - 1){
+            $('#small-img-roll').css('left', -($(".show-small-img[alt='now']").index() - 2) * 76 +'px')
+            }else if ($(".show-small-img[alt='now']").index() == $('#small-img-roll').children().length - 1) {
+            $('#small-img-roll').css('left', -($('#small-img-roll').children().length - 4) * 76 +'px')
+            }else {
+            $('#small-img-roll').css('left','0')
+            }
+        }
+        });
       });
 </script>   
 
 
-{% endblock %}

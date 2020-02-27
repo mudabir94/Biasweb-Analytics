@@ -7,7 +7,7 @@ body {
   margin: 0;
   padding: 0;
   background: #DDD;
-  font-size: 16px;
+  font-size: 12px !important;
   color: #222;
   font-family: 'Roboto', sans-serif;
   font-weight: 300;
@@ -20,23 +20,28 @@ body {
   height: 400px;
   background: #FFF;
   border-radius: 2px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4) ;
 }
 
 .left {
-  position: absolute;
-  top: 0;
-  left: 0;
-  box-sizing: border-box;
-  padding: 40px;
-  width: 300px;
-  height: 400px;
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  box-sizing: border-box !important;
+  padding: 40px !important;
+  width: 300px !important;
+  height: 400px !important;
 }
 
 h1 {
-  margin: 0 0 20px 0;
-  font-weight: 300;
-  font-size: 28px;
+  margin: 0 0 20px 0 !important;
+  font-weight: 300 !important;
+  font-size: 15px !important;
+}
+h2 {
+  margin: 0 0 20px 0 !important;
+  font-weight: 300 !important;
+  font-size: 13px !important;
 }
 
 input[type="text"],
@@ -51,7 +56,7 @@ input[type="password"] {
   border-bottom: 1px solid #AAA;
   font-family: 'Roboto', sans-serif;
   font-weight: 400;
-  font-size: 15px;
+  font-size: 10px !important;
   transition: 0.2s ease;
 }
 

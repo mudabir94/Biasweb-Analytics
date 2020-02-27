@@ -1,0 +1,73 @@
+
+.maincontentblur{
+filter: blur(10px);
+}
+#side_crit_list_compmob_one{
+    overflow: scroll;
+    height: 500px;
+    text-transform: capitalize;
+    width:inherit;
+    overflow-x: hidden;
+    /* text-transform: lowercase; */
+  
+  }
+  #main-critw-div{
+      padding-top: 20px;
+      margin-left: 0px;
+      background-color: #d1daf9;
+  }
+  .zoom {
+    padding-bottom: 5px;  
+    padding-top: 5px;
+      /* background-color: green; */
+      transition: transform .1s; /* Animation */
+      width:90px;    
+      /* height: 50px; */
+      margin: 0 auto;
+    }
+    
+    .zoom:hover {
+      transform: scale(1.2); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+    }
+    .selected_zoom{
+      padding: 10px;
+      transition: transform .1s;
+      width:90px;   
+      font-size:1em; 
+      margin: 0 auto;
+      text-transform: uppercase;
+      /* transform: scale(1.2); */
+      background: #0096885c;    
+    }
+
+.crit_labels_in_list{
+    font-size: 10px;
+    font-weight: bold;
+    color:#4d8cc1; 
+    }
+.mobile_label_color{
+  color:black;
+  cursor: pointer;
+}
+#finalresultdiv{
+  padding: 20px;
+  height: 300px;
+}
+#finalresult_subdiv{
+  background: brown;
+}
+#finalresult_subdiv2{
+  text-align: center;
+}
+#finalresult_subdiv3{
+  text-align: center;
+}
+#finalresult_spanheading{
+  color: white;
+  font-size: large;
+  text-decoration: underline;
+}
+#finalresult_textbody{
+  color: white;
+  font-size: small;
+}

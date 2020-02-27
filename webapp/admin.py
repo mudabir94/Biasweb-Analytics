@@ -7,12 +7,13 @@ from import_export.admin import ImportExportActionModelAdmin
 
 from .models import User,MobilePhones_Test
 from .models import signup_table,blog,mobilephones,experiment
-from .models import samsung_phone,sort_feature,userscoreRecord,Role,platform_feature
+from .models import samsung_phone,sort_feature,Role,platform_feature
 from .models import selectedAdminPhones,PhoneCriteria,exStatusCd,exp_fdefaults
 from .models import Subject,experiment_feature,Batch,Block,ExpCriteriaOrder,criteria_catalog_disp,generalCriteriaData
 
 from .models import StoreHoverBarChartLogs,StoreHoverPieChartLogs,StoreNextPrevButtonLogs,StoreCritWeightLogs
-from .models import surveyForm
+from .models import customExpSessionTable
+from .models import surveyForm,criteriaBasicInfo
 class MyUserChangeForm(UserChangeForm):
     class Meta(UserChangeForm.Meta):
         model = User
@@ -134,7 +135,7 @@ class mobilephonesAdmin(ImportExportActionModelAdmin):
 #>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>    
 #----------------------------------------------------------------------------
 class criteria_catalog_disp_Admin(admin.ModelAdmin):
-    list_display=('id','catalog_crit_display_order')  
+    list_display=('id','catalog_crit_display_order',"exp")  
       
 class StoreHoverBarChartLogsAdmin(admin.ModelAdmin):
     list_display=("id","user","value","phone_name","time")
@@ -146,9 +147,18 @@ class StoreCritWeightLogsAdmin(admin.ModelAdmin):
     list_display=("id","user","value","criteria_name","time")
 class generalCriteriaDataAdmin(admin.ModelAdmin):
     list_display=("id","criteria","valuelist","inputtype")
+class customExpSessionTableAdmin(admin.ModelAdmin):
+    list_display=("id","expid","cusexpid","status")
 
 class surveyFormAdmin(admin.ModelAdmin):
     list_display=('id',"exp","surveydata")
+    
+class criteriaBasicInfoResource(resources.ModelResource):
+    class meta:
+        model=criteriaBasicInfo
+class criteriaBasicInfoAdmin(ImportExportActionModelAdmin):
+    list_display=('id',"criteria_name","basic_info","more_detail")
+
 
 
 admin.site.register(User, MyUserAdmin)
@@ -162,7 +172,6 @@ admin.site.register(MobilePhones_Test,MobilePhones_TestAdmin)
 
 admin.site.register(sort_feature,sort_featureAdmin)
 admin.site.register(mobilephones,mobilephonesAdmin)
-admin.site.register(userscoreRecord)
 admin.site.register(signup_table)
 admin.site.register(blog)
 
@@ -186,4 +195,7 @@ admin.site.register(StoreNextPrevButtonLogs, StoreNextPrevButtonLogsAdmin)
 admin.site.register(StoreCritWeightLogs, StoreCritWeightLogsAdmin)
 admin.site.register(generalCriteriaData, generalCriteriaDataAdmin)
 
+admin.site.register(customExpSessionTable, customExpSessionTableAdmin)
 admin.site.register(surveyForm, surveyFormAdmin)
+admin.site.register(criteriaBasicInfo, criteriaBasicInfoAdmin)
+

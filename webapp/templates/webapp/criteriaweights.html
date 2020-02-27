@@ -1,45 +1,50 @@
 {% extends "webapp/newbase.html" %}
 {% block content %}
 {%load static from staticfiles%}
-<div class="container-fluid text-center">    
-    <div class="row content">
-        <div class="col-md-2 sidenav" >
-        </div>
-        <div class=" col-md-8 text-left"  >
-            <div class="row is-flex">
-                <div class="col">
-                    <h1 id="main_heading">Set Criteria Weights</h1>
-                    <ul class="crit_list">
-                        
-                    {%for crit in crit_list%}
-                    <li  rel="{{crit}}" style="padding-top:20px"> 
-                            <span id="{{crit}}_span"></span>
-
-                        <div class="row is-flex">
-                            {%if crit == "imagepath1" %}
-                            <div class="col-md-3">Look and Feel</div>
-                            {%else%}
-                            <div class="col-md-3">{{crit}}</div>
-                            {%endif%}
-                            <div class="col-md-9"><input id="{{crit}}" class="slider"></input></div>
-                        </div>
-                    
-                    
-
-                    </li>
-                    {%endfor%}
-
-                    </ul>
+<div class="container-fluid text-center" >    
+    <div class="row content maincontentblur"  id='maincontent'>
+        <div class="col-md-1 sidenav" >
+                <div id="dialog" title="Set Criteria Weights">
+                        <p class="dialog_p">Please set the weights of criterias</p>
                 </div>
+                <div id="save-dialog" title="Saved">
+                    <p class="dialog_p">Your Changes are saved</p>
+                </div>
+                <div id="crit_detail_info_div" title="Criteria Information">
+                </div>
+        </div>
+        <div class=" col-md-10" >
+            <div class="row is-flex" style="background: rgb(245, 244, 244);">
+                <div class="col-md-3"   id="side_crit_list_one">
+                 <h1>Criteria List</h1>
+
+                </div>
+                <div class="col-md-5 center " id='main-critw-div'>
+                    <h3 id="main_heading"><b>Set Criteria Weights</b></h3>
+                    <div id='critera_div'></div>
+                    
+                </div>
+                <div class="col-md-4" id="side_crit_list_two">
+                    <div id="graph_div_one">
+                        <canvas id="bar_chart_graph_div_one" width="inherit"height="200"; style="background:white;"></canvas>
+
+                    </div>
+                    <div id='graph_div_two'>
+                        <canvas id="bar_chart_graph_div_two" width='inherit'height="200" style="background:white"></canvas>
+
+                    </div>
+                    <!-- <button onclick="genrateBarColors()">Change Bar Color</button> -->
+                </div>
+
                
          </div>              
 
             
         </div>
         
-        <div class="col-md-2 sidenav" >
-                <button id="savecrit_button" class="btn btn-primary" onclick="SaveWeights()">Save</button>
-                <button id="next_button"  class="btn-danger" onclick="NextPage()">Next</button>
+        <div class="col-md-1" >
+                <!-- <button id="savecrit_button" style="font-size: large;"  onclick="SaveWeights()" > Save</button> -->
+                <button id="next_button" style="font-size: large;" class="btn-danger" onclick="SaveWeights()">Save & Continue</button>
 
         </div>
     
@@ -47,9 +52,9 @@
     </div>
     
     </div>
-<script>
+<script type="text/javascript">
     var critlist_val_dict=null
-    var crit_list=[]
+    var crit_list={{crit_list |safe}}
     var ADM='{{ADM}}'
     var userid='{{userid}}';
     // dict that stores how many times the user pressed the save button by storing time. 
@@ -57,88 +62,221 @@
     // list that stores criteria weight logs based on time 
     var critw_logs_dict={};
     var pagevisited="{{pagevisited}}"
+    var subcritcount=0;
+    var crit_divs_visited=[];
+    var Reviseability_On="{{res}}";
+    var Interactivity_On="{{inter}}"
+    
+    
+    var criteria_info_dictionary={}
+    // criteria_info_dictionary['Looks & Feel']=["How important the looks of the phone is for you?"]
+    // criteria_info_dictionary['Brand']=["How important is the brand of the phone is for you?"]
+    // criteria_info_dictionary['price']=["How important is the price of the phone is for you? "]
+    // criteria_info_dictionary['Memory']=["How important the Memory (32GB/64GB etc) of the phone is for you?"]
+    // criteria_info_dictionary['Ram']=["How important the Ram (2GB/3GB/4GB etc) is for you?"]
+    // criteria_info_dictionary['Cpu']=["How important the Cpu (Processing Speed) of the phone is for you?"]
+    // criteria_info_dictionary['Dimensions']=["How much value do you give for the dimensions of the phone?"]
+    // criteria_info_dictionary['Gpu']=["How important is the GPU (Graphics Processing Unit ) is for you?"]
+    // criteria_info_dictionary['Size']=["How important the Size  of the phone is for you?"]
+    // criteria_info_dictionary['Chip']=["Do you value Chip when buying the phone?"]
+    // criteria_info_dictionary['Colors']=["How important the Colors of the phone is for you?"]
+    // criteria_info_dictionary['rating']=["Do you consider rating of the phone before buying?"]
+    // criteria_info_dictionary['OS']=["How important the OS (Android/Apple) of the phone is for you"]
+    // criteria_info_dictionary['battery']=["How important is the battery life (1 day/2 days etc.) of the phone is for you"]
+    // criteria_info_dictionary['backcam']=["How important is the Back Camera of the phone is for you"]
+    // criteria_info_dictionary['Others']=["It includes other critierias that are not asked? How would you rate them as a whole?"]
+
+
 
 $(document).ready(function(){ 
-    
-
-    // localStorage.removeItem("critlist_val_dict");
-
-    // GET CRIT LIST and run the slider.... 
-  
-    if (pagevisited!=="true"){
-    $(".crit_list li").each(function(i)
-    {
-         console.log($(this).attr('rel')) // This is your rel value
-         crit_list.push($(this).attr('rel'));
-    });
-  
-    critlist_val_dict=JSON.parse(window.localStorage.getItem("critlist_val_dict")); 
-    if (critlist_val_dict!=null){
-    console.log("critlist_val_dict",critlist_val_dict["criteria_weights"])
-    console.log("crit_list",crit_list)
+    $('#save-dialog').hide();
+    $("#crit_detail_info_div").hide();
+    $("#bar_chart_graph_div_two").hide();
+    if (Reviseability_On==="False"){
+        Reviseability_On=false
     }
     else{
-    critlist_val_dict={}
+        Reviseability_On=true
+
     }
-    
-   
-    for (var c in crit_list){
-        console.log("criteria_list",crit_list[c])
-        var value=[5];
+    if (Interactivity_On==="False"){
+        Interactivity_On=false
+        $("#side_crit_list_two").css("display","none !important");
+
+    }
+    else{
+        Interactivity_On=true
+    }
+    alert(Interactivity_On)
+    // localStorage.removeItem("critlist_val_dict");
+    // GET CRIT LIST and run the slider.... 
+    // crit_list=JSON.parse(crit_list)
+    console.log("Criteria list------->",crit_list.length) 
+
+    if (pagevisited!=="true"){
+        i=0;k=0;length=crit_list.length;
+
+        while (i<=crit_list.length){
+            var side_crit_list=$('#side_crit_list_one');
+
+            if (crit_list[i]==undefined){
+                    break
+            }
+            var sub_crit_row_divs=$("<div class='sub_crit_row_divs zoom' id='sub_crit_row_divs_"+k+"' onclick='getCriterias($(this))'></div>")
+                var sub_crit_col_div=$("<div class='col-md-12'></div>")
+            sub_crit_row_divs.append(sub_crit_col_div);
+
+            for (j=0;j<5;j++){
+                if (crit_list[i]==undefined){
+                    break;
+                }
+
+                var div=$("<div class='crit_labels_row'></div>");
+                criteria=crit_list[i];
+                if (crit_list[i]==='imagepath1'){
+                    criteria="Looks & Feel";
+                }
+                var label=$("<label class='crit_labels_in_list'>"+criteria+"</label>")
+                div.append(label);
+                sub_crit_col_div.append(div);
+                i++;
+            }
+            var hr=$("<hr>")
+            // sub_crit_col_div.append(hr)
+            side_crit_list.append(sub_crit_row_divs);
+
+            if (crit_list[i]==undefined){
+                    break
+                }
+            k++;
+
+        }
+        subcritcount=k;
+        subcritcount++;
+        critlist_val_dict=JSON.parse(window.localStorage.getItem("critlist_val_dict")); 
+        console.log("SSS",critlist_val_dict)
         if(critlist_val_dict==null){
             critlist_val_dict={}
+            for (var c in crit_list){
+                console.log("criteria_list",crit_list[c])
+                var value=[5];
+                critlist_val_dict[crit_list[c]]=value
+            }
+            console.log("critlist_val_dict",critlist_val_dict);
         }
-        if (critlist_val_dict!==undefined){
-            // console.log("CHECK2",critlist_val_dict.criteria_weights)
-            if (critlist_val_dict["criteria_weights"]!=undefined){
-                value=[parseInt(critlist_val_dict["criteria_weights"][c][1])];
-            }
-        }
-        
-        var slider = new rSlider({
+    
+        $( function() {
+        $( "#dialog" ).dialog({
+        resizable: false,
+        height: "auto",
+        width: 400,
+        modal: true,
+        // open: function(event, ui){
+        //     setTimeout("$('#dialog').dialog( 'close' );",5000);
+            
 
-        target:crit_list[c] ,
-        values: [1,2,3,4,5,6,7,8,9,10],
-        widget:false,
-        labels:[1,2,3,4,5,6,7,8,9,10],
-        labels:true,
-        set:value,
-        tooltip:true,
-        onChange: function (event) {
-            console.log("EVENT",event)
-            console.log("THIS",this.target)
-            document.getElementById(this.target+'_span').innerHTML=event;
-            if  (critw_logs_dict[this.target]===undefined){
-                critw_logs_dict[this.target]=[]
-            }
-            else{
-                critw_logs_dict[this.target].push([userid,event,new Date($.now())])
+        // },
+        buttons: {
+            "ok": function() {
+                var maincontent=$('#maincontent')
+                maincontent.attr('class',"row content")
 
-            }
-            console.log("critw_logs_dict",critw_logs_dict)
+                var sub_crit_row_divs=$("#sub_crit_row_divs_0");
+                getCriterias(sub_crit_row_divs)
+                $( this ).dialog( "close" );
+                genrateBarColors();
 
-            // if (critlist_val_dict[this.target]===undefined){
-            //     critlist_val_dict[this.target]=[]
+            },
+            // Cancel: function() {
+            //   $( this ).dialog( "close" );
             // }
-            // else{
-            //     critlist_val_dict[this.target]=event;
-            // }
-            // console.log("critlist_val_dict",critlist_val_dict)
         }
         });
-
-    }
-   
+  } );
     }
     else{
         $("#main_heading").empty();
-        $("#main_heading").append("Sorry you can't go back. Please Go to the next page ");
+        $('#dialog').hide();
+        $("#savecrit_button").hide();
+        var maincontent=$('#maincontent')
+        maincontent.attr('class',"row content")
+        $("#main_heading").append("Sorry Criteria Weights can't be shown now.");
         $("#savebutton").hide();
     }
+ 
+ 
+    $.ajax({
+    type: 'GET',
+    dataType: "json",
+    'data': {
+    },
+    // the ajax call is sent to subdetails url name in the post function.  
+    url: "{% url 'get_crit_info' %}",
+    success: function(data){
+        criteria_info_dictionary=JSON.parse(data['criteria_info_dictionary'])
+        console.log("criteria_info_dictionary",criteria_info_dictionary)
+        }
+    });
+ 
  }); 
-
+ //  'rgba(96, 208, 11, 0.3)', light green
+    //  'rgba(8, 0, 153, 0.3)',    dark blue
+    //  'rgba(255, 255, 31, 0.3),' yellow
+    //  "rgba(226, 21, 249, 0.3)" pink
+    //  " rgba(0, 209, 112, 0.3)" purple
+    // "rgba(0, 162, 250, 0.3)"   sky blue
+    // "rgba(169, 87, 25, 0.3)"   brown
+    // "rgba(1, 1, 1, 0.3)"       black
+    // "rgba(247, 0, 0, 0.3)"           red
+    // "rgba(149, 149, 149, 0.3)"       grey
+    // "rgba(67, 171, 182, 0.3)"       sea green
+ var colors_list=[
+    "rgba(1, 1, 1, 0.5)", 
+    "rgba(255, 209, 112, 0.5)",
+    "rgba(0,129,199, 0.5)",  
+    "rgba(88,109,91, 0.5)" , 
+    "rgba(169, 87, 25, 0.5)" ,  
+    "rgba(76,99,148, 0.5)", 
+    "rgba(247, 0, 0, 0.5)",          
+    "rgba(144,210,216, 0.5)",       
+    "rgba(255,155,131, 0.5)",     
+    'rgba(151,99,147, 0.5)', 
+    'rgba(226,124,0, 0.5)',   
+    "rgba(255, 1, 1, 0.5)",
+    "rgba(82,132,60, 0.5)", 
+    "rgba(1, 1, 255, 0.5)", 
+    "rgba(11, 120, 255, 0.5)", 
+    "rgba(128,130,132, 0.5)", 
+    "rgba(226,124,0, 0.5)", 
+    'rgba(43,79,24, 0.5)',  
+    "rgba(255, 162, 250, 0.5)",
+    "rgba(1, 200, 200, 0.5)", 
+    ]
+function genrateBarColors(){
+    crit_backg_col=[];
+    crit_bor_col=[];
+   
+    for (var c=0;c<crit_list.length;c++){
+        
+       
+        crit_backg_col.push(colors_list[c])
+        crit_bor_col.push(colors_list[c])
+        }
+        if (Interactivity_On==true){
+            showchart_criteria();
+            show_FinalChart();
+        }
+        
+}
 function SaveWeights(){
-    // console.log("Time",new Date($.now()));
+    if (Reviseability_On==false){
+        len=crit_divs_visited.length       
+        if (len<subcritcount){
+            alert ("Please See all Criterias before Moving Further.")
+            return;
+        }
+    }
+    console.log("Time",new Date($.now()));
     console.log("critw_logs_dict",critw_logs_dict)
     countSaveButtonEvents();
     console.log("storesavebuttonlogs",storesavebuttonlogs);
@@ -152,12 +290,10 @@ function SaveWeights(){
             temp_final_list.push(temp_slider_id_val_check_list);
             temp_slider_id_val_check_list=[];
     }
-    criteria_weights=["criteria_weights"]
-    if (critlist_val_dict==null){
-        critlist_val_dict={}
-    }
-    critlist_val_dict[criteria_weights[0]]=temp_final_list
-    console.log("critlist_val_dict",critlist_val_dict)
+   
+    console.log("critlist_val_dict---->>>>",critlist_val_dict)
+    window.localStorage.setItem("critlist_val_dict",JSON.stringify( critlist_val_dict));
+
     $.ajax({
     type: 'POST',
     dataType: "json",
@@ -171,58 +307,495 @@ function SaveWeights(){
     url: "{% url 'criteria_weights' %}",
     success: function(data){
 
+       
+        $( "#save-dialog" ).dialog({
+        resizable: false,
+        height: "auto",
+        width: 400,
+        modal: true,
+        open: function(event, ui){
+
+            setTimeout("$('#save-dialog').dialog( 'close' );",1000);
+            NextPage();
+
+        },
+        buttons: {
+            // "ok": function() {
+              
+            //     $( this ).dialog( "close" );
+
+
+            // },
+            // Cancel: function() {
+            //   $( this ).dialog( "close" );
+            // }
+        }
+        });
     }
     
     });
 }
 function NextPage(){
+    console.log("ADM",ADM);
 
-    alert(ADM)
-    if (ADM=="A.1by1"){
-                window.location="{%url 'comparemobile_1by1_direct'%}"
-
-            }
-            else if  (ADM=="A.2by2"){
-                window.location="{%url 'comparemobile_2by2_direct'%}"
-            }
-    
-    // $.ajax({
-    // type: 'GET',
-    // dataType: "json",
-    // 'data': {
-
-    // },
-    // // the ajax call is sent to subdetails url name in the post function.  
-    // url: "{% url 'criteria_weights' %}",
-    // success: function(data){
-        
-    //         if (data['ADM']=="A.1by1"){
-    //             window.location="{%url 'comparemobile_1by1_direct'%}"
-
-    //         }
-    //         else if  (data['ADM']=="A.2by2"){
-    //             window.location="{%url 'comparemobile_2by2_direct'%}"
-    //         }
-    //     }
-    
-    // });
-    // if 1by1 in block then show 1by1 page other wise show 2by2 page.. 
-
-    // save time when user clicks save button
-    
-   
-
+    if (ADM==="A.1by1"){
+        window.location="{%url 'comparemobile_1by1_direct'%}"
+    }
+    else if  (ADM==="A.2by2"){
+        window.location="{%url 'comparemobile_2by2_direct'%}"
+    }
 }
 function  countSaveButtonEvents(){
     storesavebuttonlogs[new Date($.now())]=[userid]
     }
+function activateSlider(crt){
+    var crit=crt;
+
+    console.log("CriteriaQQQQ",crit);
+    if (crit=="Looks & Feel"){
+        crit="imagepath1"
+        
+    }
+    value=critlist_val_dict[crit];
+    console.log("VALUE",value);
+
+   
+    var row=$('<div class="row slider_rows"></div');
+        var col1=$('<div class="col-md-3">');
+        if (crit==='imagepath1'){
+            crit="Looks & Feel"
+        }
+            var label=$("<label class='crit_labels'>"+crit+"</label>")
+        col1.append(label)
+        var col2=$("<div class='col-md-7'></div>");
+            var div1=$("<div>")
+                input=$('<input id="'+crit+'" class="slider"></input>')
+            div1.append(input);
+            var div2=$("<div>"+criteria_info_dictionary[crit][0]+"</button></div>")
+            var div3=$("<div class= 'col-md-8 offset-md-4'>")
+                var moredetail_btn=$("<button class='more_detail_btn fa fa-info-circle ' id='"+crit+"_moredetail' onclick='showCriteriaDetails($(this))'>  More Detail</button>")
+            div3.append(moredetail_btn)    
+        col2.append(div1);
+        col2.append(div2);
+        col2.append(div3);
+
+        var col3=$("<div class='col-md-2'></div>");
+            span=$('<span id="'+crit+'_span"></span>')
+        col3.append(span);
+    row.append(col1);
+    row.append(col2);
+    row.append(col3);
+    $("#critera_div").append(row);
+    var slider = new rSlider({
+
+                target:crit,
+                values: [1,2,3,4,5,6,7,8,9,10],
+                widget:false,
+                labels:[1,2,3,4,5,6,7,8,9,10],
+                labels:true,
+                set:value,
+                tooltip:false,
+                onChange: function (event) {
+                    console.log("EVENT",event)
+                    console.log("THIS",this.target)
+                    document.getElementById(this.target+'_span').innerHTML=event;
+                   
+                    console.log("critw_logs_dict",critw_logs_dict)
+                    target=this.target;
+                    if (this.target==='Looks & Feel')
+                    {
+                        target='imagepath1'
+                    }
+                    else{
+                        target=this.target;
+                    }
+                    if (critlist_val_dict[target]===undefined){
+                        critlist_val_dict[target]=[]
+                    }
+                    else{
+                        event=parseInt(event)
+                        critlist_val_dict[target]=[event];
+                    }
+                    if (target==='imagepath1')
+                    {
+                        target='Looks & Feel';
+                    }
+
+                   
+                    index=crit_name_list.indexOf(target)
+                    console.log("index",index)
+                    if (Interactivity_On==true){
+                        console.log("label",myChart.data.datasets[0].data[index])
+                        myChart.data.datasets[0].data[index]=event;
+                        myChart.update();
+                        showchart_criteria();
+                        }
+                    }
+                });
+
+}
+function showCriteriaDetails(ele){
+    id=$(ele).attr('id')
+    arr=id.split("_")
+    crit=arr[0]
+    console.log("more details",criteria_info_dictionary[crit][1])
+    $( "#crit_detail_info_div" ).empty();
+    var p=$("<p class='dialog_p'>")
+    p.append(criteria_info_dictionary[crit][1])
+    $( "#crit_detail_info_div" ).append(p);
+    $( "#crit_detail_info_div" ).html();
+    $( "#crit_detail_info_div" ).dialog({
+        resizable: false,
+        height: "auto",
+        width: 700,
+        modal: true,
+        // open: function(event, ui){
+        // },
+        buttons: {
+            "ok": function() {
+              
+                $( this ).dialog( "close" );
+            },
+            // Cancel: function() {
+            //   $( this ).dialog( "close" );
+            // }
+        }
+    });
+}
+function getCriterias(element){
+    element_id=$(element).attr('id')
+
+    if (Reviseability_On===false){
+
+        if (crit_divs_visited.includes(element_id)){
+            
+            $('.error-notification').remove();
+            var $err = $('<div>').addClass('error-notification')
+            .html('<div><h4>Sorry you can not check these Criterias again!</h4></div>')
+            .css('left', $(element).position().left);
+            $(element).after($err);
+            $err.fadeIn('fast');
+            $err.fadeOut(3000);
+            return;
+           
+        }
+        else{
+
+            crit_divs_visited.push(element_id)
+
+            var ele=$('#side_crit_list_one').find('.selected_zoom');
+            $(ele).attr('class','sub_crit_row_divs');    
+            $(element).attr('class','sub_crit_row_divs  selected_zoom');
+        } 
+
+    }
+    else{
+        var ele=$('#side_crit_list_one').find('.selected_zoom');
+        $(ele).attr('class','sub_crit_row_divs  zoom');    
+        $(element).attr('class','sub_crit_row_divs  selected_zoom');
+
+    }
+
+
+
+
+    
+    $("#critera_div").empty();
+
+    $(element).each(function() {
+
+        label=$(this).find("label");
+        $(label).each(function(){
+            crit=$(this).text();
+            console.log("crit",crit);
+            var critera_div=$("#critera_div");
+            activateSlider(crit);
+        });
+        
+
+});
+}
+crit_wght_list=[];
+crit_name_list=[];
+function convertDictToList(){
+    crit_wght_list=[];
+    crit_name_list=[];
+    crit_wght_sum=0;
+    
+    console.log('critlist_val_dict-----------',critlist_val_dict);
+    for ( var key in critlist_val_dict){
+
+        console.log("criteria key",key);
+        console.log("critlist_val_dict[key]",critlist_val_dict[key]);
+        crit_wght_val=critlist_val_dict[key][0]
+        crit_wght_sum=crit_wght_sum+parseInt(crit_wght_val)
+
+        crit_wght_list.push(parseInt(crit_wght_val))
+        crit_name_list.push(key);
+    }
+}
+var crit_backg_col=[];
+var crit_bor_col=[];
+var myChart_crit;
+var crit_rank_backg_colr=[];
+var crit_rank_bord_colr=[];
+var myChart;
+
+function showchart_criteria(){
+    convertDictToList();
+    var main_data={};
+    var dataset=[];
+    var dataset_dic={};
+    var label='Criteria';
+    var data_per=[];
+    console.log("crit_wght_list",crit_wght_list)
+    for (var t in crit_wght_list){
+        var foo=crit_wght_list[t]/crit_wght_sum
+        // foo=Math.round(foo * 100) / 100;
+        foo=foo.toFixed(3);
+        data_per.push(100* foo)
+   }
+   var data=data_per;
+//    if (crit_backg_col.length===0 && crit_bor_col.length===0){
+//         var red = Math.floor(Math.random() * 255);
+//         var green = Math.floor(Math.random() * 255);
+//         var blue = Math.floor(Math.random() * 255);
+
+//         var alpha=1;
+//         for (var c=1;c<crit_name_list.length+1;c++){
+            
+//             var rgba='rgba('+red+','+ green+','+blue+','+ alpha+')'
+//             var red = Math.floor(Math.random() * 255);
+//             var green = Math.floor(Math.random() * 255);
+//             var blue = Math.floor(Math.random() * 255);
+//             crit_backg_col.push(rgba)
+//             crit_bor_col.push(rgba)
+//             }
+//     }
+    var backgroundColor=crit_backg_col;
+    var borderColor=crit_bor_col;
+    var borderWidth=0.5;
+
+    dataset_dic['label']=label;
+    dataset_dic['data']=data;
+    dataset_dic['backgroundColor']=backgroundColor;
+    dataset_dic['borderColor']=borderColor;
+    dataset_dic['borderWidth']=borderWidth;
+    dataset.push(dataset_dic);
+    console.log("crit_name_list",crit_name_list)
+    if (crit_name_list.includes("imagepath1")){
+        var index = crit_name_list.indexOf("imagepath1");
+
+        if (index !== -1) {
+            crit_name_list[index] = "Looks & Feel";
+        }
+    }
+    main_data['labels']=crit_name_list;
+    main_data['datasets']=dataset;
+    if(myChart_crit)
+    {
+        myChart_crit.destroy();
+    }
+
+    var canvas_crit=document.getElementById('bar_chart_graph_div_two').getContext('2d');
+    myChart_crit = new Chart(canvas_crit, {
+    // type: 'horizontalBar',
+    type:'pie',
+    showTooltips: false,
+    data: main_data,
+    
+    options: {
+        responsive: true,
+        // scales: {
+        //     xAxes: [{
+        //         ticks: {
+        //             beginAtZero:true,
+        //             // max: 100
+        //         }
+        //     }]
+        // },
+        legend: {
+            display: true,
+            // position:'left',
+            // now user cant click on labels...
+            onClick: (e) => e.stopPropagation(),
+
+            labels: {
+                fontColor: 'rgb(255, 99, 132)',
+                fontSize:6,
+                fontFamily:'sans-serif', 
+                padding:5,
+                boxWidth:20
+                
+                
+            }
+        },
+        // tooltips: {
+        //     callbacks: {
+               
+        //         label: function(tooltipItem, data) { 
+        //     var indice = tooltipItem.index;   
+        //     console.log(" data.labels[indice]", data.labels[indice])  
+        //     var label=data.labels[indice]; 
+        //     var value=data.datasets[0].data[indice];
+        //     console.log("data.datasets[0].data[indice]",data.datasets[0].data[indice])
+
+        //     storehoveronpielog[new Date($.now())]=[userid,label,value]
+        //     console.log("storehoveronpielog",storehoveronpielog)
+        //     return  data.labels[indice] +': '+data.datasets[0].data[indice] + '';
+
+        // }
+
+        //         }
+            
+        // },
+    }
+});
+
+
+}
+
+var active_bar_color_dict={}
+function show_FinalChart(){
+    // convertDictToList();
+    var main_data={};
+    var dataset=[];
+    var dataset_dic={};
+   
+    var labels=crit_name_list;
+    var label='Score';
+    var data_percentage=[];
+    for (var t in crit_wght_list){
+       
+        data_percentage.push(crit_wght_list[t])
+   } 
+   var data=data_percentage;
+//    if (crit_rank_backg_colr.length===0 && crit_rank_bord_colr.length===0){
+//         var red = Math.floor(Math.random() * 255);
+//         var green = Math.floor(Math.random() * 255);
+//         var blue = Math.floor(Math.random() * 255);
+//         alpha=0.8;
+//         // previously it was criteria_list....
+//         for (var c=0;c<labels.length;c++){
+            
+//             var rgba='rgba('+red+','+ green+','+blue+','+ alpha+')'
+//             var red = Math.floor(Math.random() * 255);
+//             var green = Math.floor(Math.random() * 255);
+//             var blue = Math.floor(Math.random() * 255);
+//             crit_rank_backg_colr.push(rgba)
+//             crit_rank_bord_colr.push(rgba)
+//             }
+//     }
+    var borderWidth=0.5;
+    dataset_dic['label']=label;
+    dataset_dic['data']=data;
+    dataset_dic['backgroundColor']=crit_backg_col;
+    dataset_dic['borderColor']=crit_bor_col;
+    dataset_dic['borderWidth']=borderWidth;
+    dataset.push(dataset_dic);
+    main_data['labels']=labels;
+    main_data['datasets']=dataset;
+
+    if(myChart)
+    {
+        myChart.destroy();
+    }
+	var canvas=document.getElementById('bar_chart_graph_div_one').getContext('2d')
+    
+    
+     myChart = new Chart(canvas, {
+    type: 'horizontalBar',
+    
+    data: main_data,
+    showTooltips: true,
+    options: {
+        responsive: true,
+        onClick: function(e){
+        var element = this.getElementAtEvent(e);
+        console.log("element",element)
+        totalcriteria=crit_name_list.length;
+        if(element.length > 0){
+            // active_bar_color_dict
+            selected_label=element[0]._model.label;
+            selected_index=element[0]._index;
+            background_color=element[0]._chart.controller.config.data.datasets[0]._meta[1].data[element[0]._index]._model.backgroundColor;
+            if (active_bar_color_dict[selected_index]===undefined){
+                active_bar_color_dict[selected_index]=background_color;
+            
+            }
+            background_color=background_color.replace('rgba(','');
+            background_color=background_color.replace(')','');
+            background_color=background_color.split(',');
+            background_color.pop()
+
+            console.log("background_color",background_color)
+            new_color="rgba("
+            for (var col in background_color){
+                console.log("Coloumn",background_color[col])
+                new_color += background_color[col]
+                console.log("col",col)
+                if (col<2){
+                    new_color +=",";
+                }
+                else{
+                    new_color +=",";
+
+                    new_color +="0.9";
+                }
+            }
+            new_color +=")"
+            console.log("NEW COLOR",new_color)
+
+            // element[0]._chart.controller.config.data.datasets[0]._meta[11].data[element[0]._index]._model.backgroundColor = "rgb(255,0,0)";
+            
+            // myChart.chart.controller.config.data.datasets[0]._meta[11].data[element[0]._index]._model.backgroundColor = "rgb(255,0,0)";
+            myChart.data.datasets[0].backgroundColor[selected_index]=new_color;
+
+            console.log("MY CHART",myChart)
+            console.log("active_bar_color_dict",active_bar_color_dict);
+            for (var key in active_bar_color_dict ){
+                if (key!=selected_index){
+                    myChart.data.datasets[0].backgroundColor[key]=active_bar_color_dict[key]
+                }
+            }
+
+
+            myChart.update();
+
+          }
+        },
+       
+       
+        scales: {
+            xAxes: [{
+                ticks: {
+                    beginAtZero:true,
+                     max:10
+                }
+            }]
+        },
+        legend: {
+            display: true,
+            labels: {
+                fontColor: 'rgb(255, 99, 132)',
+                fontSize:13,
+                fontFamily:'sans-serif', 
+                padding:5,
+                boxWidth:20
+            }
+        },
+    }
+});
+
+}
+
 
 </script>
 
 <script>
         // Warning before leaving the page (back button, or outgoinglink)
         window.onbeforeunload = function() {
-            window.localStorage.setItem("critlist_val_dict",JSON.stringify( critlist_val_dict));
+        window.localStorage.setItem("critlist_val_dict",JSON.stringify( critlist_val_dict));
         }
 </script>  
 {%endblock%}

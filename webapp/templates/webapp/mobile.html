@@ -2,51 +2,21 @@
 {% block content %}
 {%load static from staticfiles%}
 
-<!-- <nav class="navbar navbar-inverse">
-        <div class="container-fluid">
-          <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>                        
-            </button>
-            <a class="navbar-brand">Mobile Analytics</a>
-          </div>
-          <div class="collapse navbar-collapse" id="myNavbar">
-            <ul class="nav navbar-nav">
-             
-              <li><a href="{%url 'homepage'%}">Home </a></li>
-              
-              <li><a href="#" >About</a></li>
-             
-             
-              
-              {% if  user.is_authenticated %}
-              <li><p id="username">{{ user.get_username }}</p></li>
-              <li><a href="{% url 'logout'%}">Logout</a></li> 
-              
-              {% else %}
-              <li><a href="{% url 'login'%}?next={{request.path}}">Login {{request.path}}</a></li>   
-              {% endif %}  
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-              <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
-            </ul>
-          </div>
-        </div>
-      </nav> -->
         
       <div class="container-fluid text-center">    
-        <div class="row content">
+        <div class="row content maincontentblur"  id='maincontent'>
             <div class="col-sm-3 sidenav" >
                     <div class='container-fluid'>
-                        {% with template_sidebar=template_sidebar %}
+                       {% with template_sidebar=template_sidebar %}
                         {% include template_sidebar %}
-                        {% endwith %}
+                        {% endwith %} 
                     </div>    
             </div>
           
         <div class="col-sm-8 col-md-8 text-left" > 
+            <div id="dialog" title="Select Mobile Phones">
+                    <p class="dialog_mobile_p">Now You will be asked to Select Mobile Phones for comparison. </p>
+            </div>
             <div id="mobile_catalog_div">
             <div class="latest-product-section"> 
                     {%  for mob in mobiles  %}
@@ -136,13 +106,14 @@
         window.performance.navigation.type === 2 );
                 if ( historyTraversal ) {
                 window.location.reload();
+                $(".sidenav_testing").hide()
             }
         });
         function toggleCheckbox(element){      
         if (element.checked == true){
         console.log(element.id);
          
-            if (arr.length ===3){
+            if (arr.length ===5){
                 alert("Array full ");
                 element.checked=false;
             }
@@ -153,7 +124,43 @@
         else {            
             arr.pop(element.id);
         }
-        function myfunc(){ 
+        
+       
+        $(document).ready(function () {
+                // alert(JSON.stringify(arr));
+
+                if(arr.length>1){
+                var elem=document.getElementById('comparebtn_id');
+                    if (elem===null)  {
+                       
+                        var btn = document.createElement("BUTTON");
+                        btn.id="comparebtn_id";
+                        var t = document.createTextNode("Compare");  
+                        btn.appendChild(t);
+                        btn.onclick=myfunc;
+                        document.getElementById('lc').appendChild(btn);     
+                         $('#comparebtn_id').addClass('btn'); 
+                         $('#comparebtn_id').addClass('btn-success');   
+                         $('#comparebtn_id').addClass('btn-success-edit');        
+                        
+                    }
+                }
+                else if (arr.length <=1 ){
+                    console.log("in condition");
+                    var elem=document.getElementById('comparebtn_id');
+                    
+                   if (elem!==null){
+                    document.getElementById('comparebtn_id').remove();
+                   }
+                }
+                $('.sidenav_testing').hide();                    
+
+
+        
+        });
+ }
+ 
+ function myfunc(){ 
             console.log("button clicked",arr);
 
             $.ajax({
@@ -186,7 +193,6 @@
                     //     window.location="{%url 'comparemobilespecsfilt_ver'%}"
                     //     }
                         if (response['subject_block'].includes("W.direct")){
-                            alert("W.DIRECT")
                             localStorage.removeItem("slider_id_val_check_dict");
 
                             localStorage.removeItem("critlist_val_dict");
@@ -208,40 +214,10 @@
             // get arr and send it to view. 
             // according to the id display the result in a table
         }
-        $(document).ready(function () {
-                // alert(JSON.stringify(arr));
-               
-                if(arr.length>2){
-                var elem=document.getElementById('comparebtn_id');
-                    if (elem===null)  {
-                       
-                        var btn = document.createElement("BUTTON");
-                        btn.id="comparebtn_id";
-                        var t = document.createTextNode("Compare");  
-                        btn.appendChild(t);
-                        btn.onclick=myfunc;
-                        document.getElementById('lc').appendChild(btn);     
-                         $('#comparebtn_id').addClass('btn'); 
-                         $('#comparebtn_id').addClass('btn-success');   
-                         $('#comparebtn_id').addClass('btn-success-edit');        
-                        
-                    }
-                }
-                else if (arr.length <=2 ){
-                    console.log("in condition");
-                    var elem=document.getElementById('comparebtn_id');
-                    
-                   if (elem!==null){
-                    document.getElementById('comparebtn_id').remove();
-                   }
-                }
-                  
-
-        
-        });
- }
+       
+ 
  $(document).ready(function () {
-
+                $(".sidenav_testing").hide();
                 $.ajax({
                 url: "{% url 'get_mobile_data' %}",
                 type:'GET',
@@ -249,8 +225,11 @@
                 },
                 dataType: "json",
                 success: function(data){
+
+
                     var pagevisited=data['pagevisited'];
                     if (pagevisited==="true"){
+                        $("#pager_div").hide();
                         $(".custom_side_rows").hide();
                         $('#mobile_catalog_div').empty();
                         $('#mobile_catalog_div').append("<h1>Sorry please go to next page.</h1>")
@@ -273,7 +252,9 @@
                         row_fluid.append(row);
                         var heading=document.createElement("h4");
                         heading.innerHTML="Mobile Catalog"
+                        heading.setAttribute('style','color: #009688;font-weight: 1000')
                         row.append(heading)
+                        
                         row.setAttribute('class','row');
                         var row=document.createElement('div');
                         row.setAttribute('class','row');
@@ -369,6 +350,26 @@
                 } 
                         
                     }
+                  
+                        $( "#dialog" ).dialog({
+                        resizable: false,
+                        height: "auto",
+                        width: 400,
+                        modal: true,
+                        
+                        buttons: {
+                            "ok": function() {
+                                var maincontent=$('#maincontent')
+                                maincontent.attr('class',"row content")
+                                $( this ).dialog( "close" );
+
+
+                                },
+                                // Cancel: function() {
+                                //   $( this ).dialog( "close" );
+                                // }
+                            }
+                            });
                 }    
             });
 

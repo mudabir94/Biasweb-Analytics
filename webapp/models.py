@@ -222,8 +222,11 @@ class mobilephones(models.Model):
     # imagepath1 = models.ImageField(null=True, blank=True, upload_to="webapp/img/sampleimages/")
     # imagepath2=  models.ImageField(null=True, blank=True, upload_to="webapp/img/sampleimages/")
     imagepath1=models.CharField(max_length=300,null=True,blank=True)
-    imagepath2=models.CharField(max_length=300,null=True,blank=True)
-    
+    sideimage1=models.CharField(max_length=300,null=True,blank=True)
+    sideimage2=models.CharField(max_length=300,null=True,blank=True)
+    sideimage3=models.CharField(max_length=300,null=True,blank=True)
+    sideimage4=models.CharField(max_length=300,null=True,blank=True)
+
     # changed from back_camera
     battery=models.CharField(max_length=400,null=True)
     backcam=models.CharField(max_length=400,null=True)
@@ -277,6 +280,8 @@ class criteria_catalog_disp(models.Model):
         max_length=(10*21),
         null=True
     )
+        exp = models.ForeignKey(experiment, on_delete=models.CASCADE,null=True,blank=True)
+
 
 class samsung_phone(models.Model):
     Mobile_Companny= models.CharField(max_length=200, null= True)
@@ -320,20 +325,18 @@ class sort_feature(models.Model):
     class Meta:
         verbose_name_plural="Sort Feature"
 
+class subjectScoreInExperiment(models.Model):
+    user= models.ForeignKey(User, on_delete=models.CASCADE,null=True,blank=True)
+    subject=models.ForeignKey(Subject, on_delete=models.CASCADE,null=True,blank=True)
+    exp=models.ForeignKey(experiment, on_delete=models.CASCADE,null=True,blank=True)
+    score=ListCharField(
+        base_field=models.CharField(max_length=20),
+        size=10,
+        max_length=(10*21),
+        null=True,
+        blank=True
+    )
 
-class userscoreRecord (models.Model):
-    column_id=models.IntegerField(null=True)
-    element_id=models.IntegerField(null=True)
-    feat_priority=models.IntegerField(null=True)
-    feat_name=models.CharField(max_length=200,null=True)
-    mobile_id=models.IntegerField(null=True)
-    user_id=models.IntegerField(null=True)
-    date_created= models.DateField(("Date"), default=datetime.date.today)
-    date_modified = models.DateField(("Date"), default=datetime.date.today)
-    def __str__(self):
-        return self.feat_name
-    class Meta:
-        verbose_name_plural="User Score Record"
 
 
 class userroles(models.Model):
@@ -361,7 +364,7 @@ class PhoneCriteria(models.Model):
 class ExpCriteriaOrder(models.Model):
     exp = models.ForeignKey(experiment, on_delete=models.CASCADE,null=True)
     block = models.ForeignKey(Block, on_delete=models.CASCADE,null=True,blank=True)
-    cOrder_id = models.CharField(max_length=10,null=True)
+    cOrder_id = models.CharField(max_length=25,null=True)
     fvp=models.CharField(max_length=25,null=True)
     #NEED TO KEEP A RECORD OF THE EXISTING SET OF AVAILABLE CRITERIA IN THE MOBILE PHONES TABLE
     pCriteria = models.ForeignKey(PhoneCriteria, on_delete=models.CASCADE,null=True)
@@ -402,12 +405,29 @@ class generalCriteriaData(models.Model):
         blank=True
     )
     inputtype=models.CharField(max_length=20,default="-")
+class customExpSessionTable(models.Model):
+    expid=models.IntegerField(null=True,blank=True)
+    cusexpid=models.CharField(null=True,blank=True,max_length=100)
+    status=models.CharField(null=True,blank=True,max_length=20)
+
 class surveyForm(models.Model):
     exp = models.ForeignKey(experiment, on_delete=models.CASCADE,null=True,blank=True)
     surveydata=ListCharField(
-        base_field=models.CharField(max_length=30),
-        size=10,
-        max_length=(10*40),
+        base_field=models.CharField(max_length=300),
+        size=30,
+        max_length=(300*50),
         null=True,
         blank=True
     )
+    # resultdata=ListCharField(
+    #     base_field=models.CharField(max_length=30),
+    #     size=10,
+    #     max_length=(10*40),
+    #     null=True,
+    #     blank=True
+    # )
+class criteriaBasicInfo(models.Model):
+    criteria_name=models.CharField(null=True,blank=True,max_length=100)
+    basic_info=models.TextField(null=True,blank=True)
+    more_detail=models.TextField(null=True,blank=True)
+    

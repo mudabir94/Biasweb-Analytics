@@ -1,0 +1,10 @@
+
+
+ERRORS TO BE SOLVED.
+Server Side Errors..
+1. If Criteria Assigning process is not complete, and if we click manage batch tab. Upload file and try to process it'll
+ fail from the server side.. 
+ Reason:: Its a problem to pickle, As New Experiment is created but then its not found in the pickle, when used again in 
+ code. 
+2. Similary, before completing "Criteria Assigning Process and Batch Creation process" if we press assign to block, it 
+should not create new experiment. 

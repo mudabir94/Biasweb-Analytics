@@ -1,4 +1,88 @@
 #savecrit_button{
 
 }
-#next_button{}
+#next_button{
+
+}
+.more_detail_btn:focus{
+  outline: none
+}
+.more_detail_btn{
+
+  border: none;
+  background-color: #d1daf9;
+  font-size:24px
+
+}
+
+.maincontentblur{
+    filter: blur(10px);
+}
+.crit_list{
+    border:dotted;
+}
+.crit_labels{
+    font-size: 12px;
+    font-weight: bold;
+    color:#4d8cc1;    
+    text-transform: capitalize;
+
+}
+.crit_labels_row{
+}
+.crit_labels_in_list{
+  font-size: 10px;
+  font-weight: bold;
+  color:#4d8cc1; 
+}
+.sub_crit_row_divs{
+  /* padding-top: 10px !important;
+  padding-bottom: 10px !important; */
+}
+.slider_rows{
+  padding-top:10px;
+
+}
+#side_crit_list_one{
+  overflow: scroll;
+  height: 500px;
+  text-transform: capitalize;
+  /* text-transform: lowercase; */
+
+}
+#main-critw-div{
+    padding-top: 20px
+}
+.zoom {
+  padding-bottom: 5px;  
+  padding-top: 5px;
+    /* background-color: green; */
+    transition: transform .1s; /* Animation */
+    width:90px;    
+    /* height: 50px; */
+    margin: 0 auto;
+  }
+  
+  .zoom:hover {
+    transform: scale(1.2); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+  }
+  .selected_zoom{
+    padding: 10px;
+    transition: transform .1s;
+    width:90px;   
+    font-size:1em; 
+    margin: 0 auto;
+    text-transform: uppercase;
+    /* transform: scale(1.2); */
+    background: #0096885c;    
+  }
+  #critera_div{
+      padding-top:45px;
+  }
+  .criteria_lists {
+}
+.dialog_p{
+  font-size: medium;
+  font-weight: 800;
+  color: black;
+}
