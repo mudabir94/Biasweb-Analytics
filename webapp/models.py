@@ -202,7 +202,7 @@ class blog(models.Model):
 class mobilephones(models.Model):
     Brand= models.CharField(max_length=200, null= True)
     Mobile_Name= models.CharField(max_length=300, null= True)
-    Whats_new= models.TextField( null= True)
+    Whats_new= models.TextField( blank=True,null= True)
     price=models.FloatField( null= True,blank=True)
     Memory=models.CharField(max_length=500, null= True,blank=True)
     Ram=models.CharField(max_length=500, null= True,blank=True)
@@ -216,8 +216,8 @@ class mobilephones(models.Model):
     Colors=models.CharField(max_length=300, null= True) 
     # changed from price_in_pkr
    
-    price_in_usd=models.IntegerField( null= True)
-    rating=models.FloatField(null= True)
+    price_in_usd=models.IntegerField( blank=True,null= True)
+    rating=models.FloatField(blank=True,null= True)
     OS=models.CharField(max_length=300, null= True)
     # imagepath1 = models.ImageField(null=True, blank=True, upload_to="webapp/img/sampleimages/")
     # imagepath2=  models.ImageField(null=True, blank=True, upload_to="webapp/img/sampleimages/")

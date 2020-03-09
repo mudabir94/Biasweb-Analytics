@@ -1,0 +1,22 @@
+Basic Requirements to Run Django App
+
+1. Python 3.7 setup
+2. Git
+3. IDE e.g VsCode
+4. Python Packages such as 
+   - pip install virtaulenv
+   - pip install virtualenvwrapper-win
+
+* Make Sure you have placed settings.py in biasweb folder. 
+Setting up the Application
+1- Open command promt, redirect to the dir where app folder is. 
+2- If Virtual env is created then type workon "ENV Name". 
+   Else:
+    type mkvirtualenv "env name " to create virtual env. 
+3- Find the text file "latest-requirements.txt" file. Change to dir where its located and type
+   pip intall -r latest-requirements.txt 
+4- Chnage dir to app location if changed, and type python manage.py makemigrations and 
+   python manage.py migrate/ 
+5- Create super user -- python manage.py createsuperuser 
+6- Import data into tables. 
+7- App is ready to work on. python manage.py runserver
