@@ -1,0 +1,48 @@
+Mobile Data Uploading 
+[Login to Django Admin - shazib - qwerty12345]
+
+Table Name - mobilephones
+
+CSV files location. 
+biasweb/data/DatabaseCSV-Files/newinputfiles/
+
+mobilephones-new.csv is the recent updated file. 
+
+ADDING New Brand To DataBase. 
+1. Check the fields in the table " mobilephones " and according to it add data,
+ either directly to the table (one by one) or through csv file. 
+Data Entry ways
+1. Single Entry ( One by One ).
+2. Multiple Entries
+  ( Uploading CSV File )
+ 2.1 - Through Django
+ 2.2 - Through SQL
+
+>>Picture Upload
+While creating csv file you can add the image path to fields such as imagepath1, sideimage1,sideimage2 etc. 
+path example : 
+" webapp/img/frontDisplay/appleiphonexr.jpg  
+"
+imagepath1 is used for front display or catalog image. 
+
+Once your DB is set you have to do couple of things in the FrontEnd. 
+
+Add code in templates/sidebartemplates/createExpSideBars/crtExpsidebartemp_exp.html 
+
+Paste this code from the template
+             <div class="row">
+                  <div class="col-md-6">
+                      <p>Apple</p>
+                  </div>
+                  <div class="col-md-6">
+                     <input type="checkbox" name="Apple_check" value="Apple" onchange="brandCheck_box(this)" >
+                  </div>
+             </div>
+
+Change the name of brand with the new brand name you added. In this case remove Apple and replace it with new one. 
+
+
+
+-Then go to templates/crudexperiment/create_experiment.html 
+- search for listoftotalbrands and add the new brand name in the list as well. Its case sensitive so add the exact name 
+as you did in the db.
