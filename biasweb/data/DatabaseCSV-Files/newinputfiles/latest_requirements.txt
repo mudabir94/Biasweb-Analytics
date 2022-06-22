@@ -14,7 +14,7 @@ jdcal==1.4.1
 MarkupPy==1.14
 mysql-connector==2.2.9
 mysqlclient==1.4.6
-numpy==1.15.2
+numpy==1.22.0
 odfpy==1.4.1
 openpyxl==3.0.3
 pandas==0.23.4
